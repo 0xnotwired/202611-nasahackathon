@@ -1,6 +1,6 @@
 # Órbita — Tu salud, a bordo
 
-[Producto](docs/PRODUCTO.md) · [Diseño técnico](docs/TECNICO.md) · [Base académica](docs/BASE_ACADEMICA.md) · [Demo](demo/orbita.html)
+[Propuesta final](docs/PROPUESTA_FINAL.md) · [Diseño técnico](docs/TECNICO.md) · [Base académica](docs/BASE_ACADEMICA.md) · [Demo](demo/orbita.html)
 
 Durante una misión espacial, el astronauta necesita comprender cómo está, qué cambió y qué acciones de cuidado puede realizar con los recursos disponibles.
 
@@ -29,6 +29,8 @@ Estas partes comparten historial, contexto y seguimiento. Salud, adaptación y h
 
 El copiloto es la ayuda contextual que conecta el recorrido. Usa la información disponible y los procedimientos aplicables para explicar qué revisar, qué falta conocer y qué tarea puede realizarse con el equipo de esa misión. La interfaz conversacional y la IA generativa son opciones por definir; el concepto no depende de ellas.
 
+El copiloto organizaría cada episodio con seis preguntas: **qué registraste, qué sabemos, qué falta, qué podés hacer, qué ocurrió y qué sigue pendiente**. La preparación, las dificultades y las interrupciones forman parte del registro, además del valor medido.
+
 ### Un recorrido concreto
 
 En un escenario de demostración con datos ficticios:
@@ -50,6 +52,8 @@ La propuesta se concentra en completar acciones de cuidado y conservar su result
 Los procedimientos considerarían los recursos disponibles. Si una prueba requiere un equipo ausente, la aplicación explicaría esa limitación y presentaría la alternativa documentada o la necesidad de apoyo. Cada examen conservaría su método y frecuencia: el historial de una DXA no implica que pueda realizarse a bordo.
 
 Cada orientación debe conservar su fuente, versión y condiciones de aplicación. Las reglas clínicas concretas y los procedimientos de atención requieren selección y revisión; no se deducen automáticamente de los datasets.
+
+La demostración integrada propuesta mostraría un mismo episodio con dos configuraciones de misión: con el equipo necesario y sin él. El comportamiento debe cambiar de forma visible y conservar el seguimiento. Es una función pendiente; su utilidad se evaluaría frente a métricas e instrucciones estáticas. NASA ya investiga guías autónomas como AMOS: no afirmamos una primicia mundial.
 
 ## Probar la maqueta actual
 
@@ -89,6 +93,16 @@ Esta es una dirección de diseño; todavía no existen pruebas de carga, capacid
 
 La [base académica](docs/BASE_ACADEMICA.md) reúne una revisión dirigida de libros, estándares, el Human Integration Design Handbook y ocho informes HRP. Distingue evidencia científica, requisitos normativos e inferencias de diseño. No es una revisión sistemática ni una validación clínica del software.
 
+La [investigación ampliada](docs/INVESTIGACION_APLICADA.md) añade lectura dirigida de seis textos completos y una [matriz de hallazgos y propuestas](docs/MATRIZ_INVESTIGACION_APLICADA.csv):
+
+- **AMOS:** preparación, configuración y dificultades durante procedimientos.
+- **Sprint y estudio multisistema:** separar ejercicio realizado de respuesta física individual.
+- **Seguimiento óseo:** conservar método, región y antigüedad del examen.
+- **Sueño:** distinguir descanso, autoinforme y estimaciones instrumentales.
+- **CO₂:** mostrar contexto ambiental sin atribuir causalidad automáticamente.
+
+Las fuentes fundamentan decisiones de diseño; no validan Órbita. Los procedimientos concretos y los criterios de atención médica siguen pendientes de selección y revisión. La guía oficial de evaluación que pudo consultarse corresponde a 2025; su correspondencia con 2026 permanece por verificar.
+
 | Fuente candidata | Uso pertinente |
 |---|---|
 | **CRF Daily Vitals** | Explorar signos vitales y masa/peso registrados en un análogo terrestre de reposo en cama. |
@@ -109,6 +123,7 @@ Las reglas de trabajo y procedencia están en [AGENTS.md](AGENTS.md). El uso de 
 
 ## Documentación y próximos resultados
 
+- [Propuesta final, demostración y criterios de aceptación](docs/PROPUESTA_FINAL.md).
 - [Producto y decisiones de alcance](docs/PRODUCTO.md).
 - [Objetivos del desafío y criterios del proyecto](docs/REQUIREMENTS.md).
 - [Roadmap y criterios de cierre](docs/ROADMAP.md).
