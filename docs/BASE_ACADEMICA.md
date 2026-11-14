@@ -251,7 +251,7 @@ https://ntrs.nasa.gov/citations/20240012964
 
 Dos parejas participaron en tres ocasiones; los resultados de una pareja se excluyeron por una desviación importante en la revisión inicial de instrucciones. El trabajo describe obtención autónoma de imágenes, pero también problemas de configuración y posicionamiento. Un reinicio dejó un ajuste incorrecto que no se volvió a verificar. No demuestra capacidad diagnóstica general ni eficacia de Órbita; la selección y exclusión limitan generalización.
 
-**Incorporar:** preparación explícita, comprobación de equipo/configuración, pasos breves, pausa y reanudación, resultado «no pude completar», y revisión antes de repetir. Distinguir «instrucción leída», «paso realizado» y «medición utilizable». No incluir ecografía en el MVP sin equipo y contenido específico revisado.
+**Incorporar:** preparación explícita, comprobación de equipo/configuración, pasos breves, pausa y reanudación, resultado «no pude completar», y revisión antes de repetir. Distinguir «instrucción leída», «paso realizado» y «medición utilizable». No incluir ecografía en la entrega sin equipo y contenido específico revisado.
 
 **Prueba pendiente:** comparar omisiones y errores de preparación con instrucciones estáticas. Si no mejora la ejecución o agrega carga excesiva, revisar el flujo.
 

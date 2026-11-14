@@ -85,7 +85,19 @@ Nuestra entrega debería mostrar utilidad mediante un recorrido completo, creati
 - Mostrar fuente, versión y estado de revisión de los procedimientos.
 - Separar dato sintético, análogo terrestre y dato de vuelo tanto en pantallas como en exportaciones.
 
-Proponemos una prueba formativa con 6–8 voluntarios no especialistas y casos ficticios, alternando el orden entre el recorrido guiado y una interfaz de métricas con instrucciones estáticas. Medir omisiones, errores, tiempo para encontrar el siguiente paso y comprensión de límites. El tamaño es una propuesta de usabilidad; no demuestra eficacia clínica ni representa a la población astronauta. Las pruebas todavía no se ejecutaron.
+### Criterios añadidos por la tercera ampliación (serie B)
+
+Propuestos el 14 de noviembre de 2026 a pedido del usuario; pendientes de revisión del equipo. Fundamento y límites en [MEJORAS_PROPUESTA.md](MEJORAS_PROPUESTA.md) e [INVESTIGACION_AMPLIADA_B.md](INVESTIGACION_AMPLIADA_B.md).
+
+- Distinguir tres estados en todo registro: registrado, confirmado sin novedad y sin registro. «Sin registro» nunca se muestra ni se exporta como «sin novedad» (B03).
+- Ofrecer en «Me siento distinto» un catálogo de observaciones con su fuente; registrar síntoma observado, no diagnóstico (B01, B02, B04–B06).
+- Configurar la misión por dos ejes: equipo y modo de comunicación. Con comunicación diferida, el resumen se entiende sin ida y vuelta (B10, B11).
+- Mostrar los datos antes que la sugerencia y decir «No hay orientación revisada para esto» cuando no hay regla aplicable (B12).
+- Emitir un solo aviso por episodio, sin repetirlo (B13).
+- Mostrar cuántas mediciones sostienen cada comparación con la línea de base personal (B07, B09).
+- Si se muestra radiación, presentar dosis acumulada junto al límite de carrera rotulado como requisito de programa; sin probabilidad personal de cáncer (B15, pendiente de confirmar [V1 4030] en S03).
+
+Proponemos una prueba formativa con 6–8 voluntarios no especialistas y casos ficticios, alternando el orden entre el recorrido guiado y una interfaz de métricas con instrucciones estáticas. Medir omisiones, errores, tiempo para encontrar el siguiente paso y comprensión de límites. El tamaño es una propuesta de usabilidad; no demuestra eficacia clínica ni representa a la población astronauta. Con grupos de ese tamaño puede quedar sin detectar una fracción apreciable de problemas (B14): preferir dos rondas con corrección entre medio. Las pruebas todavía no se ejecutaron.
 
 ## Funcionamiento y escalabilidad propuestos
 

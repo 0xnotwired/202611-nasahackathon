@@ -124,6 +124,8 @@ Las reglas de trabajo y procedencia están en [AGENTS.md](AGENTS.md). El uso de 
 ## Documentación y próximos resultados
 
 - [Propuesta final, demostración y criterios de aceptación](docs/PROPUESTA_FINAL.md).
+- [Qué mejorar de la propuesta original](docs/MEJORAS_PROPUESTA.md) y [tercera ampliación académica, serie B](docs/INVESTIGACION_AMPLIADA_B.md) con su [matriz](docs/MATRIZ_INVESTIGACION_B.csv).
+- [Roadmap de construcción para agentes](docs/ROADMAP_AGENTES.md) y [guía de sesión para agentes](CLAUDE.md).
 - [Producto y decisiones de alcance](docs/PRODUCTO.md).
 - [Objetivos del desafío y criterios del proyecto](docs/REQUIREMENTS.md).
 - [Roadmap y criterios de cierre](docs/ROADMAP.md).
