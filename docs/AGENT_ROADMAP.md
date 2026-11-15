@@ -14,15 +14,24 @@ Date: November 14, 2026. For any AI agent (or person) continuing Órbita. [ROADM
 | | Loaded NASA data; the originals are not in the repo |
 | Orchestration plan, contracts and 25 work orders, as proposals | Chosen and reviewed clinical procedure |
 
-## Foundation integration status — November 15, 2026
+## Current integration status — November 15, 2026
 
-M00 is implemented and independently reviewed; G0's technical checks passed
-(37 Node tests and the actual HTTP shell in Chromium). The user's instruction
-"hacelo" authorized local integration and gate closure after the reported
-results. See [G0](experiments/G0.md) for predictions, controls and the explicit
-file:// limitation. No remote push or deployment is part of this integration.
-Modules M01–M24 remain placeholders; no Level 0 checkbox is complete yet.
-Next work: F1 wave 1, M01/M02/M03, each with its own builder and reviewer.
+M00 and M01–M05 are implemented and independently reviewed. G0 is accepted;
+G1 technical checks passed: 83 Node tests, documentation consistency, the
+shared memory/IndexedDB contract, 16-record scenario round-trip, browser
+restart, clean-profile isolation and explicit storage failures in Chromium.
+See [G1](experiments/G1.md) for controls and limits. Human G1 acceptance is
+pending before F2; no M06+ implementation is included and nothing was pushed.
+
+Real dataset acquisition remains blocked by the runtime network policy.
+Required domains were saved in the environment draft, not applied. See
+[the acquisition status](DATASETS.md) and its manifest. This remains an open
+data-preparation task, not a reason to invent source-file schemas or units.
+
+The user also requested a local skills copy. All 199 SKILL.md definitions and
+companion files are preserved under `.agents/skills/`; source commit and
+hashes are recorded in `.agents/SKILLS_SOURCE.json`. AGENTS.md routes agents
+to relevant local instructions and keeps project authority explicit.
 
 ## Destination
 
@@ -49,13 +58,15 @@ Each level ends with: an adversarial review against the rules of the earlier lev
 **Phase F1, gate G1.** Modules M01 core, M02 mission, M03 catalogs, M04 store and M05 synthetic scenario. Before that, phase F0 (M00) puts the contracts into code.
 
 **Done when:**
-- [ ] A record without `origin`, `method` or `time` is rejected with a message that names the field.
-- [ ] An identifier `007` is saved and retrieved as `007`.
-- [ ] A missing value does not appear as 0 in any output.
-- [ ] A saved record cannot be edited or deleted; a correction is a new record.
-- [ ] The synthetic scenario is generated identically with the same seed and everything in it says `synthetic`.
-- [ ] Save, close and reopen restores the same thing; if storage fails, the interface says so.
-- [ ] Every test was seen failing against broken code before passing.
+- [x] A record without `origin`, `method` or `time` is rejected with a message that names the field.
+- [x] An identifier `007` is saved and retrieved as `007`.
+- [x] A missing value does not appear as 0 in any output.
+- [x] A saved record cannot be edited or deleted; a correction is a new record.
+- [x] The synthetic scenario is generated identically with the same seed and everything in it says `synthetic`.
+- [x] Save, close and browser reopen restores the same thing; the store API returns explicit errors and a nonpersistent status/reason. Browser-gate notices demonstrate propagation; the product warning UI remains M07 work.
+- [x] Every test was seen failing against broken code before passing.
+
+RUN/BROWSER evidence is in [G1](experiments/G1.md) and the individual module records. These checks establish the data core, not clinical correctness or an implemented product UI. Human gate acceptance remains pending.
 
 ### Level 1 — Understand my situation
 
@@ -151,3 +162,4 @@ Each agent checks the real status with `git status`, `git log` and the tests bef
 | 2026-11-15 | Claude (orchestrator, web session) | Challenge text supplied by the user compared with the plan; gaps closed by user decisions D10–D14 (data-state color, attention criteria as configuration, environment presets, blood sugar and mood, plan progress instead of gamification). Contracts 0.4; work orders M01, M02, M03, M05, M06, M07, M14, M15, M21 got new criteria and experiments. Dataset citations in `DATASET_CITATIONS.md`; blood sugar and mood research in DATASETS.md | Nothing built or run for these decisions; BUT CGM not downloaded or checked against its page; NLSP citation fields still missing; gate G0 open |
 | 2026-11-15 | Claude (orchestrator, web session) | BUT CGM citation compared with its page by elements (authors, year, title, version, RRID, DOI) and the standard PhysioNet citation added; license CC BY 4.0 confirmed. Handoff updated: AGENTS.md (D10–D14 rules, terrestrial origin, mood and gamification limits), CLAUDE.md ("Where to pick up"), blockers in the plan and here | BUT CGM not downloaded: physionet.org and its AWS bucket refused by the network; its columns and unit unknown. Nothing built |
 | 2026-11-15 | OpenAI Codex (M00 builder and orchestration); independent Codex reviewer | RUN: M00 foundation, JSDoc contracts 0.5, all 25 placeholders, loopback static server, core reference and negative controls. Independent review found and verified fixes for directory, missing-state and missing-export test gaps. RUN: G0-W1/W3 and 37 tests pass. BROWSER: G0-W2 HTTP shell and blocked-import control pass in Chromium 156. User instructed local integration/G0 closure with "hacelo" after results were reported | file:// CORS remains unverified under managed policy. No remote push. No F1 module implemented; no storage, sharing, clinical or product-level validation. Records: M00.md and G0.md in docs/experiments/ |
+| 2026-11-15 | OpenAI Codex orchestrator, M01–M05 builders and independent reviewers | RUN: M01–M05 implemented and independently reviewed; copied predictions precede code in module history. All 83 tests, shared contracts, mutations and documentation checks pass. BROWSER: actual IndexedDB round-trip, restart and profile isolation in Chromium156. Local F1 integration and G1 evidence prepared. User-requested full local skill snapshot: 264 verbatim upstream files, 199 SKILL.md definitions, licenses and SHA-256 manifest | Human G1 acceptance before F2; original dataset downloads blocked by runtime policy (draft domains saved, not applied); M07 product warning UI pending; no remote push or clinical validation |

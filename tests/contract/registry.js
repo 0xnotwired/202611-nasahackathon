@@ -29,7 +29,7 @@ export const allContracts = [
 
 // The orchestrator promotes entries as reviewed module implementations land.
 // Keep definitions and explicit export surfaces; retire only placeholder checks.
-export const implementedNames = ['core','mission','catalogs'];
+export const implementedNames = ['core','mission','catalogs','store','scenario'];
 export const contracts = allContracts.filter(entry => !implementedNames.includes(entry.name));
 export const implementedContracts = allContracts.filter(entry => implementedNames.includes(entry.name));
 

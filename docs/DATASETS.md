@@ -4,6 +4,33 @@ Query run: 2026-11-14T15:30:14.906452+00:00
 
 The eight full NLSP study cards were consulted through the public API used by the website, along with the human catalog and the metadata/file listings of OSD-51 and OSD-56. Small downloads from the eight NLSP studies were checked. Not all of their files, nor the bulk OSDR ZIPs, were downloaded or processed.
 
+## F1 acquisition status — November 15, 2026
+
+RUN: The current cloud checkout still has zero original dataset files. Fresh
+bounded requests to official CRF/MR079G metadata, the BUT CGM card and its
+public bucket listing failed at proxy CONNECT with 403. Current runtime
+network policy is restricted/enforced with no custom dataset hosts. No
+current-task headers, units, sample values or dataset checksums were verified.
+Historical sample descriptions below remain inherited research evidence,
+not files acquired by F1.
+
+RUN: The additive network requirements were saved successfully in the cloud
+environment draft: `nlsp.nasa.gov`, `physionet.org`, `www.physionet.org` and
+`physionet-open.s3.amazonaws.com`; existing package-manager presets were
+preserved. Saving the draft does not apply runtime policy. Review and save
+in environment settings, then publish the environment; retry only after a
+meaningful policy update. This is a network-policy blocker, not evidence
+that credentials or paid access are needed.
+
+The [acquisition manifest](data/F1-acquisition.json) and
+[request evidence](data/F1-acquisition-attempts.json) preserve observed status
+without original records or clinical comments. Next acquisition remains one
+small CRF Daily Vitals sample, one adaptation sample and one `*_CGM.csv`.
+Store originals unchanged under ignored `data/originals/`, record exact URLs,
+bytes, retrieval time and SHA-256, then inspect column/unit dictionaries and
+citation/license sources before implementing M21. M01–M05 fixtures are
+explicitly synthetic and do not assert those unknown formats.
+
 ## Recommendation
 
 Use CRF Daily Vitals as the first empirical base to reproduce measurements and visualize personal changes. Add strength, aerobic capacity and DXA as periodic assessments. Immunology requires a laboratory. Keep environmental and radiation data as separate context. OSD-51/56 allow molecular analysis, but do not by themselves train a validated predictor of daily clinical risk.

@@ -1,0 +1,80 @@
+{
+  "prepared_at_utc": "2026-11-15T17:00:51Z",
+  "status": "blocked_by_current_network_policy",
+  "actual_flow": {
+    "original_files_acquired": 0,
+    "original_data_stores": [],
+    "evidence_stores": [
+      "/tmp/orbita-f1-data/acquisition-attempts.json",
+      "/tmp/orbita-f1-data/manifest.json"
+    ],
+    "tracked_repository_files_modified": false,
+    "individual_data_rows_printed": false
+  },
+  "policy_evidence": {
+    "observations_current": true,
+    "network_mode": "restricted",
+    "state": "enforced",
+    "custom_allowed_hosts": [],
+    "presets": [
+      "package_managers"
+    ],
+    "required_hosts_absent": true
+  },
+  "samples": [
+    {
+      "id": "CRF",
+      "priority": 1,
+      "origin": "ground_analog",
+      "study_metadata_url": "https://nlsp.nasa.gov/api/v1/data/lsda_experiment/eeb9bd34-bdd4-5115-b139-adf2c9927962/full",
+      "goal": "one Daily Vitals CSV only",
+      "file_path": null,
+      "sha256": null,
+      "columns": null,
+      "units": null,
+      "license_and_citation_status": "repository records public availability, but current authoritative metadata/terms and complete citation could not be fetched",
+      "status": "proxy_connect_403"
+    },
+    {
+      "id": "MR079G",
+      "priority": 2,
+      "origin": "ground_analog",
+      "study_metadata_url": "https://nlsp.nasa.gov/api/v1/data/lsda_experiment/f97392b8-b9dd-5bae-af9e-dd76a33bf049/full",
+      "goal": "one isokinetic muscle function CSV only; MR080G/MR035G alternatives remain available",
+      "file_path": null,
+      "sha256": null,
+      "columns": null,
+      "units": null,
+      "license_and_citation_status": "repository records public availability, but current authoritative metadata/terms and complete citation could not be fetched",
+      "status": "proxy_connect_403"
+    },
+    {
+      "id": "BUT_CGM",
+      "priority": 3,
+      "origin": "terrestrial",
+      "study_card_url": "https://physionet.org/content/but-cgm/1.0.0/",
+      "goal": "one *_CGM.csv only; no ECG or full dataset download",
+      "file_path": null,
+      "sha256": null,
+      "columns": null,
+      "units": null,
+      "license_and_citation_status": "repository records CC BY 4.0 and DOI 10.13026/hv8f-3w60; not independently revalidated in this task",
+      "status": "proxy_connect_403"
+    }
+  ],
+  "required_network_additions": [
+    "nlsp.nasa.gov",
+    "physionet.org",
+    "www.physionet.org",
+    "physionet-open.s3.amazonaws.com"
+  ],
+  "network_update_note": "Read latest editable draft before updating; merge these destinations with its existing custom rules and preserve presets. Saved draft does not apply current runtime policy. Retry only after meaningful runtime policy change.",
+  "safe_acquisition_plan": [
+    "Fetch bounded public metadata/card after required domain access is applied; do not request or invent credentials.",
+    "Resolve exact file URLs from official listings. Download only one small original sample per selected study, with TLS verification; stop on unanticipated huge file size.",
+    "Save originals under ignored data/originals/ without modification. Compute SHA-256 immediately and record source URL, final URL, retrieval time, bytes and terms/citation source.",
+    "Inspect as inert text only; never execute code or macros. Report only headers, row counts and missingness, never clinical comments or subject-level values.",
+    "Confirm units from actual file plus source dictionary; do not choose mg/dL versus mmol/L from plausibility. Keep Test_Phase, subject identifiers and ground_analog versus terrestrial origins.",
+    "Keep analysis/output separate from originals, and exclude free-text clinical comments from tracked fixtures or public demo artifacts."
+  ]
+}

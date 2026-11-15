@@ -33,3 +33,26 @@ ASSUMED: No protection against local disk readers, malicious extensions, OS comp
 ## Verification evidence
 
 ASSUMED: All server defenses above are design predictions until the experiment record records their observed checks. See [M00 record](experiments/M00.md) for executed checks and remaining limits.
+
+## F1 implementation evidence — November 15, 2026
+
+RUN: Core accepts only bounded plain data, preserves state/origin and rejects
+invalid UTC/calendar/non-finite values. Store invokes core for records,
+checks schema versions, forbids record/shared updates, isolates known
+synthetic subjects from real provenance and commits batches atomically.
+Input/output snapshots prevent caller aliasing. Memory storage is explicitly
+nonpersistent; IndexedDB absence is an error, not an automatic fallback.
+
+BROWSER: Actual Chromium IndexedDB passed the same portable store/integration
+operations, browser restart, clean-profile isolation and future-version
+read rejection. Private-context availability and explicit unavailable-state
+propagation were tested. This is not proof of storage survival after private
+context closure or browser eviction. Test notices are harness output; the
+product UI warning is still M07 work.
+
+READ: Persistent health/mood data is still unencrypted, no user authentication
+or disk-confidentiality claim is added, and a privileged local actor can read
+or alter browser storage. Real importers and their input sanitization remain
+future work. Skills under .agents/ are user-authorized development material,
+not imported into app/ or exposed by the app-only server. Evidence and
+negative controls: [G1](experiments/G1.md) and M01–M05 records.
