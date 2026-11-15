@@ -12,6 +12,14 @@ export async function checkM01(implementation) {
   }
   assert.equal(implementation.validateRecord({...record,time:'2024-02-29T12:00:00Z'}).ok,true);
   for(const value of [NaN,Infinity,-Infinity,null,'12',{},[],undefined]) assert.equal(implementation.validateRecord({...record,value}).ok,false);
+  // Zero and finite negatives are data, not missingness or clinical judgment.
+  for(const value of [0,-1]) {
+    const data={...record,value};
+    assert.deepEqual(implementation.validateRecord(data),{ok:true,value:data});
+    const {id,time,schema_version,...fields}=data;
+    const created=implementation.createRecord(fields,context);
+    assert.equal(created.ok,true); assert.equal(created.value.value,value);
+  }
   for(const id of ['',7,null,'x'.repeat(100000),'bad\0id']) assert.equal(implementation.validateRecord({...record,id}).ok,false);
   const environment={...record,type:'environment',place:'module-a',sensor:'demo-sensor',interval:{from:'2026-11-15T00:00:00Z',to:'2026-11-15T01:00:00Z'}};
   const parsed=implementation.validateRecord(environment);
