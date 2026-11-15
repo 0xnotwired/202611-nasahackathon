@@ -119,6 +119,8 @@ Cada nivel termina con: revisión adversarial propia (¿rompí un invariante de 
 - [ ] El resumen exportado coincide con el historial y separa sintético, análogo y vuelo.
 - [ ] Con comunicación diferida, el resumen se entiende sin contexto adicional.
 - [ ] Generar el resumen no envía nada.
+- [ ] Compartir con apoyo médico es una acción explícita que queda registrada (M9).
+- [ ] Registrar una observación no pide desbloquear de nuevo dentro de la misma sesión (M9).
 
 ### Nivel 4 — Casos NASA reales, separados
 
@@ -162,3 +164,4 @@ Cada agente verifica el estado real con `git status`, `git log` y las pruebas an
 | Fecha | Agente | Hecho y verificado | Pendiente |
 |---|---|---|---|
 | 2026-11-14 | Claude (sesión web) | Serie B de investigación, mejoras M1–M8, este roadmap, CLAUDE.md, `scripts/check_docs.py` ejecutado en verde | Nivel 0 sin empezar; ningún código de producto escrito |
+| 2026-11-15 | Claude (sesión web) | B01, B03 y B06 leídos completos desde PDF del usuario; corregida la comparación de B03; mejora M9 de privacidad; `check_docs.py` en verde | Nivel 0 sin empezar; ningún código de producto escrito |

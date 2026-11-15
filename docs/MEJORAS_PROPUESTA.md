@@ -16,6 +16,7 @@ La propuesta original es sólida en lo que más cuesta: no inventa clínica, sep
 | 6 | La demo de dos configuraciones no tiene procedimiento elegido | Sin procedimiento concreto no hay demo | Candidato: revisión de visión (B16) |
 | 7 | La prueba con 6–8 voluntarios no tiene respaldo ni límite declarado | Un evaluador puede leerla como validación | Declarar cobertura esperable (B14) |
 | 8 | No hay modelo de datos | Seis pantallas «comparten registros» sin definir el registro | Ver [ROADMAP_AGENTES.md](ROADMAP_AGENTES.md) |
+| 9 | No contempla quién ve los datos ni cuánto cuesta protegerlos | Un estudio de vuelo se cerró por usabilidad de la seguridad | Privacidad de bajo costo (B03, M9) |
 
 ## Mejoras, una por una
 
@@ -39,7 +40,7 @@ Cada entrada lleva la fuente que justifica su presencia. El catálogo registra *
 | Confirmado sin novedad | El astronauta afirmó que no hubo | «Sin novedad, confirmado el [fecha]» |
 | Sin registro | Nadie anotó nada | «Sin registro» |
 
-Es la mejora más barata y la mejor fundada: en B03, 49 reportes de «no usé medicación» confirmaron positivamente la ausencia, y el autoinforme captó más de diez veces lo que figuraba en los registros médicos.
+Es la mejora más barata y la mejor fundada: en B03 (artículo revisado por pares, leído completo), los tripulantes registraron **49 semanas de «sin uso de medicación» confirmado**. Sin ese registro explícito, esas semanas habrían sido indistinguibles de semanas en que nadie anotó nada.
 
 **Regla dura:** «sin registro» nunca se muestra ni se exporta como «sin novedad». Si hay duda, gana «sin registro»: el error contrario presenta como sano a alguien de quien no se sabe nada.
 
@@ -91,6 +92,19 @@ Mantener la prueba formativa de 6–8 voluntarios y agregar una línea: con grup
 
 Agregar un caso de prueba que la propuesta original no tenía: **el usuario debe distinguir «sin registro» de «sin novedad»**.
 
+### M9 — Privacidad que no cuesta un paso por registro
+
+**Origen:** lectura completa de B03 el 15/11/2026. Es la lección de diseño más directa de la serie, y la propuesta original no la tenía.
+
+Dose Tracker se terminó antes de tiempo por problemas de usabilidad, y la queja principal fueron los varios PIN e identificadores para entrar. A la vez, la privacidad era condición para participar: los datos no llegaban a quienes deciden asignaciones de vuelo.
+
+**Después:**
+- El astronauta decide quién ve cada parte de su historial. Compartir con apoyo médico es una acción explícita, con registro de qué se compartió y cuándo.
+- Se desbloquea una vez por sesión, no por anotación.
+- Un registro admite motivos que el producto no previó (protocolo de otro experimento, prueba de tolerancia) mediante una nota estructurada; no se habilita un campo clínico libre.
+
+**Límite:** un solo estudio de seis personas, y su software tenía otros problemas además de la seguridad. Es un antecedente, no una medición de cuánto cuesta cada paso.
+
 ### M8 — Autopruebas repetidas
 
 Si se incorpora alguna prueba que el astronauta repite, la pantalla advierte que mejorar con la práctica es esperable (B07, B08). No se usa ningún desvío estadístico como alarma.
@@ -113,4 +127,4 @@ Hallazgos de la lectura, independientes de la serie B:
 
 ## Nivel de evidencia de este documento
 
-Solo B07 y B09 se leyeron en texto completo. El resto son resúmenes o fragmentos. Las mejoras M1–M8 son decisiones de diseño razonadas a partir de esa evidencia; ninguna fue probada con usuarios ni revisada por personal clínico.
+B01, B03, B06, B07 y B09 se leyeron en texto completo; el resto son resúmenes o fragmentos. Las mejoras M1–M8 son decisiones de diseño razonadas a partir de esa evidencia; ninguna fue probada con usuarios ni revisada por personal clínico.

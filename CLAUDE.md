@@ -24,7 +24,7 @@ CLAUDE.md                 esta guía
 README.md                 presentación para personas
 demo/orbita.html          maqueta de un archivo, datos ficticios; NO se modifica al construir app/
 docs/PROPUESTA_FINAL.md   propuesta vigente y criterios de aceptación
-docs/MEJORAS_PROPUESTA.md mejoras M1–M8 derivadas de la serie B
+docs/MEJORAS_PROPUESTA.md mejoras M1–M9 derivadas de la serie B
 docs/ROADMAP.md           niveles desde el producto
 docs/ROADMAP_AGENTES.md   niveles como trabajo ejecutable + relevos
 docs/BASE_ACADEMICA.md    fuentes S01–S18 (y copia de A01–A06)
@@ -60,10 +60,12 @@ Al redactar la serie B se escribieron tres atribuciones que no estaban en ningun
 
 ### 2. Citar cifras de un resumen como si fueran del artículo
 
-De las 18 fuentes B, solo B07 y B09 se leyeron en texto completo. PMC devolvió una verificación de navegador en lugar del artículo en varias descargas.
+PMC devolvió una verificación de navegador en lugar del artículo en varias descargas, así que la serie B se escribió casi entera desde resúmenes. Cuando el usuario aportó los PDF de B01, B03 y B06 (15/11), la lectura completa **corrigió una afirmación**: el «diez veces más que los registros médicos» de B03 compara cohortes distintas, no a las mismas personas, y ya se había trasladado a MEJORAS_PROPUESTA.md. Hoy son TC B01, B03, B06, B07 y B09.
 
 **Regla:** toda fuente nueva lleva nivel de lectura: `TC` (texto completo), `R` (resumen) o `S` (fragmento o fuente secundaria). Una cifra de nivel R o S no va a la presentación sin abrir el original.
-**Mecanismo:** columna `nivel_lectura` en `MATRIZ_INVESTIGACION_B.csv`. El script no valida su contenido.
+**Mecanismo:** columna `nivel_lectura` en `MATRIZ_INVESTIGACION_B.csv`. El script no valida su contenido. Al subir una fuente a TC, buscar con `grep` cada afirmación que dependía de ella en los otros documentos: una corrección en un solo archivo deja la versión errónea viva en otro.
+
+Los PDF que aporta el usuario se leen pero **no se suben al repo**: no todos tienen licencia abierta (B03 no la tiene).
 
 ### 3. Páginas de NASA que parecen vacías
 

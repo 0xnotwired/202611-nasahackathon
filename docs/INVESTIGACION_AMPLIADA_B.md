@@ -21,19 +21,33 @@ Cada fuente lleva su **nivel de lectura**, que limita lo que se puede afirmar de
 - **R** — resumen público (abstract, ficha NTRS o PubMed).
 - **S** — fragmento devuelto por el buscador o fuente secundaria (nota de prensa, artículo que cita). Verificar en el original antes de usar una cifra en la presentación.
 
-Solo B07 y B09 son TC. Todo lo demás es R o S: sirve para orientar el diseño, no para citar cifras sin abrir el original. Sesgos: una sola persona revisora asistida por IA, idioma inglés, acceso gratuito, sin evaluación formal de riesgo de sesgo. Ninguna fuente evalúa Órbita.
+B01, B03, B06, B07 y B09 son TC: B01, B03 y B06 se leyeron el 15/11/2026 desde PDF aportados por el usuario (ver «Lectura completa del 15/11» al final). Todo lo demás es R o S: sirve para orientar el diseño, no para citar cifras sin abrir el original. Sesgos: una sola persona revisora asistida por IA, idioma inglés, acceso gratuito, sin evaluación formal de riesgo de sesgo. Ninguna fuente evalúa Órbita.
 
 ## 1. Qué síntomas ocurren en vuelo
 
-### B01 — Los síntomas más registrados son comunes y poco dramáticos · R
+### B01 — Los síntomas más registrados son comunes y poco dramáticos · TC
 
 Crucian y colaboradores (2016), *Incidence of clinical symptoms during long-duration orbital spaceflight*, Int J Gen Med 9:383–391. DOI 10.2147/IJGM.S114188. https://pmc.ncbi.nlm.nih.gov/articles/PMC5098747
 
-Revisión retrospectiva de registros médicos de 46 misiones largas en ISS (41 astronautas, 20,57 años-vuelo). Para las categorías evaluadas, 3,40 eventos por año-vuelo; erupciones cutáneas 1,12 y síntomas respiratorios altos 0,97 por año-vuelo. El 46 % de los tripulantes tuvo un evento calificado de notable.
+Revisión retrospectiva de registros médicos de 46 misiones largas en ISS (41 astronautas; 34 hombres y 12 mujeres; 20,57 años-vuelo), más fuentes secundarias (notas de conferencias médicas privadas, encuestas de investigación, debriefings). Se tabularon 70 eventos: 3,40 por año-vuelo. Erupciones cutáneas 23 eventos (1,12 por año-vuelo) y congestión, rinitis o estornudos 20 eventos (0,97). Ocho tripulantes no tuvieron ningún evento.
 
-**Límite:** los autores aclaran que no es una encuesta epidemiológica estándar: tabula síntomas registrados, porque en vuelo rara vez se confirma un diagnóstico y se trata según la presentación. Solo cubre categorías ligadas a inmunidad (infecciosas, alergias, piel).
+De los 70, 42 fueron «notables» (más de una semana, recurrentes o sin respuesta al tratamiento), en 21 tripulantes (46 %). **18 de esos 42 ocurrieron en el primer mes**; del mes 2 al 6 se repartieron de forma pareja (Tabla 2). Un tripulante acumuló 9.
 
-**Propuesta:** el catálogo de «Me siento distinto» debe incluir piel y congestión, no solo cansancio. Registrar **síntoma observado**, nunca diagnóstico, que es justamente como opera la medicina de vuelo.
+Dos decisiones metodológicas que importan para Órbita:
+- Los síntomas como congestión, náusea, diarrea o constipación **resueltos en los primeros 30 días se excluyeron** como síntomas de adaptación espacial. La tasa no incluye la adaptación inicial.
+- Se excluyeron otros 28 eventos que los evaluadores no vincularon con inmunidad (quejas intestinales por comida, abrasiones, irritación ocular).
+
+**Límites que declaran los autores:**
+- No es una encuesta epidemiológica estándar: tabula síntomas registrados, porque en vuelo rara vez se confirma un diagnóstico y se trata según la presentación.
+- Las fuentes no estaban completas para todos los tripulantes; los autores lo presentan como un **mínimo** de la incidencia real.
+- Es un informe subjetivo: con otros criterios, los mismos registros darían otros números. Un evento sin indicación de recurrencia se contó como nuevo, lo que puede elevar la frecuencia.
+- Solo cubre categorías ligadas a inmunidad.
+
+**Inconsistencia interna:** el texto dice 7 058 días de vuelo y el encabezado de la Tabla 1 dice 7 508. 20,57 años son unos 7 513 días, así que el valor del texto parece una errata. No usar ninguno de los dos sin aclararlo.
+
+La comparación «25 veces más que en tierra» para erupciones enfrenta incidencia en vuelo con **prevalencia** terrestre de erupciones persistentes en población general. No son la misma medida: no repetir esa cifra.
+
+**Propuesta:** el catálogo de «Me siento distinto» incluye piel y congestión, no solo cansancio. Registrar **síntoma observado**, nunca diagnóstico, que es como opera la medicina de vuelo. La duración y la respuesta a lo que se hizo forman parte del registro: son justamente lo que convierte un evento en «notable» en este estudio.
 
 ### B02 — La medicación refleja los problemas reales: sueño, dolor, congestión, alergia · R
 
@@ -45,23 +59,48 @@ Registros de 24 tripulantes en 20 misiones de más de 30 días, a lo largo de 10
 
 **Propuesta:** el plan debe poder registrar **causas operativas** junto al síntoma (cambio de turno, EVA, sesión de ejercicio). Órbita no recomienda fármacos.
 
-### B03 — Lo que no se pregunta no queda registrado · R
+### B03 — Lo que no se pregunta no queda registrado · TC
 
-Wotring y colaboradores (2018), *Dose Tracker*, resumen de congreso, Front. Physiol. DOI 10.3389/conf.fphys.2018.26.00047. https://www.frontiersin.org/10.3389/conf.fphys.2018.26.00047/event_abstract
+Wotring y Smith (2020), *Dose Tracker application for collecting medication use data from International Space Station crew*, Aerosp Med Hum Perform 91(1):41–45. DOI 10.3357/AMHP.5392.2020. Reemplaza como fuente al resumen de congreso de 2018 (DOI 10.3389/conf.fphys.2018.26.00047), que se conserva solo como antecedente.
 
-App iOS para que tripulantes voluntarios registraran medicación. Seis participantes en vuelo; 5 766 registros. El autoinforme por app superó a los registros médicos en más de un orden de magnitud. Hubo 49 reportes de «no usé medicación esa semana», que confirman positivamente la ausencia.
+App iOS para registrar medicación con un cuestionario corto por toma (nombre, dosis, frecuencia, indicación, eficacia percibida, efectos adversos), precargado con el botiquín de la ISS. Se aprobaron 24 sujetos; **seis completaron el registro en vuelo y cinco el de tierra**, porque NASA terminó el estudio antes de tiempo por problemas de usabilidad y funcionamiento del software. Los autores lo presentan como **serie de casos observacional**: el análisis estadístico planeado no pudo hacerse.
 
-**Límite:** resumen de congreso, seis sujetos, sin revisión por pares completa verificada.
+Resultados:
+- 5 766 registros, entre ellos **49 semanas con «sin uso de medicación» confirmado**.
+- 20,6 registros por sujeto y semana de vuelo (error estándar 8,4) frente a 15,6 en tierra (4,6).
+- La variación entre personas fue enorme: de **1,2 a 54,7 registros por semana** en vuelo (Tabla I). El promedio lo sostienen dos o tres sujetos.
+- Las indicaciones más frecuentes fueron sueño y dolor muscular o articular, ligado a caminatas espaciales y equipo de ejercicio.
 
-**Propuesta (la más directa de la serie):** distinguir tres estados en todo registro: **registré X**, **confirmé que no hubo nada** y **no registré**. Refuerza la regla del proyecto «NA no es cero» con evidencia de vuelo. Un registro breve en el momento captura mucho más que el recuerdo posterior.
+**Lo que no dice el artículo:** que el autoinforme captara diez veces más que los registros médicos **de las mismas personas**. Compara 20,6 registros por semana con un estudio anterior (B02) de otra cohorte, que encontró 277 reportes en 24 tripulantes, menos de 12 por persona en toda la misión. La diferencia de volumen es real, pero mezcla cohorte, época y método. La versión anterior de este documento lo había leído como comparación directa.
+
+**Lecciones de diseño que declaran los autores** (las más aplicables a Órbita de toda la serie):
+- **La seguridad mal diseñada destruyó la usabilidad.** Varios PIN e identificadores para entrar, y actualizaciones con pasos de seguridad extra, fueron las quejas principales.
+- Las normas de software de NASA impidieron incorporar sugerencias de los usuarios sobre iconos y organización.
+- Las pruebas previas en el análogo HERA tuvieron poca fidelidad porque allí no se permite medicación; los autores dicen que hubiera convenido probar más antes de empezar.
+- **Privacidad como condición de participación:** los datos no se compartían con personal médico ni con quienes deciden asignaciones de vuelo. Un tripulante pidió compartirlos con su médico, y hubo que aprobarlo caso por caso.
+- Los tripulantes usaron la app de formas imprevistas: documentar pruebas de tolerancia antes del vuelo, registrar la suspensión de medicación exigida por otro experimento y compartir datos con su médico.
+
+**Límites:** seis sujetos, sin grupo control independiente, terminado antes de tiempo, autoinforme sin verificación.
+
+**Propuestas:**
+1. **Tres estados en todo registro:** registré X, confirmé que no hubo nada, no registré. Las 49 semanas confirmadas son el antecedente directo. Refuerza «NA no es cero» con evidencia de vuelo.
+2. **Quién ve qué lo decide el astronauta,** y compartir con apoyo médico es una acción explícita y registrada, no un efecto lateral de usar la app.
+3. **La protección de datos no puede costar un paso por registro.** Desbloquear una vez por sesión, no por anotación.
+4. **El registro admite motivos que el producto no previó** (protocolo de otro experimento, prueba de tolerancia) mediante una nota estructurada, no un campo libre clínico.
 
 ### B04–B06 — La fase de misión cambia qué es esperable · R / S
 
 - **B04 Dolor lumbar.** Kerstman y colaboradores (2012), Aviat Space Environ Med 83:2–7, DOI 10.3357/ASEM.2876.2012. Retrospectivo: 52 % (382/728); leve en 86 %, moderado 11 %, grave 3 %. Límites declarados: retrospectivo, datos faltantes. [R]
 - **B05 Cefalea.** van Oosterhout y colaboradores (2024), Neurology 102(7), DOI 10.1212/WNL.0000000000209224. Prospectivo, 24 astronautas (ESA, NASA, JAXA), 3 596 días; 22 tuvieron al menos un episodio. Primera semana: 51 cefaleas en 21 astronautas, más intensas y con rasgos de migraña; después, predominio tensional. Ninguna en los tres meses posteriores al regreso. Autoinforme; asociación, no causalidad. [S: nota de prensa AAN]
-- **B06 Cinetosis espacial.** Khalid y colaboradores (2023), revisión sistemática, Front. Neural Circuits 17:1150233, DOI 10.3389/fncir.2023.1150233: afecta a cerca del 70 % en las primeras 72 horas, citando a Heer y Paloski (2006). [R]
+- **B06 Cinetosis espacial.** Khalid y colaboradores (2023), *Pharmacological and non-pharmacological countermeasures to Space Motion Sickness: a systematic review*, Front. Neural Circuits 17:1150233, DOI 10.3389/fncir.2023.1150233. [TC]
+  - Afecta a cerca del 70 % de los astronautas en las primeras 72 horas **de la ida y también del regreso** a la gravedad. Los efectos más desestabilizantes van del día 1 al 5 y reaparecen en los primeros 10 días tras volver. Ambas cifras son **citas de segunda mano** (Heer y Paloski 2006; Oman y colaboradores 1986): verificar en el original antes de presentarlas.
+  - Síntomas: náusea, mareo, vértigo, cansancio, dolor de cabeza, vómitos, sudor frío, pérdida de apetito.
+  - Revisión registrada en PROSPERO: 3 207 resúmenes, 23 estudios incluidos (17 farmacológicos, 5 no farmacológicos, 1 que compara ambos). **Ninguna contramedida resultó superior.** Los autores señalan métodos heterogéneos, falta de un protocolo estándar de evaluación, muestras chicas y casi solo masculinas, dependencia del autoinforme y datos de agencias no publicados.
+  - El efecto adverso más frecuente de la prometazina fue la somnolencia.
 
-**Propuesta:** la **fase de misión** (primeros días, crucero, pre-regreso, posvuelo) es un dato de contexto que el episodio debe conservar. Puede mostrarse «frecuente en esta fase según [fuente]» como contexto.
+**Propuesta:** la **fase de misión** (primeros días, crucero, pre-regreso, posvuelo) es un dato de contexto que el episodio debe conservar. Puede mostrarse «frecuente en esta fase según [fuente]» como contexto. B01 y B06 coinciden en que el primer mes concentra eventos, y B06 agrega que **el regreso es otra fase de riesgo**: el posvuelo no es «fin de la misión» para el historial.
+
+B06 confirma además por qué Órbita no recomienda contramedidas: ni una revisión sistemática pudo decir cuál funciona mejor.
 
 **Límite que no se puede cruzar:** frecuente no significa benigno. El 3 % de dolor lumbar grave existe. La fase nunca debe usarse para tranquilizar ni para descartar una revisión.
 
@@ -198,7 +237,7 @@ Los cambios 1, 5 y 6 son los más baratos y los que más mejoran la defensa del 
 
 ## Verificación pendiente antes de presentar
 
-- Abrir el original de toda fuente marcada R o S antes de decir una cifra en voz alta. Prioridad: B01, B03, B05, B12, B14, B15.
+- Abrir el original de toda fuente marcada R o S antes de decir una cifra en voz alta. Prioridad: B05, B12, B14, B15. B01, B03 y B06 ya se leyeron completos el 15/11.
 - Confirmar [V1 4030] en la revisión C de NASA-STD-3001 vol. 1 que ya figura como S03.
 - Comprobar posible solapamiento de cohortes: B01, B02, B07 y B09 usan tripulaciones de ISS de periodos cercanos. No sumar sus tamaños como personas independientes.
 - B18: verificar en OSDR qué archivos de wearables existen y con qué licencia.
@@ -206,3 +245,15 @@ Los cambios 1, 5 y 6 son los más baratos y los que más mejoran la defensa del 
 ## Registro de uso de IA
 
 Búsqueda, lectura y redacción asistidas por Claude (Anthropic) el 14/11/2026, a pedido del usuario. Las cifras provienen de los resúmenes y textos indicados; no se generaron datos. Las matrices están en [MATRIZ_INVESTIGACION_B.csv](MATRIZ_INVESTIGACION_B.csv).
+
+## Lectura completa del 15/11/2026
+
+El usuario aportó tres artículos en PDF (uno de ellos subido tres veces con contenido idéntico). Se leyeron completos: métodos, resultados, tablas, discusión y limitaciones.
+
+| Fuente | Antes | Después | Qué cambió |
+|---|---|---|---|
+| B01 Crucian 2016 | R | TC | Cifras confirmadas. Se añadieron la exclusión de los primeros 30 días, la concentración de eventos notables en el mes 1, el carácter de mínimo, una errata de días de vuelo y una comparación con tierra que no conviene repetir |
+| B03 Dose Tracker | R (resumen de congreso) | TC (artículo revisado por pares, 2020) | **Corrección:** la comparación «diez veces más que los registros médicos» es entre cohortes distintas, no dentro de las mismas personas. Se añadieron la variación entre sujetos, el cierre anticipado y lecciones de diseño sobre seguridad y privacidad |
+| B06 Khalid 2023 | R | TC | El 70 % incluye el regreso. La cifra es de segunda mano. La revisión no encontró ninguna contramedida superior |
+
+Los PDF no se suben al repositorio: B03 no tiene licencia abierta y la regla del proyecto es no redistribuir textos completos.
