@@ -1,5 +1,8 @@
 # Órbita: orchestration plan
 
+Implementation and verified handoff state: [CURRENT_STATUS.md](CURRENT_STATUS.md).
+This document defines scope/design; planned capabilities are not completion claims.
+
 Date: November 14, 2026 (translated and updated on November 15). Plan for several AI agents to build Órbita in parallel without stepping on each other. Maintained by the orchestrator. Decision D9 was chosen by the user; D1–D4 and D6 match the stack the user listed on November 15; D5, D7 and D8 were confirmed by the user on November 15, 2026 by accepting the orchestrator's recommendation together with its reasons ("ok, resolve it"); the user can reopen any of them. What each phase must prove is in [IMPLEMENTATION_LAYERS.md](IMPLEMENTATION_LAYERS.md), and how it is tested and recorded is in [METHOD.md](METHOD.md).
 
 Order of authority: [AGENTS.md](../AGENTS.md) and [FINAL_PROPOSAL.md](FINAL_PROPOSAL.md) win over this plan. This plan wins over the work orders.

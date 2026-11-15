@@ -1,8 +1,298 @@
 # Dataset review for Space Apps: astronaut health
 
+Current implementation: [CURRENT_STATUS.md](CURRENT_STATUS.md). Source-specific
+evidence and dated investigation history below retain their original scope.
+
 Query run: 2026-11-14T15:30:14.906452+00:00
 
 The eight full NLSP study cards were consulted through the public API used by the website, along with the human catalog and the metadata/file listings of OSD-51 and OSD-56. Small downloads from the eight NLSP studies were checked. Not all of their files, nor the bulk OSDR ZIPs, were downloaded or processed.
+
+## Real import implemented and verified
+
+User-authorized M21 advance now imports selected CRF, MR079G, MR035G,
+MR080G and BUT CGM CSVs.3861 records were saved/reopened exactly in an
+isolated local IndexedDB profile; independent repeat inserted0 and preserved
+all records.226 excluded nonempty CRF free-text cells are counted without
+copying contents. All100 Node tests and G0/G1 browser checks pass.
+See [module evidence](experiments/M21.md), [local persistence](experiments/REAL_IMPORT.md)
+and [primary-paper unit findings](SOURCE_PAPER_UNITS.md). Source units that
+remain unconfirmed are stored explicitly unknown, not interpreted/converted.
+The earlier preparation-only/no-import statements below are historical.
+Omics/aggregate/relative-axis importers and product views remain pending.
+
+## Physical-unit investigation follow-up
+
+MR080G selected Campaign3C/subject7772/060507 units are now confirmed by
+the same-test unit-labelled summary and source-row correspondence, including
+L/min gas volumes, VE BTPS and gas percentages. See [the technical follow-up](DATA_TECHNICAL_RESOLUTION.md).
+CRF, BMD and immunity units still require original source evidence; linked
+research-paper hosts are newly requested in the saved draft. No physical
+unit conversion or medical interpretation was performed.
+
+## Preparation closure and current evidence
+
+All three genetic measurement archives are now downloaded, byte/SHA/CRC
+checked, and every quantitative member inspected:170 OSD51 files plus10
+OSD56 files. Raw assay references match exactly. Previous network/download
+pending notes below are historical. The [genetic report](GENETIC_DATA_INSPECTION.md)
+now distinguishes scanner values from protocol-declared derived processing.
+
+[Import preparation](DATA_IMPORT_PREPARATION.md) and its14 source profiles
+fix column whitelists, scoped IDs, supported clocks, quality handling and
+bounded windows. Verification against actual headers exposed and corrected
+GPR channel variants and optional Agilent annotations. No product importer
+or database write was performed. Units that still lack source evidence stay
+blocked for scientific conversion/interpretation; safe handling does not
+make absent provider facts confirmed. See [technical resolution](DATA_TECHNICAL_RESOLUTION.md).
+
+## Provisional use and genetic-measurement acquisition
+
+USER: BUT CGM, ACTES and ITBA are provisionally accepted for project use,
+with all license/citation conditions retained and removal if the organizer
+responds negatively. The user has already consulted them; no independent
+organizer approval is asserted.
+
+RUN: Attempted all three public quantitative microarray ZIPs for OSD51/56.
+Each redirects to `genelab-repo-prod.s3.amazonaws.com`, a different host from
+the successful metadata downloads. Current policy blocks that raw-data host;
+the additive draft now includes it and requires activation/publication.
+No quantitative archive was downloaded or inspected; do not mark this complete.
+ISA metadata inspection confirms340 assay rows for OSD51 and10 for OSD56,
+with raw/derived file references, not a count of independent people.
+
+## Published-network continuation
+
+OSD51/56 ISA metadata archives are downloaded and CRC-verified. Quantitative
+archives remain undownloaded. Official OSDR Data Redistribution/citation
+terms and linked SMD policy now load: they cover OSDR website data/products
+under NASA open-access/scientific-information policy, with study citations
+and acknowledgment. EDA links these terms, providing direct policy coverage
+evidence beyond the separate AWS registry. Do not relabel this CC0 or extend
+it to unrelated third-party assets. See [updated investigation](OSDR_EDA_USE_RESEARCH.md)
+and [exact responses](data/osdr-published-followup-2026-11-15.json).
+Earlier network/policy-pending notes below are historical and superseded.
+
+## OSDR reuse policy finding — follow-up
+
+SOURCE: The pinned AWS Open Data Registry entry for the NASA-managed OSDR
+public bucket explicitly says **There are no restrictions on the use of
+this data**. NASA's own AWS guide corroborates this distribution. OSD-51/56
+public version2 web-app records confirm restricted:false; individual license
+fields remain empty and no CC0/CCBY identifier is invented. This advances
+the earlier policy gap to positive repository-level evidence, scoped to the
+covered public distribution. File-specific/distribution checks remain before
+bundling; EDA API policy applicability is still not established by that bucket
+entry. See [the investigation](OSDR_EDA_USE_RESEARCH.md) and
+[response manifest](data/osdr-eda-policy-2026-11-15.json).
+
+## Space Apps terms review and OSDR/EDA continuation
+
+The [Space Apps data review](SPACE_APPS_DATA_REVIEW.md) maps all14 current
+sources to the participant terms supplied by the user. Eight NLSP study
+licenses are CC0-1.0; the three PhysioNet reuse licenses are verified but
+not automatically equivalent to OSI software licenses or conclusive event
+eligibility. Original synthetic application data remain the delivery baseline;
+this does not change the product's chosen research sources.
+
+RUN: After publication, OSD-51/56 metadata, file inventories and exact DOI
+records are reachable. Their rightsList entries are empty, not CC0. Their
+metadata contains investigator contact fields and upstream study sources;
+only citation/inventory summaries are tracked. Quantitative/ISA downloads
+redirect to `genelab-shared-repo-prod.s3.amazonaws.com`, still proxy-blocked.
+OSDR policy redirects to `science.nasa.gov`, also still blocked. Both exact
+hosts are added to a saved draft; publication/activation remains required.
+
+RUN: EDA RR-1 API acquisition succeeded: **12087 telemetry rows** and
+**39 daily radiation rows**. Telemetry labels Celsius, percentRH and CO2ppm;
+GCR/SAA viewer labels mGy/day, while total/cumulative labeling is ambiguous.
+API times explicitly carry UTC Z, and the dashboard states ground dates
+were matched to flight dates. Preserve that transformation and the rodent
+hardware/ISS-ground context. No personal exposure, medical limit or silent
+mGy-to-mSv conversion is inferred. EDA reuse policy still needs verification.
+See [the exact acquisition record](data/osdr-eda-acquisition-2026-11-15.json).
+These are retained source responses, not implemented importers.
+
+## Additional acquisition — November 15, 2026 (F2 preparation)
+
+RUN: Small public samples from the six remaining NLSP studies plus ACTES and
+ITBA are acquired under ignored `data/originals/additional/`. This extends
+the earlier three sampled datasets to **eleven studies with local samples**;
+it does not mean every file from those studies was downloaded. The metadata-only
+[additional manifest](data/additional-acquisition-2026-11-15.json) records exact
+URLs, timestamps, sizes, SHA256, available publisher checksums, citations,
+rights evidence and per-file limits. No real data is imported into the app.
+
+| Study | Sample inspected | Units/time and interpretation limits |
+|---|---|---|
+| MR035G DXA |10 CSV rows, calibration readme | NET_AVG_BMD unit unconfirmed; preserve phase/day/scan date. Readme calibration corrections must not be blindly applied to another sample |
+| BRSMImmune |30 CSV rows | CD8+ CD69+ unit unconfirmed; protocol-relative/composite time labels need an explicit mapping |
+| MR080G aerobic capacity |4 CSV rows, matching test readme | Explicit minute and weight-normalized VO2 columns; unqualified gas/ventilation units need evidence; exercise is distinct from resting measurements |
+| DTO684 radiation |2 XLS tables | First table explicitly separates microGy/day from microSv/day; second has a garbled unit header. Context is Shuttle detectors/missions, not personal exposure |
+|96-E044 lung function |1 XLS,25 used rows including labels | mmHg explicit; means/SE/counts grouped by flight phase, not individual records |
+| MSD007 Mir air |2 XLS files | CO2 workbook contains a chart/labels, no numeric cell series; second is a toxicity-index table, not concentration |
+| ACTES cycle exercise1.0.0 |52062 data rows plus header | RR ms, VO2 mL/min, power W; time is seconds relative to exercise start |
+| ITBA wearable1.0.1 | One STRESS session:2215 HR,8896 TEMP,870 IBI data rows | HR bpm, TEMP Celsius, IBI seconds; shifted UTC explicitly documented. IBI layout differs from regularly sampled signals |
+
+SOURCE: All six additional NASA DOI registry records declare CC0-1.0;
+full registry citations are retained. ACTES and ITBA official cards and
+license files declare ODC Attribution1.0: retain source/license notices;
+public charts/outputs need the source-linked attribution notice too.
+Publisher SHA256 verifies the downloaded PhysioNet signals/documentation;
+NASA MD5 verifies the three new CSVs. The older XLS file metadata reviewed
+supplies no MD5; local SHA256 establishes custody, not publisher identity.
+
+ITBA README explicitly states shifted UTC and signal alignment; its data
+constraints document duplicated recordings, covered sensors, interrupted
+protocols and absent sessions. Do not treat all recordings as valid. CSV
+inspection found IBI has one preamble row followed by offset/duration pairs,
+not the two-row timestamp/rate layout of HR and TEMP. Dictionary/constraints
+bytes are not UTF8; cp1252 was used for inspection only. Originals stay intact.
+
+Import preparation still needs explicit representation of protocol-relative
+seconds, aggregate tables and shifted UTC context; the calendar-only source_time
+extension is not a universal importer. Do not invent UTC dates for relative
+axes, convert group averages into individuals, or copy the source notebooks.
+No product dependencies, clinical thresholds, importers or views were added.
+
+RUN: OSD-51/56 metadata/file endpoints on `osdr.nasa.gov` and EDA on
+`visualization.osdr.nasa.gov` failed proxy CONNECT403. No OSDR file or EDA
+export was obtained in this task, no network settings changed and no
+environment was published. Earlier study-card descriptions remain historical
+research evidence; they are not current file verification.
+
+## Current decision — source uncertainty
+
+Record schema2 now preserves dates without a known zone using `time:null`
+and `source_time`: original text, canonical source value, precision,
+`timezone:null`, calendar status and a source-clock scope. Date-only data
+gets no invented midnight. BUT CGM retains its shifted calendar, with a
+participant-specific scope; NASA calendar-shifting status remains unknown.
+Unknown calendar or units prevent comparison; UTC-window queries on matching
+unknown-time records fail explicitly. Legacy schema1 UTC records stay unchanged.
+See [the contract](CONTRACTS.md) and [experiment](experiments/SOURCE_UNCERTAINTY.md).
+This implements the model and storage, not M21 importers or product views.
+
+| Sample | Verified units | Source-time preparation | Citation / reuse |
+|---|---|---|---|
+| CRF | Not confirmed for Pulse, SysBP, DiaBP, Resp Rate, Weight, Body Temp or Height | Preserve Date and Vitals Time; timezone and shifting unknown | Full DOI citation; CC0-1.0 |
+| MR079G | ft-lb, explicit CSV column | Date-only; zone unknown; slash-date ordering still needs evidence | Full DOI citation; CC0-1.0 |
+| BUT CGM | mmol/L, official-linked author companion | Local datetime, participant-shifted calendar; zone unknown | Full dataset/PhysioNet citations; CC BY4.0 |
+
+CRF source review checked the exact CSV, experiment metadata, dataset
+`7153409b-d8a3-5a23-b667-9df8a182dfdc` and file metadata. The parameter list
+names variables without unit mappings, and the experiment lists no linked
+documents. This does not establish kg/lb, °C/°F or any other physical unit.
+The application can retain `unit:null, unit_status:"unknown"`; confirmation
+still requires a dictionary/protocol tied to this file. No guesses from
+numeric ranges, study location or another campaign are used.
+
+The CRF Date column contains second components above12, consistent with
+month/day ordering; the small MR079G sample does not disambiguate its slash
+ordering. Preserve originals in staging until an import mapping is evidenced.
+Canonical source-time validation cannot itself resolve ambiguous raw text.
+
+Official DataCite DOI records verify CC0-1.0 and full citations for the two
+NASA studies. BUT CGM is CC BY4.0. Earlier blocked-access and pending-rights
+notes below are historical and superseded. See [readiness metadata](data/import-readiness-2026-11-15.json),
+[use conditions](DATA_USE_AND_DELIVERY.md) and [delivery attributions](DATA_ATTRIBUTIONS.md).
+Delivery can include the app, manifest and download links while leaving
+original CSVs out. Published real charts/extracts still retain applicable
+attribution duties. No external author contact was made.
+
+## Unit and time follow-up — November 15, 2026
+
+SOURCE: BUT CGM glucose is interpreted as **mmol/L** by the author-maintained
+companion linked in the official PhysioNet Usage Notes. At pinned commit
+`d5867dc9022715223ddbf11244b98db64109bcf0`, the CGM loader reads Timestamp
+and Glycemia without a unit conversion; the controller labels that series
+"Glucose level [mmol/l]" (lines 906, 928, 1156, 1201). The exact source URLs,
+hashes and scope are in [the manifest](data/acquisition-2026-11-15.json).
+This is author-source evidence, not a unit declaration inside the CSV or a
+clinical validation. No companion code was incorporated; its interpolation,
+aggregation and clinical display bands are not adopted.
+
+RUN: Deeper official NASA file records publish __file_md5sum. Both originals
+match: CRF 9c708f3e8d0a63dd71f878727aac4472; MR079G
+bbb1110fba2c2cc3a5aa34a17a9aa131. Local SHA-256 hashes are retained separately.
+Earlier notes about checksums being unestablished referred to the experiment
+metadata; the file-level metadata now provides the additional evidence.
+
+SOURCE: CRF experiment, dataset and file metadata reviewed do not establish
+a per-variable unit mapping for this CSV. Do not fill it from catalog defaults,
+plausible values or collection location. MR079G retains explicit ft-lb.
+
+**Time policy:** preserve raw Date, Vitals Time and Timestamp strings plus
+Test_Phase/BR_Day. No authoritative UTC offset was established; BUT CGM also
+shifts calendar dates per participant. Do not append Z, choose a timezone from
+location, infer original DST from shifted dates, or align subjects by their
+shifted calendar dates. This earlier UTC-only restriction is superseded by schema2 preservation
+above; UTC conversion still requires evidence. M21 remains unimplemented. CRF comments remain excluded from public imports.
+
+Remaining external evidence: CRF's sample-specific unit dictionary and the
+original timestamp/timezone conventions. They cannot be reconstructed
+reliably from the current source files. Obtaining them requires additional
+authoritative documentation; no author contact was made by this task.
+
+## Current acquisition — November 15, 2026, after environment publication
+
+RUN: Three original CSV samples are now present under ignored `data/originals/`.
+The published network policy resolved the earlier CONNECT403 blocker. Files
+were retrieved over verified HTTPS from official NASA/PhysioNet routes and
+kept unchanged. The [current manifest](data/acquisition-2026-11-15.json)
+records exact source/final URLs, retrieval times, byte counts, SHA-256,
+headers and missingness. The historical blocked attempt below is retained.
+
+| Sample | Local original | Data rows / columns | Verified format and remaining issues |
+|---|---|---|---|
+| CRF Daily Vitals | data/originals/CRF-daily-vitals.csv | 113 / 17 | Comma CSV; Subject, Date, Test_Phase, BR_Day, Vitals Time and measurement columns. Units are not stated in the CSV; obtain a per-variable dictionary. Exclude Comment and Bowel Movement Description from public imports. |
+| MR079G muscle function | data/originals/MR079G-muscle-function.csv | 12 / 12 | Comma CSV; explicit Units values are ft-lb. Preserve source method/position and phase; source range columns are not universal clinical limits. |
+| BUT CGM 1.0.0 | data/originals/but-cgm-1.0.0/101001_CGM.csv | 3,016 / 2 | UTF-8 BOM, semicolon delimiter, Timestamp and Glycemia; dot decimals and no missing cells in this sample. The CSV/README omit the unit; the linked author companion supports mmol/L. See the follow-up evidence above. |
+
+RUN: BUT CGM CSV, README and license hashes match the publisher's
+SHA256SUMS.txt. NASA file-level MD5s now match the originals; local SHA-256 hashes are also retained, as documented in the follow-up above. Both NASA metadata documents were preserved.
+Their verified DOIs are CRF `10.83263/wjw1-ta27` and MR079G
+`10.83263/bk5h-r757`. Public-availability statements are not an invented
+license or a complete author/year citation. BUT CGM LICENSE.txt explicitly
+states Creative Commons Attribution 4.0.
+
+SOURCE: BUT CGM README says dates are participant-specifically shifted into
+2100–2199 and cross-participant time relationships are not preserved. The
+sample Timestamp format is `%Y-%m-%d %H:%M:%S`, with no UTC offset. NASA
+sample dates/times likewise lack an established UTC interpretation. M21 must
+resolve units/time policy before converting to the UTC Record contract;
+appending Z or assigning the synthetic subject would invent information.
+
+READ: These are acquired source samples, not implemented importers or
+validated clinical data integration. No original records are versioned or
+included in app/. No configuration was changed and nothing was published
+by this acquisition. Browser/clinical capabilities are unchanged.
+
+## F1 acquisition status — November 15, 2026
+
+RUN: The current cloud checkout still has zero original dataset files. Fresh
+bounded requests to official CRF/MR079G metadata, the BUT CGM card and its
+public bucket listing failed at proxy CONNECT with 403. Current runtime
+network policy is restricted/enforced with no custom dataset hosts. No
+current-task headers, units, sample values or dataset checksums were verified.
+Historical sample descriptions below remain inherited research evidence,
+not files acquired by F1.
+
+RUN: The additive network requirements were saved successfully in the cloud
+environment draft: `nlsp.nasa.gov`, `physionet.org`, `www.physionet.org` and
+`physionet-open.s3.amazonaws.com`; existing package-manager presets were
+preserved. Saving the draft does not apply runtime policy. Review and save
+in environment settings, then publish the environment; retry only after a
+meaningful policy update. This is a network-policy blocker, not evidence
+that credentials or paid access are needed.
+
+The [acquisition manifest](data/F1-acquisition.json) and
+[request evidence](data/F1-acquisition-attempts.json) preserve observed status
+without original records or clinical comments. Next acquisition remains one
+small CRF Daily Vitals sample, one adaptation sample and one `*_CGM.csv`.
+Store originals unchanged under ignored `data/originals/`, record exact URLs,
+bytes, retrieval time and SHA-256, then inspect column/unit dictionaries and
+citation/license sources before implementing M21. M01–M05 fixtures are
+explicitly synthetic and do not assert those unknown formats.
 
 ## Recommendation
 
@@ -158,12 +448,11 @@ The [2026 Space Apps terms](https://www.spaceappschallenge.org/legal/) (updated 
 
 | Source | Origin | Terms found | Status |
 |---|---|---|---|
-| NLSP studies (MR079G, CRF, MR035G, BRSMImmune, MR080G, DTO 684, MSD007) | NASA | Each card states that all datasets are publicly available. NLSP terms of use: anyone may view or download public content. No explicit license (data.gov: "No license information was provided") | Usable; cite each study |
-| NLSP 96-E044 | NASA | Public files only; privacy-protected datasets require a data request | Usable for the public files; cite |
-| OSDR (OSD-51, OSD-56) | NASA | AWS Open Data registry: no restrictions on use. Citation through each study's citation button | Usable; cite |
-| Environmental Data App | NASA (OSDR) | Covered by OSDR; the OSDR FAQ gives its citation text | Usable; cite with the version |
-| ACTES cycle ergometer | Third party (PhysioNet) | Open Data Commons Attribution v1.0, open access | Usable; attribution and license in the delivery |
-| ITBA wearable | Third party (PhysioNet) | Open Data Commons Attribution v1.0, open access | Usable; attribution and license in the delivery |
+| Eight NLSP studies including96-E044 | NASA | Individual DOI registry CC0-1.0 declarations verified; public samples only | Reuse verified with project/event citations; protected records excluded |
+| OSD-51/56 | Partner/university-origin studies hosted by NASA | NASA-managed public OSDR AWS distribution declares no use restrictions; per-study license fields/DOI rightsList empty | Repository reuse evidence verified with scope; selected distribution/file notices still require checking |
+| EDA RR-1 | NASA app/environment context | API data retrieved; applicable policy redirect pending | Research/reference; policy scope and prescribed citation pending |
+| BUT CGM1.0.0 | Third party, PhysioNet | CC BY4.0 original license and checksum verified | License reuse conditions verified; event interpretation conditional |
+| ACTES1.0.0 / ITBA1.0.1 | Third party, PhysioNet | ODC Attribution1.0 original licenses/checksums verified | License reuse conditions verified; event interpretation conditional |
 
 Pending: CRF free-text clinical comments stay out of any public demo (see Integration limits). The terms forbid personally identifiable information in submissions.
 

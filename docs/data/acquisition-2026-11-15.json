@@ -1,0 +1,388 @@
+{
+  "verified_at_utc": "2026-11-15T17:43:19.801673+00:00",
+  "status": "samples_verified_glucose_unit_supported_crf_units_and_utc_mapping_unresolved",
+  "csv_samples": 3,
+  "samples": [
+    {
+      "id": "CRF",
+      "origin": "ground_analog",
+      "doi": "10.83263/wjw1-ta27",
+      "artifact": {
+        "file": "data/originals/CRF-daily-vitals.csv",
+        "url": "https://nlsp.nasa.gov/api/v1/files/8a438e79-85fe-54f9-b7cd-e89958724131/download",
+        "final_url": "https://nlsp.nasa.gov/api/v1/files/8a438e79-85fe-54f9-b7cd-e89958724131/download",
+        "retrieved_at": "2026-11-15T17:42:06.156742+00:00",
+        "bytes": 8850,
+        "sha256": "6aa6705dd04fed8fa9c27bc7e87a42e0b172253c25787f141c2da8dab54ab1b5",
+        "content_type": "text/csv; charset=utf-8",
+        "publisher_checksum_verified": true,
+        "data_rows": 113,
+        "headers": [
+          "Subject",
+          "Date",
+          "Test_Phase",
+          "BR_Day",
+          "Vitals Time",
+          "Pulse",
+          "SysBP",
+          "DiaBP",
+          "Resp Rate",
+          "Head Down Tilt Verified",
+          "Weight",
+          "Body Temp",
+          "Height",
+          "Comment",
+          "Bowel Movement",
+          "Quantity",
+          "Bowel Movement Description"
+        ],
+        "missing_per_column": {
+          "Subject": 0,
+          "Date": 0,
+          "Test_Phase": 0,
+          "BR_Day": 0,
+          "Vitals Time": 0,
+          "Pulse": 0,
+          "SysBP": 0,
+          "DiaBP": 0,
+          "Resp Rate": 0,
+          "Head Down Tilt Verified": 24,
+          "Weight": 0,
+          "Body Temp": 0,
+          "Height": 108,
+          "Comment": 110,
+          "Bowel Movement": 0,
+          "Quantity": 0,
+          "Bowel Movement Description": 103
+        },
+        "units": null,
+        "timezone_status": "No explicit offset/UTC unit policy verified",
+        "publisher_checksum": {
+          "algorithm": "MD5",
+          "value": "9c708f3e8d0a63dd71f878727aac4472",
+          "source_url": "https://nlsp.nasa.gov/api/v1/data/lsdapub_ls_dataset_file/8a438e79-85fe-54f9-b7cd-e89958724131/full",
+          "json_pointer": "/record/__file_md5sum",
+          "metadata_file": "data/originals/CRF-file-metadata.json",
+          "metadata_sha256": "3583dd1d86dda320ba06adbca66cb0e323d897e37421b31e8c6045b3c838fb97",
+          "scope": "Publisher MD5 comparison; local SHA-256 retained as custody hash, not a signature"
+        }
+      },
+      "metadata": {
+        "file": "data/originals/CRF-metadata.json",
+        "url": "https://nlsp.nasa.gov/api/v1/data/lsda_experiment/eeb9bd34-bdd4-5115-b139-adf2c9927962/full",
+        "final_url": "https://nlsp.nasa.gov/api/v1/data/lsda_experiment/eeb9bd34-bdd4-5115-b139-adf2c9927962/full",
+        "retrieved_at": "2026-11-15T17:42:06.422746+00:00",
+        "bytes": 572617,
+        "sha256": "9e688955fdd79de18448e57bf24a993a9d5d24976effe544d5e521fc62c0d1b8",
+        "content_type": "application/json; charset=utf-8",
+        "publisher_checksum_verified": null
+      },
+      "unit_status": "Not declared in sampled CSV; authoritative per-variable unit dictionary still required",
+      "exclude_from_import": [
+        "Comment",
+        "Bowel Movement Description"
+      ],
+      "verified_citation": "Meck, Janice Fritsch- Yelle; Bridgeford, Jeffrey S.; Paloski, William H.; Cromwell, Ronita L. (2026). Case Report Form [Dataset]. Ames Research Center. https://doi.org/10.83263/wjw1-ta27",
+      "verified_license": "CC0-1.0",
+      "rights_evidence": {
+        "url": "https://api.datacite.org/dois/10.83263/wjw1-ta27",
+        "retrieved_at_utc": "2026-11-15T18:27:22.573665+00:00",
+        "file": "data/originals/CRF-datacite.json",
+        "sha256": "fde9c63e268aeaf1a62f6865bbd358d2141747cc79ba1eb81846165818317277",
+        "creators": [
+          {
+            "name": "Principal Investigator: Meck, Janice Fritsch- Yelle",
+            "nameType": "Personal",
+            "givenName": "Janice Fritsch- Yelle",
+            "familyName": "Meck",
+            "affiliation": [],
+            "nameIdentifiers": []
+          },
+          {
+            "name": "Technical Assistant to Principal Investigator: Bridgeford, Jeffrey S.",
+            "nameType": "Personal",
+            "givenName": "Jeffrey S.",
+            "familyName": "Bridgeford",
+            "affiliation": [],
+            "nameIdentifiers": []
+          },
+          {
+            "name": "Principal Investigator: Paloski, William H.",
+            "nameType": "Personal",
+            "givenName": "William H.",
+            "familyName": "Paloski",
+            "affiliation": [],
+            "nameIdentifiers": []
+          },
+          {
+            "name": "Principal Investigator: Cromwell, Ronita L.",
+            "nameType": "Personal",
+            "givenName": "Ronita L.",
+            "familyName": "Cromwell",
+            "affiliation": [],
+            "nameIdentifiers": []
+          }
+        ],
+        "title": "Case Report Form",
+        "publication_year": 2026,
+        "publisher": "Ames Research Center",
+        "rights": [
+          {
+            "lang": "en-US",
+            "rights": "Creative Commons Zero v1.0 Universal",
+            "rightsUri": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+            "schemeUri": "https://spdx.org/licenses/",
+            "rightsIdentifier": "cc0-1.0",
+            "rightsIdentifierScheme": "SPDX"
+          }
+        ],
+        "citation": "Meck, Janice Fritsch- Yelle; Bridgeford, Jeffrey S.; Paloski, William H.; Cromwell, Ronita L. (2026). Case Report Form [Dataset]. Ames Research Center. https://doi.org/10.83263/wjw1-ta27"
+      }
+    },
+    {
+      "id": "MR079G",
+      "origin": "ground_analog",
+      "doi": "10.83263/bk5h-r757",
+      "artifact": {
+        "file": "data/originals/MR079G-muscle-function.csv",
+        "url": "https://nlsp.nasa.gov/api/v1/files/98123d56-dc42-52bb-85ff-42cf4b336024/download",
+        "final_url": "https://nlsp.nasa.gov/api/v1/files/98123d56-dc42-52bb-85ff-42cf4b336024/download",
+        "retrieved_at": "2026-11-15T17:42:06.281481+00:00",
+        "bytes": 1323,
+        "sha256": "5d5edf0d9fdf49d67cf2ada21dc0978afb1f6adfc4f56926b6fdd136a3bfb638",
+        "content_type": "text/csv; charset=utf-8",
+        "publisher_checksum_verified": true,
+        "data_rows": 12,
+        "headers": [
+          "ID",
+          "Campaign",
+          "Subject",
+          "Date",
+          "Test_Phase",
+          "BR_Day",
+          "Test",
+          "Position",
+          "Value",
+          "Units",
+          "Acceptable Range Lower Bound",
+          "Acceptable Range Upper Bound"
+        ],
+        "missing_per_column": {
+          "ID": 0,
+          "Campaign": 0,
+          "Subject": 0,
+          "Date": 0,
+          "Test_Phase": 0,
+          "BR_Day": 0,
+          "Test": 0,
+          "Position": 0,
+          "Value": 0,
+          "Units": 0,
+          "Acceptable Range Lower Bound": 0,
+          "Acceptable Range Upper Bound": 0
+        },
+        "units": [
+          "ft-lb"
+        ],
+        "timezone_status": "No explicit offset/UTC unit policy verified",
+        "publisher_checksum": {
+          "algorithm": "MD5",
+          "value": "bbb1110fba2c2cc3a5aa34a17a9aa131",
+          "source_url": "https://nlsp.nasa.gov/api/v1/data/lsdapub_ls_dataset_file/98123d56-dc42-52bb-85ff-42cf4b336024/full",
+          "json_pointer": "/record/__file_md5sum",
+          "metadata_file": "data/originals/MR079G-file-metadata.json",
+          "metadata_sha256": "fd8da62303698389934bbfcbf9cac4c62787a462173fba6cf94d4ba607296366",
+          "scope": "Publisher MD5 comparison; local SHA-256 retained as custody hash, not a signature"
+        }
+      },
+      "metadata": {
+        "file": "data/originals/MR079G-metadata.json",
+        "url": "https://nlsp.nasa.gov/api/v1/data/lsda_experiment/f97392b8-b9dd-5bae-af9e-dd76a33bf049/full",
+        "final_url": "https://nlsp.nasa.gov/api/v1/data/lsda_experiment/f97392b8-b9dd-5bae-af9e-dd76a33bf049/full",
+        "retrieved_at": "2026-11-15T17:42:06.433254+00:00",
+        "bytes": 585925,
+        "sha256": "fbee19e56c29828e2805fdfa6ff3dd6c462822796a19da6c48d4b28d9ceb3419",
+        "content_type": "application/json; charset=utf-8",
+        "publisher_checksum_verified": null
+      },
+      "unit_status": "ft-lb explicitly present in every sampled Units cell; do not reinterpret source range columns as universal medical thresholds",
+      "verified_citation": "Moore, Alan D., Jr.; Lee, Stuart M. C.; Ciaozzo, Vince J.; Baldwin, Kenneth M.; Ploutz- Snyder, Lori (2026). Isokinetic Muscle Function (Flight Analog) [Dataset]. Ames Research Center. https://doi.org/10.83263/bk5h-r757",
+      "verified_license": "CC0-1.0",
+      "rights_evidence": {
+        "url": "https://api.datacite.org/dois/10.83263/bk5h-r757",
+        "retrieved_at_utc": "2026-11-15T18:27:22.573665+00:00",
+        "file": "data/originals/MR079G-datacite.json",
+        "sha256": "c4f680ae90d612b3afd5358cc9b6e9bdf441e550ce72415c14cd8584bbf9c850",
+        "creators": [
+          {
+            "name": "Principal Investigator: Moore, Alan D., Jr.",
+            "nameType": "Personal",
+            "givenName": "Alan D., Jr.",
+            "familyName": "Moore",
+            "affiliation": [],
+            "nameIdentifiers": []
+          },
+          {
+            "name": "Technical Assistant to Principal Investigator: Lee, Stuart M. C.",
+            "nameType": "Personal",
+            "givenName": "Stuart M. C.",
+            "familyName": "Lee",
+            "affiliation": [],
+            "nameIdentifiers": []
+          },
+          {
+            "name": "Technical Assistant to Principal Investigator: Ciaozzo, Vince J.",
+            "nameType": "Personal",
+            "givenName": "Vince J.",
+            "familyName": "Ciaozzo",
+            "affiliation": [],
+            "nameIdentifiers": []
+          },
+          {
+            "name": "Co-Investigator: Baldwin, Kenneth M.",
+            "nameType": "Personal",
+            "givenName": "Kenneth M.",
+            "familyName": "Baldwin",
+            "affiliation": [],
+            "nameIdentifiers": []
+          },
+          {
+            "name": "Principal Investigator: Ploutz- Snyder, Lori",
+            "nameType": "Personal",
+            "givenName": "Lori",
+            "familyName": "Ploutz- Snyder",
+            "affiliation": [],
+            "nameIdentifiers": []
+          }
+        ],
+        "title": "Isokinetic Muscle Function (Flight Analog)",
+        "publication_year": 2026,
+        "publisher": "Ames Research Center",
+        "rights": [
+          {
+            "lang": "en-US",
+            "rights": "Creative Commons Zero v1.0 Universal",
+            "rightsUri": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+            "schemeUri": "https://spdx.org/licenses/",
+            "rightsIdentifier": "cc0-1.0",
+            "rightsIdentifierScheme": "SPDX"
+          }
+        ],
+        "citation": "Moore, Alan D., Jr.; Lee, Stuart M. C.; Ciaozzo, Vince J.; Baldwin, Kenneth M.; Ploutz- Snyder, Lori (2026). Isokinetic Muscle Function (Flight Analog) [Dataset]. Ames Research Center. https://doi.org/10.83263/bk5h-r757"
+      }
+    },
+    {
+      "dataset": "BUT_CGM",
+      "origin": "terrestrial",
+      "version": "1.0.0",
+      "artifacts": [
+        {
+          "file": "data/originals/but-cgm-1.0.0/101001_CGM.csv",
+          "url": "https://physionet.org/files/but-cgm/1.0.0/101001/101001_CGM.csv",
+          "final_url": "https://physionet.org/files/but-cgm/1.0.0/101001/101001_CGM.csv",
+          "retrieved_at": "2026-11-15T17:38:24.312081+00:00",
+          "bytes": 75423,
+          "sha256": "d05f745b5b201e4d666617cee1157221acec9418b903a1f632281e7ca8a56dee",
+          "content_type": "text/plain; charset=utf-8",
+          "publisher_checksum_verified": true
+        },
+        {
+          "file": "data/originals/but-cgm-1.0.0/README.txt",
+          "url": "https://physionet.org/files/but-cgm/1.0.0/README.txt",
+          "final_url": "https://physionet.org/files/but-cgm/1.0.0/README.txt",
+          "retrieved_at": "2026-11-15T17:38:24.607868+00:00",
+          "bytes": 19415,
+          "sha256": "e09f1c63e9edf0e7c185b106eae7e56de115955d43ebefed0cb5ff331a3fc028",
+          "content_type": "text/plain; charset=utf-8",
+          "publisher_checksum_verified": true
+        },
+        {
+          "file": "data/originals/but-cgm-1.0.0/LICENSE.txt",
+          "url": "https://physionet.org/files/but-cgm/1.0.0/LICENSE.txt",
+          "final_url": "https://physionet.org/files/but-cgm/1.0.0/LICENSE.txt",
+          "retrieved_at": "2026-11-15T17:38:24.772792+00:00",
+          "bytes": 14842,
+          "sha256": "9a78e7f22742dde9f66ae235ec793ba2212019dc4d0ced75c4da09ced0b35fb2",
+          "content_type": "text/plain; charset=utf-8",
+          "publisher_checksum_verified": true
+        },
+        {
+          "file": "data/originals/but-cgm-1.0.0/SHA256SUMS.txt",
+          "url": "https://physionet.org/files/but-cgm/1.0.0/SHA256SUMS.txt",
+          "final_url": "https://physionet.org/files/but-cgm/1.0.0/SHA256SUMS.txt",
+          "retrieved_at": "2026-11-15T17:38:25.357964+00:00",
+          "bytes": 240780,
+          "sha256": "e340391f80a2aa336e4d3b242eae14a997aed7b914ff35e104b16283a79a86c1",
+          "content_type": "text/plain; charset=utf-8",
+          "publisher_checksum_verified": null
+        }
+      ],
+      "publisher_checksum_verified": true,
+      "column_counts": [
+        2
+      ],
+      "delimiter": ";",
+      "headers": [
+        "Timestamp",
+        "Glycemia"
+      ],
+      "data_rows": 3016,
+      "missing_per_column": {
+        "Timestamp": 0,
+        "Glycemia": 0
+      },
+      "encoding": "UTF-8 with BOM",
+      "timestamp_format": "%Y-%m-%d %H:%M:%S",
+      "timestamp_offset_present": false,
+      "decimal_point_rows": 3016,
+      "decimal_comma_rows": 0,
+      "unit_status": "mmol/L supported by the authors companion viewer explicitly linked from the official PhysioNet study card; not inferred from numeric values. The CSV/README alone omit the unit.",
+      "time_policy": "Dates shifted per participant to2100–2199 according to official README; do not infer cross-subject alignment or UTC offset",
+      "unit": "mmol/L",
+      "unit_evidence": {
+        "level": "SOURCE (static author companion code, not runtime/clinical validation)",
+        "official_linking_page": "https://physionet.org/content/but-cgm/1.0.0/",
+        "repository_commit": "d5867dc9022715223ddbf11244b98db64109bcf0",
+        "sources": [
+          {
+            "url": "https://raw.githubusercontent.com/BioSig-BUT/BUT-CGM-supplement/d5867dc9022715223ddbf11244b98db64109bcf0/app/services/cgm_service.py",
+            "sha256": "d8b7d748a35b88c9c96fc2cb7be89c7dd825f4b66e99a69a21f764fbc3c10ec2",
+            "observation": "Reads Timestamp/Glycemia; numeric parsing and rename preserve glucose magnitude without unit conversion. It also interpolates/aggregates; those behaviors are not adopted."
+          },
+          {
+            "url": "https://raw.githubusercontent.com/BioSig-BUT/BUT-CGM-supplement/d5867dc9022715223ddbf11244b98db64109bcf0/app/controllers/data_window_controller.py",
+            "sha256": "55334bf93a1cfe8f7ae70be76f2b7a11e86d900f464708b00bbe98e696b97e47",
+            "lines": [
+              906,
+              928,
+              1156,
+              1201
+            ],
+            "observation": "Labels the same CGM glykemie series Glucose level [mmol/l]."
+          }
+        ]
+      }
+    }
+  ],
+  "storage": "data/originals/ (Git ignored; originals unchanged)",
+  "versioned_content": "Only provenance, headers, counts, missingness and checksums; no subject-level rows or clinical comments",
+  "remaining_requirements": [
+    "Authoritative CRF per-variable unit dictionary tied to Campaign3 DailyVitals sample",
+    "Explicit original timezone/date semantics before generating UTC Record.time; no location-derived offset or artificial date adjustment"
+  ],
+  "configuration_changes": false,
+  "publication": false,
+  "followup_verified_at_utc": "2026-11-15T17:54:11.460347+00:00",
+  "time_policy": {
+    "status": "preserve_source_time_without_conversion",
+    "confirmed": "No authoritative UTC offset or source timezone was established in reviewed CSV/experiment/dataset/file metadata. BUTCGM calendar dates are participant-shifted per README.",
+    "rules": [
+      "Preserve original Date/Vitals Time/Timestamp strings and Test_Phase/BR_Day unchanged in source evidence",
+      "Do not append Z, select a timezone from collection location, infer historical DST from shifted dates, or align different participants/missions",
+      "Do not create a contract Record with invented UTC time. Keep pre-import source records separate until authoritative mapping is supplied",
+      "Exclude CRF Comment and Bowel Movement Description from public/imported fixtures"
+    ],
+    "scope": "Data preparation policy only; no importer or app code implemented"
+  },
+  "rights_followup_verified_at_utc": "2026-11-15T18:27:22.573665+00:00"
+}

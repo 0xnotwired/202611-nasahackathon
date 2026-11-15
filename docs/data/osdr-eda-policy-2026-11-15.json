@@ -1,0 +1,283 @@
+{
+  "reviewed_at_utc": "2026-11-15T19:21:18.961760+00:00",
+  "scope": "Public OSD51/56 version2 records, NASA AWS distribution guide, pinned AWS registry and EDA policy applicability. No real-data import or blanket submission certification.",
+  "study_records": [
+    {
+      "accession": "OSD-51",
+      "version": 2,
+      "public": true,
+      "restricted": false,
+      "licenseName": "",
+      "licenseLink": "",
+      "licenseIdentifier": "",
+      "doi": "10.26030/3w73-jn41",
+      "sourceAccession": "E-GEOD-14798"
+    },
+    {
+      "accession": "OSD-56",
+      "version": 2,
+      "public": true,
+      "restricted": false,
+      "licenseName": "",
+      "licenseLink": "",
+      "licenseIdentifier": "",
+      "doi": "10.26030/nc96-xp67",
+      "sourceAccession": "E-GEOD-57408"
+    }
+  ],
+  "registry_evidence": {
+    "source_url": "https://raw.githubusercontent.com/awslabs/open-data-registry/69cf82c80db1f4b7b16a5843436f58ae0181397f/datasets/nasa-osdr.yaml",
+    "commit": "69cf82c80db1f4b7b16a5843436f58ae0181397f",
+    "managed_by": "NASA",
+    "license_statement_verbatim": "There are no restrictions on the use of this data.",
+    "resource": "arn:aws:s3:::nasa-osdr",
+    "scope": "Declared AWS OSDR biological research data distribution; not an explicit declaration about all upstream publications or EDA API assets."
+  },
+  "nasa_corroboration": {
+    "source_url": "https://www.nasa.gov/wp-json/wp/v2/reference/692224",
+    "finding": "NASA guide explains OSDR data availability through Registry of Open Data and nasa-osdr bucket, including anonymous listing/copying."
+  },
+  "source_inspection_caution": {
+    "source_file": "data/originals/osdr-policy/OSDR-app-source.js",
+    "finding": "Croissant export builder has a CC BY1.0 fallback for empty license fields. Static code fact, not verified study license. No generated export executed or product implementation copied."
+  },
+  "conclusions": [
+    {
+      "id": "OSD-51",
+      "finding": "Affirmative unrestricted-use declaration found at repository AWS-distribution scope; public nonrestricted study confirmed. Empty per-study license fields do not assign CC0/CCBY.",
+      "remaining": "Confirm exact selected download distribution/file-specific notices under stated policy before bundling."
+    },
+    {
+      "id": "OSD-56",
+      "finding": "Same bounded repository/study evidence as OSD-51; no special-permission requirement established.",
+      "remaining": "Confirm exact selected download distribution/file-specific notices under stated policy before bundling."
+    },
+    {
+      "id": "EDA-RR1",
+      "finding": "Public acquisition verified previously; no explicit EDA applicability in pinned AWS registry statement.",
+      "remaining": "Read linked official OSDR terms/direct EDA policy scope; do not extrapolate to API or all third-party assets."
+    }
+  ],
+  "access_status": {
+    "published_hosts_unchanged": true,
+    "previous_additive_draft_not_reapplied": true,
+    "redirect_domains_still_missing": [
+      "science.nasa.gov",
+      "genelab-shared-repo-prod.s3.amazonaws.com"
+    ]
+  },
+  "artifacts": [
+    {
+      "name": "aws-nasa-osdr.yaml",
+      "url": "https://raw.githubusercontent.com/awslabs/open-data-registry/main/datasets/nasa-osdr.yaml",
+      "final_url": "https://raw.githubusercontent.com/awslabs/open-data-registry/main/datasets/nasa-osdr.yaml",
+      "retrieved_at_utc": "2026-11-15T19:16:54.072209+00:00",
+      "bytes": 2930,
+      "sha256": "84af67a04c0800603bde0e10a205ff30d2dcacda3a86ecec7a470a33cc7f4bfb",
+      "content_type": "text/plain; charset=utf-8",
+      "file": "data/originals/osdr-policy/aws-nasa-osdr.yaml",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "aws-nasa-genelab.yaml",
+      "url": "https://raw.githubusercontent.com/awslabs/open-data-registry/main/datasets/nasa-genelab.yaml",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "name": "aws-osdr.yaml",
+      "url": "https://raw.githubusercontent.com/awslabs/open-data-registry/main/datasets/osdr.yaml",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "name": "NASA-policy-api.json",
+      "url": "https://www.nasa.gov/wp-json/wp/v2/search?search=OSDR%20terms&per_page=10",
+      "final_url": "https://www.nasa.gov/wp-json/wp/v2/search?search=OSDR%20terms&per_page=10",
+      "retrieved_at_utc": "2026-11-15T19:16:54.500528+00:00",
+      "bytes": 4147,
+      "sha256": "0e73aa570cd6302734e13cf8694747bf09e6f290c95bcddc9d02774386362147",
+      "content_type": "application/json; charset=UTF-8",
+      "file": "data/originals/osdr-policy/NASA-policy-api.json",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "NASA-osdr-faq.html",
+      "url": "https://www.nasa.gov/reference/osdr-faq-frequently-asked-questions/",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "name": "OSDR-root.html",
+      "url": "https://osdr.nasa.gov/",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "name": "OSDR-study-51.html",
+      "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-51",
+      "final_url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-51",
+      "retrieved_at_utc": "2026-11-15T19:16:54.688703+00:00",
+      "bytes": 983,
+      "sha256": "244aed6a76f6a691b1bcd3b8a2220cf906470f525ddb865a141d9b3340865996",
+      "content_type": "text/html; charset=utf-8",
+      "file": "data/originals/osdr-policy/OSDR-study-51.html",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "OSDR-study-56.html",
+      "url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-56",
+      "final_url": "https://osdr.nasa.gov/bio/repo/data/studies/OSD-56",
+      "retrieved_at_utc": "2026-11-15T19:16:54.924463+00:00",
+      "bytes": 983,
+      "sha256": "4122c7e20aff1dba29fccfcc37844f20082a3c5b3c978a39587cfbf961212c3e",
+      "content_type": "text/html; charset=utf-8",
+      "file": "data/originals/osdr-policy/OSDR-study-56.html",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "NASA-terms-by-slug.json",
+      "url": "https://www.nasa.gov/wp-json/wp/v2/reference?slug=osdr-help-terms-and-conditions",
+      "final_url": "https://www.nasa.gov/wp-json/wp/v2/reference?slug=osdr-help-terms-and-conditions",
+      "retrieved_at_utc": "2026-11-15T19:17:28.834994+00:00",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "content_type": "application/json; charset=UTF-8",
+      "file": "data/originals/osdr-policy/NASA-terms-by-slug.json",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "NASA-faq-by-slug.json",
+      "url": "https://www.nasa.gov/wp-json/wp/v2/reference?slug=osdr-faq-frequently-asked-questions",
+      "final_url": "https://www.nasa.gov/wp-json/wp/v2/reference?slug=osdr-faq-frequently-asked-questions",
+      "retrieved_at_utc": "2026-11-15T19:17:28.922861+00:00",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "content_type": "application/json; charset=UTF-8",
+      "file": "data/originals/osdr-policy/NASA-faq-by-slug.json",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "NASA-terms-search.json",
+      "url": "https://www.nasa.gov/wp-json/wp/v2/search?search=OSDR-Help-Terms&per_page=20",
+      "final_url": "https://www.nasa.gov/wp-json/wp/v2/search?search=OSDR-Help-Terms&per_page=20",
+      "retrieved_at_utc": "2026-11-15T19:17:28.865582+00:00",
+      "bytes": 1847,
+      "sha256": "0083afaead7fdc3a285259865d2abd64a376a7051925a4c7a65bae2593186d5a",
+      "content_type": "application/json; charset=UTF-8",
+      "file": "data/originals/osdr-policy/NASA-terms-search.json",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "NASA-submission-guidelines.json",
+      "url": "https://www.nasa.gov/wp-json/wp/v2/reference/691721",
+      "final_url": "https://www.nasa.gov/wp-json/wp/v2/reference/691721",
+      "retrieved_at_utc": "2026-11-15T19:17:28.865292+00:00",
+      "bytes": 30583,
+      "sha256": "0e92e1e2057a4e745fa75e8d0615bdf29c4e76dba66118218fca705673a72de0",
+      "content_type": "application/json; charset=UTF-8",
+      "file": "data/originals/osdr-policy/NASA-submission-guidelines.json",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "NASA-controlled-access.json",
+      "url": "https://www.nasa.gov/wp-json/wp/v2/reference/691921",
+      "final_url": "https://www.nasa.gov/wp-json/wp/v2/reference/691921",
+      "retrieved_at_utc": "2026-11-15T19:17:29.407573+00:00",
+      "bytes": 33595,
+      "sha256": "f1349345f9bbf1f23729104afa8d63be8643d9b07a34ce345ef681a7aa0481a6",
+      "content_type": "application/json; charset=UTF-8",
+      "file": "data/originals/osdr-policy/NASA-controlled-access.json",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "NASA-eda-by-slug.json",
+      "url": "https://www.nasa.gov/wp-json/wp/v2/reference?slug=osdr-environmental-data",
+      "final_url": "https://www.nasa.gov/wp-json/wp/v2/reference?slug=osdr-environmental-data",
+      "retrieved_at_utc": "2026-11-15T19:17:29.422637+00:00",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "content_type": "application/json; charset=UTF-8",
+      "file": "data/originals/osdr-policy/NASA-eda-by-slug.json",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "OSDR-legacy-terms.html",
+      "url": "https://osdr.nasa.gov/bio/help/terms.html",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "name": "OSDR-legacy-faq.html",
+      "url": "https://osdr.nasa.gov/bio/help/faq.html",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "name": "OSDR-legacy-conditions.html",
+      "url": "https://osdr.nasa.gov/bio/help/terms-and-conditions.html",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "name": "NASA-reference-index.json",
+      "url": "https://www.nasa.gov/wp-json/wp/v2/reference?search=OSDR&per_page=100&_fields=id,slug,title,_links",
+      "final_url": "https://www.nasa.gov/wp-json/wp/v2/reference?search=OSDR&per_page=100&_fields=id,slug,title,_links",
+      "retrieved_at_utc": "2026-11-15T19:18:21.441056+00:00",
+      "bytes": 16375,
+      "sha256": "eaea994ad1aa1d53d7f81aa45fbaa7b2bd92d388fd4dd5dd3d2a84487522424c",
+      "content_type": "application/json; charset=UTF-8",
+      "file": "data/originals/osdr-policy/NASA-reference-index.json",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "OSDR-app-source.js",
+      "url": "https://osdr.nasa.gov/bio/repo/main.fe3455890d93df6f.js",
+      "final_url": "https://osdr.nasa.gov/bio/repo/main.fe3455890d93df6f.js",
+      "retrieved_at_utc": "2026-11-15T19:18:22.163238+00:00",
+      "bytes": 1748707,
+      "sha256": "7f643bfb7f291a27b68e029477a9a7ebeb97ed75733a29a6adab1766342f4d44",
+      "content_type": "application/javascript",
+      "file": "data/originals/osdr-policy/OSDR-app-source.js",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "OSD-51-repo.json",
+      "url": "https://osdr.nasa.gov/geode-py/ws/repo/studies/OSD-51",
+      "final_url": "https://osdr.nasa.gov/geode-py/ws/repo/studies/OSD-51",
+      "retrieved_at_utc": "2026-11-15T19:19:03.005546+00:00",
+      "bytes": 58693,
+      "sha256": "3ccbe11be55ef397192f00358004fa212d674a4835af57f63ec11d04a0e74f1d",
+      "content_type": "application/json",
+      "file": "data/originals/osdr-policy/OSD-51-repo.json",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "OSD-56-repo.json",
+      "url": "https://osdr.nasa.gov/geode-py/ws/repo/studies/OSD-56",
+      "final_url": "https://osdr.nasa.gov/geode-py/ws/repo/studies/OSD-56",
+      "retrieved_at_utc": "2026-11-15T19:19:03.346547+00:00",
+      "bytes": 36939,
+      "sha256": "6c510b1a6418e4d442329e3ceb36c8d57c2a74b39ec2ac2ed92ada8240f2533b",
+      "content_type": "application/json",
+      "file": "data/originals/osdr-policy/OSD-56-repo.json",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "aws-nasa-osdr-pinned.yaml",
+      "url": "https://raw.githubusercontent.com/awslabs/open-data-registry/69cf82c80db1f4b7b16a5843436f58ae0181397f/datasets/nasa-osdr.yaml",
+      "final_url": "https://raw.githubusercontent.com/awslabs/open-data-registry/69cf82c80db1f4b7b16a5843436f58ae0181397f/datasets/nasa-osdr.yaml",
+      "retrieved_at_utc": "2026-11-15T19:19:03.023132+00:00",
+      "bytes": 2930,
+      "sha256": "84af67a04c0800603bde0e10a205ff30d2dcacda3a86ecec7a470a33cc7f4bfb",
+      "content_type": "text/plain; charset=utf-8",
+      "file": "data/originals/osdr-policy/aws-nasa-osdr-pinned.yaml",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "NASA-aws-guide.json",
+      "url": "https://www.nasa.gov/wp-json/wp/v2/reference/692224",
+      "final_url": "https://www.nasa.gov/wp-json/wp/v2/reference/692224",
+      "retrieved_at_utc": "2026-11-15T19:19:03.426536+00:00",
+      "bytes": 30588,
+      "sha256": "f8934c4c0cfc7ece7d5317e6323920de36cabaf977134d876c45392ae76e14e0",
+      "content_type": "application/json; charset=UTF-8",
+      "file": "data/originals/osdr-policy/NASA-aws-guide.json",
+      "local_sha256_reverified": true
+    }
+  ],
+  "report": "../OSDR_EDA_USE_RESEARCH.md"
+}

@@ -12,8 +12,60 @@ When two files contradict each other, the first one in this list wins:
 4. docs/ORCHESTRATION_PLAN.md for who builds what and when; docs/IMPLEMENTATION_LAYERS.md for what each layer must prove; docs/METHOD.md for how a claim is tested and recorded.
 5. The module's work order, in docs/work-orders/.
 6. CLAUDE.md, which is the session guide and does not define the product.
+7. Local skill instructions in `.agents/skills/`; they supplement the project rules above.
 
 Before changing functionality, read docs/FINAL_PROPOSAL.md, docs/PROPOSAL_IMPROVEMENTS.md, docs/REQUIREMENTS.md, docs/PRODUCT.md, docs/ROADMAP.md, docs/APPLIED_RESEARCH.md, docs/ACADEMIC_BASE.md docs/DATASETS.md and docs/DATASET_CITATIONS.md. An agent building a module also reads docs/CONTRACTS.md, docs/METHOD.md and its own work order; it does not need to read other modules' work orders.
+
+## Local skills — required task workflow
+
+By the user's explicit request of November 15, 2026, the complete tracked
+contents of `annatchijova/SKILLS` are copied verbatim under `.agents/skills/`.
+The pinned source commit, all 199 SKILL.md paths and per-file SHA-256 values
+are recorded in [.agents/SKILLS_SOURCE.json](.agents/SKILLS_SOURCE.json).
+This replaces reliance on an ephemeral clone that future tasks cannot find.
+
+At the start of each task, consult the [local skill index](.agents/skills/README.md),
+select the skills whose actual scope applies, and read their SKILL.md before
+acting. Apply relevant skills without waiting for a `$skill` tag; when a user
+names one, read it explicitly. Resolve referenced files relative to that skill.
+Use `.agents/skills/<name>/SKILL.md` for the primary methodology; the separate
+[red-team collection](.agents/skills/red-team/README.md) is available for tasks
+that call for its assessment methods. Do not infer that every skill applies
+to every task, or silently run a bundled helper just because it exists.
+
+Typical routing for this repository:
+
+| Work | Skills to read and apply |
+|---|---|
+| Planning and evidence | destination-driven-construction, decision-record-discipline, claim-provenance-discipline |
+| Domain code and input boundaries | secure-by-construction, validate-at-the-boundary, honest-degradation |
+| Persistence and synthetic fixtures | atomic-state-mutation, versioned-schema-evolution, deterministic-core |
+| Tests and investigation | falsifiable-testing, discriminating-proof, abductive-engineering, diagnosing-bugs |
+| Interface work | frontend-accessibility-by-construction, frontend-component-boundaries, resilient-ui-states |
+| Agent instructions and delivery writing | writing-agents-md, readme-architecture, honest-technical-oratory |
+| Changes and Git | surgical-patcher, git-discipline |
+
+The authority order above still decides conflicts. In particular,
+`working-on-main` and `terminal-first` remain the author's optional personal
+preferences and are not activated here: this project requires working branches.
+A skill does not grant additional authorization to publish, message others,
+commit, push or merge; use the actual task authorization and project rules.
+
+This is a user-authorized copy of development methodology and its companion
+reference files, not an exception allowing third-party product implementations.
+Keep it outside app/, preserve original notices/languages, and do not import
+its helper code into product modules. The upstream Apache-2.0 license and
+bundled MIT attribution are retained in their original paths and listed in
+[RESOURCES_USED.md](docs/RESOURCES_USED.md). Keep this snapshot unchanged;
+update it deliberately from a pinned upstream commit with a fresh manifest.
+`.agents/.gitattributes` preserves upstream whitespace verbatim; authored
+project files still undergo the usual diff checks.
+
+Mechanism: the manifest makes copy integrity checkable and the documentation
+checker checks these links. Whether an agent actually reads and applies the
+selected skills is reviewed in its handoff and experiment record; no runtime
+mechanism can prove instruction compliance. Report the skills used and the
+checks actually run instead of claiming automatic activation by the platform.
 
 ## Own implementation is mandatory
 
@@ -29,13 +81,45 @@ In practice, for now: `package.json` declares no dependencies, and no `import` p
 
 ## Product and verified status
 
-Health, physical adaptation and habitat are part of the core scope; the copilot connects information with On board and the plan. Do not present them as optional extensions or reopen that choice.
+Start with [docs/CURRENT_STATUS.md](docs/CURRENT_STATUS.md) for the current
+module/data handoff, then verify actual checkout state. Current work is on
+user-selected `f2`; do not switch/reset/merge to main or english automatically.
+AGENTS remains the instruction authority and CONTRACTS the interface authority.
 
-demo/orbita.html mainly shows the check-in, with fictional data and local demo storage. There is no NASA integration, sensors, sync, generative AI or clinical validation. Do not attribute those capabilities to the HTML. Offline operation with later sync is an architectural recommendation, not a finished implementation.
+M00/M01–M05 and user-advanced M21 are implemented and independently reviewed.
+G0/G1 are accepted; F1 closed. M21's advance is not closure of later gates.
+Next work is F2 M06/M07, then M08–M12 under their work orders. Contract0.8,
+record schema2 with legacy1 reading. Latest Node suite100/100, plus actual
+Chromium persistence checks; these results are not clinical validation.
 
-As of November 15, 2026 there is no product code: `app/` has not been created. The build plan, the contracts, the work orders and their experiments exist. Of the technical decisions, D9 was chosen by the user and D1–D4 and D6 match the stack the user listed on November 15, 2026; D5, D7 and D8 were confirmed by the user on November 15, 2026 by accepting the orchestrator's recommendation with its reasons. On the same day the user closed the gaps against the challenge text with decisions D10–D14 (data-state color, attention criteria only as mission configuration, environment presets, blood sugar and mood, plan progress instead of gamification), recorded in docs/IMPLEMENTATION_LAYERS.md and in contracts version 0.4. Gate G0 is still open: its experiments and the threat model are not done. Where to pick up, step by step, is in CLAUDE.md ("Where to pick up"). Each module's status is in docs/modules.csv; do not describe a module as done unless it is marked `integrated` there.
+Source-data handling invariants for the next agent:
 
-No MVP, quick version or throwaway prototype is proposed. The product is built in complete levels; if time runs out, the highest level that passed its gate is delivered and named as such.
+- Read [restoration instructions](docs/LOCAL_DATA_RESTORE.md). Raw originals
+  and local browser state are ignored and absent from a fresh Git clone.
+  `scripts/import-real-samples.py` verifies source SHA before DB access,
+  writes only its dedicated local profile and checks exact restart readback.
+  A fresh machine must rerun this before claiming3861 imported records exist.
+- Import APIs are pure; five selected CSV profiles work, not every prepared
+  source. Preserve declared source clocks/units, dataset identities and
+  numeric absence. Never turn unknown units into catalog defaults or UTC.
+  Tests in app/importers/ and tests/contract/importers.js cover these boundaries.
+- All180 genetic raw files were inspected locally and mapped to ISA, but
+  omics/aggregate/relative-axis product adapters remain unsupported. Context
+  and inspection evidence do not authorize forcing those into patient Records.
+- CRF/BMD units and immune denominator/export binding remain unconfirmed
+  after primary-paper research. The importers preserve uncertainty, not a
+  clinical interpretation. See docs/SOURCE_PAPER_UNITS.md.
+- PhysioNet is provisionally enabled by the user's explicit decision, with
+  licenses/citations and withdrawal if declined. Never claim an official
+  organizer acceptance. Original app code stays independent of source apps.
+- A minimal HTTP shell and separate mockups are not product views, actual
+  sync, clinical rules, encryption or deployment. M23 final packaging/media
+  inspection remains pending; .gitignore alone does not certify a package.
+
+Historical experiments/manifests keep their original outcomes. Read their
+follow-ups and CURRENT_STATUS before carrying an old blocked/pending claim
+into a new report. Human gate acceptance and per-task Git/publication
+permissions remain distinct from test success.
 
 ## Building by modules and agents
 
@@ -140,15 +224,23 @@ Language: **everything in this repository is written in English from November 15
 
 Do not invent build, test or benchmark commands or clinical results. The mockup has no build; open it in a browser. Document the checks actually run. Previous results and their limits are in docs/DEMO_README.md. Document and interface review is not medical validation.
 
-Commands that exist today:
+Commands verified for F1:
 
 ```bash
+node --test
 python3 scripts/check_docs.py
+python3 tests/walkthrough/g1-browser.py
+python3 tests/walkthrough/g0-browser.py
 ```
+
+The Node suite tests the implemented F1 modules, their contracts, mutation
+oracles, server and gate checks. The browser scripts use preinstalled
+development-only Playwright/Chromium to verify actual HTTP/IndexedDB behavior.
+`npm run serve` starts the minimal shell; M07 product navigation is pending.
 
 It checks that the research matrices match their documents, that every module has its work order and the work order lists experiment ids, that owned paths do not overlap, that dependencies respect phases and waves, that a module in review or integrated has a complete experiment record, and that relative links resolve. It does not check figures, whether sources say what is claimed, whether code respects owned paths, whether a prediction was written before the code, or whether an evidence level is honest.
 
-`node --test` will be the product test command once M00 creates `package.json`. It was verified that it runs an ES module with its test on Node 22 without installing anything; there is no product test yet. Node has no DOM: anything that is drawn is checked with a manual browser script, and the report says "not verified in a browser" when that was not done.
+`node --test` now runs the F1 domain/foundation/gate tests without dependency installation. It does not validate clinical content or the future product views. Node has no DOM: anything that is drawn is checked with a manual browser script, and the report says "not verified in a browser" when that was not done.
 
 Every test is seen failing against broken code before trusting that it passes. A test that never failed proves nothing.
 

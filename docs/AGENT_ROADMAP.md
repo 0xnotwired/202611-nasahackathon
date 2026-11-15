@@ -14,6 +14,22 @@ Date: November 14, 2026. For any AI agent (or person) continuing Órbita. [ROADM
 | | Loaded NASA data; the originals are not in the repo |
 | Orchestration plan, contracts and 25 work orders, as proposals | Chosen and reviewed clinical procedure |
 
+## Current integration status — November15,2026
+
+[CURRENT_STATUS.md](CURRENT_STATUS.md) consolidates the present state and
+links reproducible evidence. M00/M01–M05 and user-advanced M21 are reviewed
+and integrated locally on f2; G0/G1 accepted.100 Node tests pass; real-source
+CSV import/persistence verified3861 records with exact restart readback and
+idempotent repeats. This is an isolated local profile, not a product UI.
+
+Next: F2 M06/M07, then M08–M12. Original files/browser state are excluded from
+Git; [LOCAL_DATA_RESTORE.md](LOCAL_DATA_RESTORE.md) explains reconstruction.
+All180 genomic raw files were acquired and inspected, but no omics adapter
+exists. CRF/BMD units and immune denominator/export binding remain unresolved;
+MR079G date ordering is now corroborated. PhysioNet use is provisional by user
+instruction. Earlier handoff entries below are dated history, not competing
+current-state summaries. They must not be silently rewritten as later facts.
+
 ## Destination
 
 A local application that lets an astronaut complete a **care episode** from start to finish, with health, adaptation and habitat in a single history, and that changes its behavior according to the mission's equipment and communication.
@@ -39,13 +55,15 @@ Each level ends with: an adversarial review against the rules of the earlier lev
 **Phase F1, gate G1.** Modules M01 core, M02 mission, M03 catalogs, M04 store and M05 synthetic scenario. Before that, phase F0 (M00) puts the contracts into code.
 
 **Done when:**
-- [ ] A record without `origin`, `method` or `time` is rejected with a message that names the field.
-- [ ] An identifier `007` is saved and retrieved as `007`.
-- [ ] A missing value does not appear as 0 in any output.
-- [ ] A saved record cannot be edited or deleted; a correction is a new record.
-- [ ] The synthetic scenario is generated identically with the same seed and everything in it says `synthetic`.
-- [ ] Save, close and reopen restores the same thing; if storage fails, the interface says so.
-- [ ] Every test was seen failing against broken code before passing.
+- [x] A record without `origin`, `method` or `time` is rejected with a message that names the field.
+- [x] An identifier `007` is saved and retrieved as `007`.
+- [x] A missing value does not appear as 0 in any output.
+- [x] A saved record cannot be edited or deleted; a correction is a new record.
+- [x] The synthetic scenario is generated identically with the same seed and everything in it says `synthetic`.
+- [x] Save, close and browser reopen restores the same thing; the store API returns explicit errors and a nonpersistent status/reason. Browser-gate notices demonstrate propagation; the product warning UI remains M07 work.
+- [x] Every test was seen failing against broken code before passing.
+
+RUN/BROWSER evidence is in [G1](experiments/G1.md) and the individual module records. These checks establish the data core, not clinical correctness or an implemented product UI. The user accepted G1 on November15; F1 is closed.
 
 ### Level 1 — Understand my situation
 
@@ -140,3 +158,31 @@ Each agent checks the real status with `git status`, `git log` and the tests bef
 | 2026-11-15 | Claude (orchestrator, web session) | Method and layers committed (c1535d2). User decisions of the day recorded: no already-made projects from others except dependencies approved by name (default none); D5, D7 and D8 confirmed by accepting the recommendation; code license Apache-2.0 (`LICENSE`). First delivery list of resources in `RESOURCES_USED.md`, licenses read in the installed copies. Tried to install Firefox and WebKit for Playwright: refused by the network allowlist (403) | Gate G0 experiments and threat model not done; no product code written; Chrome for Testing is not open source (user decided on 15/11 to keep it as a development tool); dataset citation strings not written; the event rules on AI use and the meeting rule on already-made projects are not verified |
 | 2026-11-15 | Claude (orchestrator, web session) | Challenge text supplied by the user compared with the plan; gaps closed by user decisions D10–D14 (data-state color, attention criteria as configuration, environment presets, blood sugar and mood, plan progress instead of gamification). Contracts 0.4; work orders M01, M02, M03, M05, M06, M07, M14, M15, M21 got new criteria and experiments. Dataset citations in `DATASET_CITATIONS.md`; blood sugar and mood research in DATASETS.md | Nothing built or run for these decisions; BUT CGM not downloaded or checked against its page; NLSP citation fields still missing; gate G0 open |
 | 2026-11-15 | Claude (orchestrator, web session) | BUT CGM citation compared with its page by elements (authors, year, title, version, RRID, DOI) and the standard PhysioNet citation added; license CC BY 4.0 confirmed. Handoff updated: AGENTS.md (D10–D14 rules, terrestrial origin, mood and gamification limits), CLAUDE.md ("Where to pick up"), blockers in the plan and here | BUT CGM not downloaded: physionet.org and its AWS bucket refused by the network; its columns and unit unknown. Nothing built |
+| 2026-11-15 | OpenAI Codex (M00 builder and orchestration); independent Codex reviewer | RUN: M00 foundation, JSDoc contracts 0.5, all 25 placeholders, loopback static server, core reference and negative controls. Independent review found and verified fixes for directory, missing-state and missing-export test gaps. RUN: G0-W1/W3 and 37 tests pass. BROWSER: G0-W2 HTTP shell and blocked-import control pass in Chromium 156. User instructed local integration/G0 closure with "hacelo" after results were reported | file:// CORS remains unverified under managed policy. No remote push. No F1 module implemented; no storage, sharing, clinical or product-level validation. Records: M00.md and G0.md in docs/experiments/ |
+| 2026-11-15 | OpenAI Codex orchestrator, M01–M05 builders and independent reviewers | RUN: M01–M05 implemented and independently reviewed; copied predictions precede code in module history. All 83 tests, shared contracts, mutations and documentation checks pass. BROWSER: actual IndexedDB round-trip, restart and profile isolation in Chromium156. Local F1 integration and G1 evidence prepared. User-requested full local skill snapshot: 264 verbatim upstream files, 199 SKILL.md definitions, licenses and SHA-256 manifest | Human G1 acceptance before F2; original dataset downloads blocked by runtime policy (draft domains saved, not applied); M07 product warning UI pending; no remote push or clinical validation |
+| 2026-11-15 | OpenAI Codex | RUN: acquired3 original CSV samples (CRF113rows, MR079G12, BUTCGM3016), official metadata and BUTCGM README/license/checksum list. Parent re-fetched and verified NASA originals in the current published environment; all8files ignored by Git. BUTCSV/README/license match publishedSHA256; metadata-only manifest records URLs/times/hashes/headers | CRF/glucose unit dictionaries, UTC interpretation and complete NASA citation/terms remain unresolved. No importers, configuration changes, publication, commit or push performed for acquisition |
+| 2026-11-15 | OpenAI Codex | SOURCE: linked author companion declares BUT CGM mmol/L; pinned URLs/hashes recorded without copying its code into product. RUN: official NASA file-level MD5s match both CSVs; SHA-256 custody hashes retained. Documented preserve-source-time policy with no fabricated UTC conversion | CRF unit dictionary and original UTC/timezone semantics not established by reviewed metadata; source records stay outside UTC Record imports. No contacts, configuration changes, commits, pushes or publication |
+
+| 2026-11-15 | OpenAI Codex orchestrator, source-uncertainty builder and independent reviewer | RUN: contract0.7/schema2 preserves unknown-zone dates at date/minute/second precision, shifted/unknown calendars and explicit unknown units; legacy1 reads remain exact. 87 Node tests, standalone store/G1 browsers, documentation checks and negative controls pass; see experiments/SOURCE_UNCERTAINTY.md | CRF units still need source-specific dictionary; MR079G slash format requires evidence before canonical import. Model/storage support implemented; no importer/product views, clinical interpretation, commit, push or publication |
+
+| 2026-11-15 | User and OpenAI Codex orchestrator | USER: explicitly accepted and closed G1/F1, authorized branch f2 and commit/push of all current project changes. Gate record and current status updated; original CSVs excluded | F2 M06–M12 pending; source metadata limits retained. No deployment or environment publication authorized. Local git-discipline and decision-record-discipline skills applied |
+
+| 2026-11-15 | OpenAI Codex | RUN/SOURCE: acquired and inspected small samples for six remaining NLSP studies plus ACTES and ITBA; metadata-only manifest records48 artifacts, hashes, available publisher checksums, primary citations/licenses and per-file limits. Eleven studies now have local samples including the earlier3 | OSD-51/56 and EDA blocked by current network policy. Several units, protocol-relative axes, aggregate/graph-only files and shifted-UTC import context need handling before integration. No app changes, dependency installation, commit, push or environment publication |
+
+| 2026-11-15 | OpenAI Codex and independent dataset-terms reviewer | RUN/SOURCE: published host grants verified; acquired OSD51/56 metadata/DOIs and EDA RR-1 API12087 telemetry+39 radiation rows. Reviewed14 sources against user-supplied2026 terms, verified8 NLSP CC0 declarations and3 PhysioNet license checksums, completed requested citations and corrected overbroad eligibility statements | NASA S3 download/science.nasa.gov policy redirects need saved draft activation; OSDR rights still pending, PhysioNet event interpretation conditional. Synthetic delivery scope retained; no real importer, code change, commit, push or publication. claim-provenance-discipline and independent read-only review applied |
+
+| 2026-11-15 | OpenAI Codex and independent policy reviewer | SOURCE/RUN: found pinned NASA-managed AWS OSDR declaration of unrestricted use and corroborating NASA primary guide; verified OSD51/56 version2 public/nonrestricted records with empty license fields. Rejected frontend-generated CC BY1 fallback as a license grant; retained16 hashed research responses | Scope is public covered AWS distribution; selected download/file notices and EDA applicability remain to verify. Existing redirect-domain draft not reapplied; no app changes, contacts, commits, push or publication. claim-provenance-discipline applied |
+
+| 2026-11-15 | OpenAI Codex | RUN/SOURCE: downloaded both OSD51/56 ISA metadata ZIPs and verified CRC; read direct OSDR redistribution/citation terms and linked SMD policy. EDA's linked OSDR policy now available; response hashes retained | Quantitative microarray archives not downloaded; annotation redirect still blocked. Preserve citations/notices and final-package review; no app change, commit, push or environment publication |
+
+| 2026-11-15 | User and OpenAI Codex with technical-source investigator | User authorizes provisional PhysioNet use with notices and removal if declined. Source date formats corroborated; parent verified MR079G controls and corrected second-control subject scope | Physical units still need dictionaries before interpretation. Raw geneticZIPs blocked at newly discoveredhost; additive draft saved, publication required. No app changes, commit or push |
+
+| 2026-11-15 | OpenAI Codex | RUN: closed quantitative archive documentation, reverified3 SHA/size receipts, mapped170/170 and10/10 ISA references, prepared14 source profiles. Actual header checks plus negative controls caught/corrected3 GPR channel variants and optional Agilent annotations. Documentation/link/diff checks pass | No M21/product importer or DB writes; unresolved physical-unit dictionaries remain required before interpretation. Plan distinguishes preserved unknown clocks, relative axes, shifted UTC and aggregate/omics adapters. No commit, push or publication |
+
+| 2026-11-15 | OpenAI Codex | SOURCE/RUN: retrieved19 same-test MR080G companion files; unit-labelled summary and four-row correspondence establish selected gas/ventilation/% units, preserving VE BTPS; plots corroborate L/min and bpm. Preparation profile updated | CRF/BMD/immunity original linked papers need newly requested NTRS/PubMed/PMC host activation; no guessed units, conversions, external messages, app code, commit, push or publication |
+
+| 2026-11-15 | User, OpenAI Codex M21 builder, source-paper investigator and independent reviewer | USER: explicitly advances M21, confirms provisional PhysioNet use pending organizer response. RUN/BROWSER: CSV APIs implemented;100 Node tests pass, real source values checked,3861records persisted/restarted exactly; independent rerun inserts0. Four boundary/identity/profile findings corrected and mutations detected. PrimaryNASA papers read but no new CRF/BMD/immune export units claimed | M21 only, no F2/F5 gate or views. Unknown units preserved; aggregate/relative/omics adapters pending. Local originals/profile ignored; no external messages, commit, push or publication |
+
+| 2026-11-15 | User and OpenAI Codex | USER: explicitly authorizes committing and pushing all current code/tests/dataset documentation to f2. Pre-push Node suite100/100 and documentation/diff checks pass; earlier independent M21/source/browser verification retained | Original datasets, local IndexedDB/browser profiles and trial state excluded by Git. No deployment or environment publication; git-discipline applied |
+
+| 2026-11-15 | User and OpenAI Codex | USER: requests current-state AGENTS/documentation refresh and push to f2. Added consolidated CURRENT_STATUS and LOCAL_DATA_RESTORE; corrected active handoff summaries while preserving historical evidence.100 Node tests, documentation links and diff checks pass; documented restoration recipe verified against five existing local sample hashes | No product behavior change or fresh-machine/browser claim. Originals/local profiles remain ignored. writing-agents-md and git-discipline applied; Git publication authorized, environment publication/deployment not requested |

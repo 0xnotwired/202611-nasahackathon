@@ -1,0 +1,277 @@
+{
+  "reviewed_at_utc": "2026-11-15T18:01:01.354886+00:00",
+  "scope": "Three acquired samples: verified source metadata and implemented schema2 preservation; no importer or product views",
+  "readiness": [
+    {
+      "dataset": "CRF",
+      "citation": "Case Report Form (CRF). NASA Life Sciences Portal / Life Sciences Data Archive. https://doi.org/10.83263/wjw1-ta27. Accessed November 15, 2026.",
+      "citation_evidence": {
+        "url": "https://nlsp.nasa.gov/api/v1/data/lsda_experiment/eeb9bd34-bdd4-5115-b139-adf2c9927962/full",
+        "title_field": "/record/experiment_title",
+        "doi_field": "/record/__doi",
+        "agency_field": "/record/agency",
+        "scope": "Title-led dataset reference with verified provider/identifier/access date; named creators and publication year are not invented or substituted with PI/registration date."
+      },
+      "unit": null,
+      "reuse_conditions": {
+        "status": "verified",
+        "license": "CC0-1.0",
+        "source_url": "https://api.datacite.org/dois/10.83263/wjw1-ta27",
+        "duties": "Preserve scientific/source citations required by this project; do not imply endorsement. CC0 itself does not require copyright attribution."
+      },
+      "import_blockers": [
+        "unit_dictionary_for_interpretation_or_conversion"
+      ],
+      "time_resolution": {
+        "source_status": "timezone_or_UTC_offset_not_established",
+        "action": "Schema2 supports time:null with validated source_time preserving raw text, precision, unknown timezone and source-clock scope. No UTC conversion or invented midnight. Actual import mapping remains M21 work.",
+        "provider_question": "Are dates shifted/anonymized, what timezone/offset or relative-time semantics are authoritative, and how should date-only assessments be represented?",
+        "model_status": "implemented; see docs/experiments/SOURCE_UNCERTAINTY.md",
+        "calendar": "unknown",
+        "scope_policy": "Use dataset/release/cohort/participant-specific namespace; never align subjects or studies by nominal dates."
+      },
+      "sample_url": "https://nlsp.nasa.gov/api/v1/files/8a438e79-85fe-54f9-b7cd-e89958724131/download",
+      "sample_sha256": "6aa6705dd04fed8fa9c27bc7e87a42e0b172253c25787f141c2da8dab54ab1b5",
+      "provider_unit_question": "For the exact Campaign3 DailyVitals CSV, specify units and any scaling for Pulse, SysBP, DiaBP, Resp Rate, Weight, Body Temp and Height; provide dictionary/protocol revision tied to this file.",
+      "verified_citation": "Meck, Janice Fritsch- Yelle; Bridgeford, Jeffrey S.; Paloski, William H.; Cromwell, Ronita L. (2026). Case Report Form [Dataset]. Ames Research Center. https://doi.org/10.83263/wjw1-ta27",
+      "verified_license": "CC0-1.0",
+      "rights_evidence": {
+        "url": "https://api.datacite.org/dois/10.83263/wjw1-ta27",
+        "retrieved_at_utc": "2026-11-15T18:27:22.573665+00:00",
+        "file": "data/originals/CRF-datacite.json",
+        "sha256": "fde9c63e268aeaf1a62f6865bbd358d2141747cc79ba1eb81846165818317277",
+        "creators": [
+          {
+            "name": "Principal Investigator: Meck, Janice Fritsch- Yelle",
+            "nameType": "Personal",
+            "givenName": "Janice Fritsch- Yelle",
+            "familyName": "Meck",
+            "affiliation": [],
+            "nameIdentifiers": []
+          },
+          {
+            "name": "Technical Assistant to Principal Investigator: Bridgeford, Jeffrey S.",
+            "nameType": "Personal",
+            "givenName": "Jeffrey S.",
+            "familyName": "Bridgeford",
+            "affiliation": [],
+            "nameIdentifiers": []
+          },
+          {
+            "name": "Principal Investigator: Paloski, William H.",
+            "nameType": "Personal",
+            "givenName": "William H.",
+            "familyName": "Paloski",
+            "affiliation": [],
+            "nameIdentifiers": []
+          },
+          {
+            "name": "Principal Investigator: Cromwell, Ronita L.",
+            "nameType": "Personal",
+            "givenName": "Ronita L.",
+            "familyName": "Cromwell",
+            "affiliation": [],
+            "nameIdentifiers": []
+          }
+        ],
+        "title": "Case Report Form",
+        "publication_year": 2026,
+        "publisher": "Ames Research Center",
+        "rights": [
+          {
+            "lang": "en-US",
+            "rights": "Creative Commons Zero v1.0 Universal",
+            "rightsUri": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+            "schemeUri": "https://spdx.org/licenses/",
+            "rightsIdentifier": "cc0-1.0",
+            "rightsIdentifierScheme": "SPDX"
+          }
+        ],
+        "citation": "Meck, Janice Fritsch- Yelle; Bridgeford, Jeffrey S.; Paloski, William H.; Cromwell, Ronita L. (2026). Case Report Form [Dataset]. Ames Research Center. https://doi.org/10.83263/wjw1-ta27"
+      },
+      "unit_resolution": {
+        "status": "not_confirmed",
+        "preservation": "Schema2 permits numeric value with unit:null and explicit unit_status:unknown; comparability is false. No conversion or clinical interpretation.",
+        "columns": [
+          "Pulse",
+          "SysBP",
+          "DiaBP",
+          "Resp Rate",
+          "Weight",
+          "Body Temp",
+          "Height"
+        ],
+        "evidence": "CSV headers, official experiment, dataset and file metadata lack a unit mapping tied to this sample; no linked documents in experiment metadata."
+      }
+    },
+    {
+      "dataset": "MR079G",
+      "citation": "Isokinetic Muscle Function (Flight Analog) (MR079G). NASA Life Sciences Portal / Life Sciences Data Archive. https://doi.org/10.83263/bk5h-r757. Accessed November 15, 2026.",
+      "citation_evidence": {
+        "url": "https://nlsp.nasa.gov/api/v1/data/lsda_experiment/f97392b8-b9dd-5bae-af9e-dd76a33bf049/full",
+        "title_field": "/record/experiment_title",
+        "doi_field": "/record/__doi",
+        "agency_field": "/record/agency",
+        "scope": "Title-led dataset reference with verified provider/identifier/access date; named creators and publication year are not invented or substituted with PI/registration date."
+      },
+      "unit": "ft-lb",
+      "reuse_conditions": {
+        "status": "verified",
+        "license": "CC0-1.0",
+        "source_url": "https://api.datacite.org/dois/10.83263/bk5h-r757",
+        "duties": "Preserve scientific/source citations required by this project; do not imply endorsement. CC0 itself does not require copyright attribution."
+      },
+      "import_blockers": [],
+      "time_resolution": {
+        "source_status": "timezone_or_UTC_offset_not_established",
+        "action": "Schema2 supports time:null with validated source_time preserving raw text, precision, unknown timezone and source-clock scope. No UTC conversion or invented midnight. Actual import mapping remains M21 work.",
+        "provider_question": "Are dates shifted/anonymized, what timezone/offset or relative-time semantics are authoritative, and how should date-only assessments be represented?",
+        "model_status": "implemented; see docs/experiments/SOURCE_UNCERTAINTY.md",
+        "calendar": "unknown",
+        "scope_policy": "Use dataset/release/cohort/participant-specific namespace; never align subjects or studies by nominal dates.",
+        "format_limit": "Source-corroborated month/day/year; selected2009-03-12. Same-subject090317 control refutes day/month; timezone remains unknown."
+      },
+      "sample_url": "https://nlsp.nasa.gov/api/v1/files/98123d56-dc42-52bb-85ff-42cf4b336024/download",
+      "sample_sha256": "5d5edf0d9fdf49d67cf2ada21dc0978afb1f6adfc4f56926b6fdd136a3bfb638",
+      "verified_citation": "Moore, Alan D., Jr.; Lee, Stuart M. C.; Ciaozzo, Vince J.; Baldwin, Kenneth M.; Ploutz- Snyder, Lori (2026). Isokinetic Muscle Function (Flight Analog) [Dataset]. Ames Research Center. https://doi.org/10.83263/bk5h-r757",
+      "verified_license": "CC0-1.0",
+      "rights_evidence": {
+        "url": "https://api.datacite.org/dois/10.83263/bk5h-r757",
+        "retrieved_at_utc": "2026-11-15T18:27:22.573665+00:00",
+        "file": "data/originals/MR079G-datacite.json",
+        "sha256": "c4f680ae90d612b3afd5358cc9b6e9bdf441e550ce72415c14cd8584bbf9c850",
+        "creators": [
+          {
+            "name": "Principal Investigator: Moore, Alan D., Jr.",
+            "nameType": "Personal",
+            "givenName": "Alan D., Jr.",
+            "familyName": "Moore",
+            "affiliation": [],
+            "nameIdentifiers": []
+          },
+          {
+            "name": "Technical Assistant to Principal Investigator: Lee, Stuart M. C.",
+            "nameType": "Personal",
+            "givenName": "Stuart M. C.",
+            "familyName": "Lee",
+            "affiliation": [],
+            "nameIdentifiers": []
+          },
+          {
+            "name": "Technical Assistant to Principal Investigator: Ciaozzo, Vince J.",
+            "nameType": "Personal",
+            "givenName": "Vince J.",
+            "familyName": "Ciaozzo",
+            "affiliation": [],
+            "nameIdentifiers": []
+          },
+          {
+            "name": "Co-Investigator: Baldwin, Kenneth M.",
+            "nameType": "Personal",
+            "givenName": "Kenneth M.",
+            "familyName": "Baldwin",
+            "affiliation": [],
+            "nameIdentifiers": []
+          },
+          {
+            "name": "Principal Investigator: Ploutz- Snyder, Lori",
+            "nameType": "Personal",
+            "givenName": "Lori",
+            "familyName": "Ploutz- Snyder",
+            "affiliation": [],
+            "nameIdentifiers": []
+          }
+        ],
+        "title": "Isokinetic Muscle Function (Flight Analog)",
+        "publication_year": 2026,
+        "publisher": "Ames Research Center",
+        "rights": [
+          {
+            "lang": "en-US",
+            "rights": "Creative Commons Zero v1.0 Universal",
+            "rightsUri": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+            "schemeUri": "https://spdx.org/licenses/",
+            "rightsIdentifier": "cc0-1.0",
+            "rightsIdentifierScheme": "SPDX"
+          }
+        ],
+        "citation": "Moore, Alan D., Jr.; Lee, Stuart M. C.; Ciaozzo, Vince J.; Baldwin, Kenneth M.; Ploutz- Snyder, Lori (2026). Isokinetic Muscle Function (Flight Analog) [Dataset]. Ames Research Center. https://doi.org/10.83263/bk5h-r757"
+      }
+    },
+    {
+      "dataset": "BUT_CGM",
+      "citation": "Šaclová, L., Nemcova, A., Goldschmidt, T., Kralik, M., Chlíbková, D., Smital, L., Smisek, R., & Hubálek, J. (2026). Brno University of Technology Continuous Glycaemia, ECG, Activity and Food Intake Database (BUT CGM), version1.0.0. PhysioNet. https://doi.org/10.13026/hv8f-3w60",
+      "unit": "mmol/L",
+      "unit_evidence": {
+        "level": "SOURCE (static author companion code, not runtime/clinical validation)",
+        "official_linking_page": "https://physionet.org/content/but-cgm/1.0.0/",
+        "repository_commit": "d5867dc9022715223ddbf11244b98db64109bcf0",
+        "sources": [
+          {
+            "url": "https://raw.githubusercontent.com/BioSig-BUT/BUT-CGM-supplement/d5867dc9022715223ddbf11244b98db64109bcf0/app/services/cgm_service.py",
+            "sha256": "d8b7d748a35b88c9c96fc2cb7be89c7dd825f4b66e99a69a21f764fbc3c10ec2",
+            "observation": "Reads Timestamp/Glycemia; numeric parsing and rename preserve glucose magnitude without unit conversion. It also interpolates/aggregates; those behaviors are not adopted."
+          },
+          {
+            "url": "https://raw.githubusercontent.com/BioSig-BUT/BUT-CGM-supplement/d5867dc9022715223ddbf11244b98db64109bcf0/app/controllers/data_window_controller.py",
+            "sha256": "55334bf93a1cfe8f7ae70be76f2b7a11e86d900f464708b00bbe98e696b97e47",
+            "lines": [
+              906,
+              928,
+              1156,
+              1201
+            ],
+            "observation": "Labels the same CGM glykemie series Glucose level [mmol/l]."
+          }
+        ]
+      },
+      "reuse_conditions": {
+        "license": "CC BY4.0",
+        "verified_license_file": "data/originals/but-cgm-1.0.0/LICENSE.txt",
+        "duties": [
+          "Credit authors/source and version/DOI",
+          "Include license link and identify any changes",
+          "Retain supplied notices and do not imply endorsement"
+        ],
+        "local_originals_unchanged": true
+      },
+      "import_blockers": [],
+      "time_resolution": {
+        "source_status": "timezone_or_UTC_offset_not_established",
+        "action": "Schema2 supports time:null with validated source_time preserving raw text, precision, unknown timezone and source-clock scope. No UTC conversion or invented midnight. Actual import mapping remains M21 work.",
+        "provider_question": "Are dates shifted/anonymized, what timezone/offset or relative-time semantics are authoritative, and how should date-only assessments be represented?",
+        "model_status": "implemented; see docs/experiments/SOURCE_UNCERTAINTY.md",
+        "calendar": "shifted",
+        "scope_policy": "Use dataset/release/cohort/participant-specific namespace; never align subjects or studies by nominal dates."
+      },
+      "sample_url": "https://physionet.org/files/but-cgm/1.0.0/101001/101001_CGM.csv",
+      "sample_sha256": "d05f745b5b201e4d666617cee1157221acec9418b903a1f632281e7ca8a56dee"
+    }
+  ],
+  "external_access_evidence": [
+    {
+      "url": "https://api.datacite.org/dois/10.83263/wjw1-ta27",
+      "result": "HTTPS proxy CONNECT403"
+    },
+    {
+      "url": "https://api.datacite.org/dois/10.83263/bk5h-r757",
+      "result": "HTTPS proxy CONNECT403"
+    },
+    {
+      "urls": [
+        "https://nlsp.nasa.gov/terms",
+        "https://nlsp.nasa.gov/terms-of-use"
+      ],
+      "result": "HTTP200 contains only the generic application shell; not evidence of terms text"
+    }
+  ],
+  "actual_research_sources": [
+    "Official NLSP experiment, dataset and file metadata",
+    "Original CSV headers and date precision",
+    "Official BUT CGM README/license/card and linked pinned author companion"
+  ],
+  "resolution": "Timezone uncertainty has implemented schema2 representation; original timezone remains unknown. CRF unit confirmation is still unsupported by reviewed source metadata, with explicit unknown-unit preservation now supported. MR079G slash-date format needs evidence before canonical import. Licenses and citations verified as previously recorded.",
+  "rights_followup_verified_at_utc": "2026-11-15T18:27:22.573665+00:00",
+  "model_followup_at_utc": "2026-11-15T18:36:06.719260+00:00",
+  "technical_followup": "technical-resolution-2026-11-15.json"
+}

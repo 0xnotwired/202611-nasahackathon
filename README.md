@@ -75,7 +75,7 @@ No installation, server or account is needed. The interface is self-contained an
 | HTML mockup with synthetic data, interactive body and charts. | Integration of health, physical adaptation, habitat and a shared plan. |
 | Guided check-in, local demo storage and TXT summary. | Procedures adapted to mission resources and integrated follow-up of results. |
 | Product definition, roadmap and targeted academic review. | Sensor connectors, sync and a final persistence architecture. |
-| Build plan in 25 modules, with contracts and work orders. | All product code: the `app/` folder does not exist yet. |
+| Build plan in 25 modules, with contracts and work orders. | Later domain modules and product views: `app/` contains M00 plus M01–M05; the rest are placeholders. |
 
 The mockup mainly shows the initial check-in. It has no sensor integration, loaded NASA data, medical communication, AI model or validated clinical protocols. Use only fictional information in the demo. Choosing NASA sources does not imply certification or endorsement of the tool.
 
@@ -119,7 +119,7 @@ Studies, participants, missions, methods and frequencies are kept separate unles
 
 ## How it is built
 
-The product is not built yet. What exists is the plan to build it with several AI agents in parallel, under human review.
+M00 and the F1 data core (M01–M05) are implemented and independently reviewed; later modules remain placeholders. Further modules are built with AI agents under human review.
 
 - **25 modules in 7 phases.** Each phase delivers something the astronaut can use: save records without losing their origin, see their situation, complete a procedure, close an episode.
 - **One module, one agent, one folder.** Modules communicate through [contracts](docs/CONTRACTS.md) fixed in advance, and each agent receives a [work order](docs/work-orders/) with its acceptance criteria.
@@ -134,7 +134,7 @@ The details are in the [orchestration plan](docs/ORCHESTRATION_PLAN.md) and each
 
 By the user's instruction, in line with the reported rules, do not copy, adapt, port or incorporate code from those repositories, including packages used to implement Órbita features. Earlier integration recommendations are superseded by this rule, even if licenses allow reuse. Do not use AI to reproduce or transform that code either.
 
-Working and provenance rules are in [AGENTS.md](AGENTS.md). AI use must be recorded according to the event's applicable rules. The license for our own code is still pending a team decision.
+Working and provenance rules are in [AGENTS.md](AGENTS.md). AI use must be recorded according to the event's applicable rules. Our own code is licensed under Apache-2.0; see [LICENSE](LICENSE).
 
 ## Documentation and next results
 
@@ -151,8 +151,43 @@ Working and provenance rules are in [AGENTS.md](AGENTS.md). AI use must be recor
 
 The next results are understanding the integrated mission situation, completing plan tasks and reviewing changes with applicable procedures and follow-up. Their verification must cover missing data, provenance, consistency across views, task recovery, accessibility and understanding of the next step.
 
-The repository contains documentation, a build plan and a mockup. The stack decisions are recorded in [IMPLEMENTATION_LAYERS.md](docs/IMPLEMENTATION_LAYERS.md); no product code exists yet. The only available command is `python3 scripts/check_docs.py`, which checks the consistency of the documentation and the module board; there is no build, product test, clinical test or deployment. To contribute, follow [AGENTS.md](AGENTS.md) and propose changes through branches and pull requests. The integration branch is `english`.
+Current implementation and next steps: [CURRENT_STATUS.md](docs/CURRENT_STATUS.md).
+M00/M01–M05 and the user-advanced M21 CSV importers are implemented/reviewed;
+100 tests pass. G0/G1 accepted; F2 views remain pending. The real-data workflow
+verified3861 records in an isolated local IndexedDB profile, while the synthetic
+scenario remains separate. No product import screen or clinical validation is
+claimed. See [import evidence](docs/experiments/REAL_IMPORT.md).
+
+```bash
+node --test
+python3 scripts/check_docs.py
+npm run serve
+```
+
+To continue elsewhere, clone branch f2 and read AGENTS.md/CLAUDE.md.
+[Restore originals and rebuild IndexedDB](docs/LOCAL_DATA_RESTORE.md): neither
+raw datasets nor browser state is in Git. Source profiles, unresolved units,
+licenses and provisional PhysioNet use are recorded in the current-state index.
+Do not assume local import/browser verification happened on a new machine.
 
 ## License
 
 Apache License 2.0. See [LICENSE](LICENSE). Third-party resources and their licenses are listed in [docs/RESOURCES_USED.md](docs/RESOURCES_USED.md).
+
+Dataset preparation now includes EDA RR-1 telemetry/radiation and OSD-51/56
+metadata. [The event-specific data review](docs/SPACE_APPS_DATA_REVIEW.md)
+distinguishes verified licenses from event eligibility and lists remaining
+OSDR policy/download redirects. The synthetic demo remains separate from the new optional real-source import workflow; the review does not certify an unbuilt final distribution.
+
+Dataset preparation profiles and current technical limits are documented in
+[DATA_IMPORT_PREPARATION.md](docs/DATA_IMPORT_PREPARATION.md). All180 genetic
+raw files are now acquired and inspected; unresolved unit facts remain
+explicit restrictions on scientific interpretation, not guessed defaults.
+
+Real-source import: [M21](docs/experiments/M21.md) provides pure CSV adapters
+for CRF, MR079G, MR035G, the verified MR080G test and BUT CGM. With original
+samples available locally, run `python3 scripts/import-real-samples.py` to
+verify custody and load the isolated local IndexedDB profile.
+[Integration evidence](docs/experiments/REAL_IMPORT.md) records3861 exact
+records, restart recovery and duplicate-free reruns. Unknown units remain
+unknown; no clinical interpretation or source-data publication is implied.

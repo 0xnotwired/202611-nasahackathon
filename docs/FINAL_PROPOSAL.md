@@ -1,5 +1,8 @@
 # Órbita: final product proposal
 
+Implementation and verified handoff state: [CURRENT_STATUS.md](CURRENT_STATUS.md).
+This document defines scope/design; planned capabilities are not completion claims.
+
 Proposal version: November 14, 2026. It consolidates the integrated scope chosen by the user and the recommendations derived from the research. "Final" describes the proposal to present to the team; it does not mean an implemented or clinically validated product.
 
 ## The product

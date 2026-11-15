@@ -51,22 +51,34 @@ docs/RESOURCES.md              reading list and concept references (not the deli
 docs/REQUIREMENTS.md           challenge text and its goals; gaps closed by D10–D14
 LICENSE                        Apache-2.0
 scripts/check_docs.py          consistency of matrices, module board and links
-app/                           does not exist yet; the product goes there, one folder per module
+app/                           M00 foundation and implemented M01–M05; later modules remain placeholders
 ```
 
-## Where to pick up (state on 15/11/2026, commit after 1043795)
+## Where to pick up — current handoff
 
-Nothing of the product exists. The plan, contracts 0.4, 25 work orders with their experiments, decisions D1–D14 and the delivery lists exist. In order:
+Read [docs/CURRENT_STATUS.md](docs/CURRENT_STATUS.md), inspect git status/HEAD,
+and continue the user-selected f2 branch. M00/M01–M05 and advanced M21 are
+implemented/reviewed; G0/G1 accepted. Next is F2 M06 readings/M07 base UI,
+then M08–M12. M21's advance does not accept later phases or provide views.
 
-1. **Gate G0** (orchestrator plus a person). Launch M00 with one builder and one reviewer: the prompts are in ORCHESTRATION_PLAN.md ("First launch: M00") and the rules for them in AGENTS.md ("First task: module M00"). M00's builder writes `docs/THREAT_MODEL.md` before any code (it is in M00's owned paths); the reviewer reads it against the code. The orchestrator runs G0-W1 to G0-W3 and a person approves G0.
-2. **F1, wave 1**: M01, M02 and M03 in parallel once G0 is approved; then the rest of the waves as the plan orders them.
-3. **Inputs that only a person can bring**, and what they unblock:
-   - one `*_CGM.csv` file from BUT CGM: its columns and unit are unknown, and M21's `importGlucose` must be corrected against it;
-   - the text of the eight NLSP study cards: their citation fields are missing;
-   - the organizers' answer on "already-made projects", dependencies and attribution-only datasets;
-   - the demo procedure and its clinical source (F3 content), and [V1 4030] in NASA-STD-3001 (radiation limit in M10).
+100 Node tests pass. Run node --test and python3 scripts/check_docs.py;
+Chromium G0/G1 commands remain in CURRENT_STATUS with verification scope.
+Original datasets, local IndexedDB profile and source-data reports are not
+restored by Git. Use [docs/LOCAL_DATA_RESTORE.md](docs/LOCAL_DATA_RESTORE.md),
+verify hashes and rerun scripts/import-real-samples.py before claiming real
+records exist on another machine. The previous local run persisted3861
+records with exact restart readback and duplicate-free repeat.
 
-What an agent must not do while these are open: invent the BUT CGM columns or unit, write NLSP authors or years, add a library without the user's approval, copy items from a published questionnaire, put a threshold in a function, or download original NASA or PhysioNet files into the repository.
+Contract0.8/schema2 preserve unknown units and unknown-zone source dates;
+MR079G ordering is corroborated but its zone remains unknown. CRF/MR035G
+unit and immune denominator/export questions remain unconfirmed despite
+primary-paper research. Omics files are acquired/inspected but not supported
+by current M21 adapters. PhysioNet use is provisional under the user's
+explicit decision, not an organizer response. Keep licenses/citations.
+
+Select relevant local skills. Preserve source ownership and independent
+review; add no dependencies without named approval. Code/docs remain English.
+Do not publish, commit, push or approve gates based on this handoff alone.
 
 ## The central rule
 
@@ -144,7 +156,7 @@ python3 scripts/check_docs.py
 
 An `OK` result proves this and only this: matrices A and B parse as CSV and their ids match those in their documents; every module in `docs/modules.csv` has its work order, and the work order lists experiment ids; a module marked `in_review` or `integrated` has its experiment record with every section and id, plus a filled replication section if integrated; owned paths do not overlap; every dependency sits in an earlier phase or wave; the plan names the same modules; and relative links between `.md` files resolve. It **does not prove** that figures are correct, that sources say what is claimed, that an agent respected their paths when writing code, that a prediction was written before the code, or that an evidence level is honest. The script was seen failing on a real broken link and on six deliberate breakages of the board (overlapping paths, later dependency, same-wave dependency, orphan work order, unknown status, nonexistent dependency), and on five of the experiment checks (work order without ids, module in review without a record, record missing a section and an id, integrated without replication, empty replication).
 
-There is no build, lint or product test: no product code exists yet. The mockup is opened in a browser. Do not invent other commands.
+There is no build, lint or clinical/product workflow test. M00 now supplies foundation and G0 tests via `node --test`; the modular shell runs via `npm run serve`. The original mockup is still opened separately in a browser.
 
 `node --test` will be the test command once M00 creates `package.json`. On 14/11 it was verified that it runs an ES module with its test on Node 22 without installing anything. Nothing was verified in a browser.
 
@@ -162,7 +174,7 @@ Apply the `git-discipline` skill: a restore tag before each session (`git tag -a
 
 ## Anna's skills
 
-The user asks that the skills from `github.com/annatchijova/SKILLS` always be applied. They are not installed in this repo: they are read from a clone. The ones that matter most here:
+The user explicitly requested a local copy of `github.com/annatchijova/SKILLS`. The complete snapshot now lives under `.agents/skills/`; `.agents/SKILLS_SOURCE.json` records the pinned commit and byte hashes. Follow AGENTS.md's local-skill workflow: read and apply the relevant SKILL.md files from this checkout. The ones that matter most here:
 
 | Skill | Where it applies |
 |---|---|

@@ -1,6 +1,6 @@
 # Órbita: contracts between modules
 
-Version 0.4 · November 15, 2026 · **proposal**, pending gate G0. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
+Version 0.8 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
 
 Plan and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). Rationale for the rules: [PROPOSAL_IMPROVEMENTS.md](PROPOSAL_IMPROVEMENTS.md) and [AGENTS.md](../AGENTS.md).
 
@@ -10,7 +10,7 @@ Plan and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). Rationale for 
 - **A single door.** Each module exports through its `index.js`. Nobody imports another module's internal file.
 - **Result, not exception.** Every function that can fail for a foreseen reason returns `{ ok: true, value }` or `{ ok: false, error: { code, field?, message } }`. Exceptions are reserved for programming errors.
 - **`message` names the problem.** "Missing field `origin`", not "invalid data".
-- **Time.** ISO 8601 strings in UTC. The domain does not read the clock: it receives `clock()` as a parameter. Identifiers are generated with an injected function.
+- **Time.** Known instants use ISO8601 UTC strings. Record schema2 can explicitly preserve a source date/local datetime without known timezone using time:null plus source_time; it must not invent a UTC instant. Other clock-derived domain events remain UTC. The domain receives clock() and identifiers by injection.
 - **Identifiers.** Always text. `"007"` is not `7`.
 - **Names.** English identifiers in camelCase for functions and snake_case for data fields (`mission_phase`, `schema_version`).
 - **Asynchronous.** The store and everything that uses it return promises.
@@ -43,9 +43,11 @@ Record
   type            observation | measurement | action | environment | exam
   state           recorded | confirmed_none | not_recorded
   variable        catalog text (e.g. "pulse", "headache", "co2")
-  value, unit     required if type is measurement, environment or exam and state is recorded
+  value, unit     required for recorded measurement/environment/exam; schema2 unit:null needs unit_status unknown
+  unit_status     known | unknown, optional; schema2 only; unknown requires unit:null
   method          instrument or "self_report"
-  time            ISO 8601; for environment, also interval { from, to }
+  time            UTC ISO8601 string, or schema2 null with source_time; environment also needs UTC interval { from, to }
+  source_time     schema2 only, optional: { value, raw, precision, timezone, calendar, scope }
   origin          synthetic | ground_analog | terrestrial | flight | cell_culture
                   (terrestrial: people on Earth who are not in a spaceflight analog)
   source          id from the sources catalog, or "user_entered"
@@ -113,6 +115,48 @@ Delivery
 ```
 
 "Assigned", "done" and "result" are three different things: `Task.completion`, `Execution` and `result_ids`. A completed task does not imply a result.
+
+## Source uncertainty and schema compatibility
+
+SCHEMA_VERSION is2 for new objects. Strict legacy schema1 UTC records remain
+readable and return unchanged, including schema_version1; they are not
+silently migrated on validation, get or list. Unknown/future versions fail.
+Generic persisted objects and mission configurations support known1/2; a
+missing generic version is stamped2. Existing schema1 records cannot acquire
+schema2 fields without an explicit new record/correction.
+
+For schema2, source_time is present exactly when time is null and has exactly:
+value (canonical ISO date YYYY-MM-DD or local datetime YYYY-MM-DDTHH:mm for minute precision, or YYYY-MM-DDTHH:mm:ss
+with optional1–3 fractional digits for second precision), raw (unchanged original field text),
+precision (date, minute or second), timezone (null for unknown), calendar (original,
+shifted or unknown), and scope (nonempty source clock/cohort namespace, at most512 characters;
+raw is also nonempty and at most512 characters). A date-only
+assessment does not get an invented midnight. Reject invalid calendar dates,
+Z/offsets on unknown-zone values and contradictory UTC time/source_time.
+No age, absolute-UTC interval or cross-source calendar alignment is inferred.
+
+For a recorded numeric measurement, schema2 may retain unit:null only with
+explicit unit_status:unknown. Omitted unit still fails normal validation;
+this is not a way to accept accidental missing fields. Missing numerical
+values remain absent according to the three states. Unknown units always
+make records not comparable, even when both are unknown. Unknown calendar
+also prevents comparison. Compatible source
+time comparison requires matching subject/source-clock scope, calendar and
+precision as well as the existing subject/variable/unit/method rules; mixing
+UTC and unknown-zone bases is not comparable. Raw strings and calendar
+values are preserved, never normalized into clinical certainty.
+
+UTC from/to store queries return explicit unresolved_time if an otherwise
+equality-matching record has unknown source time. Records belonging to other
+subjects do not trigger that error. Unbounded/equality queries return the
+source-aware record unchanged. Generic non-record objects without time keep
+the previous exclusion behavior for time windows. Both backends behave alike.
+
+Source files lacking CRF units remain unit-unknown until a source-specific
+dictionary is supplied. This representation resolves honest storage and
+review; it does not claim that missing source metadata was recovered.
+Future M06/M07 consumers must surface these unknowns and avoid UTC age,
+unit conversions, criterion comparisons or reassuring badges on that basis.
 
 ## 4. Interfaces
 
@@ -267,6 +311,61 @@ importGlucose(text, { subject })     → Result<{ records, rejected, skipped }>
 
 Imported text is untrusted input: it is validated row by row. Records come out with `origin: "ground_analog"`, the file's `subject` and `Test_Phase` in `mission_phase`. Free-text clinical comments are not imported; `skipped` says how many.
 
+#### M21 implementation policy (user-authorized advance)
+
+The user explicitly requested real import implementation while F2 is open.
+This is a scoped M21 change order, not acceptance of F2–F5 or M22 views.
+The three functions are synchronous, deterministic and pure: no clock,
+randomness, network or database write. ImportReport contains records:Record[],
+rejected:Array<{row:number,code:string,field:string}> and
+skipped:Array<{row:number,column:string,reason:string}>. Row references are
+one-based physical source start lines including the header; embedded quoted
+newlines advance subsequent source line references. Never include raw
+clinical text in rejection/skip reports. Count excluded nonempty cells
+via skipped.length. Header-only input returns an empty report.
+
+Input uses verified source headers: CRF Campaign3DailyVitals comma CSV,
+MR079G/MR035G/MR080G adaptation CSV, BUT CGM1.0.0 semicolon CSV with optional
+UTF8 BOM. CSV supports CRLF/LF and quoted delimiters/newlines/escaped quotes.
+Input is bounded to5MiB UTF8 and10000 output records; capacity excess is an
+explicit whole-import error, never silent truncation. Invalid input/header,
+unsupported study/profile and unrecoverable CSV quotation errors fail the
+whole call. Recoverable row shape/numeric/date errors go to rejected while
+other rows continue. Invalid options/accessors must not execute user code.
+
+All emitted records pass core schema2 validation. Source row numerals never
+become identifiers; subject strings such as007 remain unchanged. Record IDs
+bind a deterministic original-text fingerprint, adapter, caller-supplied identity where applicable, physical row and
+measurement column so repeat imports are detectable and files do not share
+row IDs. Source includes DOI/profile identity and original-text fingerprint;
+source_time.scope includes study/release/cohort/subject clock identity.
+No columns can supply arbitrary origin/schema/state fields. Clinical free
+text never enters note/source/rejections. Method and bounded structured
+context retain Test/Position/Stage and phase/day without clinical inference.
+
+CRF maps Pulse/SysBP/DiaBP/Resp Rate/Weight/Body Temp/Height; units remain
+explicitly unknown until an authoritative source-specific mapping exists.
+Missing numeric cells/NA/NaN emit not_recorded without a value, while numeric
+zero is preserved. Unknown-unit status is used only with numeric values;
+missing unknown-unit measurements omit unit metadata according to core rules.
+CRF dates use source-corroboratedMM/DD/YYYY and minute clock, MR079G uses
+source-corroboratedMM/DD/YYYY date-only, MR035G uses ISO scan date-only.
+Their offsets/calendar-shifting remain unknown; time:null/source_time avoids
+inventing UTC or midnight. Unknown calendars/units stay non-comparable.
+
+MR079G preserves source Value/Units, method Test+Position; MR035G retains
+NET_AVG_BMD with unknown units. MR080G's selected verified Campaign3C,
+subject7772,2006-05-07 test uses the unit-labelled companion profile; other
+MR080G profiles fail rather than inherit units. VE retains BTPS. No physical
+conversion is performed and distinct physiological quantities stay distinct.
+BUT CGM produces terrestrial glucose in source-verifiedmmol/L, source-local
+seconds with shifted calendar and participant-specific scope; no interpolation.
+
+Protocol-relative immunity/ACTES axes, shifted-UTC ITBA provenance,
+aggregate radiation/lung/index tables and omics arrays remain explicitly
+unsupported by these public adapters. Do not fabricate ordinary health
+Records for them. Original CSV/XLS/ZIP files remain outside tracked sources.
+
 ### sync (M24)
 
 ```
@@ -279,6 +378,48 @@ received(store, { subject? })                  → Result<Delivery[]>   what the
 
 Simulated: there is no network and no server. Only what already went through `privacy.logShared` can be enqueued; nothing leaves without that action. A delivery handed over twice is received once (by `id`). `received` does not include anyone who sent nothing, and the ground view shows "nothing sent" instead of an invented status. The user interface is labeled "simulated sync". A real server will implement these same functions.
 
+## F1 implementation policies
+
+These policies resolve representation details for M01–M05 without adding
+clinical rules or data sources:
+
+- Mission phase intervals and store time-range filters use UTC `[from,to)`;
+  touching mission phases are allowed, overlapping phases are rejected.
+  Equipment availability means explicit membership in available_equipment;
+  unknown identifiers are never assumed present. Cross-catalog content
+  references are checked by integration tests, not by an undeclared dependency.
+- Synthetic nonclinical demo procedures may use `source: "team_defined"`
+  as explicit team-authored provenance; research citations are not assigned
+  as sources of invented procedures. This is not reviewed clinical content.
+- The glucose catalog uses `unit: "as_recorded"` as unresolved metadata,
+  never as a Record.unit. Actual measurements retain the verified input unit;
+  the catalog does not select or convert units; the acquired BUT CGM
+  sample unit is source-verified as mmol/L in the import-readiness manifest.
+  Mood is the team's non-validated self-report scale, not a clinical score.
+- Store `list` combines equality filters with optional `from` / `to` bounds
+  on the object's `time`. Invalid UTC bounds or reversed ranges fail; no
+  filter is silently discarded. A generic non-record object without time does not match a
+  requested time range; a matching source-time record returns unresolved_time. `get` of an absent id returns a named error Result.
+- Saved records must pass core validation with an explicit supported schema
+  version (legacy1 or current2). For other collections the store stamps the current schema version
+  if absent, rejects unknown versions, and preserves detached plain JSON
+  data. Collection-specific business rules remain the owning module's job.
+- `updateState` returns Promise<Result<object>> for executions, tasks,
+  episodes and deliveries only. It cannot change id, subject or schema_version.
+  Closed stores return named errors for data operations; close is idempotent.
+- Within the records collection a known subject cannot cross between
+  synthetic and non-synthetic provenance, including in a batch. Other real
+  origins remain distinct on each record. This prevents attaching imported
+  data to the already-established synthetic subject; it is not identity
+  authentication or a claim about unknown subjects in external files.
+- Both backends provide atomic batch insertion, reject duplicate ids and
+  return detached values. IndexedDB failures are explicit; openStore never
+  silently falls back to memory. Missing name defaults to `orbita`.
+- Validation may reject bounded-size, cyclic, accessor-bearing or non-JSON
+  structures at input boundaries. Such technical bounds are not medical
+  ranges. UTC validation rejects nonexistent calendar dates. Neither missing
+  states nor missing measurements are defaulted to a reassuring value.
+
 ## 5. User interface
 
 Each view is a folder with two pieces:
@@ -287,6 +428,23 @@ Each view is a folder with two pieces:
 model.js    model(services, params) → Promise<ViewModel>   no DOM; tested in Node
 view.js     mount(element, viewModel, actions)             DOM only
 ```
+
+M00 scope clarification (user authorized November 15, 2026): each view's
+`index.js` re-exports `model` and `mount`. Before implementation, `model` is
+async and resolves to `Result` with `not_implemented`; `mount` returns that
+error synchronously. Once implemented, they follow the signatures above.
+M07's base `index.js` exports the seven components named below; unspecified
+component argument lists remain M07's responsibility. M00 creates only a
+minimal `app/index.html` loading a module to demonstrate HTTP module loading,
+with no product UI. Ownership of that shell passes to M07.
+
+This clarification does not standardize unspecified domain error codes or
+unspecified result fields. Placeholder functions always return a fresh
+`not_implemented` Result, including normally non-Result functions; callers
+must handle that temporary unavailable state explicitly. Core constants
+are the documented enums and schema version2 for new records, not functions. All functions
+that accept `store`, plus `openStore` and view `model`, are asynchronous;
+other functions are synchronous.
 
 `ViewModel.state` is one of `loading`, `empty`, `error`, `ready`. `empty` says why it is empty; `error` names the failure. A view that is not implemented shows "not available yet".
 
@@ -314,3 +472,8 @@ Everything works with the keyboard. No state is conveyed by color alone. Views r
 | 0.2 | 2026-11-15 | `Delivery` shape and `sync` interface (D9, simulated option C) | M24; M19 and M18 only as providers |
 | 0.3 | 2026-11-15 | Translated to English, including identifiers, data fields and folder names; `deliveries` collection added to the store | All |
 | 0.4 | 2026-11-15 | User decisions D10–D14: R6 reworded (criteria only as configuration data); `terrestrial` origin; `environment`, `gravity_note`, `attention_criteria` in `MissionConfig`; `readings.attention`; `plan.progress`; `importGlucose`; `dataStateBadge` and `attentionBadge` | M01, M02, M03, M05, M06, M07, M14, M15, M21 |
+| 0.5 | 2026-11-15 | User-authorized M00 clarification: view index exports, minimal shell ownership, placeholder behavior and async boundary; no domain behavior added | M00, M07–M12, M15, M20, M22, M24 |
+| 0.6 | 2026-11-15 | F1 implementation policies: mission/time boundaries, source-unit metadata, explicit store errors/schema stamping/provenance isolation, atomic writes and detached plain data | M01–M05; future store consumers |
+| 0.7 | 2026-11-15 | User-requested source-date model: schema2 preserves unknown-zone/date-only/shifted times and explicit unknown units; legacy1 unchanged; scoped comparison and explicit UTC-query errors | M01–M07 and future import consumers |
+
+| 0.8 | 2026-11-15 | User-authorized M21 advance: deterministic source CSV adapters, bounded reports/rows, source-time and unknown-unit policy; selected adaptation profiles; no implicit persistence | M21, store/import consumers |

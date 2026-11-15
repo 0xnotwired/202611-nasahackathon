@@ -1,0 +1,266 @@
+{
+  "reviewed_at_utc": "2026-11-15T20:03:16.814908+00:00",
+  "scope": "MR080G Campaign3C subject7772 Peak060507 selected averaged CSV, not all campaigns/files. Other three study unit gaps are not guessed.",
+  "units_confirmed": {
+    "VO2": "L/min",
+    "VCO2": "L/min",
+    "VE": "L/min at BTPS",
+    "FEO2": "%",
+    "FECO2": "%",
+    "RER": "1 (dimensionless respiratory exchange ratio)"
+  },
+  "primary_unit_source": "data/originals/unit-dictionaries/MR080G_Campaign_3_C3C_7772_Peak_060507_summary.csv",
+  "row_correspondence": [
+    {
+      "source_stage": "50 Watt Av.",
+      "summary_stage": "1",
+      "exact_correspondence_fields": [
+        "HR",
+        "VO2",
+        "VCO2",
+        "RER",
+        "VO2 (ml/kg/min)",
+        "FEO2",
+        "FECO2"
+      ],
+      "VE": "summary rounded to one decimal equals selected value",
+      "RER": "dimensionless ratio consistent with VCO2/VO2 within rounding precision"
+    },
+    {
+      "source_stage": "75 Watt Av.",
+      "summary_stage": "2",
+      "exact_correspondence_fields": [
+        "HR",
+        "VO2",
+        "VCO2",
+        "RER",
+        "VO2 (ml/kg/min)",
+        "FEO2",
+        "FECO2"
+      ],
+      "VE": "summary rounded to one decimal equals selected value",
+      "RER": "dimensionless ratio consistent with VCO2/VO2 within rounding precision"
+    },
+    {
+      "source_stage": "100 Watt Av.",
+      "summary_stage": "3",
+      "exact_correspondence_fields": [
+        "HR",
+        "VO2",
+        "VCO2",
+        "RER",
+        "VO2 (ml/kg/min)",
+        "FEO2",
+        "FECO2"
+      ],
+      "VE": "summary rounded to one decimal equals selected value",
+      "RER": "dimensionless ratio consistent with VCO2/VO2 within rounding precision"
+    },
+    {
+      "source_stage": "Peak AVG",
+      "summary_stage": "Peak",
+      "exact_correspondence_fields": [
+        "HR",
+        "VO2",
+        "VCO2",
+        "RER",
+        "VO2 (ml/kg/min)",
+        "FEO2",
+        "FECO2"
+      ],
+      "VE": "summary rounded to one decimal equals selected value",
+      "RER": "dimensionless ratio consistent with VCO2/VO2 within rounding precision"
+    }
+  ],
+  "ratio_evidence": "Official experiment parameter calls RER Respiratory exchange ratio. Same-test summary repeats exact RER; ratio of source VCO2/VO2 supports dimensionless unscaled ratio. No value converted or recomputed for delivery.",
+  "conditions": [
+    "VE is specifically BTPS; preserve gas condition in method/provenance.",
+    "VO2/VCO2 labels do not independently establish other gas correction conditions; no STPD/BTPS conversion inferred.",
+    "Neither exercise units nor exact-test kg/cm labels establish CRF DailyVitals units or another subject."
+  ],
+  "artifacts": [
+    {
+      "file": "data/originals/unit-dictionaries/MR080G_Campaign_3_C3C_7772_Peak_060507_data_entry_obsv.csv",
+      "url": "https://nlsp.nasa.gov/api/v1/files/3694f89d-ca2b-57ed-b055-fd54a08f755e/download",
+      "bytes": 1062,
+      "sha256": "9d2f84007880d34adfd3bc8a8eb097bb4be4c62b0fa088b7013950ddbfb17a74",
+      "retrieved_at_utc": "2026-11-15T20:00:05.125220+00:00"
+    },
+    {
+      "file": "data/originals/unit-dictionaries/MR080G_Campaign_3_C3C_7772_Peak_060507_pfe_presc_wo_rest.csv",
+      "url": "https://nlsp.nasa.gov/api/v1/files/80da400f-6094-51ef-bd24-12691c8effd8/download",
+      "bytes": 365,
+      "sha256": "87a3cf0d476dbb7376c306dc90aedcb932c573b925d70c4f7a6132a4e65eaa23",
+      "retrieved_at_utc": "2026-11-15T20:00:05.027142+00:00"
+    },
+    {
+      "file": "data/originals/unit-dictionaries/MR080G_Campaign_3_C3C_7772_Peak_060507_pfe_presc_rest.csv",
+      "url": "https://nlsp.nasa.gov/api/v1/files/7a1d6701-44a6-5cbb-be93-06083441a35d/download",
+      "bytes": 364,
+      "sha256": "41af06212d96b50f0171d3ef11b42ed44b41053ad9a3aa2834411d84e8691587",
+      "retrieved_at_utc": "2026-11-15T20:00:04.979415+00:00"
+    },
+    {
+      "file": "data/originals/unit-dictionaries/MR080G_Campaign_3_C3C_7772_Peak_060507_gxt_summary.csv",
+      "url": "https://nlsp.nasa.gov/api/v1/files/291bd354-6e6b-54a2-8ea8-8f24d43b0c23/download",
+      "bytes": 416,
+      "sha256": "d2bf387cf63ed266664cbdec888d8f0e264e6101d6954c8f950f0bf51a6acd2d",
+      "retrieved_at_utc": "2026-11-15T20:00:05.083814+00:00"
+    },
+    {
+      "file": "data/originals/unit-dictionaries/MR080G_Campaign_3_C3C_7772_Peak_060507_summary.csv",
+      "url": "https://nlsp.nasa.gov/api/v1/files/c94f3e5f-f10e-5588-b32c-253543a53d5f/download",
+      "bytes": 664,
+      "sha256": "9c75ae099f445d8993f470f4e8c6bf9f259c97c2862e99dbb3f617d09dbf9a83",
+      "retrieved_at_utc": "2026-11-15T20:00:05.231145+00:00"
+    },
+    {
+      "file": "data/originals/unit-dictionaries/MR080G_Campaign_3_C3C_7772_060507_data_entry_readme.txt",
+      "url": "https://nlsp.nasa.gov/api/v1/files/f7321c09-1069-5b0a-b283-6cb509d69db8/download",
+      "bytes": 536,
+      "sha256": "f1e284b8c8ea608b3d41ecf22e16ae754ae5cdf49f13219a137da43795401a19",
+      "retrieved_at_utc": "2026-11-15T20:00:05.150771+00:00"
+    },
+    {
+      "file": "data/originals/unit-dictionaries/MR080G_Campaign_3_C3C_7772_060507_ex_presc_rest_readme.txt",
+      "url": "https://nlsp.nasa.gov/api/v1/files/41dd34cf-8cab-596d-8fff-759889667691/download",
+      "bytes": 316,
+      "sha256": "84f48b819423d3f762afad77327982fbe0f002916baab922395cd2c450af563f",
+      "retrieved_at_utc": "2026-11-15T20:00:05.363694+00:00"
+    },
+    {
+      "file": "data/originals/unit-dictionaries/MR080G_Campaign_3_C3C_7772_060507_summary_readme.txt",
+      "url": "https://nlsp.nasa.gov/api/v1/files/b8de7761-cd84-5451-a4df-eabcd247b3a2/download",
+      "bytes": 556,
+      "sha256": "7b7fe817aa72d101bd72e8f460c9d65203e9702cca63c5e495287771aa747192",
+      "retrieved_at_utc": "2026-11-15T20:00:05.270845+00:00"
+    },
+    {
+      "file": "data/originals/unit-dictionaries/MR080G_Campaign_3_C3C_7772_060507_ex_presc_wo_rest_readme.txt",
+      "url": "https://nlsp.nasa.gov/api/v1/files/bce89f65-eb5f-5a8d-848d-6710c2ce9212/download",
+      "bytes": 316,
+      "sha256": "2322701271f0be02e9d08c317f40c16d99709830dfe09780ad0926a3aea4e5dd",
+      "retrieved_at_utc": "2026-11-15T20:00:05.318668+00:00"
+    },
+    {
+      "file": "data/originals/unit-dictionaries/MR080G_Campaign_3_C3C_7772_Peak_060507_calcs_wo_rest.csv",
+      "url": "https://nlsp.nasa.gov/api/v1/files/1ed74f2f-7f7e-5834-b38f-dd4a0a9e4f0d/download",
+      "bytes": 315,
+      "sha256": "eaec945abb21a911150923f6a610605844cd99515f565de715694729158d3b50",
+      "retrieved_at_utc": "2026-11-15T20:00:05.488385+00:00"
+    },
+    {
+      "file": "data/originals/unit-dictionaries/MR080G_Campaign_3_C3C_7772_Peak_060507_calcs_rest.csv",
+      "url": "https://nlsp.nasa.gov/api/v1/files/bb1a7200-4286-5def-9738-897ddebbccf1/download",
+      "bytes": 310,
+      "sha256": "7d4ecb4e0e7c990e1da4017bda12d060d858879535e7cf329fa67f7258f3366e",
+      "retrieved_at_utc": "2026-11-15T20:00:05.439046+00:00"
+    },
+    {
+      "file": "data/originals/unit-dictionaries/MR080G_Campaign_3_C3C_7772_Peak_060507_eva_ex_rest.csv",
+      "url": "https://nlsp.nasa.gov/api/v1/files/f3a6b9f9-570a-5ae2-94bd-d06d3c6985c9/download",
+      "bytes": 479,
+      "sha256": "218b049827126f1a67c132dfc4eb42d8ce35ed1f976cacc7728c998b426ab90a",
+      "retrieved_at_utc": "2026-11-15T20:00:05.529312+00:00"
+    },
+    {
+      "file": "data/originals/unit-dictionaries/MR080G_Campaign_3_C3C_7772_Peak_060507_eva_ex_wo_rest.csv",
+      "url": "https://nlsp.nasa.gov/api/v1/files/a11f9930-6ee1-5fb5-94c2-b8e4523926ff/download",
+      "bytes": 477,
+      "sha256": "af34922af64372789b2cfbced1907172d97704e4d9b9b36cf329c9516f8e032e",
+      "retrieved_at_utc": "2026-11-15T20:00:05.571687+00:00"
+    },
+    {
+      "file": "data/originals/unit-dictionaries/MR080G_Campaign_3_C3C_7772_Peak_060507_O2_Watts_wo_rest.pdf",
+      "url": "https://nlsp.nasa.gov/api/v1/files/bb044040-3d9e-516a-b56a-ed5ecd1ba0fd/download",
+      "bytes": 7960,
+      "sha256": "e4bd77947125671e9bb3c14a2194814be5b7bb6a082b484e3aff2a2105783a5b",
+      "retrieved_at_utc": "2026-11-15T20:00:05.622617+00:00"
+    },
+    {
+      "file": "data/originals/unit-dictionaries/MR080G_Campaign_3_C3C_7772_Peak_060507_O2_HR_wo_rest.pdf",
+      "url": "https://nlsp.nasa.gov/api/v1/files/a968d22b-8c5d-57eb-a0b7-3b3bf790af1f/download",
+      "bytes": 8036,
+      "sha256": "d24c05625fffaa1487374e196d5f3b22297ca580a9865e25bf68c941b8163872",
+      "retrieved_at_utc": "2026-11-15T20:00:05.698936+00:00"
+    },
+    {
+      "file": "data/originals/unit-dictionaries/MR080G_Campaign_3_C3C_7772_Peak_060507_O2_Watts_Rest.pdf",
+      "url": "https://nlsp.nasa.gov/api/v1/files/86a78e37-9775-5f36-a37d-e044869866da/download",
+      "bytes": 8009,
+      "sha256": "78db5a79bbc828f194b209088dc621c1f1c6e4241b5318061f2d4030e25e47cc",
+      "retrieved_at_utc": "2026-11-15T20:00:05.729131+00:00"
+    },
+    {
+      "file": "data/originals/unit-dictionaries/MR080G_Campaign_3_C3C_7772_Peak_060507_O2_HR_Rest.pdf",
+      "url": "https://nlsp.nasa.gov/api/v1/files/b47718ef-ec95-531c-8775-b237bdea9406/download",
+      "bytes": 8066,
+      "sha256": "a468527d00b0faca4be4396878927ef7c051331aa3c1ee5940c84ac79724b53a",
+      "retrieved_at_utc": "2026-11-15T20:00:05.793190+00:00"
+    },
+    {
+      "file": "data/originals/unit-dictionaries/MR080G_Campaign_3_C3C_7772_Peak_060507_HR_VO2_wo_rest.pdf",
+      "url": "https://nlsp.nasa.gov/api/v1/files/ce76fe08-212a-58b4-bfef-7c82558e6720/download",
+      "bytes": 8019,
+      "sha256": "a4bb74cfb862ecd3b9e02860e4280420798fa99253a45c2af57026271ac7ab34",
+      "retrieved_at_utc": "2026-11-15T20:00:05.850039+00:00"
+    },
+    {
+      "file": "data/originals/unit-dictionaries/MR080G_Campaign_3_C3C_7772_Peak_060507_HR_VO2_Rest.pdf",
+      "url": "https://nlsp.nasa.gov/api/v1/files/5b1ed3e1-c624-5cb7-bbe5-0ce766203ccd/download",
+      "bytes": 8050,
+      "sha256": "2c1697362efbf28f7f3b705c3b116489abfdbd6c813f3c717e15f04fdc57671c",
+      "retrieved_at_utc": "2026-11-15T20:00:05.880443+00:00"
+    }
+  ],
+  "remaining": [
+    {
+      "study": "CRF",
+      "fields": [
+        "Pulse",
+        "SysBP",
+        "DiaBP",
+        "Resp Rate",
+        "Weight",
+        "Body Temp",
+        "Height"
+      ],
+      "source_paper": "Meck JV, Dreyer SA, Warren LE. Long-duration head-down bed rest: project overview, vital signs, and fluid balance.2009; PMID19476163.",
+      "lookup_url": "https://ntrs.nasa.gov/api/citations/search?q=Long-duration%20head-down%20bed%20rest%20project%20overview%20vital%20signs%20fluid%20balance"
+    },
+    {
+      "study": "MR035G",
+      "fields": [
+        "NET_AVG_BMD"
+      ],
+      "source_paper": "Spector ER, Smith SM, Sibonga JD. Skeletal effects of long-duration head-down bed rest.2009; PMID19476166.",
+      "lookup_url": "https://pubmed.ncbi.nlm.nih.gov/19476166/"
+    },
+    {
+      "study": "BRSMImmune",
+      "fields": [
+        "CD8+ CD69+ selected analyte scale and denominator"
+      ],
+      "source_paper": "Crucian BE et al. Immune status, latent viral reactivation, and stress during long-duration head-down bed rest.2009; PMID19476168.",
+      "lookup_url": "https://pubmed.ncbi.nlm.nih.gov/19476168/"
+    }
+  ],
+  "network_evidence": "Fresh NTRS and two PubMed requests failed at proxy CONNECT403; not a scientific license or unit determination.",
+  "network_draft": {
+    "added": [
+      "ntrs.nasa.gov",
+      "pubmed.ncbi.nlm.nih.gov",
+      "pmc.ncbi.nlm.nih.gov"
+    ],
+    "saved": true,
+    "requires_publish": true,
+    "publication_performed": false
+  },
+  "not_performed": [
+    "Physical-unit conversion",
+    "Clinical interpretation",
+    "External provider/organizer messages",
+    "Commit/push",
+    "Application importer implementation"
+  ]
+}

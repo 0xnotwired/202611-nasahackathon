@@ -1,0 +1,150 @@
+{
+  "reviewed_at_utc": "2026-11-15T19:08:23.054320+00:00",
+  "terms_source": "Full user-provided2026 Participant Terms, marked updated August7,2026; live legal page request denied by proxy.",
+  "scope": "14 data sources and present synthetic app, not final package/media or all project resources.",
+  "datasets": [
+    {
+      "id": "CRF",
+      "doi": "10.83263/wjw1-ta27",
+      "license": "CC0-1.0",
+      "review_status": "source_reuse_verified_public_sample_only",
+      "source_evidence": "https://api.datacite.org/dois/10.83263/wjw1-ta27",
+      "actual_product_rows_used": true,
+      "use_scope": "Pure CSV adapter and isolated ignored local IndexedDB verification; no product views or bundled rows."
+    },
+    {
+      "id": "MR079G",
+      "doi": "10.83263/bk5h-r757",
+      "license": "CC0-1.0",
+      "review_status": "source_reuse_verified_public_sample_only",
+      "source_evidence": "https://api.datacite.org/dois/10.83263/bk5h-r757",
+      "actual_product_rows_used": true,
+      "use_scope": "Pure CSV adapter and isolated ignored local IndexedDB verification; no product views or bundled rows."
+    },
+    {
+      "id": "MR035G",
+      "doi": "10.83263/7myc-5j86",
+      "license": "CC0-1.0",
+      "review_status": "source_reuse_verified_public_sample_only",
+      "source_evidence": "https://api.datacite.org/dois/10.83263/7myc-5j86",
+      "actual_product_rows_used": true,
+      "use_scope": "Pure CSV adapter and isolated ignored local IndexedDB verification; no product views or bundled rows."
+    },
+    {
+      "id": "BRSMImmune",
+      "doi": "10.83263/75we-ch31",
+      "license": "CC0-1.0",
+      "review_status": "source_reuse_verified_public_sample_only",
+      "source_evidence": "https://api.datacite.org/dois/10.83263/75we-ch31",
+      "actual_product_rows_used": false
+    },
+    {
+      "id": "MR080G",
+      "doi": "10.83263/w056-8t76",
+      "license": "CC0-1.0",
+      "review_status": "source_reuse_verified_public_sample_only",
+      "source_evidence": "https://api.datacite.org/dois/10.83263/w056-8t76",
+      "actual_product_rows_used": true,
+      "use_scope": "Pure CSV adapter and isolated ignored local IndexedDB verification; no product views or bundled rows."
+    },
+    {
+      "id": "DTO684",
+      "doi": "10.83263/0d67-bk75",
+      "license": "CC0-1.0",
+      "review_status": "source_reuse_verified_public_sample_only",
+      "source_evidence": "https://api.datacite.org/dois/10.83263/0d67-bk75",
+      "actual_product_rows_used": false
+    },
+    {
+      "id": "96-E044",
+      "doi": "10.83263/7nhp-yt75",
+      "license": "CC0-1.0",
+      "review_status": "source_reuse_verified_public_sample_only",
+      "source_evidence": "https://api.datacite.org/dois/10.83263/7nhp-yt75",
+      "actual_product_rows_used": false
+    },
+    {
+      "id": "MSD007",
+      "doi": "10.83263/xj28-wp80",
+      "license": "CC0-1.0",
+      "review_status": "source_reuse_verified_public_sample_only",
+      "source_evidence": "https://api.datacite.org/dois/10.83263/xj28-wp80",
+      "actual_product_rows_used": false
+    },
+    {
+      "id": "BUT_CGM",
+      "license": "CC-BY-4.0",
+      "review_status": "user_authorized_provisional_use_organizer_response_pending",
+      "event_issue": "Data license is not automatically OSI software license; supplied without-restriction wording needs interpretation before required real-data inclusion.",
+      "actual_product_rows_used": true,
+      "decision": "User has consulted organizer; assume acceptance, retain license conditions/citations and remove if declined.",
+      "organizer_acceptance_verified": false,
+      "use_scope": "Pure CSV adapter and isolated ignored local IndexedDB verification; no product views or bundled rows."
+    },
+    {
+      "id": "ACTES",
+      "license": "ODC-By-1.0",
+      "review_status": "user_authorized_provisional_use_organizer_response_pending",
+      "event_issue": "Data license is not automatically OSI software license; supplied without-restriction wording needs interpretation before required real-data inclusion.",
+      "actual_product_rows_used": false,
+      "decision": "User has consulted organizer; assume acceptance, retain license conditions/citations and remove if declined.",
+      "organizer_acceptance_verified": false
+    },
+    {
+      "id": "ITBA",
+      "license": "ODC-By-1.0",
+      "review_status": "user_authorized_provisional_use_organizer_response_pending",
+      "event_issue": "Data license is not automatically OSI software license; supplied without-restriction wording needs interpretation before required real-data inclusion.",
+      "actual_product_rows_used": false,
+      "decision": "User has consulted organizer; assume acceptance, retain license conditions/citations and remove if declined.",
+      "organizer_acceptance_verified": false
+    },
+    {
+      "id": "OSD-51",
+      "license": null,
+      "review_status": "repository_unrestricted_use_policy_evidence_verified_with_distribution_scope",
+      "actual_product_rows_used": false,
+      "evidence_manifest": "osdr-eda-acquisition-2026-11-15.json",
+      "policy_statement": "There are no restrictions on the use of this data.",
+      "policy_resource": "NASA-managed public nasa-osdr AWS bucket distribution",
+      "remaining": "Verify selected download distribution/file-specific notices; no study-specific CC0/CCBY identifier claimed.",
+      "policy_evidence_manifest": "osdr-eda-policy-2026-11-15.json"
+    },
+    {
+      "id": "OSD-56",
+      "license": null,
+      "review_status": "repository_unrestricted_use_policy_evidence_verified_with_distribution_scope",
+      "actual_product_rows_used": false,
+      "evidence_manifest": "osdr-eda-acquisition-2026-11-15.json",
+      "policy_statement": "There are no restrictions on the use of this data.",
+      "policy_resource": "NASA-managed public nasa-osdr AWS bucket distribution",
+      "remaining": "Verify selected download distribution/file-specific notices; no study-specific CC0/CCBY identifier claimed.",
+      "policy_evidence_manifest": "osdr-eda-policy-2026-11-15.json"
+    },
+    {
+      "id": "EDA-RR1",
+      "license": null,
+      "review_status": "metadata_or_data_access_verified_reuse_policy_pending",
+      "actual_product_rows_used": false,
+      "evidence_manifest": "osdr-eda-acquisition-2026-11-15.json"
+    }
+  ],
+  "decision": "User authorizes provisional PhysioNet use with attribution and removable sources. No organizer acceptance claimed; current app remains synthetic pending real import implementation.",
+  "independent_review": {
+    "performed": true,
+    "scope": "Eight NLSP rights declarations, three PhysioNet license checksums and actual product/scenario usage; parent verified OSDR/EDA response artifacts.",
+    "findings_corrected": [
+      "Stale NASA rights and overbroad eligible/usable statements",
+      "Missing ACTES/ITBA publisher-requested publication citations"
+    ],
+    "no_organizer_contact": true
+  },
+  "limits": [
+    "No final M23 package exists; inspect final archive, charts/exports/media before submission.",
+    "Public source availability alone does not waive third-party IP/privacy rights or establish export classification.",
+    "ACTES participant demographics indicate minors; no recognizable participant names/voices/images observed in selected signal table; do not join or publish identifiers/demographic/contact data."
+  ],
+  "report": "../SPACE_APPS_DATA_REVIEW.md",
+  "policy_followup": "../OSDR_EDA_USE_RESEARCH.md",
+  "implementation_evidence": "../experiments/REAL_IMPORT.md"
+}

@@ -1,5 +1,8 @@
 # Órbita: implementation layers
 
+Implementation and verified handoff state: [CURRENT_STATUS.md](CURRENT_STATUS.md).
+This document defines scope/design; planned capabilities are not completion claims.
+
 Date: November 15, 2026. Maintained by the orchestrator. This document says, layer by layer, **what the product claims once that layer is built and which experiment could prove the claim false**. Who builds what, in which order and on which branch is in [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md); how to run an experiment and record it is in [METHOD.md](METHOD.md); each module's own experiments are in its [work order](work-orders/).
 
 An implementation layer is a phase of the plan (F0–F6). It is not the same thing as the import layers of the architecture (core, store, readings…), which say who may import whom.
@@ -35,7 +38,7 @@ Each decision is a bet about the future. This table says what it rests on and wh
 | D13 | Blood sugar from BUT CGM (CC BY 4.0, `terrestrial` origin); mood as a team self-report 1–5, synthetic, no score | Both named by the challenge; no open mood data; published questionnaires are not free to copy | User decision, 15/11/2026; DATASETS.md | An open flight or analog dataset for either appears |
 | D14 | Gamification limited to the day's plan progress ("n of m done"); no streaks, points or rewards for results | Streaks push measuring for its own sake; rewards for results would grade health | User decision, 15/11/2026 | First thing cut if time runs short |
 
-Status on 15/11/2026: D9 was chosen by the user. D1, D2, D3, D4 and D6 match the stack the user listed and asked to continue with on 15/11/2026. D5, D7 and D8 were confirmed by the user on 15/11/2026 by accepting the orchestrator's recommendation with its reasons; gate G0 still needs its experiments and the threat model.
+Status on 15/11/2026: D9 was chosen by the user. D1, D2, D3, D4 and D6 match the stack the user listed and asked to continue with on 15/11/2026. D5, D7 and D8 were confirmed by the user on 15/11/2026 by accepting the orchestrator's recommendation with its reasons; M00 now provides its threat model and G0 experiments; see [G0](experiments/G0.md) for local integration, user authorization and the file:// verification limit.
 
 ## F0 — Foundation
 
@@ -54,6 +57,8 @@ Status on 15/11/2026: D9 was chosen by the user. D1, D2, D3, D4 and D6 match the
 **Closes when** G0-W1 to G0-W3 are recorded, `docs/THREAT_MODEL.md` exists, (D5, D7 and D8 were confirmed on 15/11/2026).
 
 ## F1 — Data core (level 0)
+
+Current evidence: M01–M05 are implemented and independently reviewed; all 83 tests and actual browser persistence checks pass. See [G1](experiments/G1.md). Human gate acceptance remains pending; no F2 work is started. The parallel real-data acquisition task remains network-blocked.
 
 **Claim.** A record that enters the store comes out with the same id, state, origin and subject, and a malformed record cannot enter at all.
 

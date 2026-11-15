@@ -1,0 +1,30 @@
+[
+  {
+    "label": "crf_metadata",
+    "url": "https://nlsp.nasa.gov/api/v1/data/lsda_experiment/eeb9bd34-bdd4-5115-b139-adf2c9927962/full",
+    "time_utc": "2026-11-15T16:59:40Z",
+    "error": "URLError",
+    "reason": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+  },
+  {
+    "label": "mr079g_metadata",
+    "url": "https://nlsp.nasa.gov/api/v1/data/lsda_experiment/f97392b8-b9dd-5bae-af9e-dd76a33bf049/full",
+    "time_utc": "2026-11-15T16:59:40Z",
+    "error": "URLError",
+    "reason": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+  },
+  {
+    "label": "but_cgm_card",
+    "url": "https://physionet.org/content/but-cgm/1.0.0/",
+    "time_utc": "2026-11-15T16:59:40Z",
+    "error": "URLError",
+    "reason": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+  },
+  {
+    "label": "but_cgm_official_public_bucket_listing_attempt",
+    "url": "https://physionet-open.s3.amazonaws.com/?list-type=2&prefix=but-cgm%2F1.0.0%2F&max-keys=3",
+    "time_utc": "2026-11-15T17:00:13Z",
+    "error": "URLError",
+    "reason": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+  }
+]

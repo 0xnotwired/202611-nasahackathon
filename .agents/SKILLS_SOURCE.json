@@ -1,0 +1,1800 @@
+{
+  "repository": "https://github.com/annatchijova/SKILLS.git",
+  "commit": "92b4ff0ec30752ba1595615d881116d676485421",
+  "imported_on": "2026-11-15",
+  "purpose": "User-authorized development-agent instructions; not product functionality",
+  "source_copy": "Unmodified tracked files from git archive; Git metadata excluded",
+  "licenses": [
+    "skills/LICENSE",
+    "skills/red-team/LICENSE.claude-red"
+  ],
+  "file_count": 264,
+  "skill_count": 199,
+  "skill_paths": [
+    "abductive-engineering/SKILL.md",
+    "acquisition-order-of-volatility/SKILL.md",
+    "agent-trust-boundaries/SKILL.md",
+    "alert-triage-economics/SKILL.md",
+    "assume-breach-modeling/SKILL.md",
+    "atomic-state-mutation/SKILL.md",
+    "attack-surface-triage/SKILL.md",
+    "audit-before-patch/SKILL.md",
+    "authorization-surface-mapping/SKILL.md",
+    "beyond-the-fix/SKILL.md",
+    "beyond-the-sink/SKILL.md",
+    "claim-provenance-discipline/SKILL.md",
+    "client-side-trust-boundary/SKILL.md",
+    "cloud-architecture-selection/SKILL.md",
+    "cloud-control-plane-reasoning/SKILL.md",
+    "codebase-health-assessment/SKILL.md",
+    "concurrency-reasoning/SKILL.md",
+    "container-trust-boundary/SKILL.md",
+    "containment-under-uncertainty/SKILL.md",
+    "control-effectiveness-vs-existence/SKILL.md",
+    "credential-material-triage/SKILL.md",
+    "crypto-misuse-reasoning/SKILL.md",
+    "data-leakage-hunting/SKILL.md",
+    "data-provenance-mapping/SKILL.md",
+    "daubert-defensible-writing/SKILL.md",
+    "debt-closure-discipline/SKILL.md",
+    "deception-signal-quality/SKILL.md",
+    "decision-record-discipline/SKILL.md",
+    "dependency-provenance/SKILL.md",
+    "destination-driven-construction/SKILL.md",
+    "detection-engineering/SKILL.md",
+    "deterministic-core/SKILL.md",
+    "diagnosing-bugs/SKILL.md",
+    "discriminating-proof/SKILL.md",
+    "distributed-write-atomicity/SKILL.md",
+    "dont-fall-in-love-with-the-bug/SKILL.md",
+    "dual-use-behavior-adjudication/SKILL.md",
+    "exploitability-triage/SKILL.md",
+    "falsifiable-testing/SKILL.md",
+    "finding-custody/SKILL.md",
+    "forensic-logging-design/SKILL.md",
+    "forensic-persistence/SKILL.md",
+    "frontend-accessibility-by-construction/SKILL.md",
+    "frontend-component-boundaries/SKILL.md",
+    "frontend-performance-budgets/SKILL.md",
+    "frontend-testing-strategy/SKILL.md",
+    "git-discipline/SKILL.md",
+    "honest-degradation/SKILL.md",
+    "honest-technical-oratory/SKILL.md",
+    "hypothesis-driven-hunting/SKILL.md",
+    "incident-timeline-reconstruction/SKILL.md",
+    "intel-source-evaluation/SKILL.md",
+    "invariant-hunting/SKILL.md",
+    "irreversible-action-gate/SKILL.md",
+    "known-defect-disposition/SKILL.md",
+    "language-selection/SKILL.md",
+    "live-contract-compatibility/SKILL.md",
+    "llm-out-of-the-loop/SKILL.md",
+    "model-evaluation-discipline/SKILL.md",
+    "non-overwhelming-ux/SKILL.md",
+    "oracle-driven-fuzzing/SKILL.md",
+    "ot-safety-first-threat-model/SKILL.md",
+    "parser-differential-hunting/SKILL.md",
+    "pipeline-trust/SKILL.md",
+    "purple-team-exercise/SKILL.md",
+    "readme-architecture/SKILL.md",
+    "recovery-integrity/SKILL.md",
+    "red-team-auditing/SKILL.md",
+    "red-team/abductive-engineering/SKILL.md",
+    "red-team/agent-trust-boundaries/SKILL.md",
+    "red-team/api-boundary-assessment/SKILL.md",
+    "red-team/atomic-state-mutation/SKILL.md",
+    "red-team/attack-surface-triage/SKILL.md",
+    "red-team/authorization-surface-mapping/SKILL.md",
+    "red-team/claim-provenance-discipline/SKILL.md",
+    "red-team/cloud-control-plane-reasoning/SKILL.md",
+    "red-team/cloud-identity-assessment/SKILL.md",
+    "red-team/concurrency-reasoning/SKILL.md",
+    "red-team/container-trust-boundary/SKILL.md",
+    "red-team/dependency-provenance/SKILL.md",
+    "red-team/detection-engineering/SKILL.md",
+    "red-team/deterministic-core/SKILL.md",
+    "red-team/discriminating-proof/SKILL.md",
+    "red-team/distributed-write-atomicity/SKILL.md",
+    "red-team/exploitability-triage/SKILL.md",
+    "red-team/falsifiable-testing/SKILL.md",
+    "red-team/finding-custody/SKILL.md",
+    "red-team/forensic-logging-design/SKILL.md",
+    "red-team/fuzz-campaign-design/SKILL.md",
+    "red-team/honest-degradation/SKILL.md",
+    "red-team/invariant-hunting/SKILL.md",
+    "red-team/llm-out-of-the-loop/SKILL.md",
+    "red-team/oracle-driven-fuzzing/SKILL.md",
+    "red-team/pipeline-boundary-assessment/SKILL.md",
+    "red-team/pipeline-trust/SKILL.md",
+    "red-team/purple-team-exercise/SKILL.md",
+    "red-team/red-team-auditing/SKILL.md",
+    "red-team/remediation-driven-reporting/SKILL.md",
+    "red-team/rt-active-directory/SKILL.md",
+    "red-team/rt-advanced-redteam/SKILL.md",
+    "red-team/rt-ai-security/SKILL.md",
+    "red-team/rt-anti-forensics/SKILL.md",
+    "red-team/rt-api-abuse/SKILL.md",
+    "red-team/rt-basic-exploitation/SKILL.md",
+    "red-team/rt-bluetooth-ble/SKILL.md",
+    "red-team/rt-bluetooth-classic/SKILL.md",
+    "red-team/rt-bug-identification/SKILL.md",
+    "red-team/rt-c2-frameworks/SKILL.md",
+    "red-team/rt-cicd-secrets/SKILL.md",
+    "red-team/rt-container-escape/SKILL.md",
+    "red-team/rt-crash-analysis/SKILL.md",
+    "red-team/rt-crypto-attacks/SKILL.md",
+    "red-team/rt-data-exfiltration/SKILL.md",
+    "red-team/rt-deauth-disassoc/SKILL.md",
+    "red-team/rt-dependency-confusion/SKILL.md",
+    "red-team/rt-deserialization/SKILL.md",
+    "red-team/rt-edr-evasion/SKILL.md",
+    "red-team/rt-evil-twin/SKILL.md",
+    "red-team/rt-exploit-dev-course/SKILL.md",
+    "red-team/rt-exploit-development/SKILL.md",
+    "red-team/rt-fast-checking/SKILL.md",
+    "red-team/rt-file-upload/SKILL.md",
+    "red-team/rt-fuzzing-course/SKILL.md",
+    "red-team/rt-graphql/SKILL.md",
+    "red-team/rt-idor/SKILL.md",
+    "red-team/rt-initial-access/SKILL.md",
+    "red-team/rt-iot/SKILL.md",
+    "red-team/rt-k8s-attacks/SKILL.md",
+    "red-team/rt-keylogger-arch/SKILL.md",
+    "red-team/rt-krack-fragattacks/SKILL.md",
+    "red-team/rt-lateral-movement/SKILL.md",
+    "red-team/rt-linux-privesc/SKILL.md",
+    "red-team/rt-lorawan-sub-ghz/SKILL.md",
+    "red-team/rt-mitigations/SKILL.md",
+    "red-team/rt-mobile/SKILL.md",
+    "red-team/rt-netexec/SKILL.md",
+    "red-team/rt-network-attacks/SKILL.md",
+    "red-team/rt-oauth/SKILL.md",
+    "red-team/rt-open-redirect/SKILL.md",
+    "red-team/rt-osint-methodology/SKILL.md",
+    "red-team/rt-osint/SKILL.md",
+    "red-team/rt-parameter-pollution/SKILL.md",
+    "red-team/rt-persistence/SKILL.md",
+    "red-team/rt-phishing/SKILL.md",
+    "red-team/rt-race-condition/SKILL.md",
+    "red-team/rt-rce/SKILL.md",
+    "red-team/rt-reporting/SKILL.md",
+    "red-team/rt-request-smuggling/SKILL.md",
+    "red-team/rt-shellcode/SKILL.md",
+    "red-team/rt-social-engineering/SKILL.md",
+    "red-team/rt-sqli/SKILL.md",
+    "red-team/rt-ssrf/SKILL.md",
+    "red-team/rt-ssti/SKILL.md",
+    "red-team/rt-supply-chain/SKILL.md",
+    "red-team/rt-tls-attacks/SKILL.md",
+    "red-team/rt-toctou/SKILL.md",
+    "red-team/rt-vuln-classes/SKILL.md",
+    "red-team/rt-waf-bypass/SKILL.md",
+    "red-team/rt-wifi-recon/SKILL.md",
+    "red-team/rt-wifi/SKILL.md",
+    "red-team/rt-windows-boundaries/SKILL.md",
+    "red-team/rt-windows-mitigations/SKILL.md",
+    "red-team/rt-windows-privesc/SKILL.md",
+    "red-team/rt-wpa-enterprise/SKILL.md",
+    "red-team/rt-wpa2-psk/SKILL.md",
+    "red-team/rt-wpa3-sae/SKILL.md",
+    "red-team/rt-wps/SKILL.md",
+    "red-team/rt-xss/SKILL.md",
+    "red-team/rt-xxe/SKILL.md",
+    "red-team/rt-z-wave/SKILL.md",
+    "red-team/rt-zigbee-thread-matter/SKILL.md",
+    "red-team/tamper-evident-audit-chain/SKILL.md",
+    "red-team/token-trust-assessment/SKILL.md",
+    "red-team/variant-analysis/SKILL.md",
+    "red-team/workflow-abuse-assessment/SKILL.md",
+    "remediation-driven-reporting/SKILL.md",
+    "resilient-ui-states/SKILL.md",
+    "resource-exhaustion-review/SKILL.md",
+    "reverse-engineering/SKILL.md",
+    "root-of-trust-reasoning/SKILL.md",
+    "secret-lifecycle-discipline/SKILL.md",
+    "secure-by-construction/SKILL.md",
+    "social-engineering-plausibility/SKILL.md",
+    "software-archaeology/SKILL.md",
+    "sql-aggregation-not-materialization/SKILL.md",
+    "surgical-patcher/SKILL.md",
+    "tamper-evident-audit-chain/SKILL.md",
+    "terminal-first/SKILL.md",
+    "threat-attribution-restraint/SKILL.md",
+    "traffic-as-evidence/SKILL.md",
+    "training-run-provenance/SKILL.md",
+    "training-serving-parity/SKILL.md",
+    "untrusted-sample-handling/SKILL.md",
+    "validate-at-the-boundary/SKILL.md",
+    "variant-analysis/SKILL.md",
+    "versioned-schema-evolution/SKILL.md",
+    "working-on-main/SKILL.md",
+    "writing-agents-md/SKILL.md",
+    "zero-trust-as-a-claim/SKILL.md"
+  ],
+  "files": [
+    {
+      "path": "LICENSE",
+      "bytes": 11089,
+      "sha256": "12b5b76b9d8380f964b07cf48465c89bd351c8eeaa3e0d7dc855217606409906",
+      "mode": "0o664"
+    },
+    {
+      "path": "README.es.md",
+      "bytes": 31998,
+      "sha256": "ca0ac389fb8fdb76436c11141fe4e029124ef493f5c87f8ed4309835d2fdc3da",
+      "mode": "0o664"
+    },
+    {
+      "path": "README.md",
+      "bytes": 32747,
+      "sha256": "862dcee24b05c729afcd7c4eb0e1c0318dfa490ac39e09f4ea5bf5aa1cc958ba",
+      "mode": "0o664"
+    },
+    {
+      "path": "abductive-engineering/SKILL.md",
+      "bytes": 12932,
+      "sha256": "ed8dce445420a1d92dfde62e01be3fa2897a659a267311334e922ba45c60430c",
+      "mode": "0o664"
+    },
+    {
+      "path": "abductive-engineering/references/peirce-foundations.md",
+      "bytes": 7574,
+      "sha256": "e99bba62f0b9434adeeabcfe769a27d7fed8f523eddd66d9a32bd5ca4ead7c5d",
+      "mode": "0o664"
+    },
+    {
+      "path": "acquisition-order-of-volatility/SKILL.md",
+      "bytes": 7941,
+      "sha256": "457b5d07ce6dfc5f198d5482feaaa08836cda5325b8be33666308ff7ea6a5e57",
+      "mode": "0o664"
+    },
+    {
+      "path": "agent-trust-boundaries/SKILL.md",
+      "bytes": 12224,
+      "sha256": "4d8b853663107b59ac9944232917cf98b3db5a32a1bf10c353f60b6eb7d70120",
+      "mode": "0o664"
+    },
+    {
+      "path": "alert-triage-economics/SKILL.md",
+      "bytes": 7951,
+      "sha256": "6489c8a78f029048bc38e7135c19bc2bb2076a43386979ef94f37c64eef4862a",
+      "mode": "0o664"
+    },
+    {
+      "path": "assume-breach-modeling/SKILL.md",
+      "bytes": 10195,
+      "sha256": "abccf36c9ecc63d58b3a93a4cf763fadc0f4934947918cddcb4fa768bfe2652a",
+      "mode": "0o664"
+    },
+    {
+      "path": "atomic-state-mutation/SKILL.md",
+      "bytes": 5033,
+      "sha256": "6f50be718a587f801d9c7794a6cd431b8ad1342583facda4c9c7333d48ff35cf",
+      "mode": "0o664"
+    },
+    {
+      "path": "atomic-state-mutation/atomic-state-mutation.trigger.json",
+      "bytes": 1198,
+      "sha256": "45f0b1b68264bd1f44e5a1c1bc9e0e1297f633327a7fc4538fe588d1edb14e4b",
+      "mode": "0o664"
+    },
+    {
+      "path": "atomic-state-mutation/scripts/atomic_sqlite.py",
+      "bytes": 3683,
+      "sha256": "41d06cf00f2bf04cc7ed53acbd2c66e77595c3f32bfde561a97c1d558a582350",
+      "mode": "0o664"
+    },
+    {
+      "path": "attack-surface-triage/SKILL.md",
+      "bytes": 12435,
+      "sha256": "16d6abbf8f90a313d8c57d3508d7da582cdd04ef7243a3e49f1c7f0d17398dc8",
+      "mode": "0o664"
+    },
+    {
+      "path": "audit-before-patch/SKILL.md",
+      "bytes": 4969,
+      "sha256": "7775b301ae0a6c9a765aa8330cfcbf0cc6cfb0731677245e9f65d0a8fe22fc8d",
+      "mode": "0o664"
+    },
+    {
+      "path": "audit-before-patch/audit-before-patch.trigger.json",
+      "bytes": 1269,
+      "sha256": "37a573833c3de77afdb774f28ef7c327dbd408b1ec5a771efa76b7df28b3a56c",
+      "mode": "0o664"
+    },
+    {
+      "path": "audit-before-patch/scripts/verify_finding.py",
+      "bytes": 3485,
+      "sha256": "6bedd676753d591cc349898c10ab0f81759c6ff875e07881c655b1a87d739ec9",
+      "mode": "0o664"
+    },
+    {
+      "path": "authorization-surface-mapping/SKILL.md",
+      "bytes": 10415,
+      "sha256": "86f631e940337209cd4a209b9c2ec399ad7be64b93894242ef075c19cb56e280",
+      "mode": "0o664"
+    },
+    {
+      "path": "beyond-the-fix/SKILL.md",
+      "bytes": 13064,
+      "sha256": "610618917391468b369def4450a82183174da5e9f487bbc1dcb0e336b0409268",
+      "mode": "0o664"
+    },
+    {
+      "path": "beyond-the-sink/SKILL.md",
+      "bytes": 6667,
+      "sha256": "b34753bf700588ce52cd62f487cfeaebc0668b2ec452b31233b558bad113e246",
+      "mode": "0o664"
+    },
+    {
+      "path": "claim-provenance-discipline/SKILL.md",
+      "bytes": 12467,
+      "sha256": "2bd51ff6ec55158782aab486366303194d8718a32e896c3e08351a2e4539e258",
+      "mode": "0o664"
+    },
+    {
+      "path": "client-side-trust-boundary/SKILL.md",
+      "bytes": 8164,
+      "sha256": "a2ece8c034c2a4531ae52b3a2f83ea4b17df576365610db5927c60960a849dc5",
+      "mode": "0o664"
+    },
+    {
+      "path": "cloud-architecture-selection/SKILL.md",
+      "bytes": 16950,
+      "sha256": "ec90607638b73312f5b1ceaf93513aeaa6b05fca6ea72def8f3299182bd77543",
+      "mode": "0o664"
+    },
+    {
+      "path": "cloud-control-plane-reasoning/SKILL.md",
+      "bytes": 9219,
+      "sha256": "6ce6ffd1c724c1ed0de1e8de75853334a99767f3630cfd4e680d799509cec2d4",
+      "mode": "0o664"
+    },
+    {
+      "path": "codebase-health-assessment/SKILL.md",
+      "bytes": 13040,
+      "sha256": "6bb933cbee443d2c2c70b637c57297e65a6d92d795b32624614c3f12b9afd735",
+      "mode": "0o664"
+    },
+    {
+      "path": "concurrency-reasoning/SKILL.md",
+      "bytes": 12696,
+      "sha256": "cce54bf5d1e6e9149c4d96156fa8efef6e53ec8858bfa6d092fa4db4069822ba",
+      "mode": "0o664"
+    },
+    {
+      "path": "container-trust-boundary/SKILL.md",
+      "bytes": 8018,
+      "sha256": "257c0c9b36260d247ddd58810f0e9fab956d2bcfbdcb2e92d136524e8687156f",
+      "mode": "0o664"
+    },
+    {
+      "path": "containment-under-uncertainty/SKILL.md",
+      "bytes": 7224,
+      "sha256": "92631dd07c43df27311dd8dbd5334a769baf50cf5dee4c66eb1cb0d10b35feb4",
+      "mode": "0o664"
+    },
+    {
+      "path": "control-effectiveness-vs-existence/SKILL.md",
+      "bytes": 7822,
+      "sha256": "576481210a86a66e64c38464b1b4966693fc57c80ae4302fc1f07885e3da24c3",
+      "mode": "0o664"
+    },
+    {
+      "path": "credential-material-triage/SKILL.md",
+      "bytes": 9541,
+      "sha256": "7f653102d2838317d36dc5de2d75378bdfe59aa1deb67fc43a57ecffd2edab81",
+      "mode": "0o664"
+    },
+    {
+      "path": "crypto-misuse-reasoning/SKILL.md",
+      "bytes": 9136,
+      "sha256": "8a285b829bb3442881f0b1ab6d5d37407beee30b3eb903bc5357aa52bc35ae50",
+      "mode": "0o664"
+    },
+    {
+      "path": "data-leakage-hunting/SKILL.md",
+      "bytes": 10527,
+      "sha256": "b85023097923ddb3f52f089243d3700e78eefa4e86e7dfd87fcf5131657012c2",
+      "mode": "0o664"
+    },
+    {
+      "path": "data-provenance-mapping/SKILL.md",
+      "bytes": 7709,
+      "sha256": "a4d74a11b9b956444e659207292d5d089e8decddc95d386d78cce91b8c50f72e",
+      "mode": "0o664"
+    },
+    {
+      "path": "daubert-defensible-writing/SKILL.md",
+      "bytes": 14304,
+      "sha256": "dd5b7b971f17cd4bbc4a76a71e0a8f43e3e33e235d0f9806cd6b0a6863e2e257",
+      "mode": "0o664"
+    },
+    {
+      "path": "debt-closure-discipline/SKILL.md",
+      "bytes": 9630,
+      "sha256": "ad885fc1925f2c08d58e171608ed614ad5c3f359c7893ee5ccf52888b263fe5f",
+      "mode": "0o664"
+    },
+    {
+      "path": "deception-signal-quality/SKILL.md",
+      "bytes": 8179,
+      "sha256": "ce0da9250a1c98bf44dd31dddced6ecdb59e92847d61673140e0e1e26e72ebe5",
+      "mode": "0o664"
+    },
+    {
+      "path": "decision-record-discipline/SKILL.md",
+      "bytes": 11605,
+      "sha256": "ba57c5bff84cba0f43d7e0cf628bca929cc5f475173139a3a01f315e40690ca8",
+      "mode": "0o664"
+    },
+    {
+      "path": "dependency-provenance/SKILL.md",
+      "bytes": 12912,
+      "sha256": "9507f18ed8ea87149eded143b539060ba4e8ad84035ba4b0d0129955511a252d",
+      "mode": "0o664"
+    },
+    {
+      "path": "destination-driven-construction/SKILL.md",
+      "bytes": 10776,
+      "sha256": "7dc7598697ce77e75d9ba6e2fe663c17fb7b2348c378346c341445ea6da19c64",
+      "mode": "0o664"
+    },
+    {
+      "path": "detection-engineering/SKILL.md",
+      "bytes": 12997,
+      "sha256": "c71be30ff80d9fc90579d61b56afd3777a14b831e362a4216bb06aa7cef288b7",
+      "mode": "0o664"
+    },
+    {
+      "path": "deterministic-core/SKILL.md",
+      "bytes": 5544,
+      "sha256": "2056c7de242734d283db0325395777a0f8acf4d12df7b9ff392dadadaf843d1c",
+      "mode": "0o664"
+    },
+    {
+      "path": "deterministic-core/deterministic-core.trigger.json",
+      "bytes": 1255,
+      "sha256": "b8e2a323a3afcebedc303bd8a25e2bf275d06d619971feb0e43dc2ac2a0dddf5",
+      "mode": "0o664"
+    },
+    {
+      "path": "deterministic-core/scripts/canonicalize.py",
+      "bytes": 3037,
+      "sha256": "e4e88360c4a9c8f61e27d4242feaeeb973bbec5899896e5225ecc1e1bbb23b15",
+      "mode": "0o664"
+    },
+    {
+      "path": "deterministic-core/scripts/determinism_check.py",
+      "bytes": 3144,
+      "sha256": "08e2c19ddcc267de2294363c329075d18ce30fb730f044e810a01acd94b79147",
+      "mode": "0o664"
+    },
+    {
+      "path": "diagnosing-bugs/SKILL.md",
+      "bytes": 11118,
+      "sha256": "f5fe1c262d5ba998d018ddfae346aecb4cfc3537783ffcc1d03894bf7cdf2bed",
+      "mode": "0o664"
+    },
+    {
+      "path": "discriminating-proof/SKILL.md",
+      "bytes": 7140,
+      "sha256": "b903a62681542364ce5589a2964e8bd3cef9f394ca0c03740c78b23a759587b1",
+      "mode": "0o664"
+    },
+    {
+      "path": "distributed-write-atomicity/SKILL.md",
+      "bytes": 13481,
+      "sha256": "7892c0905cd3337f64225d11442a74584a2f25df916ecf2fa759a23bbf32549e",
+      "mode": "0o664"
+    },
+    {
+      "path": "dont-fall-in-love-with-the-bug/SKILL.md",
+      "bytes": 3182,
+      "sha256": "12271ad0ecacefb24deb13a2f1b4238aea2266aff3f368a1854c18c88de9c60f",
+      "mode": "0o664"
+    },
+    {
+      "path": "dual-use-behavior-adjudication/SKILL.md",
+      "bytes": 12929,
+      "sha256": "4ccbdd8434270b9f3bee4c2ded1835c80f3a8bd634c588c08f0ce64cfcd74a94",
+      "mode": "0o664"
+    },
+    {
+      "path": "exploitability-triage/SKILL.md",
+      "bytes": 8180,
+      "sha256": "87c7efe3db0f29f5704c4d1f03e68e98019acde387d79b3a921473c6f5db180f",
+      "mode": "0o664"
+    },
+    {
+      "path": "falsifiable-testing/SKILL.md",
+      "bytes": 11427,
+      "sha256": "bad816f7aed59d8bdc3e371117458fcdfe79db8e272ceb3efbda20ba2cefa2ea",
+      "mode": "0o664"
+    },
+    {
+      "path": "finding-custody/SKILL.md",
+      "bytes": 10643,
+      "sha256": "d01bc65db3e56b71d8465c483245ee9b1e8bc9a2d827334cbecd911eaf971f12",
+      "mode": "0o664"
+    },
+    {
+      "path": "forensic-logging-design/SKILL.md",
+      "bytes": 12101,
+      "sha256": "01026b17833efbabd01fb9ce761ad9c89ca7449fc546df7429b9a658561c86c9",
+      "mode": "0o664"
+    },
+    {
+      "path": "forensic-persistence/SKILL.md",
+      "bytes": 6505,
+      "sha256": "5adf70b11ac0dbc9f5aa8f7beec274dd2df9a7319e06b98e3e597a02cb82e01d",
+      "mode": "0o664"
+    },
+    {
+      "path": "frontend-accessibility-by-construction/SKILL.md",
+      "bytes": 7320,
+      "sha256": "f554e9be544b11553f6c8b2ac9a87e551c0ddd632014705351008adaf0fd1f84",
+      "mode": "0o664"
+    },
+    {
+      "path": "frontend-component-boundaries/SKILL.md",
+      "bytes": 8018,
+      "sha256": "d409ca77c281ab96ad8b0a7f67daea5474a61ef43f040a6b624413aeb20d65ce",
+      "mode": "0o664"
+    },
+    {
+      "path": "frontend-performance-budgets/SKILL.md",
+      "bytes": 6963,
+      "sha256": "bf30dcc0a2c5f3fd923c11650560d6643747b2a4af6b8d1a656c5954e495b859",
+      "mode": "0o664"
+    },
+    {
+      "path": "frontend-testing-strategy/SKILL.md",
+      "bytes": 6682,
+      "sha256": "56f73316148ecbdc756a16b13ea19634d1d030e6db1641f07fee472b440b99e4",
+      "mode": "0o664"
+    },
+    {
+      "path": "git-discipline/SKILL.md",
+      "bytes": 4789,
+      "sha256": "45902eb35d020ca4aadaa0bf2676f54eea40c6b8cf0c4aec3872a50e9e0fd78f",
+      "mode": "0o664"
+    },
+    {
+      "path": "git-discipline/git-discipline.trigger.json",
+      "bytes": 1129,
+      "sha256": "e70e666e8641b844bfc7c2031fdb6e3d403d02292af6c5e42b53f68dc4ebf6fc",
+      "mode": "0o664"
+    },
+    {
+      "path": "git-discipline/scripts/install_guard_hooks.sh",
+      "bytes": 1835,
+      "sha256": "0c9f17dd0a15763f11ed7d510f3539d4f82dab17566da19a627d04f4dc89c9de",
+      "mode": "0o664"
+    },
+    {
+      "path": "git-discipline/scripts/pre_session_tag.sh",
+      "bytes": 885,
+      "sha256": "4f19643c83436b11435b92e24039d63a9d743a74ddbbd940f9435ddee17f280f",
+      "mode": "0o664"
+    },
+    {
+      "path": "honest-degradation/SKILL.md",
+      "bytes": 5326,
+      "sha256": "48ca19af5b385b29359aa61df2586c35d2954516063f01d7295bc08cf10090bb",
+      "mode": "0o664"
+    },
+    {
+      "path": "honest-degradation/honest-degradation.trigger.json",
+      "bytes": 1258,
+      "sha256": "a14a0e0748be51f9bb7d291810d43cc396209f9f049ea06c021fca3b1c64e343",
+      "mode": "0o664"
+    },
+    {
+      "path": "honest-degradation/references/patterns.md",
+      "bytes": 4326,
+      "sha256": "c42ab4ad193d0a99fed5d910093434c56cf5a4d0d0d9c2c2fab465a2b2a7d42e",
+      "mode": "0o664"
+    },
+    {
+      "path": "honest-degradation/scripts/tristate_runner.py",
+      "bytes": 2597,
+      "sha256": "ba0a6d5cee708b2ba49462053eef4761b69ce417585949dc71621aa215a68058",
+      "mode": "0o664"
+    },
+    {
+      "path": "honest-technical-oratory/SKILL.md",
+      "bytes": 10463,
+      "sha256": "cc478a11f8cfbeda4a4ed32bd93dd96154ebe15ab60ae72b7f62c60c823bdc06",
+      "mode": "0o664"
+    },
+    {
+      "path": "hypothesis-driven-hunting/SKILL.md",
+      "bytes": 7403,
+      "sha256": "ac09186730f280061259a5916306999db4cbe2a14a05f91a7def3821671d2e09",
+      "mode": "0o664"
+    },
+    {
+      "path": "incident-timeline-reconstruction/SKILL.md",
+      "bytes": 11153,
+      "sha256": "ad8446a0685497ec476d9ab814211d8fbc3889af6ef005b56010eef5d52b5885",
+      "mode": "0o664"
+    },
+    {
+      "path": "intel-source-evaluation/SKILL.md",
+      "bytes": 7779,
+      "sha256": "b574c42bfe489dcb3cee03b7448dcb7f9c4680aef3e74841993aca7214af0bc0",
+      "mode": "0o664"
+    },
+    {
+      "path": "invariant-hunting/SKILL.md",
+      "bytes": 7187,
+      "sha256": "feed3e593b0744a4ac5c2c18c3076da81414c5da68003d643ac4e1624d19cce5",
+      "mode": "0o664"
+    },
+    {
+      "path": "irreversible-action-gate/SKILL.md",
+      "bytes": 10196,
+      "sha256": "e847306853a8aeb2a74422c866e78f69a8498d6fc3b657540c5950ac17a5a565",
+      "mode": "0o664"
+    },
+    {
+      "path": "known-defect-disposition/SKILL.md",
+      "bytes": 16223,
+      "sha256": "db86d5809778f312374c980c006c6b96c90d4ce0ad8e03bec167cfd7bf2cb449",
+      "mode": "0o664"
+    },
+    {
+      "path": "language-selection/SKILL.md",
+      "bytes": 19402,
+      "sha256": "0b7149b6e5add7f94067df3b0961dde97b94fe6d7358189730a6b444f6d52990",
+      "mode": "0o664"
+    },
+    {
+      "path": "language-selection/references/candidate-index.md",
+      "bytes": 4805,
+      "sha256": "0c74c3ab2b08e2e262f7495ad110935ec4b371c1aff4a721494e91890b172bca",
+      "mode": "0o664"
+    },
+    {
+      "path": "live-contract-compatibility/SKILL.md",
+      "bytes": 9060,
+      "sha256": "648319a9a7191f1a1d193c7ddfdb17d09df7432f809d04f06558798d82b7ea36",
+      "mode": "0o664"
+    },
+    {
+      "path": "llm-out-of-the-loop/SKILL.md",
+      "bytes": 4942,
+      "sha256": "b96d4031a02c855c4a6b81a76dc71387d2717e270b8c36cc27406e12d8beeb93",
+      "mode": "0o664"
+    },
+    {
+      "path": "llm-out-of-the-loop/llm-out-of-the-loop.trigger.json",
+      "bytes": 1203,
+      "sha256": "d34181cc180da7e3a3b91293114dde5cab0e8763745d044672b00cb79220dd02",
+      "mode": "0o664"
+    },
+    {
+      "path": "llm-out-of-the-loop/references/architecture.md",
+      "bytes": 2819,
+      "sha256": "6609cb1d21fc15302b9264ed57a2d2969b5a1beff0841422e9e6c17e17908b9a",
+      "mode": "0o664"
+    },
+    {
+      "path": "llm-out-of-the-loop/scripts/seal_then_narrate.py",
+      "bytes": 4474,
+      "sha256": "9d7f2fdd9a202d5ab9efe1d9aacd26da5828978f45a317325ed60054515fabe0",
+      "mode": "0o664"
+    },
+    {
+      "path": "model-evaluation-discipline/SKILL.md",
+      "bytes": 9972,
+      "sha256": "d7ef6ac685a143e89cdf535df20cb2406a22c4f671789b13e4561de9a40dbc8e",
+      "mode": "0o664"
+    },
+    {
+      "path": "non-overwhelming-ux/SKILL.md",
+      "bytes": 10809,
+      "sha256": "08acd1d1a80a24ca5444fe85ec930a24c5258b20b0cbadc9f60ce2e8a9979eae",
+      "mode": "0o664"
+    },
+    {
+      "path": "oracle-driven-fuzzing/SKILL.md",
+      "bytes": 10454,
+      "sha256": "e4c2d1ad08476f9c3b671c8e02b3c3c55e1be7ba9322607ab8f1356e5ff032af",
+      "mode": "0o664"
+    },
+    {
+      "path": "ot-safety-first-threat-model/SKILL.md",
+      "bytes": 9388,
+      "sha256": "d0e2332a5330059464aa98ec3d3a2b97fd08e4677c1a3136a254a5be5d180899",
+      "mode": "0o664"
+    },
+    {
+      "path": "parser-differential-hunting/SKILL.md",
+      "bytes": 9614,
+      "sha256": "fd42fa81087878aa2b5ee64a67fa68d2b08c61248f9c4b410e2b8eab7ddd340b",
+      "mode": "0o664"
+    },
+    {
+      "path": "pipeline-trust/SKILL.md",
+      "bytes": 7664,
+      "sha256": "4fa6f7820d1f5d9d523bf41bcc4c8b089334b5393d8ec5c59c3369e8903c5d89",
+      "mode": "0o664"
+    },
+    {
+      "path": "purple-team-exercise/SKILL.md",
+      "bytes": 9842,
+      "sha256": "0d19f0a749542cd9b10e8bb7137d8fcb6e73f03f3a0753335eed27caf5a7abc9",
+      "mode": "0o664"
+    },
+    {
+      "path": "readme-architecture/SKILL.md",
+      "bytes": 17943,
+      "sha256": "a3d655cab76a1a341adfe0ab6db5e5dbecb27ce550ed1337ffc1ebdeee22ec6e",
+      "mode": "0o664"
+    },
+    {
+      "path": "recovery-integrity/SKILL.md",
+      "bytes": 7163,
+      "sha256": "bd6132b0c050c39e88340708b778d2b65dbd5fed6a1d6b9842d342018f8434ec",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team-auditing/SKILL.md",
+      "bytes": 18273,
+      "sha256": "9ff8b1e14a786adc8b75e88be00f6541fd39d55a554bb3a2fafb93d0868ddd77",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/.gitignore",
+      "bytes": 14,
+      "sha256": "38ea40b3f38bd89561f33c7a2f5e45866f8ae72ffba22c781f4ba011a16ff86d",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/ADAPTATIONS.json",
+      "bytes": 73504,
+      "sha256": "42852b1debce3a921bc2585737d3a7d5e9bbb39e040df33a15a21d248d71c34c",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/CLAUDE_LEER.md",
+      "bytes": 13757,
+      "sha256": "58663090da972b35be5444eae54bafc2d5c385eb076f7e0c9526ca81bc023dc6",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/COVERAGE.md",
+      "bytes": 34289,
+      "sha256": "24dd2277b0ecee07663066b6a17e8cbdf341f03f22acdcaae0eae347143c089b",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/LICENSE.claude-red",
+      "bytes": 1085,
+      "sha256": "f2ebf01e609ee09215fbe0334dc8a96e7474a186f07a73e24e983fa2462e0ff9",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/METHODOLOGY.md",
+      "bytes": 4066,
+      "sha256": "ca6dc30f666e695743dde8ad118a7c981eb33817c310244e9f12fdab204a1b97",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/PROVENANCE.md",
+      "bytes": 2208,
+      "sha256": "a02ab7aef30d52cd9707e42f607cf0da3656fc9f6208165268c08e652a2bd404",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/README.es.md",
+      "bytes": 4473,
+      "sha256": "284657ef9a64b7ec0476c4d11f40f81cbae1f8a2f7976fcc2e6edad01b6d973c",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/README.md",
+      "bytes": 4739,
+      "sha256": "077de38b843e1ff68967fc165021ba093c0b41e6cecb83f6b3e806429587b7e8",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/SOURCES.json",
+      "bytes": 6497,
+      "sha256": "180bbb9201e7a12e88396c38e239384173e9a975978937e3cddaafdb1e88d90b",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/VALIDATION.md",
+      "bytes": 2434,
+      "sha256": "65fb0aac399e243a23860fc34280dcd8f9205beb7430ac5a4d4cf1edbe7038aa",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/abductive-engineering/SKILL.md",
+      "bytes": 12932,
+      "sha256": "ed8dce445420a1d92dfde62e01be3fa2897a659a267311334e922ba45c60430c",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/abductive-engineering/references/peirce-foundations.md",
+      "bytes": 7574,
+      "sha256": "e99bba62f0b9434adeeabcfe769a27d7fed8f523eddd66d9a32bd5ca4ead7c5d",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/agent-trust-boundaries/SKILL.md",
+      "bytes": 12224,
+      "sha256": "4d8b853663107b59ac9944232917cf98b3db5a32a1bf10c353f60b6eb7d70120",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/api-boundary-assessment/SKILL.md",
+      "bytes": 6743,
+      "sha256": "da059994ec82b4061bf037b90d32de5c3953bf1c23c0a6defaf5f087e6d3a755",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/atomic-state-mutation/SKILL.md",
+      "bytes": 5033,
+      "sha256": "6f50be718a587f801d9c7794a6cd431b8ad1342583facda4c9c7333d48ff35cf",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/atomic-state-mutation/atomic-state-mutation.trigger.json",
+      "bytes": 1198,
+      "sha256": "45f0b1b68264bd1f44e5a1c1bc9e0e1297f633327a7fc4538fe588d1edb14e4b",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/atomic-state-mutation/scripts/atomic_sqlite.py",
+      "bytes": 3683,
+      "sha256": "41d06cf00f2bf04cc7ed53acbd2c66e77595c3f32bfde561a97c1d558a582350",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/attack-surface-triage/SKILL.md",
+      "bytes": 12435,
+      "sha256": "16d6abbf8f90a313d8c57d3508d7da582cdd04ef7243a3e49f1c7f0d17398dc8",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/authorization-surface-mapping/SKILL.md",
+      "bytes": 10415,
+      "sha256": "86f631e940337209cd4a209b9c2ec399ad7be64b93894242ef075c19cb56e280",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/catalog.py",
+      "bytes": 980,
+      "sha256": "0cbc20d47865802a3b3f20309a19a0eadf3fb3b12cce0f8a6be78f60e3ecabd0",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/claim-provenance-discipline/SKILL.md",
+      "bytes": 12467,
+      "sha256": "2bd51ff6ec55158782aab486366303194d8718a32e896c3e08351a2e4539e258",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/cloud-control-plane-reasoning/SKILL.md",
+      "bytes": 9219,
+      "sha256": "6ce6ffd1c724c1ed0de1e8de75853334a99767f3630cfd4e680d799509cec2d4",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/cloud-identity-assessment/SKILL.md",
+      "bytes": 7723,
+      "sha256": "7be9d215c2a6654272de8273667963a2d4e7e48113d3119ecf33b3ed14df90a5",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/concurrency-reasoning/SKILL.md",
+      "bytes": 12696,
+      "sha256": "cce54bf5d1e6e9149c4d96156fa8efef6e53ec8858bfa6d092fa4db4069822ba",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/container-trust-boundary/SKILL.md",
+      "bytes": 8018,
+      "sha256": "257c0c9b36260d247ddd58810f0e9fab956d2bcfbdcb2e92d136524e8687156f",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/dependency-provenance/SKILL.md",
+      "bytes": 12912,
+      "sha256": "9507f18ed8ea87149eded143b539060ba4e8ad84035ba4b0d0129955511a252d",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/detection-engineering/SKILL.md",
+      "bytes": 12997,
+      "sha256": "c71be30ff80d9fc90579d61b56afd3777a14b831e362a4216bb06aa7cef288b7",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/deterministic-core/SKILL.md",
+      "bytes": 5544,
+      "sha256": "2056c7de242734d283db0325395777a0f8acf4d12df7b9ff392dadadaf843d1c",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/deterministic-core/deterministic-core.trigger.json",
+      "bytes": 1255,
+      "sha256": "b8e2a323a3afcebedc303bd8a25e2bf275d06d619971feb0e43dc2ac2a0dddf5",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/deterministic-core/scripts/canonicalize.py",
+      "bytes": 3037,
+      "sha256": "e4e88360c4a9c8f61e27d4242feaeeb973bbec5899896e5225ecc1e1bbb23b15",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/deterministic-core/scripts/determinism_check.py",
+      "bytes": 3144,
+      "sha256": "08e2c19ddcc267de2294363c329075d18ce30fb730f044e810a01acd94b79147",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/discriminating-proof/SKILL.md",
+      "bytes": 7140,
+      "sha256": "b903a62681542364ce5589a2964e8bd3cef9f394ca0c03740c78b23a759587b1",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/distributed-write-atomicity/SKILL.md",
+      "bytes": 13481,
+      "sha256": "7892c0905cd3337f64225d11442a74584a2f25df916ecf2fa759a23bbf32549e",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/exploitability-triage/SKILL.md",
+      "bytes": 8180,
+      "sha256": "87c7efe3db0f29f5704c4d1f03e68e98019acde387d79b3a921473c6f5db180f",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/falsifiable-testing/SKILL.md",
+      "bytes": 11427,
+      "sha256": "bad816f7aed59d8bdc3e371117458fcdfe79db8e272ceb3efbda20ba2cefa2ea",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/finding-custody/SKILL.md",
+      "bytes": 10643,
+      "sha256": "d01bc65db3e56b71d8465c483245ee9b1e8bc9a2d827334cbecd911eaf971f12",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/forensic-logging-design/SKILL.md",
+      "bytes": 12101,
+      "sha256": "01026b17833efbabd01fb9ce761ad9c89ca7449fc546df7429b9a658561c86c9",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/fuzz-campaign-design/SKILL.md",
+      "bytes": 7142,
+      "sha256": "fe56c4b10bf82718760515dcab15dc0c735348693b347713161d12030c27f792",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/honest-degradation/SKILL.md",
+      "bytes": 5326,
+      "sha256": "48ca19af5b385b29359aa61df2586c35d2954516063f01d7295bc08cf10090bb",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/honest-degradation/honest-degradation.trigger.json",
+      "bytes": 1258,
+      "sha256": "a14a0e0748be51f9bb7d291810d43cc396209f9f049ea06c021fca3b1c64e343",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/honest-degradation/references/patterns.md",
+      "bytes": 4326,
+      "sha256": "c42ab4ad193d0a99fed5d910093434c56cf5a4d0d0d9c2c2fab465a2b2a7d42e",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/honest-degradation/scripts/tristate_runner.py",
+      "bytes": 2597,
+      "sha256": "ba0a6d5cee708b2ba49462053eef4761b69ce417585949dc71621aa215a68058",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/invariant-hunting/SKILL.md",
+      "bytes": 7187,
+      "sha256": "feed3e593b0744a4ac5c2c18c3076da81414c5da68003d643ac4e1624d19cce5",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/llm-out-of-the-loop/SKILL.md",
+      "bytes": 4942,
+      "sha256": "b96d4031a02c855c4a6b81a76dc71387d2717e270b8c36cc27406e12d8beeb93",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/llm-out-of-the-loop/llm-out-of-the-loop.trigger.json",
+      "bytes": 1203,
+      "sha256": "d34181cc180da7e3a3b91293114dde5cab0e8763745d044672b00cb79220dd02",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/llm-out-of-the-loop/references/architecture.md",
+      "bytes": 2819,
+      "sha256": "6609cb1d21fc15302b9264ed57a2d2969b5a1beff0841422e9e6c17e17908b9a",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/llm-out-of-the-loop/scripts/seal_then_narrate.py",
+      "bytes": 4474,
+      "sha256": "9d7f2fdd9a202d5ab9efe1d9aacd26da5828978f45a317325ed60054515fabe0",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/oracle-driven-fuzzing/SKILL.md",
+      "bytes": 10454,
+      "sha256": "e4c2d1ad08476f9c3b671c8e02b3c3c55e1be7ba9322607ab8f1356e5ff032af",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/pipeline-boundary-assessment/SKILL.md",
+      "bytes": 6950,
+      "sha256": "5097f3d1dd0f97a294c41f9b630785124973a288753f3b4cc38bfd0877519b40",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/pipeline-trust/SKILL.md",
+      "bytes": 7664,
+      "sha256": "4fa6f7820d1f5d9d523bf41bcc4c8b089334b5393d8ec5c59c3369e8903c5d89",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/purple-team-exercise/SKILL.md",
+      "bytes": 9842,
+      "sha256": "0d19f0a749542cd9b10e8bb7137d8fcb6e73f03f3a0753335eed27caf5a7abc9",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/red-team-auditing/SKILL.md",
+      "bytes": 18273,
+      "sha256": "9ff8b1e14a786adc8b75e88be00f6541fd39d55a554bb3a2fafb93d0868ddd77",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/remediation-driven-reporting/SKILL.md",
+      "bytes": 11831,
+      "sha256": "a3b7a820a5c90e2fb0ef5022c7d1848bd741f7d4e244854fe83197c6778b77ce",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/reviews/binary-fuzz-coverage.json",
+      "bytes": 7131,
+      "sha256": "be4170256123fea6438a9ba2ed7a2e372b474028557fa0940660edf4fde85987",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/reviews/independent-review.md",
+      "bytes": 18267,
+      "sha256": "bf3cdd9f93fc4ee175c55c54d61314886cd5d712b6c037cf7464eff720b29cac",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/reviews/operations-coverage.json",
+      "bytes": 11560,
+      "sha256": "795841d318164501d3e55c07329a9feeecec5d78aa5298580402bdf65454793b",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/reviews/platform-coverage.json",
+      "bytes": 7359,
+      "sha256": "d0fcf1f38ab9cc3ba0f5d29ec6871c906ea3b0e7c537856edbfd90f96e36afe4",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/reviews/web-auth-api-coverage.json",
+      "bytes": 12597,
+      "sha256": "74b7af5e00882f6f575b5f4032eee58ec861940bd7b90654a427b6e8ac7cdc7f",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/reviews/wireless-devices-coverage.json",
+      "bytes": 18029,
+      "sha256": "7c8f5990d657d575261b0db6d666946cccfa877dd6888a0136c6b49986256929",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-active-directory/SKILL.md",
+      "bytes": 8018,
+      "sha256": "ce07501cb83fcca64692b607348790fc7d1238ba81709fe759c9f2a36b5dc2c0",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-advanced-redteam/SKILL.md",
+      "bytes": 6469,
+      "sha256": "8a8311330e30ab6f65389b4e9e51601c4b7dff6c946c2d9047c364cdfb74a2e8",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-ai-security/SKILL.md",
+      "bytes": 8025,
+      "sha256": "cce0d21326d62e814f2be805306c1e041abd2a4540e3b561eda817c8afd22e5b",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-anti-forensics/SKILL.md",
+      "bytes": 7622,
+      "sha256": "dbd8fb95bf0800b87c0f30110c39d2f73205bd87f749f96d24ab0610b4637c0e",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-api-abuse/SKILL.md",
+      "bytes": 6919,
+      "sha256": "9930c1b8f5396a78ba1046fbbe9c8f2d0d3ac073c19e517dcfe1dae9bc3307f9",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-basic-exploitation/SKILL.md",
+      "bytes": 6793,
+      "sha256": "88a5d7821ba4e05b49743efc6e34d19de7a304c695e6f372cccc2f5ca4f444e0",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-bluetooth-ble/SKILL.md",
+      "bytes": 6620,
+      "sha256": "f391fad3df58821d038daf54bb0b60c4c6b628da2f1cff7232fc6400256e8274",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-bluetooth-classic/SKILL.md",
+      "bytes": 6592,
+      "sha256": "54cf11f7fe4aa7f8d0cc5f61804acd134c6ed1308919529b74101fdb02c6ff2b",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-bug-identification/SKILL.md",
+      "bytes": 6192,
+      "sha256": "0642fd6c957f136149ac64cadc6e0909858289f8b62fe60e09cbb58e0afd8245",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-c2-frameworks/SKILL.md",
+      "bytes": 7300,
+      "sha256": "bd14e85f9b6cab3f0554d036236a22422443f6bd97d4a984840753500dc70588",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-cicd-secrets/SKILL.md",
+      "bytes": 6949,
+      "sha256": "dc0a184c29ba6633286f32e5577fcdbd155548378d3ca7a6a15c392fbe74e943",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-container-escape/SKILL.md",
+      "bytes": 8514,
+      "sha256": "95f8e27b5eea30d09bfacd849c4c64ecd25967e9bd31994ae21c4f7a82c4508f",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-crash-analysis/SKILL.md",
+      "bytes": 6846,
+      "sha256": "a7141483deb27105cd05bb1123aee39186088d0f189c5d95e58f851ab49fcf16",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-crypto-attacks/SKILL.md",
+      "bytes": 9350,
+      "sha256": "54b4b5f52ee97cabbd89ff807f835f3150f78749d70126f9864ee5529f4585bd",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-data-exfiltration/SKILL.md",
+      "bytes": 6767,
+      "sha256": "a51dbd86c3fc890479314d82a605612ed1b030302d67ee88df94b93e55c92acc",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-deauth-disassoc/SKILL.md",
+      "bytes": 6085,
+      "sha256": "59d49d32653fbb6746c23120cdc0fdf554809217a7966196d2a40a6b08cffa7b",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-dependency-confusion/SKILL.md",
+      "bytes": 7102,
+      "sha256": "74ea2369a9dde44060eb231863f56a328aaefed4c7bba9e865951071fd175b57",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-deserialization/SKILL.md",
+      "bytes": 7962,
+      "sha256": "71e35a81f0ae99c5c9056df594ed0ccb0cc1a91b866530dbef60a4d53c79d752",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-edr-evasion/SKILL.md",
+      "bytes": 6910,
+      "sha256": "3ec64de690b6a44ba11d79946fe3eb3353f4e4c2ad28085e410c5ec7a235c688",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-evil-twin/SKILL.md",
+      "bytes": 7848,
+      "sha256": "78f9e01f7067b7f945e405996bae30fb6a72be80f92a78a807e3f5f4021da6ab",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-exploit-dev-course/SKILL.md",
+      "bytes": 4753,
+      "sha256": "3edd55f464fc3c28fd24c406e373316e99a476a88849cfaefc2086b1d563111e",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-exploit-development/SKILL.md",
+      "bytes": 6936,
+      "sha256": "41309f00ccb72d9e9d191493e91b952b4abc02bcd834943d7b46f9787db268a1",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-fast-checking/SKILL.md",
+      "bytes": 4790,
+      "sha256": "bf91950d8ea01393da2425680a4c63042672e10d194a139a4cb07c712240c79e",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-file-upload/SKILL.md",
+      "bytes": 7305,
+      "sha256": "6e12930c244cb08c48ab4f2c9c89bff687b7060d8ead086c0aa80c62df81f261",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-fuzzing-course/SKILL.md",
+      "bytes": 4154,
+      "sha256": "676d0d50cd40932abe5ce6726512cafcc46d91b2cda71dc5bbbaeddd0f2191a4",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-graphql/SKILL.md",
+      "bytes": 7577,
+      "sha256": "2d340438e082b7ff7ef8d29f58366f54bbe4906cf67da8e4fe5a29f96aef2650",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-idor/SKILL.md",
+      "bytes": 6683,
+      "sha256": "c70b4e25b48536acb78837842d43b14bae5db89c6e4a14fbf2790f6204ae7a1b",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-initial-access/SKILL.md",
+      "bytes": 6672,
+      "sha256": "562b10000b6f4c1559bc3daab5cc6fb64a32724765c55622019458d506d24e40",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-iot/SKILL.md",
+      "bytes": 7266,
+      "sha256": "e5fd46a864ffd44f9fc3061e5f2189f7402bf443267ca6f6574ba4706ab86d61",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-k8s-attacks/SKILL.md",
+      "bytes": 6821,
+      "sha256": "c4a3e6a93e5784de68b350920f252e29a1e78fa9bbe6a2d1b05d7df8bf9ec67b",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-keylogger-arch/SKILL.md",
+      "bytes": 6870,
+      "sha256": "16d51cf854a48d0aae0ae5ed4a24ef912944d296a8638406b42cb08075135fbc",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-krack-fragattacks/SKILL.md",
+      "bytes": 6091,
+      "sha256": "e4232f860f8f4c23bd1cd413c9b791397e8e3e291522e04d6346168dc5ce718d",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-lateral-movement/SKILL.md",
+      "bytes": 6599,
+      "sha256": "3935723ae020479618de33e0fcfa783070f2f083f17be3941cd795495a9edd7b",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-linux-privesc/SKILL.md",
+      "bytes": 6695,
+      "sha256": "5b511854ee8d88ece4e7163786b38ed2d1b44a1a9ad939339c2b05591b720443",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-lorawan-sub-ghz/SKILL.md",
+      "bytes": 6955,
+      "sha256": "fb2dea9ce945d5120bff1d77ddf0628f34ce28752fc7152ddc7a830777206222",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-mitigations/SKILL.md",
+      "bytes": 8322,
+      "sha256": "f370359890a70305fe01d911e157a4f5239efd6c6fb444fe5439ae28bf95a7e5",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-mobile/SKILL.md",
+      "bytes": 7773,
+      "sha256": "d2d5bc5a52ad33861fead2b5c050df18cb3489ad06acb954ca8cec0b43177c77",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-netexec/SKILL.md",
+      "bytes": 6625,
+      "sha256": "419a0f4878e34f471dae393101adc6a7b3cac738bfafd515f73d2e8f8ef157a4",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-network-attacks/SKILL.md",
+      "bytes": 7208,
+      "sha256": "abc0d5f0ed58313808975fd7ccec7efc585395c3e91028069d3816001a974b8e",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-oauth/SKILL.md",
+      "bytes": 8801,
+      "sha256": "561efa16d0570dbf2a718d18bdd22586945ac42a376fb05674a0b3c24faf6b13",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-open-redirect/SKILL.md",
+      "bytes": 6409,
+      "sha256": "1b744db07e4086c5c8c73fc6473485b82bf4b88efc14f95f0aa32dd8a9c43d54",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-osint-methodology/SKILL.md",
+      "bytes": 4593,
+      "sha256": "e9602b1b7c29d6f729444c2c72dbea05f09cc4567a8d6e6c33537cf13ce5d547",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-osint/SKILL.md",
+      "bytes": 6622,
+      "sha256": "342de9fa4293186d4187a8172f7e7be3e6b07bc1ead987d0a70242b49663a44b",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-parameter-pollution/SKILL.md",
+      "bytes": 6618,
+      "sha256": "72bbcc8a539796a428ae8b4e95056857b50426a5c46209276ab5e1d2b4b42ed5",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-persistence/SKILL.md",
+      "bytes": 6978,
+      "sha256": "88999ec6e60a16313d860a63a40190d166787b42779f3337c640a07529f2f3a7",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-phishing/SKILL.md",
+      "bytes": 7511,
+      "sha256": "705f0547a9c1c1531462d8beb21c524881c6af71080ef58f3559da133a076cc6",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-race-condition/SKILL.md",
+      "bytes": 7133,
+      "sha256": "7c6d0d5e3b70a8caa68d2f1f0d22f3fb79306e4688ca2737d8cfc5bafa5d2435",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-rce/SKILL.md",
+      "bytes": 7680,
+      "sha256": "9bd0780370fa695f8d3043638b6705b21e0b631b8563460c8793f4cce1dee5fc",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-reporting/SKILL.md",
+      "bytes": 5342,
+      "sha256": "22a5397662590335bfd270d081cc41a715e95a707af7ca852176a59afdcb2b1a",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-request-smuggling/SKILL.md",
+      "bytes": 7323,
+      "sha256": "d843111434e784b51fde6db83e0051e97007290e17ebd1c52c052b71fa51a5e7",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-shellcode/SKILL.md",
+      "bytes": 6713,
+      "sha256": "f953672b655ac4f3238b4bda195ce14074f01802816c36e201e4fad072e559bb",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-social-engineering/SKILL.md",
+      "bytes": 7040,
+      "sha256": "97bff06274c1b4aa0d261453f22c3e66d08e08d7fe36835ed6b1bf3095acea8f",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-sqli/SKILL.md",
+      "bytes": 14575,
+      "sha256": "5bb51fd10d15b5b6ce438cc60a5f042ae771bf7a028cca5852f5954804951ff7",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-ssrf/SKILL.md",
+      "bytes": 8112,
+      "sha256": "9a9ff89f5a49a60fa8dce0a508b39ad9059c1c525f6bc2e23aa320aac96f5e58",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-ssti/SKILL.md",
+      "bytes": 8414,
+      "sha256": "4baad90620c9b6972736a91efb5e792ff4c0f3c754238d9d5e4ab66a12a6441c",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-supply-chain/SKILL.md",
+      "bytes": 7101,
+      "sha256": "21bfa7c449a4d83728bce94478e96b8978be92eb29253a5197acfbfe13605a5c",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-tls-attacks/SKILL.md",
+      "bytes": 7397,
+      "sha256": "c936e1c814106e45a3a77cc9b221558edeb1828174215af069ce63c3608f3043",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-toctou/SKILL.md",
+      "bytes": 7883,
+      "sha256": "71a302f824e9be77a996790233297f5ce1edd1278387775d890a3b25404a15ff",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-vuln-classes/SKILL.md",
+      "bytes": 5340,
+      "sha256": "79be1ab0fa783072fdd05ea2055fe1fdd44b724de3bac622c40f9a81600b640e",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-waf-bypass/SKILL.md",
+      "bytes": 7313,
+      "sha256": "7a1e88c99bb6b972e07613e35475f7c08410ecb7d67683b68906a553f9d93fb6",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-wifi-recon/SKILL.md",
+      "bytes": 6285,
+      "sha256": "d2a4bb221f8bcf9342ae1e279b838bfb295263619346e3e061fd28775f89df42",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-wifi/SKILL.md",
+      "bytes": 5784,
+      "sha256": "321d6c0482f4ae358c1061fd6a7cb2e3fe699758731ec7a3c36dee8ac9e31be7",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-windows-boundaries/SKILL.md",
+      "bytes": 7526,
+      "sha256": "00a32dd9e957feaf817459740ea60d2d246cfe4b2acf31aaab2998b54e0a49f9",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-windows-mitigations/SKILL.md",
+      "bytes": 7859,
+      "sha256": "d4ef88b90c946eaa86ffa5c1a2ae156a85c4d1eae06c0a3f8a9c099784501b70",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-windows-privesc/SKILL.md",
+      "bytes": 7186,
+      "sha256": "87f3a0904a9f6cdcc87e5ef5728175d758fad6c724a67698bf9a377f23792bd3",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-wpa-enterprise/SKILL.md",
+      "bytes": 6829,
+      "sha256": "37328180f6ce8c50a9e61de8b2036a14e78acebc0aca146ee86daa40c3272dc6",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-wpa2-psk/SKILL.md",
+      "bytes": 6714,
+      "sha256": "a2f0f35b01aca0b70e4a382d1dad146c3dc2c7749d8deb7beed7910fccf66896",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-wpa3-sae/SKILL.md",
+      "bytes": 7176,
+      "sha256": "88d12496eba0eae23f4ce2cd9a047f059c03abaab2603cdd5153d51a9f245c29",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-wps/SKILL.md",
+      "bytes": 5759,
+      "sha256": "b56cec2c11e5d27b1c703cf6e645a99e47fecd159987c609a5f21e184eea25db",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-xss/SKILL.md",
+      "bytes": 8439,
+      "sha256": "fc071cf36548c82b36191a69547ac1dfd31aac1112aca57d33dddbc2437ceeba",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-xxe/SKILL.md",
+      "bytes": 7878,
+      "sha256": "99da7553fd650bf36065813d032378bd8d1a7a69844ea93294801bc53fceef28",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-z-wave/SKILL.md",
+      "bytes": 6419,
+      "sha256": "7456a035ddfe9fc3d93c5956c97b0e53288fbb905e4cc07d7049978862b0b091",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/rt-zigbee-thread-matter/SKILL.md",
+      "bytes": 8034,
+      "sha256": "b10e39a9daf8c67fde920186b8f52560e66a94e7a9a691282da7bacc8541ed74",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/tamper-evident-audit-chain/SKILL.md",
+      "bytes": 5357,
+      "sha256": "bb30d125e0c9df3fd5872f26546fa2fc7807b1015cea43e74a876e1c7609b103",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/tamper-evident-audit-chain/scripts/audit_chain.py",
+      "bytes": 7006,
+      "sha256": "07b1de33192749b95d8130adaf513e94889828d08bdc747212988660fed6f742",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/tamper-evident-audit-chain/tamper-evident-audit-chain.trigger.json",
+      "bytes": 1193,
+      "sha256": "668657ae1658b2fb42b0c408c798172d2c7f077a48cb4344d2c0549e188302c0",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/test_collection.py",
+      "bytes": 8456,
+      "sha256": "a8579255ec898d2397eb3af0d35698125448d163deae3ca505e09238669c4e11",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/token-trust-assessment/SKILL.md",
+      "bytes": 6879,
+      "sha256": "a3704aecc0ee74eb684bf209cf01874ca77df9f30039c986701a9585924978db",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/validate_collection.py",
+      "bytes": 7305,
+      "sha256": "1c01e5e112c40d866f1188dd84dbfc4cc6c079eca6f8934cf28548b983c6eec4",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/variant-analysis/SKILL.md",
+      "bytes": 3700,
+      "sha256": "c35fc04c20cf6423bc91e403c5a0f988df386d8722c9c78843d81e4a5e84c3ac",
+      "mode": "0o664"
+    },
+    {
+      "path": "red-team/workflow-abuse-assessment/SKILL.md",
+      "bytes": 7673,
+      "sha256": "8741b7c0fdb03799f16288d27e6fa8ed432ea8610be56cc162e3f1843b3c1435",
+      "mode": "0o664"
+    },
+    {
+      "path": "remediation-driven-reporting/SKILL.md",
+      "bytes": 11831,
+      "sha256": "a3b7a820a5c90e2fb0ef5022c7d1848bd741f7d4e244854fe83197c6778b77ce",
+      "mode": "0o664"
+    },
+    {
+      "path": "resilient-ui-states/SKILL.md",
+      "bytes": 6929,
+      "sha256": "611ba17caea54c1f061c173487f4512fd02675189a6447d938248367c296faed",
+      "mode": "0o664"
+    },
+    {
+      "path": "resource-exhaustion-review/SKILL.md",
+      "bytes": 9471,
+      "sha256": "14bcafccdaf3fad41bd7f4b11be251909c15e17d42d68e512047ddda1a4ad00c",
+      "mode": "0o664"
+    },
+    {
+      "path": "reverse-engineering/SKILL.md",
+      "bytes": 28921,
+      "sha256": "392fe9a6dd4c97525c0759839abd2abf4cd93fd87e136b9a4bf950cb36054048",
+      "mode": "0o664"
+    },
+    {
+      "path": "root-of-trust-reasoning/SKILL.md",
+      "bytes": 6936,
+      "sha256": "95b4ace17e4b2ed6c61f05487d6205cd94474a4a2eee18b40636dd45ed1ba7fa",
+      "mode": "0o664"
+    },
+    {
+      "path": "secret-lifecycle-discipline/SKILL.md",
+      "bytes": 11689,
+      "sha256": "e2812e12425e3f0a686cea972d7a5c5024c0bf06aa4c5f93120819a45fc9abd3",
+      "mode": "0o664"
+    },
+    {
+      "path": "secure-by-construction/SKILL.md",
+      "bytes": 12315,
+      "sha256": "05893cc4177bb27e8eb9ca5519cf91476d804784900ff9661d4d75f68580fd24",
+      "mode": "0o664"
+    },
+    {
+      "path": "social-engineering-plausibility/SKILL.md",
+      "bytes": 8713,
+      "sha256": "86655785c788239624e56a83a0c7e0db435b7e5ce1f2ba4254d50788d0d7a5f9",
+      "mode": "0o664"
+    },
+    {
+      "path": "software-archaeology/SKILL.md",
+      "bytes": 14682,
+      "sha256": "32f30ba5441174588b05935f0781250cfe74e76a3d170f0c63d92cad899e6952",
+      "mode": "0o664"
+    },
+    {
+      "path": "sql-aggregation-not-materialization/SKILL.md",
+      "bytes": 4591,
+      "sha256": "024a2c72b90ed249fd9d43d5f6cf09081b4f61d7e7dfad1f81b420c7c8a0808a",
+      "mode": "0o664"
+    },
+    {
+      "path": "sql-aggregation-not-materialization/scripts/sql_aggregation.py",
+      "bytes": 4074,
+      "sha256": "012686ac13e76bab58d2baeb874e3169587db197ef232a6fd0aa5a8ea61e4aa1",
+      "mode": "0o664"
+    },
+    {
+      "path": "sql-aggregation-not-materialization/sql-aggregation-not-materialization.trigger.json",
+      "bytes": 1156,
+      "sha256": "9236113292ac4db8b8c92fa82e41f574f223e08f238cc6ceeb61ed20b601c547",
+      "mode": "0o664"
+    },
+    {
+      "path": "surgical-patcher/SKILL.md",
+      "bytes": 5364,
+      "sha256": "f6e4b157e11a3d13cd54a10a543f7bd6d8e4c4fc882a826bc511370fedca1e04",
+      "mode": "0o664"
+    },
+    {
+      "path": "surgical-patcher/scripts/surgical_patch.py",
+      "bytes": 5437,
+      "sha256": "bfb8f8fec016c85c51977e6c40921ddbf45e9b7e9ca981c8d471cfdc2821d2d5",
+      "mode": "0o664"
+    },
+    {
+      "path": "surgical-patcher/surgical-patcher.trigger.json",
+      "bytes": 1288,
+      "sha256": "fbf0c95799317a2c82ef1d1f88544feaca395d514e7cce6f7eb10de579dd803d",
+      "mode": "0o664"
+    },
+    {
+      "path": "tamper-evident-audit-chain/SKILL.md",
+      "bytes": 5357,
+      "sha256": "bb30d125e0c9df3fd5872f26546fa2fc7807b1015cea43e74a876e1c7609b103",
+      "mode": "0o664"
+    },
+    {
+      "path": "tamper-evident-audit-chain/scripts/audit_chain.py",
+      "bytes": 7006,
+      "sha256": "07b1de33192749b95d8130adaf513e94889828d08bdc747212988660fed6f742",
+      "mode": "0o664"
+    },
+    {
+      "path": "tamper-evident-audit-chain/tamper-evident-audit-chain.trigger.json",
+      "bytes": 1193,
+      "sha256": "668657ae1658b2fb42b0c408c798172d2c7f077a48cb4344d2c0549e188302c0",
+      "mode": "0o664"
+    },
+    {
+      "path": "terminal-first/SKILL.md",
+      "bytes": 10595,
+      "sha256": "11cd30c896fcf427d0006d7e53cfe7257c6697a64a4c6f8f99df92212a6df286",
+      "mode": "0o664"
+    },
+    {
+      "path": "threat-attribution-restraint/SKILL.md",
+      "bytes": 9569,
+      "sha256": "4f6c5cc0fc0bc92ce502be75f0fd462e28b6f667b12f3264c2c440f457e41f22",
+      "mode": "0o664"
+    },
+    {
+      "path": "traffic-as-evidence/SKILL.md",
+      "bytes": 7656,
+      "sha256": "b27e1bda7df54347800d1f25c56e5ef8a4986a4f29d9375cb3e161d86fc5de41",
+      "mode": "0o664"
+    },
+    {
+      "path": "training-run-provenance/SKILL.md",
+      "bytes": 10051,
+      "sha256": "e5398b590901c97ba27cfd4e9e429fcd1a1a6024e423ab21a2e8f021e6218aea",
+      "mode": "0o664"
+    },
+    {
+      "path": "training-serving-parity/SKILL.md",
+      "bytes": 11281,
+      "sha256": "359cf28ea54482517b4b7bd3cae5ffcc9738a2a68af80d7df98d9afa7523d306",
+      "mode": "0o664"
+    },
+    {
+      "path": "untrusted-sample-handling/SKILL.md",
+      "bytes": 9477,
+      "sha256": "a39781813b59ffc37cd08084f193236999b7cff4161dc0dff3dcc5993494728c",
+      "mode": "0o664"
+    },
+    {
+      "path": "validate-at-the-boundary/SKILL.md",
+      "bytes": 5023,
+      "sha256": "3285dc935f49e1cf8122dfea6c8754d301ffea37cb240bc8e68a78d5368f3375",
+      "mode": "0o664"
+    },
+    {
+      "path": "validate-at-the-boundary/scripts/boundary_validators.py",
+      "bytes": 6356,
+      "sha256": "88254df8ba57f5d496b301de46bf1bc4a4ec73b963d56e252a09138991201d91",
+      "mode": "0o664"
+    },
+    {
+      "path": "validate-at-the-boundary/validate-at-the-boundary.trigger.json",
+      "bytes": 1176,
+      "sha256": "5eb88f640766158a427ec864ecf45bb58c9331e2e8a595e0e92ffad678cc1b21",
+      "mode": "0o664"
+    },
+    {
+      "path": "variant-analysis/SKILL.md",
+      "bytes": 3700,
+      "sha256": "c35fc04c20cf6423bc91e403c5a0f988df386d8722c9c78843d81e4a5e84c3ac",
+      "mode": "0o664"
+    },
+    {
+      "path": "versioned-schema-evolution/SKILL.md",
+      "bytes": 5058,
+      "sha256": "4498d6dd99c3b02bb5caae169575a8691b61201ac0380f5dcd0c13e711e5ec8a",
+      "mode": "0o664"
+    },
+    {
+      "path": "versioned-schema-evolution/scripts/schema_versioning.py",
+      "bytes": 4985,
+      "sha256": "12c3ef179b6ccdbdc890326b28011b014f5fa4a53cb415321ac368ccfcd38d13",
+      "mode": "0o664"
+    },
+    {
+      "path": "versioned-schema-evolution/versioned-schema-evolution.trigger.json",
+      "bytes": 1232,
+      "sha256": "bb349f18f05ab707fae9d4dec5a2d48041a617d6ac186e8d25f7adcd67ecd900",
+      "mode": "0o664"
+    },
+    {
+      "path": "working-on-main/SKILL.md",
+      "bytes": 7780,
+      "sha256": "aa73826dc45ab99ccc88d66326adc069abcbdf5b54be0252b1a18189cfc61988",
+      "mode": "0o664"
+    },
+    {
+      "path": "writing-agents-md/SKILL.md",
+      "bytes": 17141,
+      "sha256": "95f3077f6f5359cdd1334fca5fbd977601dd50819b3488ef9629c158c6675804",
+      "mode": "0o664"
+    },
+    {
+      "path": "zero-trust-as-a-claim/SKILL.md",
+      "bytes": 7541,
+      "sha256": "4f34f26eb04e0f62676a953d73dc9967141a87bfdadfb9d2289cf5f5f9fff20f",
+      "mode": "0o664"
+    }
+  ]
+}

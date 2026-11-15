@@ -1,0 +1,8 @@
+data/originals/
+dist/
+
+# Local real-data import state; never include in source delivery.
+data/local-import-profile/
+data/imported/
+
+__pycache__/
