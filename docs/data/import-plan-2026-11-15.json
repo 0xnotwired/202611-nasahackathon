@@ -1,0 +1,643 @@
+{
+  "version": 1,
+  "prepared_at_utc": "2026-11-15T19:52:48.436173+00:00",
+  "scope": "Source-specific preparation profiles, not implementation of F5/M21 or expansion of product contracts.",
+  "profiles": [
+    {
+      "id": "CRF",
+      "source_file": "data/originals/CRF-daily-vitals.csv",
+      "allowed_columns": [
+        "Subject",
+        "Date",
+        "Test_Phase",
+        "BR_Day",
+        "Vitals Time",
+        "Pulse",
+        "SysBP",
+        "DiaBP",
+        "Resp Rate",
+        "Weight",
+        "Body Temp",
+        "Height"
+      ],
+      "unit_map": {},
+      "time_mapping": {
+        "fields": [
+          "Date",
+          "Vitals Time"
+        ],
+        "format": "%m/%d/%Y %H:%M",
+        "precision": "minute",
+        "timezone": null,
+        "calendar": "unknown",
+        "target": "time:null + source_time"
+      },
+      "identity_scope": "CRF:Campaign3:subject",
+      "conversions": [],
+      "product_import_implemented": true,
+      "blocked_scientific_columns": [
+        "Pulse",
+        "SysBP",
+        "DiaBP",
+        "Resp Rate",
+        "Weight",
+        "Body Temp",
+        "Height"
+      ],
+      "excluded_columns": [
+        "Comment",
+        "Bowel Movement Description",
+        "Bowel Movement",
+        "Quantity",
+        "Head Down Tilt Verified"
+      ],
+      "window": {
+        "selection": "selected sample only",
+        "max_measurement_records": 791
+      },
+      "status": "preservation_only_unknown_units",
+      "adapter": "app/importers/index.js",
+      "implementation_evidence": "../experiments/M21.md"
+    },
+    {
+      "id": "MR079G",
+      "source_file": "data/originals/MR079G-muscle-function.csv",
+      "allowed_columns": [
+        "ID",
+        "Campaign",
+        "Subject",
+        "Date",
+        "Test_Phase",
+        "BR_Day",
+        "Test",
+        "Position",
+        "Value",
+        "Units"
+      ],
+      "unit_map": {
+        "Value": "verbatim Units, selected sample ft-lb"
+      },
+      "time_mapping": {
+        "field": "Date",
+        "format": "%m/%d/%Y",
+        "precision": "date",
+        "timezone": null,
+        "calendar": "unknown",
+        "target": "time:null + source_time"
+      },
+      "identity_scope": "MR079G:campaign:subject",
+      "conversions": [],
+      "product_import_implemented": true,
+      "status": "calendar_mapping_supported_unit_preserved",
+      "method_fields": [
+        "Test",
+        "Position"
+      ],
+      "window": {
+        "selection": "selected sample only",
+        "max_measurement_records": 12
+      },
+      "blocked_operations": [
+        "physical conversion without torque/energy semantics",
+        "UTC alignment",
+        "unknown-calendar comparisons"
+      ],
+      "adapter": "app/importers/index.js",
+      "implementation_evidence": "../experiments/M21.md"
+    },
+    {
+      "id": "MR035G",
+      "source_file": "data/originals/additional/MR035G-sample-1.csv",
+      "allowed_columns": [
+        "ID",
+        "CAMPAIGN",
+        "SUBJECT",
+        "TEST_PHASE",
+        "BR_DAY",
+        "SCAN_DATE",
+        "NET_AVG_BMD"
+      ],
+      "unit_map": {},
+      "time_mapping": {
+        "field": "SCAN_DATE",
+        "format": "%Y-%m-%d",
+        "precision": "date",
+        "timezone": null,
+        "calendar": "unknown",
+        "target": "time:null + source_time"
+      },
+      "identity_scope": "MR035G:campaign:subject:DXA-region",
+      "conversions": [],
+      "product_import_implemented": true,
+      "status": "preservation_only_unknown_units",
+      "blocked_scientific_columns": [
+        "NET_AVG_BMD"
+      ],
+      "window": {
+        "selection": "selected sample only",
+        "max_measurement_records": 10
+      },
+      "adapter": "app/importers/index.js",
+      "implementation_evidence": "../experiments/M21.md"
+    },
+    {
+      "id": "BRSMImmune",
+      "source_file": "data/originals/additional/BRSMImmune-sample-1.csv",
+      "allowed_columns": [
+        "ID",
+        "Campaign",
+        "SUBJECT",
+        "L-10",
+        "L-2",
+        "28/45",
+        "60/83",
+        "90",
+        "R+5/14"
+      ],
+      "unit_map": {},
+      "time_mapping": {
+        "axis": "protocol-relative composite labels",
+        "preserve_labels": true,
+        "target": "staging only; current Record source_time does not support this axis"
+      },
+      "identity_scope": "BRSMImmune:campaign:subject:analyte",
+      "conversions": [],
+      "product_import_implemented": false,
+      "status": "requires_protocol_axis_and_unit_dictionary",
+      "blocked_scientific_columns": [
+        "L-10",
+        "L-2",
+        "28/45",
+        "60/83",
+        "90",
+        "R+5/14"
+      ],
+      "window": {
+        "selection": "selected sample only",
+        "max_source_rows": 30
+      }
+    },
+    {
+      "id": "MR080G",
+      "source_file": "data/originals/additional/MR080G-sample-1.csv",
+      "allowed_columns": [
+        "ID",
+        "Campaign",
+        "Subject",
+        "Test_Phase",
+        "BR_Day",
+        "Date",
+        "Test",
+        "Stage",
+        "Time (min)",
+        "HR",
+        "VO2 (ml/kg/min)",
+        "VO2",
+        "VCO2",
+        "RER",
+        "VE",
+        "FEO2",
+        "FECO2"
+      ],
+      "unit_map": {
+        "Time (min)": "min",
+        "HR": "bpm",
+        "VO2 (ml/kg/min)": "mL/kg/min",
+        "VO2": "L/min",
+        "VCO2": "L/min",
+        "VE": "L/min at BTPS",
+        "FEO2": "%",
+        "FECO2": "%",
+        "RER": "1 (dimensionless respiratory exchange ratio)"
+      },
+      "time_mapping": {
+        "field": "Date",
+        "format": "%m/%d/%Y",
+        "precision": "date",
+        "timezone": null,
+        "calendar": "unknown",
+        "stage_axis": "Time (min) retained separately; do not add to midnight",
+        "target": "source date with retained stage metadata"
+      },
+      "identity_scope": "MR080G:campaign:subject:test",
+      "conversions": [],
+      "product_import_implemented": true,
+      "status": "selected_test_unit_mapping_verified_stage_context_required",
+      "excluded_columns": [],
+      "window": {
+        "selection": "selected sample only",
+        "max_source_rows": 4,
+        "max_measurement_records": 32
+      },
+      "unit_evidence": "unit-dictionary-followup-2026-11-15.json",
+      "gas_conditions": {
+        "VE": "BTPS"
+      },
+      "adapter": "app/importers/index.js",
+      "implementation_evidence": "../experiments/M21.md"
+    },
+    {
+      "id": "BUT_CGM",
+      "source_file": "data/originals/but-cgm-1.0.0/101001_CGM.csv",
+      "allowed_columns": [
+        "Timestamp",
+        "Glycemia"
+      ],
+      "unit_map": {
+        "Glycemia": "mmol/L"
+      },
+      "time_mapping": {
+        "field": "Timestamp",
+        "format": "%Y-%m-%d %H:%M:%S",
+        "precision": "second",
+        "timezone": null,
+        "calendar": "shifted",
+        "target": "time:null + source_time"
+      },
+      "identity_scope": "BUT_CGM:1.0.0:participant",
+      "conversions": [],
+      "product_import_implemented": true,
+      "status": "calendar_mapping_supported_provisional_source",
+      "delimiter": ";",
+      "encoding": "utf-8-sig",
+      "window": {
+        "selection": "first288 source samples in original time order",
+        "max_measurement_records": 288,
+        "not_a_coverage_claim": true
+      },
+      "adapter": "app/importers/index.js",
+      "implementation_evidence": "../experiments/M21.md"
+    },
+    {
+      "id": "ACTES",
+      "source_file": "data/originals/additional/ACTES-test_measure.csv",
+      "allowed_columns": [
+        "ID",
+        "time",
+        "RR",
+        "VO2",
+        "power"
+      ],
+      "unit_map": {
+        "time": "s",
+        "RR": "ms",
+        "VO2": "mL/min",
+        "power": "W"
+      },
+      "time_mapping": {
+        "axis": "elapsed seconds from effort start",
+        "target": "staging only; explicit relative-axis contract required"
+      },
+      "identity_scope": "ACTES:1.0.0:test-ID",
+      "conversions": [],
+      "product_import_implemented": false,
+      "status": "requires_relative_axis_provisional_source",
+      "window": {
+        "selection": "one explicit test ID, first300 rows",
+        "variables": [
+          "RR",
+          "VO2",
+          "power"
+        ],
+        "max_measurement_records": 900
+      },
+      "exclude_demographic_joins": true
+    },
+    {
+      "id": "ITBA",
+      "source_file": "data/originals/additional/ITBA-HR.csv",
+      "allowed_columns": [
+        "session timestamp preamble",
+        "sample rate preamble",
+        "HR"
+      ],
+      "unit_map": {
+        "HR": "bpm",
+        "TEMP": "Celsius",
+        "IBI offset": "s",
+        "IBI duration": "s"
+      },
+      "time_mapping": {
+        "axis": "published UTC shifted for de-identification",
+        "target": "staging until UTC plus shift/provenance metadata is represented; do not call original unshifted time",
+        "HR_TEMP_preamble_rows": 2,
+        "IBI_preamble_rows": 1
+      },
+      "identity_scope": "ITBA:1.0.1:activity:session:participant",
+      "conversions": [],
+      "product_import_implemented": false,
+      "status": "requires_shifted_UTC_provenance_provisional_source",
+      "companion_files": [
+        "data/originals/additional/ITBA-TEMP.csv",
+        "data/originals/additional/ITBA-IBI.csv"
+      ],
+      "quality_policy": "Apply exact session constraints; retain rate/start differences, reject invalid sensor sessions, disclose duplicates/gaps; no invented IBI rate.",
+      "window": {
+        "selection": "HR first300, TEMP first1200, IBI first300 events",
+        "max_measurement_records": 1800
+      }
+    },
+    {
+      "id": "96-E044",
+      "source_file": "data/originals/additional/96-E044-sample-1.xls",
+      "allowed_columns": [
+        "flight phase",
+        "posture",
+        "MIP FRC",
+        "MIP RV",
+        "MEP FRC",
+        "MEP TLC",
+        "mean",
+        "SE",
+        "measurement count"
+      ],
+      "unit_map": {
+        "respiratory_pressure": "mmHg"
+      },
+      "time_mapping": {
+        "axis": "grouped flight phases",
+        "target": "aggregate source view only"
+      },
+      "identity_scope": "96-E044:public-table:phase:posture",
+      "conversions": [],
+      "product_import_implemented": false,
+      "status": "aggregate_only_no_individual_records",
+      "window": {
+        "selection": "one public table"
+      }
+    },
+    {
+      "id": "DTO684",
+      "source_file": "data/originals/additional/DTO684-sample-1.xls",
+      "allowed_columns": [
+        "mission",
+        "altitude",
+        "detector location",
+        "absorbed dose rate estimate",
+        "equivalent dose rate estimate",
+        "uncertainty"
+      ],
+      "unit_map": {
+        "absorbed dose rate": "microGy/day",
+        "equivalent dose rate": "microSv/day"
+      },
+      "time_mapping": {
+        "axis": "mission/detector grouped table",
+        "target": "aggregate source view only"
+      },
+      "identity_scope": "DTO684:mission:detector",
+      "conversions": [],
+      "product_import_implemented": false,
+      "status": "aggregate_only_no_personal_exposure",
+      "excluded_files": [
+        "data/originals/additional/DTO684-sample-2.xls"
+      ],
+      "blocked_operations": [
+        "repair garbled second-file unit without source",
+        "convert absorbed dose to equivalent dose"
+      ],
+      "window": {
+        "selection": "first table only"
+      }
+    },
+    {
+      "id": "MSD007",
+      "source_file": "data/originals/additional/MSD007-sample-2.xls",
+      "allowed_columns": [
+        "contaminant",
+        "sample ID",
+        "sample context",
+        "T-VALUE"
+      ],
+      "unit_map": {},
+      "time_mapping": {
+        "axis": "sample date/time interval, unknown zone",
+        "target": "typed environmental index table only"
+      },
+      "identity_scope": "MSD007:mission:sample:location",
+      "conversions": [],
+      "product_import_implemented": false,
+      "status": "index_table_only_no_scalar_concentration",
+      "excluded_files": [
+        "data/originals/additional/MSD007-sample-1.xls"
+      ],
+      "blocked_operations": [
+        "derive CO2 numeric series from chart labels",
+        "treat T-VALUE as concentration"
+      ],
+      "window": {
+        "selection": "selected source table"
+      }
+    },
+    {
+      "id": "EDA-RR1",
+      "source_file": "data/originals/osdr/EDA-RR1-telemetry.json",
+      "allowed_columns": [
+        "time",
+        "temperature_iss",
+        "temperature_ground",
+        "humidity_iss",
+        "humidity_ground",
+        "co2_iss",
+        "co2_ground",
+        "milestones"
+      ],
+      "unit_map": {
+        "temperature_iss": "Celsius",
+        "temperature_ground": "Celsius",
+        "humidity_iss": "percent RH",
+        "humidity_ground": "percent RH",
+        "co2_iss": "ppm",
+        "co2_ground": "ppm"
+      },
+      "time_mapping": {
+        "field": "time",
+        "format": "published ISO8601 UTC Z",
+        "ground_dates_matched_to_flight": true,
+        "target": "time as published; matched comparison date context must survive mapping"
+      },
+      "identity_scope": "EDA:RR-1:ISS-or-ground:sensor-location",
+      "conversions": [],
+      "product_import_implemented": false,
+      "status": "verified_fields_requires_environment_context",
+      "window": {
+        "selection": "first144 timestamps ascending UTC, six scalar variables",
+        "max_measurement_records": 864
+      },
+      "radiation": {
+        "file": "data/originals/osdr/EDA-RR1-radiation.json",
+        "fields": [
+          "time",
+          "gcr",
+          "saa"
+        ],
+        "units": {
+          "gcr": "mGy/day",
+          "saa": "mGy/day"
+        },
+        "excluded": [
+          "total",
+          "accumulated"
+        ],
+        "max_measurement_records": 78,
+        "time": "daily UTC bins, not instantaneous personal exposure"
+      },
+      "quality_policy": "Keep ISS/ground separate; do not infer continuous sensor coverage from absence of missing markers. Environment interval/place/sensor required by core. Matched ground dates require provenance beyond current Record fields; do not silently drop that context."
+    },
+    {
+      "id": "OSD-51",
+      "source_file": "data/originals/osdr/genetics/GLDS-51_microarray_E-GEOD-14798.raw.1.zip",
+      "allowed_columns": [
+        "Block",
+        "Column",
+        "Row",
+        "Name",
+        "ID",
+        "Flags"
+      ],
+      "unit_map": {},
+      "time_mapping": {
+        "axis": "experimental assay design; scanner metadata time is not a clinical timeline",
+        "target": "dedicated assay metadata, not ordinary patient Record"
+      },
+      "identity_scope": "OSD-51:version2:assay:array:probe:channel",
+      "conversions": [],
+      "product_import_implemented": false,
+      "status": "raw_measurements_inspected_omics_adapter_not_implemented",
+      "companion_archive": "data/originals/osdr/genetics/GLDS-51_microarray_E-GEOD-14798.raw.2.zip",
+      "window": {
+        "selection": "one explicit assay for any future preview; no bulk insertion into health-record store"
+      },
+      "quality_policy": "Retain source flags/control spots; reviewed flag interpretation required before filtering. No auto-normalization, log transform or genomic/clinical inference.",
+      "inspection_manifest": "genetic-quantitative-inspection-2026-11-15.json",
+      "measurement_column_variants": [
+        {
+          "channels": [
+            "633",
+            "532"
+          ],
+          "fields": [
+            "F633 Median",
+            "F532 Median",
+            "B633 Median",
+            "B532 Median"
+          ]
+        },
+        {
+          "channels": [
+            "635",
+            "532"
+          ],
+          "fields": [
+            "F635 Median",
+            "F532 Median",
+            "B635 Median",
+            "B532 Median"
+          ]
+        },
+        {
+          "channels": [
+            "633",
+            "543"
+          ],
+          "fields": [
+            "F633 Median",
+            "F543 Median",
+            "B633 Median",
+            "B543 Median"
+          ]
+        }
+      ],
+      "variant_action": "Require exactly one declared source-header variant per file; preserve wavelengths/assay role, reject unknown variants; no silent cross-variant equivalence."
+    },
+    {
+      "id": "OSD-56",
+      "source_file": "data/originals/osdr/genetics/GLDS-56_microarray_E-GEOD-57408.raw.1.zip",
+      "allowed_columns": [
+        "FeatureNum",
+        "Row",
+        "Col",
+        "ProbeName",
+        "SystematicName",
+        "ControlType",
+        "gProcessedSignal",
+        "gMedianSignal",
+        "gBGSubSignal",
+        "gIsPosAndSignif",
+        "gIsSaturated"
+      ],
+      "unit_map": {},
+      "time_mapping": {
+        "axis": "experimental assay design; scanner metadata time is not a clinical timeline",
+        "target": "dedicated assay metadata, not ordinary patient Record"
+      },
+      "identity_scope": "OSD-56:version2:assay:array:probe:channel",
+      "conversions": [],
+      "product_import_implemented": false,
+      "status": "raw_measurements_inspected_omics_adapter_not_implemented",
+      "companion_archive": null,
+      "window": {
+        "selection": "one explicit assay for any future preview; no bulk insertion into health-record store"
+      },
+      "quality_policy": "Retain source flags/control spots; reviewed flag interpretation required before filtering. No auto-normalization, log transform or genomic/clinical inference.",
+      "inspection_manifest": "genetic-quantitative-inspection-2026-11-15.json",
+      "optional_annotation_columns": [
+        "GeneName"
+      ],
+      "annotation_action": "GeneName absent in five selected files; preserve probe/systematic IDs. Do not fabricate gene names or drop measurements for missing optional annotations."
+    }
+  ],
+  "global_rules": {
+    "preserve_originals": true,
+    "source_trace": [
+      "dataset/release",
+      "original SHA256",
+      "sheet/member",
+      "source row/feature number",
+      "subject or assay namespace",
+      "method/test/position",
+      "raw time and published processing state",
+      "unit evidence",
+      "citation"
+    ],
+    "unknown_unit_action": "Preserve only with explicit unknown status where schema permits; block conversion/scientific interpretation/comparison. No guessed physical units.",
+    "missing_numeric": [
+      "",
+      "NA",
+      "N/A",
+      "NaN",
+      "null"
+    ],
+    "missing_action": "not_recorded with no value; never zero; source numeric zero remains zero",
+    "invalid_row_action": "reject with bounded reason and row reference; no raw clinical text in logs",
+    "identity_action": "Keep IDs strings, dataset/cohort scopes distinct, reject synthetic/real subject mixing",
+    "capacity": {
+      "store_records_max": 10000,
+      "batch_max": 2048,
+      "count": "each scalar measurement, not source CSV rows",
+      "action": "Reject oversized requested selection explicitly; never silently truncate or auto-aggregate."
+    },
+    "no_implicit_operations": [
+      "UTC conversion for unknown zone",
+      "unit conversion",
+      "gap interpolation",
+      "resampling",
+      "clinical thresholds",
+      "cross-subject alignment",
+      "genetic normalization"
+    ],
+    "source_specific_missing_markers": "Only exact documented profile markers; add new source sentinels with evidence, never by guessing.",
+    "current_product_database_written": true,
+    "current_database_scope": "Dedicated ignored local Chromium profile/IDBorbita-real-samples;3861 records, no product views."
+  },
+  "provisional_eligibility": {
+    "datasets": [
+      "BUT_CGM",
+      "ACTES",
+      "ITBA"
+    ],
+    "authority": "user decision, organizer answer pending",
+    "action_if_declined": "Exclude identified dataset imports and outputs before delivery; retain research citations as appropriate."
+  },
+  "implementation_followup": "../experiments/REAL_IMPORT.md"
+}

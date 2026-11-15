@@ -1,0 +1,767 @@
+{
+  "archives": [
+    {
+      "study": "OSD-51",
+      "url": "https://osdr.nasa.gov/geode-py/ws/studies/OSD-51/download?source=datamanager&file=GLDS-51_microarray_E-GEOD-14798.raw.1.zip",
+      "file": "data/originals/osdr/genetics/GLDS-51_microarray_E-GEOD-14798.raw.1.zip",
+      "expected_bytes": 206246481,
+      "final_host": "genelab-repo-prod.s3.amazonaws.com",
+      "bytes": 206246481,
+      "sha256": "15c6b826180a6c012c7b3bad6fed63ce566887a0b1a17cc3418103ce8f46c8f4",
+      "retrieved_at_utc": "2026-11-15T19:46:30.905951+00:00",
+      "members": 88,
+      "crc_ok": true,
+      "member_inventory": [
+        {
+          "name": "GSM370266.gpr",
+          "bytes": 6118826
+        },
+        {
+          "name": "GSM370285.gpr",
+          "bytes": 6037549
+        },
+        {
+          "name": "GSM370343.gpr",
+          "bytes": 6092527
+        },
+        {
+          "name": "GSM370278.gpr",
+          "bytes": 6034062
+        },
+        {
+          "name": "GSM370352.gpr",
+          "bytes": 6091315
+        },
+        {
+          "name": "GSM370212.gpr",
+          "bytes": 6080708
+        },
+        {
+          "name": "GSM370264.gpr",
+          "bytes": 6055259
+        },
+        {
+          "name": "GSM370315.gpr",
+          "bytes": 5982327
+        },
+        {
+          "name": "GSM370253.gpr",
+          "bytes": 6054477
+        },
+        {
+          "name": "GSM370273.gpr",
+          "bytes": 6076543
+        },
+        {
+          "name": "GSM370256.gpr",
+          "bytes": 6092965
+        },
+        {
+          "name": "GSM370200.gpr",
+          "bytes": 5991280
+        },
+        {
+          "name": "GSM370312.gpr",
+          "bytes": 6058688
+        },
+        {
+          "name": "GSM370347.gpr",
+          "bytes": 5983967
+        },
+        {
+          "name": "GSM370328.gpr",
+          "bytes": 6028832
+        },
+        {
+          "name": "GSM370340.gpr",
+          "bytes": 6123144
+        },
+        {
+          "name": "GSM370265.gpr",
+          "bytes": 6084109
+        },
+        {
+          "name": "GSM370299.gpr",
+          "bytes": 5992086
+        },
+        {
+          "name": "GSM370223.gpr",
+          "bytes": 6019220
+        },
+        {
+          "name": "GSM370224.gpr",
+          "bytes": 6096854
+        },
+        {
+          "name": "GSM370311.gpr",
+          "bytes": 6079764
+        },
+        {
+          "name": "GSM370245.gpr",
+          "bytes": 6085293
+        },
+        {
+          "name": "GSM370254.gpr",
+          "bytes": 6104322
+        },
+        {
+          "name": "GSM370363.gpr",
+          "bytes": 5946806
+        },
+        {
+          "name": "GSM370300.gpr",
+          "bytes": 6089070
+        },
+        {
+          "name": "GSM370331.gpr",
+          "bytes": 5943654
+        },
+        {
+          "name": "GSM370257.gpr",
+          "bytes": 6066460
+        },
+        {
+          "name": "GSM370287.gpr",
+          "bytes": 5985723
+        },
+        {
+          "name": "GSM370281.gpr",
+          "bytes": 5995563
+        },
+        {
+          "name": "GSM370246.gpr",
+          "bytes": 6044008
+        },
+        {
+          "name": "GSM370271.gpr",
+          "bytes": 6047574
+        },
+        {
+          "name": "GSM370294.gpr",
+          "bytes": 5972219
+        },
+        {
+          "name": "GSM370219.gpr",
+          "bytes": 5984587
+        },
+        {
+          "name": "GSM370318.gpr",
+          "bytes": 6101613
+        },
+        {
+          "name": "GSM370255.gpr",
+          "bytes": 6010344
+        },
+        {
+          "name": "GSM370346.gpr",
+          "bytes": 5974074
+        },
+        {
+          "name": "GSM370199.gpr",
+          "bytes": 5967242
+        },
+        {
+          "name": "GSM370313.gpr",
+          "bytes": 6112496
+        },
+        {
+          "name": "GSM370248.gpr",
+          "bytes": 6033306
+        },
+        {
+          "name": "GSM370232.gpr",
+          "bytes": 6036184
+        },
+        {
+          "name": "GSM370326.gpr",
+          "bytes": 6050915
+        },
+        {
+          "name": "GSM370198.gpr",
+          "bytes": 6019377
+        },
+        {
+          "name": "GSM370292.gpr",
+          "bytes": 6104735
+        },
+        {
+          "name": "GSM370329.gpr",
+          "bytes": 6063972
+        },
+        {
+          "name": "GSM370209.gpr",
+          "bytes": 6022114
+        },
+        {
+          "name": "GSM370334.gpr",
+          "bytes": 6068402
+        },
+        {
+          "name": "GSM370322.gpr",
+          "bytes": 6003958
+        },
+        {
+          "name": "GSM370258.gpr",
+          "bytes": 6053043
+        },
+        {
+          "name": "GSM370295.gpr",
+          "bytes": 5940122
+        },
+        {
+          "name": "GSM370323.gpr",
+          "bytes": 6121393
+        },
+        {
+          "name": "GSM370301.gpr",
+          "bytes": 5971711
+        },
+        {
+          "name": "GSM370286.gpr",
+          "bytes": 5993154
+        },
+        {
+          "name": "GSM370288.gpr",
+          "bytes": 6077895
+        },
+        {
+          "name": "GSM370293.gpr",
+          "bytes": 5928022
+        },
+        {
+          "name": "GSM370341.gpr",
+          "bytes": 6087787
+        },
+        {
+          "name": "GSM370228.gpr",
+          "bytes": 6126811
+        },
+        {
+          "name": "GSM370216.gpr",
+          "bytes": 6060620
+        },
+        {
+          "name": "GSM370222.gpr",
+          "bytes": 6008796
+        },
+        {
+          "name": "GSM370320.gpr",
+          "bytes": 5968275
+        },
+        {
+          "name": "GSM370310.gpr",
+          "bytes": 6054138
+        },
+        {
+          "name": "GSM370239.gpr",
+          "bytes": 6097475
+        },
+        {
+          "name": "GSM370330.gpr",
+          "bytes": 6002374
+        },
+        {
+          "name": "GSM370321.gpr",
+          "bytes": 5991502
+        },
+        {
+          "name": "GSM370332.gpr",
+          "bytes": 6059715
+        },
+        {
+          "name": "GSM370333.gpr",
+          "bytes": 5958088
+        },
+        {
+          "name": "GSM370349.gpr",
+          "bytes": 5970344
+        },
+        {
+          "name": "GSM370296.gpr",
+          "bytes": 5988080
+        },
+        {
+          "name": "GSM370230.gpr",
+          "bytes": 6144047
+        },
+        {
+          "name": "GSM370338.gpr",
+          "bytes": 6007359
+        },
+        {
+          "name": "GSM370306.gpr",
+          "bytes": 6105413
+        },
+        {
+          "name": "GSM370275.gpr",
+          "bytes": 6102968
+        },
+        {
+          "name": "GSM370307.gpr",
+          "bytes": 6141758
+        },
+        {
+          "name": "GSM370364.gpr",
+          "bytes": 6089709
+        },
+        {
+          "name": "GSM370263.gpr",
+          "bytes": 6133462
+        },
+        {
+          "name": "GSM370231.gpr",
+          "bytes": 6102483
+        },
+        {
+          "name": "GSM370250.gpr",
+          "bytes": 6051866
+        },
+        {
+          "name": "GSM370365.gpr",
+          "bytes": 5987656
+        },
+        {
+          "name": "GSM370272.gpr",
+          "bytes": 6070821
+        },
+        {
+          "name": "GSM370277.gpr",
+          "bytes": 6070821
+        },
+        {
+          "name": "GSM370247.gpr",
+          "bytes": 6080713
+        },
+        {
+          "name": "GSM370229.gpr",
+          "bytes": 6123618
+        },
+        {
+          "name": "GSM370335.gpr",
+          "bytes": 5985322
+        },
+        {
+          "name": "GSM370218.gpr",
+          "bytes": 6081418
+        },
+        {
+          "name": "GSM370342.gpr",
+          "bytes": 6091149
+        },
+        {
+          "name": "GSM370303.gpr",
+          "bytes": 5973971
+        },
+        {
+          "name": "GSM370337.gpr",
+          "bytes": 5917220
+        },
+        {
+          "name": "GSM370290.gpr",
+          "bytes": 6004180
+        },
+        {
+          "name": "GSM370302.gpr",
+          "bytes": 6035493
+        }
+      ]
+    },
+    {
+      "study": "OSD-51",
+      "url": "https://osdr.nasa.gov/geode-py/ws/studies/OSD-51/download?source=datamanager&file=GLDS-51_microarray_E-GEOD-14798.raw.2.zip",
+      "file": "data/originals/osdr/genetics/GLDS-51_microarray_E-GEOD-14798.raw.2.zip",
+      "expected_bytes": 192406559,
+      "final_host": "genelab-repo-prod.s3.amazonaws.com",
+      "bytes": 192406559,
+      "sha256": "daa61e73ec4193de49beb56832ccf36f8e503538039351e83b2d33064154e0c5",
+      "retrieved_at_utc": "2026-11-15T19:46:30.368136+00:00",
+      "members": 82,
+      "crc_ok": true,
+      "member_inventory": [
+        {
+          "name": "GSM370358.gpr",
+          "bytes": 6053379
+        },
+        {
+          "name": "GSM370240.gpr",
+          "bytes": 6002399
+        },
+        {
+          "name": "GSM370217.gpr",
+          "bytes": 5983950
+        },
+        {
+          "name": "GSM370282.gpr",
+          "bytes": 6084629
+        },
+        {
+          "name": "GSM370234.gpr",
+          "bytes": 6075435
+        },
+        {
+          "name": "GSM370291.gpr",
+          "bytes": 5978737
+        },
+        {
+          "name": "GSM370359.gpr",
+          "bytes": 5948892
+        },
+        {
+          "name": "GSM370336.gpr",
+          "bytes": 6061262
+        },
+        {
+          "name": "GSM370284.gpr",
+          "bytes": 6097063
+        },
+        {
+          "name": "GSM370226.gpr",
+          "bytes": 6110995
+        },
+        {
+          "name": "GSM370208.gpr",
+          "bytes": 5993659
+        },
+        {
+          "name": "GSM370274.gpr",
+          "bytes": 6031563
+        },
+        {
+          "name": "GSM370357.gpr",
+          "bytes": 6059173
+        },
+        {
+          "name": "GSM370267.gpr",
+          "bytes": 6063072
+        },
+        {
+          "name": "GSM370353.gpr",
+          "bytes": 6122007
+        },
+        {
+          "name": "GSM370201.gpr",
+          "bytes": 5960467
+        },
+        {
+          "name": "GSM370268.gpr",
+          "bytes": 6058559
+        },
+        {
+          "name": "GSM370297.gpr",
+          "bytes": 5967434
+        },
+        {
+          "name": "GSM370361.gpr",
+          "bytes": 5972480
+        },
+        {
+          "name": "GSM370360.gpr",
+          "bytes": 5969517
+        },
+        {
+          "name": "GSM370210.gpr",
+          "bytes": 6107206
+        },
+        {
+          "name": "GSM370362.gpr",
+          "bytes": 6073398
+        },
+        {
+          "name": "GSM370366.gpr",
+          "bytes": 6068377
+        },
+        {
+          "name": "GSM370225.gpr",
+          "bytes": 6123202
+        },
+        {
+          "name": "GSM370317.gpr",
+          "bytes": 5931458
+        },
+        {
+          "name": "GSM370261.gpr",
+          "bytes": 6101198
+        },
+        {
+          "name": "GSM370249.gpr",
+          "bytes": 6122564
+        },
+        {
+          "name": "GSM370276.gpr",
+          "bytes": 6112226
+        },
+        {
+          "name": "GSM370236.gpr",
+          "bytes": 6110688
+        },
+        {
+          "name": "GSM370242.gpr",
+          "bytes": 6098660
+        },
+        {
+          "name": "GSM370252.gpr",
+          "bytes": 6084497
+        },
+        {
+          "name": "GSM370207.gpr",
+          "bytes": 5972622
+        },
+        {
+          "name": "GSM370203.gpr",
+          "bytes": 6027935
+        },
+        {
+          "name": "GSM370235.gpr",
+          "bytes": 6124934
+        },
+        {
+          "name": "GSM370227.gpr",
+          "bytes": 6120000
+        },
+        {
+          "name": "GSM370339.gpr",
+          "bytes": 6109065
+        },
+        {
+          "name": "GSM370279.gpr",
+          "bytes": 6013514
+        },
+        {
+          "name": "GSM370309.gpr",
+          "bytes": 6131442
+        },
+        {
+          "name": "GSM370356.gpr",
+          "bytes": 6080866
+        },
+        {
+          "name": "GSM370260.gpr",
+          "bytes": 6001369
+        },
+        {
+          "name": "GSM370354.gpr",
+          "bytes": 6090448
+        },
+        {
+          "name": "GSM370197.gpr",
+          "bytes": 5956208
+        },
+        {
+          "name": "GSM370345.gpr",
+          "bytes": 6047793
+        },
+        {
+          "name": "GSM370327.gpr",
+          "bytes": 6096867
+        },
+        {
+          "name": "GSM370221.gpr",
+          "bytes": 6020229
+        },
+        {
+          "name": "GSM370244.gpr",
+          "bytes": 6034871
+        },
+        {
+          "name": "GSM370215.gpr",
+          "bytes": 5966942
+        },
+        {
+          "name": "GSM370270.gpr",
+          "bytes": 6173103
+        },
+        {
+          "name": "GSM370289.gpr",
+          "bytes": 6018678
+        },
+        {
+          "name": "GSM370350.gpr",
+          "bytes": 5957752
+        },
+        {
+          "name": "GSM370269.gpr",
+          "bytes": 6084424
+        },
+        {
+          "name": "GSM370241.gpr",
+          "bytes": 6104927
+        },
+        {
+          "name": "GSM370220.gpr",
+          "bytes": 6105465
+        },
+        {
+          "name": "GSM370305.gpr",
+          "bytes": 5960242
+        },
+        {
+          "name": "GSM370211.gpr",
+          "bytes": 5966258
+        },
+        {
+          "name": "GSM370213.gpr",
+          "bytes": 5966649
+        },
+        {
+          "name": "GSM370251.gpr",
+          "bytes": 6116082
+        },
+        {
+          "name": "GSM370202.gpr",
+          "bytes": 6084333
+        },
+        {
+          "name": "GSM370283.gpr",
+          "bytes": 5961145
+        },
+        {
+          "name": "GSM370238.gpr",
+          "bytes": 6062012
+        },
+        {
+          "name": "GSM370344.gpr",
+          "bytes": 6055279
+        },
+        {
+          "name": "GSM370324.gpr",
+          "bytes": 6115382
+        },
+        {
+          "name": "GSM370348.gpr",
+          "bytes": 6067883
+        },
+        {
+          "name": "GSM370214.gpr",
+          "bytes": 5988845
+        },
+        {
+          "name": "GSM370316.gpr",
+          "bytes": 5978735
+        },
+        {
+          "name": "GSM370206.gpr",
+          "bytes": 6018706
+        },
+        {
+          "name": "GSM370205.gpr",
+          "bytes": 6005195
+        },
+        {
+          "name": "GSM370304.gpr",
+          "bytes": 6057857
+        },
+        {
+          "name": "GSM370314.gpr",
+          "bytes": 6126658
+        },
+        {
+          "name": "GSM370325.gpr",
+          "bytes": 6125138
+        },
+        {
+          "name": "GSM370243.gpr",
+          "bytes": 6124802
+        },
+        {
+          "name": "GSM370319.gpr",
+          "bytes": 5955579
+        },
+        {
+          "name": "GSM370351.gpr",
+          "bytes": 6133463
+        },
+        {
+          "name": "GSM370355.gpr",
+          "bytes": 6078557
+        },
+        {
+          "name": "GSM370259.gpr",
+          "bytes": 6132741
+        },
+        {
+          "name": "GSM370298.gpr",
+          "bytes": 5984183
+        },
+        {
+          "name": "GSM370237.gpr",
+          "bytes": 6073186
+        },
+        {
+          "name": "GSM370280.gpr",
+          "bytes": 5942532
+        },
+        {
+          "name": "GSM370233.gpr",
+          "bytes": 6110717
+        },
+        {
+          "name": "GSM370262.gpr",
+          "bytes": 6003234
+        },
+        {
+          "name": "GSM370308.gpr",
+          "bytes": 6086803
+        },
+        {
+          "name": "GSM370204.gpr",
+          "bytes": 6111043
+        }
+      ]
+    },
+    {
+      "study": "OSD-56",
+      "url": "https://osdr.nasa.gov/geode-py/ws/studies/OSD-56/download?source=datamanager&file=GLDS-56_microarray_E-GEOD-57408.raw.1.zip",
+      "file": "data/originals/osdr/genetics/GLDS-56_microarray_E-GEOD-57408.raw.1.zip",
+      "expected_bytes": 52711145,
+      "final_host": "genelab-repo-prod.s3.amazonaws.com",
+      "bytes": 52711145,
+      "sha256": "e2d434a36175fba31c840655ada9b1e0f80293e95cd5cbee8d48d1a70dc12cba",
+      "retrieved_at_utc": "2026-11-15T19:46:35.043319+00:00",
+      "members": 10,
+      "crc_ok": true,
+      "member_inventory": [
+        {
+          "name": "GSM506116.txt",
+          "bytes": 22255238
+        },
+        {
+          "name": "GSM506115.txt",
+          "bytes": 22251816
+        },
+        {
+          "name": "GSM506104.txt",
+          "bytes": 6832495
+        },
+        {
+          "name": "GSM506101.txt",
+          "bytes": 22248426
+        },
+        {
+          "name": "GSM506098.txt",
+          "bytes": 6837644
+        },
+        {
+          "name": "GSM506097.txt",
+          "bytes": 6836928
+        },
+        {
+          "name": "GSM506094.txt",
+          "bytes": 22254737
+        },
+        {
+          "name": "GSM506093.txt",
+          "bytes": 22237356
+        },
+        {
+          "name": "GSM506090.txt",
+          "bytes": 6840862
+        },
+        {
+          "name": "GSM506089.txt",
+          "bytes": 6836484
+        }
+      ]
+    }
+  ],
+  "scope": "All three published quantitative ZIPs acquired; byte counts match listing, local SHA256 and ZIP CRC verified. No published cryptographic checksum was available for these raw ZIPs."
+}

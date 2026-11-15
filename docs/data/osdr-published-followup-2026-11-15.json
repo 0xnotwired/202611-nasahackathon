@@ -1,0 +1,100 @@
+{
+  "reviewed_at_utc": "2026-11-15T19:29:04.964356+00:00",
+  "artifacts": [
+    {
+      "name": "OSDR-terms.html",
+      "url": "https://www.nasa.gov/reference/osdr-help-terms-and-conditions/",
+      "final_url": "https://science.nasa.gov/reference/osdr-help-terms-and-conditions/",
+      "retrieved_at_utc": "2026-11-15T19:28:06.343128+00:00",
+      "bytes": 270561,
+      "sha256": "26e56820f751acb04aa18636d7efea0144d1c7dedb8a39b20ef9a3ccda0981f8",
+      "content_type": "text/html; charset=UTF-8",
+      "file": "data/originals/osdr/OSDR-terms.html"
+    },
+    {
+      "name": "EDA-telemetry-source.js",
+      "url": "https://visualization.osdr.nasa.gov/eda/static/js/telemetry_plots.js",
+      "final_url": "https://visualization.osdr.nasa.gov/eda/static/js/telemetry_plots.js",
+      "retrieved_at_utc": "2026-11-15T19:28:05.131087+00:00",
+      "bytes": 10418,
+      "sha256": "a5985a3a1e066c6de9a802d24693bfb660234fee43038f42571a210b3d1e9c86",
+      "content_type": "text/javascript",
+      "file": "data/originals/osdr/EDA-telemetry-source.js"
+    },
+    {
+      "name": "EDA-radiation-source.js",
+      "url": "https://visualization.osdr.nasa.gov/eda/static/js/radiation_plots.js",
+      "final_url": "https://visualization.osdr.nasa.gov/eda/static/js/radiation_plots.js",
+      "retrieved_at_utc": "2026-11-15T19:28:05.096818+00:00",
+      "bytes": 4916,
+      "sha256": "f25acc2f7407440f7757e63fbbacb0f40ed39ead1131fe5485971ac79c2f2e66",
+      "content_type": "text/javascript",
+      "file": "data/originals/osdr/EDA-radiation-source.js"
+    },
+    {
+      "name": "EDA-navigation-source.js",
+      "url": "https://visualization.osdr.nasa.gov/eda/static/js/navigation.js",
+      "final_url": "https://visualization.osdr.nasa.gov/eda/static/js/navigation.js",
+      "retrieved_at_utc": "2026-11-15T19:28:05.091967+00:00",
+      "bytes": 1040,
+      "sha256": "3fdf05404f27e038c259d410b24bb926e5b7c29a86b43e334bae97d12099db9a",
+      "content_type": "text/javascript",
+      "file": "data/originals/osdr/EDA-navigation-source.js"
+    },
+    {
+      "name": "OSD-51_metadata_OSD-51-ISA.zip",
+      "url": "https://osdr.nasa.gov/geode-py/ws/studies/OSD-51/download?source=datamanager&file=OSD-51_metadata_OSD-51-ISA.zip",
+      "final_url": "https://genelab-shared-repo-prod.s3.amazonaws.com/osd-data/OSD-51/metadata/OSD-51_metadata_OSD-51-ISA.zip?versionId=n94IpD6jekS4lkjabzL9MCtM9N417La2&response-content-disposition=attachment%3B%20filename%3DOSD-51_metadata_OSD-51-ISA.zip&AWSAccessKeyId=ASIASEHL3NLH7Z5N5U5N&Signature=VsThknWx2fVUFRzCZGXst6DF%2Bqc%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEPP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDAAt0NNGXMHPH56YeDQ3Zr89RHQcaC6JkNtFvb7PXsiQIgTC%2FieGYGpu6q3WpcscgklJaUmegWqRnUoNL215Sw1RcqxgUIvP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAFGgwxNDY1MjM1MTU1OTkiDOZCom%2FcHNUekTyDUiqaBfpJUjlgRC4LFaNVfzqcUZKb1ftZkt4kEcdhJLLRdltW%2F%2F0M2Z9Pf2vbD1fBWB3vivAw2OqPRcGpRMbiJyoGZVvLT6AonjPGCgPR7jznYMUH69SVVBW2i5bX5lrv%2F1IdR8xl4wqmr2I6hk48uYP6hIyMD10DcjsFnkrfK%2FcSbSwBrcC7q9V4dPHhu4gZV5JQkIyIyTA9otbIx6f%2FB6CJLvc4yDlJoaLqVBpG7O7qKlUqyidQYOVBevvMWUkyQzM4AMmLXaOeQmJ5Y1qBiJi5lTC6XRn6pzpuJZxGpbcnMIIQqi0RPAmEBGKG7dOIkZ78ibJKwIwoaKzqyYVfd77MCiqZdbCZLqcO5jszcPGHPJh%2BTl%2BHe1trS4roVxW%2Bv0xxd4WOhOhUS0qnxgSDsQqk4UjcuyLkKsh7rQCyAs7CZvQuxk%2FvI0to4rjBIFSQt2ns%2F4rs%2BBNl64TcQSBSed%2BQF%2B1TlXM0qjOsbEOLohQuGpZo8%2FdV69x5oV3ffuAo3PZ%2F1KJiD4YMMUV1vYsDRuaIAQIlzQr7vke%2FVlMErVZ6%2FwqDAyQycqFBXKRCeHUcLjccfK%2FlNV3XuDFrOQErNgo162pzzY1oOY0quw6AOVQO0KIti9ZOhROgpDWJLQTcLl2zNtbv%2FnePOHxZwFhv1gxsCGL3dgHBDCxC2l9U19gdLtkWesm%2BrzmIdqwesPYUG5MKJG1QPXPH%2B9WKzKNVuYhtlxxLPXQJPQtbiXRXD3yfJLwVrPvdP06%2FFmu5cy5RLJHMqwGPpVJc6f%2F9MtQvgXS9mCtiROggyrf3PDB94C1DiUKEx2hr3nVKZbvwV3AGkaVQgLy%2BIxMODBuj6t7sLwTM5pL6IB4ycQkAlgJ8U0ljZ7K8iGLiFmuRLpYTrTDz%2FefXBjqxAX%2BqOvcuCkTi3EtEgxO%2BAUuPrfRtZjudk%2FStr%2Bt1Cr%2FjJdJ1Dbz1AC3TCzaBxH5Vd%2BUUlkbWc9DTmnvI%2BC9v6TXDBymrgzu1fYzqaHZ6GEPLJPgZzOW%2FXNsOdJby0dKWByvZawPcRHCThvDVwUsEvGUk3WO9B2lAv%2BPqWaAttnaEU2iBUsnYpJ4L60czjE0r%2BkGDdqaD68NWXLZB5QC%2FdViw0T1BaVoQcRXq3yYFV8kQog%3D%3D&Expires=1794774485",
+      "retrieved_at_utc": "2026-11-15T19:28:06.516624+00:00",
+      "bytes": 389087,
+      "sha256": "d54740f4985af02ae2ebfbb9f9a53ec8fa6375b34c91a2ed08b3ab509a45c5ab",
+      "content_type": "binary/octet-stream",
+      "file": "data/originals/osdr/OSD-51_metadata_OSD-51-ISA.zip"
+    },
+    {
+      "name": "GLDS-51_microarray_A-GEOD-6398.adf.txt",
+      "url": "https://osdr.nasa.gov/geode-py/ws/studies/OSD-51/download?source=datamanager&file=GLDS-51_microarray_A-GEOD-6398.adf.txt",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "name": "OSD-56_metadata_OSD-56-ISA.zip",
+      "url": "https://osdr.nasa.gov/geode-py/ws/studies/OSD-56/download?source=datamanager&file=OSD-56_metadata_OSD-56-ISA.zip",
+      "final_url": "https://genelab-shared-repo-prod.s3.amazonaws.com/osd-data/OSD-56/metadata/OSD-56_metadata_OSD-56-ISA.zip?versionId=54MmdVQIa.CFFdl9n7zdTFrnwR.LU9Aq&response-content-disposition=attachment%3B%20filename%3DOSD-56_metadata_OSD-56-ISA.zip&AWSAccessKeyId=ASIASEHL3NLH7Z5N5U5N&Signature=eV6n4J9ATyqBVPOeUvVZlnD6Mak%3D&x-amz-security-token=IQoJb3JpZ2luX2VjEPP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLXdlc3QtMiJHMEUCIQDAAt0NNGXMHPH56YeDQ3Zr89RHQcaC6JkNtFvb7PXsiQIgTC%2FieGYGpu6q3WpcscgklJaUmegWqRnUoNL215Sw1RcqxgUIvP%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAFGgwxNDY1MjM1MTU1OTkiDOZCom%2FcHNUekTyDUiqaBfpJUjlgRC4LFaNVfzqcUZKb1ftZkt4kEcdhJLLRdltW%2F%2F0M2Z9Pf2vbD1fBWB3vivAw2OqPRcGpRMbiJyoGZVvLT6AonjPGCgPR7jznYMUH69SVVBW2i5bX5lrv%2F1IdR8xl4wqmr2I6hk48uYP6hIyMD10DcjsFnkrfK%2FcSbSwBrcC7q9V4dPHhu4gZV5JQkIyIyTA9otbIx6f%2FB6CJLvc4yDlJoaLqVBpG7O7qKlUqyidQYOVBevvMWUkyQzM4AMmLXaOeQmJ5Y1qBiJi5lTC6XRn6pzpuJZxGpbcnMIIQqi0RPAmEBGKG7dOIkZ78ibJKwIwoaKzqyYVfd77MCiqZdbCZLqcO5jszcPGHPJh%2BTl%2BHe1trS4roVxW%2Bv0xxd4WOhOhUS0qnxgSDsQqk4UjcuyLkKsh7rQCyAs7CZvQuxk%2FvI0to4rjBIFSQt2ns%2F4rs%2BBNl64TcQSBSed%2BQF%2B1TlXM0qjOsbEOLohQuGpZo8%2FdV69x5oV3ffuAo3PZ%2F1KJiD4YMMUV1vYsDRuaIAQIlzQr7vke%2FVlMErVZ6%2FwqDAyQycqFBXKRCeHUcLjccfK%2FlNV3XuDFrOQErNgo162pzzY1oOY0quw6AOVQO0KIti9ZOhROgpDWJLQTcLl2zNtbv%2FnePOHxZwFhv1gxsCGL3dgHBDCxC2l9U19gdLtkWesm%2BrzmIdqwesPYUG5MKJG1QPXPH%2B9WKzKNVuYhtlxxLPXQJPQtbiXRXD3yfJLwVrPvdP06%2FFmu5cy5RLJHMqwGPpVJc6f%2F9MtQvgXS9mCtiROggyrf3PDB94C1DiUKEx2hr3nVKZbvwV3AGkaVQgLy%2BIxMODBuj6t7sLwTM5pL6IB4ycQkAlgJ8U0ljZ7K8iGLiFmuRLpYTrTDz%2FefXBjqxAX%2BqOvcuCkTi3EtEgxO%2BAUuPrfRtZjudk%2FStr%2Bt1Cr%2FjJdJ1Dbz1AC3TCzaBxH5Vd%2BUUlkbWc9DTmnvI%2BC9v6TXDBymrgzu1fYzqaHZ6GEPLJPgZzOW%2FXNsOdJby0dKWByvZawPcRHCThvDVwUsEvGUk3WO9B2lAv%2BPqWaAttnaEU2iBUsnYpJ4L60czjE0r%2BkGDdqaD68NWXLZB5QC%2FdViw0T1BaVoQcRXq3yYFV8kQog%3D%3D&Expires=1794774485",
+      "retrieved_at_utc": "2026-11-15T19:28:06.385351+00:00",
+      "bytes": 18966,
+      "sha256": "5b19d5281908b996531d4e966cc90975e4d0986fc2ee6e044500952ef701ec38",
+      "content_type": "binary/octet-stream",
+      "file": "data/originals/osdr/OSD-56_metadata_OSD-56-ISA.zip"
+    },
+    {
+      "name": "SMD-policy.html",
+      "url": "https://science.nasa.gov/researchers/science-data/science-information-policy",
+      "final_url": "https://science.nasa.gov/researchers/science-information-policy/",
+      "retrieved_at_utc": "2026-11-15T19:28:26.814992+00:00",
+      "bytes": 269277,
+      "sha256": "160edc64c5b2030ca5ebdabe3fcb779c8e5848d9d7deb81f92338fe2a46081f6",
+      "content_type": "text/html; charset=UTF-8",
+      "file": "data/originals/osdr/SMD-policy.html"
+    }
+  ],
+  "findings": [
+    "OSDR official Data Redistribution section explicitly covers NASA OSDR data and products acquired through its website under SMD Science Information Policy.",
+    "OSDR requests bibliographic citations to each dataset and acknowledgment; this is not a study-specific CC0 assignment.",
+    "Linked SMD policy page successfully retrieved; declares public availability and open sharing, not an independent blanket copyright waiver.",
+    "EDA application links OSDR terms; repository-policy coverage evidence now stronger, with dataset attribution/context still required.",
+    "Both ISA metadata ZIPs downloaded and passed ZIP CRC checks; quantitative microarray archives not downloaded.",
+    "OSD51 annotation route still encountered a blocked redirect; this does not make metadata downloads or reuse policy verification fail."
+  ],
+  "zip_checks": [
+    {
+      "study": "OSD-51",
+      "entries": 3,
+      "crc_ok": true
+    },
+    {
+      "study": "OSD-56",
+      "entries": 3,
+      "crc_ok": true
+    }
+  ]
+}

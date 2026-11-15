@@ -1,0 +1,56 @@
+{
+  "database": "orbita-real-samples",
+  "reports": [
+    {
+      "source": "CRF",
+      "sha256": "6aa6705dd04fed8fa9c27bc7e87a42e0b172253c25787f141c2da8dab54ab1b5",
+      "records": 791,
+      "rejected": 0,
+      "skipped": 226
+    },
+    {
+      "source": "MR079G",
+      "sha256": "5d5edf0d9fdf49d67cf2ada21dc0978afb1f6adfc4f56926b6fdd136a3bfb638",
+      "records": 12,
+      "rejected": 0,
+      "skipped": 0
+    },
+    {
+      "source": "MR035G",
+      "sha256": "ec3523891e735011fab2416a7492db9a8f7543ab75758c1d628170093193fd5f",
+      "records": 10,
+      "rejected": 0,
+      "skipped": 0
+    },
+    {
+      "source": "MR080G",
+      "sha256": "a76ebcde2a6ac022a2a0815b3d3864c079e47aaf44038772b1e09a609bca3a36",
+      "records": 32,
+      "rejected": 0,
+      "skipped": 0
+    },
+    {
+      "source": "BUT_CGM",
+      "sha256": "d05f745b5b201e4d666617cee1157221acec9418b903a1f632281e7ca8a56dee",
+      "records": 3016,
+      "rejected": 0,
+      "skipped": 0
+    }
+  ],
+  "imported_records": 3861,
+  "inserted": 0,
+  "unchanged": 3861,
+  "persistent": true,
+  "batch_size": 256,
+  "browser_restart_records": 3861,
+  "browser_restart_exact_readback": true,
+  "scope": "Isolated local real-data profile/database; no product views or clinical interpretation.",
+  "verified_at_utc": "2026-11-15T20:22:17.248295+00:00",
+  "source_custody_negative_control": "Changed disposable source copy rejected before database access",
+  "node_tests": {
+    "passed": 100,
+    "failed": 0,
+    "skipped": 0
+  },
+  "actual_source_rows_included": false
+}

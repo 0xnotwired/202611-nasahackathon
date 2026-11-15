@@ -129,7 +129,7 @@
         "model_status": "implemented; see docs/experiments/SOURCE_UNCERTAINTY.md",
         "calendar": "unknown",
         "scope_policy": "Use dataset/release/cohort/participant-specific namespace; never align subjects or studies by nominal dates.",
-        "format_limit": "Date-only slash fields in the 12-row sample are ambiguous as month/day versus day/month. Preserve raw text in staging; canonicalize only with source-backed format evidence. Model acceptance is not import-format confirmation."
+        "format_limit": "Source-corroborated month/day/year; selected2009-03-12. Same-subject090317 control refutes day/month; timezone remains unknown."
       },
       "sample_url": "https://nlsp.nasa.gov/api/v1/files/98123d56-dc42-52bb-85ff-42cf4b336024/download",
       "sample_sha256": "5d5edf0d9fdf49d67cf2ada21dc0978afb1f6adfc4f56926b6fdd136a3bfb638",
@@ -272,5 +272,6 @@
   ],
   "resolution": "Timezone uncertainty has implemented schema2 representation; original timezone remains unknown. CRF unit confirmation is still unsupported by reviewed source metadata, with explicit unknown-unit preservation now supported. MR079G slash-date format needs evidence before canonical import. Licenses and citations verified as previously recorded.",
   "rights_followup_verified_at_utc": "2026-11-15T18:27:22.573665+00:00",
-  "model_followup_at_utc": "2026-11-15T18:36:06.719260+00:00"
+  "model_followup_at_utc": "2026-11-15T18:36:06.719260+00:00",
+  "technical_followup": "technical-resolution-2026-11-15.json"
 }

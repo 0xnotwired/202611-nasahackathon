@@ -1,6 +1,6 @@
 # Órbita: contracts between modules
 
-Version 0.7 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
+Version 0.8 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
 
 Plan and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). Rationale for the rules: [PROPOSAL_IMPROVEMENTS.md](PROPOSAL_IMPROVEMENTS.md) and [AGENTS.md](../AGENTS.md).
 
@@ -311,6 +311,61 @@ importGlucose(text, { subject })     → Result<{ records, rejected, skipped }>
 
 Imported text is untrusted input: it is validated row by row. Records come out with `origin: "ground_analog"`, the file's `subject` and `Test_Phase` in `mission_phase`. Free-text clinical comments are not imported; `skipped` says how many.
 
+#### M21 implementation policy (user-authorized advance)
+
+The user explicitly requested real import implementation while F2 is open.
+This is a scoped M21 change order, not acceptance of F2–F5 or M22 views.
+The three functions are synchronous, deterministic and pure: no clock,
+randomness, network or database write. ImportReport contains records:Record[],
+rejected:Array<{row:number,code:string,field:string}> and
+skipped:Array<{row:number,column:string,reason:string}>. Row references are
+one-based physical source start lines including the header; embedded quoted
+newlines advance subsequent source line references. Never include raw
+clinical text in rejection/skip reports. Count excluded nonempty cells
+via skipped.length. Header-only input returns an empty report.
+
+Input uses verified source headers: CRF Campaign3DailyVitals comma CSV,
+MR079G/MR035G/MR080G adaptation CSV, BUT CGM1.0.0 semicolon CSV with optional
+UTF8 BOM. CSV supports CRLF/LF and quoted delimiters/newlines/escaped quotes.
+Input is bounded to5MiB UTF8 and10000 output records; capacity excess is an
+explicit whole-import error, never silent truncation. Invalid input/header,
+unsupported study/profile and unrecoverable CSV quotation errors fail the
+whole call. Recoverable row shape/numeric/date errors go to rejected while
+other rows continue. Invalid options/accessors must not execute user code.
+
+All emitted records pass core schema2 validation. Source row numerals never
+become identifiers; subject strings such as007 remain unchanged. Record IDs
+bind a deterministic original-text fingerprint, adapter, caller-supplied identity where applicable, physical row and
+measurement column so repeat imports are detectable and files do not share
+row IDs. Source includes DOI/profile identity and original-text fingerprint;
+source_time.scope includes study/release/cohort/subject clock identity.
+No columns can supply arbitrary origin/schema/state fields. Clinical free
+text never enters note/source/rejections. Method and bounded structured
+context retain Test/Position/Stage and phase/day without clinical inference.
+
+CRF maps Pulse/SysBP/DiaBP/Resp Rate/Weight/Body Temp/Height; units remain
+explicitly unknown until an authoritative source-specific mapping exists.
+Missing numeric cells/NA/NaN emit not_recorded without a value, while numeric
+zero is preserved. Unknown-unit status is used only with numeric values;
+missing unknown-unit measurements omit unit metadata according to core rules.
+CRF dates use source-corroboratedMM/DD/YYYY and minute clock, MR079G uses
+source-corroboratedMM/DD/YYYY date-only, MR035G uses ISO scan date-only.
+Their offsets/calendar-shifting remain unknown; time:null/source_time avoids
+inventing UTC or midnight. Unknown calendars/units stay non-comparable.
+
+MR079G preserves source Value/Units, method Test+Position; MR035G retains
+NET_AVG_BMD with unknown units. MR080G's selected verified Campaign3C,
+subject7772,2006-05-07 test uses the unit-labelled companion profile; other
+MR080G profiles fail rather than inherit units. VE retains BTPS. No physical
+conversion is performed and distinct physiological quantities stay distinct.
+BUT CGM produces terrestrial glucose in source-verifiedmmol/L, source-local
+seconds with shifted calendar and participant-specific scope; no interpolation.
+
+Protocol-relative immunity/ACTES axes, shifted-UTC ITBA provenance,
+aggregate radiation/lung/index tables and omics arrays remain explicitly
+unsupported by these public adapters. Do not fabricate ordinary health
+Records for them. Original CSV/XLS/ZIP files remain outside tracked sources.
+
 ### sync (M24)
 
 ```
@@ -420,3 +475,5 @@ Everything works with the keyboard. No state is conveyed by color alone. Views r
 | 0.5 | 2026-11-15 | User-authorized M00 clarification: view index exports, minimal shell ownership, placeholder behavior and async boundary; no domain behavior added | M00, M07–M12, M15, M20, M22, M24 |
 | 0.6 | 2026-11-15 | F1 implementation policies: mission/time boundaries, source-unit metadata, explicit store errors/schema stamping/provenance isolation, atomic writes and detached plain data | M01–M05; future store consumers |
 | 0.7 | 2026-11-15 | User-requested source-date model: schema2 preserves unknown-zone/date-only/shifted times and explicit unknown units; legacy1 unchanged; scoped comparison and explicit UTC-query errors | M01–M07 and future import consumers |
+
+| 0.8 | 2026-11-15 | User-authorized M21 advance: deterministic source CSV adapters, bounded reports/rows, source-time and unknown-unit policy; selected adaptation profiles; no implicit persistence | M21, store/import consumers |

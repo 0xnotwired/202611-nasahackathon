@@ -72,6 +72,10 @@ Read `docs/experiments/G1.md` and `docs/experiments/SOURCE_UNCERTAINTY.md`.
    data/originals/ after environment publication. Read docs/DATASETS.md and
    docs/data/import-readiness-2026-11-15.json: CRF units remain unconfirmed; schema2 now preserves unknown-zone source dates and explicit unknown units without inventing UTC. BUT CGM mmol/L is
    supported by the pinned, linked author companion source. Do not invent those or clinical content.
+   Additional samples from six remaining NLSP studies plus ACTES and ITBA
+   are inspected in docs/data/additional-acquisition-2026-11-15.json; eleven
+   studies have local samples in total. OSD-51/56 metadata and EDA RR-1 data are now acquired; OSDR file/policy redirects to NASA S3/science.nasa.gov remain pending. Read docs/SPACE_APPS_DATA_REVIEW.md before adding real data to a submission.
+   Do not treat aggregate tables or relative protocol times as individual UTC records.
 4. User-requested skills are available locally in `.agents/skills/` and must
    be selected/read according to AGENTS.md rather than fetched ad hoc.
 
@@ -209,3 +213,14 @@ The user explicitly requested a local copy of `github.com/annatchijova/SKILLS`. 
 - [ ] Commit and push only with authorization for this task, on a branch. *(Git)*
 - [ ] If you built a module: `git diff --stat` shows only your owned paths and you did not touch `docs/CONTRACTS.md`. *(AGENTS.md, Building by modules)*
 - [ ] The handoff log in `docs/AGENT_ROADMAP.md` reflects what was verified, not what was attempted.
+
+## Real import follow-up
+
+User-authorized M21 was advanced independently of the F2 view phase. Selected
+CSV adapters are implemented/reviewed; all100 tests pass. With acquired local
+originals, `python3 scripts/import-real-samples.py` verifies source hashes and
+loads/reopens the dedicated ignored local real-data profile/database.3861
+records are exact and reruns insert0. See docs/experiments/REAL_IMPORT.md.
+This is not an implemented product import screen. CRF/BMD units and immune
+denominator/export binding are still unconfirmed after primary-paper work;
+no clinical interpretation or conversion is permitted by this import.

@@ -1,0 +1,84 @@
+{
+  "attempted_at_utc": "2026-11-15T19:39:37.466364+00:00",
+  "archives": [
+    {
+      "study": "OSD-51",
+      "url": "https://osdr.nasa.gov/geode-py/ws/studies/OSD-51/download?source=datamanager&file=GLDS-51_microarray_E-GEOD-14798.raw.1.zip",
+      "file": "data/originals/osdr/genetics/GLDS-51_microarray_E-GEOD-14798.raw.1.zip",
+      "expected_bytes": 206246481,
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "study": "OSD-51",
+      "url": "https://osdr.nasa.gov/geode-py/ws/studies/OSD-51/download?source=datamanager&file=GLDS-51_microarray_E-GEOD-14798.raw.2.zip",
+      "file": "data/originals/osdr/genetics/GLDS-51_microarray_E-GEOD-14798.raw.2.zip",
+      "expected_bytes": 192406559,
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "study": "OSD-56",
+      "url": "https://osdr.nasa.gov/geode-py/ws/studies/OSD-56/download?source=datamanager&file=GLDS-56_microarray_E-GEOD-57408.raw.1.zip",
+      "file": "data/originals/osdr/genetics/GLDS-56_microarray_E-GEOD-57408.raw.1.zip",
+      "expected_bytes": 52711145,
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    }
+  ],
+  "blocking_redirect_host": "genelab-repo-prod.s3.amazonaws.com",
+  "draft_saved": true,
+  "requires_publish": true,
+  "quantitative_data_inspected": false,
+  "metadata_assay_rows": {
+    "OSD-51": 340,
+    "OSD-56": 10
+  },
+  "metadata_inspection": [
+    {
+      "study": "OSD-51",
+      "assay_rows": 340,
+      "field_unique_counts": {
+        "Labeled Extract Name": 340,
+        "Label": 2,
+        "Array Design REF": 1,
+        "Comment [Array Design URI]": 1,
+        "Array Data File": 170,
+        "Comment [ArrayExpress FTP file]": 2,
+        "Derived Array Data File": 170,
+        "Comment [Derived ArrayExpress FTP file]": 1
+      },
+      "columns": [
+        "Labeled Extract Name",
+        "Label",
+        "Array Design REF",
+        "Comment [Array Design URI]",
+        "Array Data File",
+        "Comment [ArrayExpress FTP file]",
+        "Derived Array Data File",
+        "Comment [Derived ArrayExpress FTP file]"
+      ]
+    },
+    {
+      "study": "OSD-56",
+      "assay_rows": 10,
+      "field_unique_counts": {
+        "Parameter Value[label]": 1,
+        "Array Design REF": 1,
+        "Array Data File": 10,
+        "Comment [ArrayExpress FTP file]": 1,
+        "Normalization Name": 10,
+        "Comment [Derived ArrayExpress FTP file]": 1
+      },
+      "columns": [
+        "Parameter Value[label]",
+        "Array Design REF",
+        "Array Data File",
+        "Comment [ArrayExpress FTP file]",
+        "Normalization Name",
+        "Comment [Derived ArrayExpress FTP file]"
+      ]
+    }
+  ],
+  "source_declared_derived_semantics": {
+    "OSD-51": "LOWESS-normalized background-subtracted log2 processed Green/Red signal; normalized log2 Cy3/Cy5 test/reference ratio. ISA investigation protocol declaration, not confirmed by quantitative file inspection.",
+    "OSD-56": "Background-corrected, quantile-normalized, log2-transformed intensity values; detection flags filter probes. ISA investigation protocol declaration, not confirmed by quantitative file inspection."
+  }
+}

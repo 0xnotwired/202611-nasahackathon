@@ -1,0 +1,470 @@
+{
+  "reviewed_at_utc": "2026-11-15T19:05:09.624747+00:00",
+  "scope": "Continuation after published OSDR/EDA host grants. Metadata-only tracked evidence; all original responses remain ignored.",
+  "datasets": [
+    {
+      "id": "OSD-51",
+      "study_title": "Woman skeletal muscle transcriptome with bed rest and countermeasures.",
+      "doi": "10.26030/3w73-jn41",
+      "publisher": "NASA GeneLab",
+      "publication_year": 2010,
+      "registered_creators": [
+        {
+          "name": "Chopard, Angele"
+        },
+        {
+          "name": "Marini, Jean-Francois"
+        },
+        {
+          "name": "Bihouee, Audrey"
+        },
+        {
+          "name": "Jasmin, Bernard J"
+        },
+        {
+          "name": "Lamirault, Guillaume"
+        },
+        {
+          "name": "Leger, Jean J"
+        },
+        {
+          "name": "Teusan, Raluca"
+        },
+        {
+          "name": "Lecunff, Martine"
+        },
+        {
+          "name": "Danger, Richard"
+        }
+      ],
+      "citation": "Chopard, Angele; Marini, Jean-Francois; Bihouee, Audrey; Jasmin, Bernard J; Lamirault, Guillaume; Leger, Jean J; Teusan, Raluca; Lecunff, Martine; Danger, Richard (2010). Woman skeletal muscle transcriptome with bed rest and countermeasures. [Dataset]. NASA GeneLab. https://doi.org/10.26030/3w73-jn41",
+      "rights_list": [],
+      "rights_status": "No explicit license in reviewed DOI rightsList; obtain study/repository policy before real-data redistribution. NASA hosting alone is insufficient.",
+      "origin": "ground_analog",
+      "source_accessions": [
+        "E-GEOD-14798"
+      ],
+      "release_date": "10-Sep-2010",
+      "sample_records_in_metadata": 340,
+      "file_listing": [
+        {
+          "file_name": "OSD-51_metadata_OSD-51-ISA.zip",
+          "file_size": 389087,
+          "restricted": false,
+          "visible": true
+        },
+        {
+          "file_name": "GLDS-51_microarray_A-GEOD-6398.adf.txt",
+          "file_size": 331885,
+          "restricted": false,
+          "visible": true
+        },
+        {
+          "file_name": "GLDS-51_microarray_E-GEOD-14798.raw.1.zip",
+          "file_size": 206246481,
+          "restricted": false,
+          "visible": true
+        },
+        {
+          "file_name": "GLDS-51_microarray_E-GEOD-14798.raw.2.zip",
+          "file_size": 192406559,
+          "restricted": false,
+          "visible": true
+        }
+      ],
+      "acquisition_status": "Metadata, file listing and DOI record acquired; ISA/annotation download redirects to unallowed NASA S3 host; quantitative archives not downloaded.",
+      "metadata_privacy": "Original metadata contains investigator contact fields; keep ignored originals out of delivery. Only title, registered scholarly citation and aggregate/file inventory are retained here.",
+      "interpretation_limit": "Biopsy/microarray sample and technical replicate counts are not participant counts; not continuous clinical monitoring."
+    },
+    {
+      "id": "OSD-56",
+      "study_title": "Gene expression profiling of human peripheral blood lymphocytes cultured in modeled microgravity",
+      "doi": "10.26030/nc96-xp67",
+      "publisher": "NASA GeneLab",
+      "publication_year": 2014,
+      "registered_creators": [
+        {
+          "name": "Lanfranchi, Gerolamo"
+        },
+        {
+          "name": "Girardi, Cristina"
+        },
+        {
+          "name": "De Pitta, Cristiano"
+        },
+        {
+          "name": "Casara, Silvia"
+        },
+        {
+          "name": "Calura, Enrica"
+        },
+        {
+          "name": "Romualdi, Chiara"
+        },
+        {
+          "name": "Celotti, Lucia"
+        },
+        {
+          "name": "Mognato, Maddalena"
+        }
+      ],
+      "citation": "Lanfranchi, Gerolamo; Girardi, Cristina; De Pitta, Cristiano; Casara, Silvia; Calura, Enrica; Romualdi, Chiara; Celotti, Lucia; Mognato, Maddalena (2014). Gene expression profiling of human peripheral blood lymphocytes cultured in modeled microgravity [Dataset]. NASA GeneLab. https://doi.org/10.26030/nc96-xp67",
+      "rights_list": [],
+      "rights_status": "No explicit license in reviewed DOI rightsList; obtain study/repository policy before real-data redistribution. NASA hosting alone is insufficient.",
+      "origin": "cell_culture",
+      "source_accessions": [
+        "E-GEOD-57408"
+      ],
+      "release_date": "17-Jul-2014",
+      "sample_records_in_metadata": 10,
+      "file_listing": [
+        {
+          "file_name": "OSD-56_metadata_OSD-56-ISA.zip",
+          "file_size": 18966,
+          "restricted": false,
+          "visible": true
+        },
+        {
+          "file_name": "GLDS-56_microarray_E-GEOD-57408.raw.1.zip",
+          "file_size": 52711145,
+          "restricted": false,
+          "visible": true
+        }
+      ],
+      "acquisition_status": "Metadata, file listing and DOI record acquired; ISA/annotation download redirects to unallowed NASA S3 host; quantitative archives not downloaded.",
+      "metadata_privacy": "Original metadata contains investigator contact fields; keep ignored originals out of delivery. Only title, registered scholarly citation and aggregate/file inventory are retained here.",
+      "interpretation_limit": "Cultured human lymphocytes under modeled microgravity, not in-flight astronaut observations."
+    },
+    {
+      "id": "EDA-RR1",
+      "title": "Environmental Data App, RR-1 / Rodent Research1 (SpaceX-4)",
+      "source": "https://visualization.osdr.nasa.gov/eda/",
+      "api_reference": "https://visualization.osdr.nasa.gov/eda/api_reference",
+      "origin": "flight_environment_with_ground_control",
+      "telemetry": {
+        "data_rows": 12087,
+        "columns": [
+          "time",
+          "temperature_iss",
+          "temperature_ground",
+          "humidity_iss",
+          "humidity_ground",
+          "co2_iss",
+          "co2_ground",
+          "milestones"
+        ],
+        "first_time": "2014-09-20T03:59:00Z",
+        "last_time": "2014-11-01T03:54:00Z",
+        "missing_markers_per_column": {
+          "time": 0,
+          "temperature_iss": 0,
+          "temperature_ground": 0,
+          "humidity_iss": 0,
+          "humidity_ground": 0,
+          "co2_iss": 0,
+          "co2_ground": 0,
+          "milestones": 12080
+        },
+        "time_format": "Explicit ISO8601 UTC Z in API response; preserve as published, not inferred from no-zone dashboard strings."
+      },
+      "radiation": {
+        "data_rows": 39,
+        "columns": [
+          "time",
+          "gcr",
+          "saa",
+          "total",
+          "milestones"
+        ],
+        "first_time": "2014-09-21T00:00:00Z",
+        "last_time": "2014-10-29T00:00:00Z",
+        "missing_markers_per_column": {
+          "time": 0,
+          "gcr": 0,
+          "saa": 0,
+          "total": 0,
+          "milestones": 34
+        },
+        "time_format": "Explicit ISO8601 UTC Z in API response; preserve as published, not inferred from no-zone dashboard strings."
+      },
+      "units": {
+        "temperature_iss": "Celsius",
+        "temperature_ground": "Celsius",
+        "humidity_iss": "percent RH",
+        "humidity_ground": "percent RH",
+        "co2_iss": "ppm",
+        "co2_ground": "ppm",
+        "gcr": "mGy/day",
+        "saa": "mGy/day",
+        "total": "not independently confirmed: viewer total/accumulated branch labels have inconsistent assignment/units"
+      },
+      "unit_evidence": "Official telemetry viewer lines169-175 and radiation viewer lines11-17; source inspected as evidence only, not copied into product.",
+      "time_context": "API declares UTC. Dashboard states ground dates matched to flight dates; these are aligned comparison dates, not proof of original simultaneous exposures. Radiation API dates are daily bins.",
+      "limitations": [
+        "Environmental telemetry from ISS/ground rodent hardware/cabin context, not personal exposure or clinical sensor data.",
+        "Only RR-1 inspected; zero missing numeric markers here does not establish all missions have complete coverage.",
+        "Source viewer has cumulative/total unit ambiguity; no mGy-to-mSv conversion, personal dose calculation or medical threshold inferred.",
+        "A full multi-variable telemetry import would exceed current bounded store capacity; select a documented time window/aggregation with provenance rather than dropping rows or silently raising limits."
+      ],
+      "rights_status": "NASA application/data accessible; applicable repository/third-party notices still need direct policy verification through redirected science.nasa.gov; no generic CC0 inferred.",
+      "acquisition_status": "Original telemetry and radiation JSON downloaded; no app import."
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "OSD-51-meta.json",
+      "url": "https://osdr.nasa.gov/osdr/data/osd/meta/51",
+      "final_url": "https://osdr.nasa.gov/osdr/data/osd/meta/51",
+      "retrieved_at_utc": "2026-11-15T18:59:17.734936+00:00",
+      "bytes": 609552,
+      "sha256": "8c601ac3403fb8a7a8256550c59de6d64cd05674b12588b86ca2683188f28e2a",
+      "content_type": "application/json",
+      "file": "data/originals/osdr/OSD-51-meta.json",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "OSD-51-files.json",
+      "url": "https://osdr.nasa.gov/osdr/data/osd/files/51",
+      "final_url": "https://osdr.nasa.gov/osdr/data/osd/files/51",
+      "retrieved_at_utc": "2026-11-15T18:59:17.257180+00:00",
+      "bytes": 1648,
+      "sha256": "995b26dd86a1194184571173302ef85e3ccc71d2d5d9d25fa7c5d64a4ff09d00",
+      "content_type": "application/json",
+      "file": "data/originals/osdr/OSD-51-files.json",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "OSD-56-meta.json",
+      "url": "https://osdr.nasa.gov/osdr/data/osd/meta/56",
+      "final_url": "https://osdr.nasa.gov/osdr/data/osd/meta/56",
+      "retrieved_at_utc": "2026-11-15T18:59:17.496033+00:00",
+      "bytes": 52621,
+      "sha256": "247210fb75d107ec61bb8fc52cb4f57493757b3f2909ec37276b5837ebbb36ed",
+      "content_type": "application/json",
+      "file": "data/originals/osdr/OSD-56-meta.json",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "OSD-56-files.json",
+      "url": "https://osdr.nasa.gov/osdr/data/osd/files/56",
+      "final_url": "https://osdr.nasa.gov/osdr/data/osd/files/56",
+      "retrieved_at_utc": "2026-11-15T18:59:17.254088+00:00",
+      "bytes": 905,
+      "sha256": "6f1ad95a599e5ed7121936254974e54212b0dd07534535f0b48499e6b9817505",
+      "content_type": "application/json",
+      "file": "data/originals/osdr/OSD-56-files.json",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "EDA-app.html",
+      "url": "https://visualization.osdr.nasa.gov/eda",
+      "final_url": "https://visualization.osdr.nasa.gov/eda/",
+      "retrieved_at_utc": "2026-11-15T18:59:18.078216+00:00",
+      "bytes": 69440,
+      "sha256": "69271aaef4fcf8ddc9c410a25d778ebe2dcd6d9b7e85b3938d10986f8d201410",
+      "content_type": "text/html; charset=utf-8",
+      "file": "data/originals/osdr/EDA-app.html",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "OSDR-data-policy.html",
+      "url": "https://www.nasa.gov/reference/open-science-data-repository-data-submission-guide/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "name": "OSDR-faq.html",
+      "url": "https://www.nasa.gov/osdr-faq/",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "name": "SpaceApps-terms.html",
+      "url": "https://www.spaceappschallenge.org/legal/",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "name": "OSDR-terms.html",
+      "url": "https://www.nasa.gov/reference/osdr-help-terms-and-conditions/",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "name": "EDA-telemetry-source.js",
+      "url": "https://visualization.osdr.nasa.gov/eda/static/js/telemetry_plots.js",
+      "final_url": "https://visualization.osdr.nasa.gov/eda/static/js/telemetry_plots.js",
+      "retrieved_at_utc": "2026-11-15T19:00:04.202916+00:00",
+      "bytes": 10418,
+      "sha256": "a5985a3a1e066c6de9a802d24693bfb660234fee43038f42571a210b3d1e9c86",
+      "content_type": "text/javascript",
+      "file": "data/originals/osdr/EDA-telemetry-source.js",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "EDA-radiation-source.js",
+      "url": "https://visualization.osdr.nasa.gov/eda/static/js/radiation_plots.js",
+      "final_url": "https://visualization.osdr.nasa.gov/eda/static/js/radiation_plots.js",
+      "retrieved_at_utc": "2026-11-15T19:00:04.216082+00:00",
+      "bytes": 4916,
+      "sha256": "f25acc2f7407440f7757e63fbbacb0f40ed39ead1131fe5485971ac79c2f2e66",
+      "content_type": "text/javascript",
+      "file": "data/originals/osdr/EDA-radiation-source.js",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "EDA-navigation-source.js",
+      "url": "https://visualization.osdr.nasa.gov/eda/static/js/navigation.js",
+      "final_url": "https://visualization.osdr.nasa.gov/eda/static/js/navigation.js",
+      "retrieved_at_utc": "2026-11-15T19:00:04.033827+00:00",
+      "bytes": 1040,
+      "sha256": "3fdf05404f27e038c259d410b24bb926e5b7c29a86b43e334bae97d12099db9a",
+      "content_type": "text/javascript",
+      "file": "data/originals/osdr/EDA-navigation-source.js",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "OSD-51_metadata_OSD-51-ISA.zip",
+      "url": "https://osdr.nasa.gov/geode-py/ws/studies/OSD-51/download?source=datamanager&file=OSD-51_metadata_OSD-51-ISA.zip",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "name": "GLDS-51_microarray_A-GEOD-6398.adf.txt",
+      "url": "https://osdr.nasa.gov/geode-py/ws/studies/OSD-51/download?source=datamanager&file=GLDS-51_microarray_A-GEOD-6398.adf.txt",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "name": "OSD-56_metadata_OSD-56-ISA.zip",
+      "url": "https://osdr.nasa.gov/geode-py/ws/studies/OSD-56/download?source=datamanager&file=OSD-56_metadata_OSD-56-ISA.zip",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "name": "EDA-api-reference.html",
+      "url": "https://visualization.osdr.nasa.gov/eda/api_reference",
+      "final_url": "https://visualization.osdr.nasa.gov/eda/api_reference",
+      "retrieved_at_utc": "2026-11-15T19:01:47.194712+00:00",
+      "bytes": 12604,
+      "sha256": "bf25f8f1898e13c91de1d03ded2959a0e870cae04657cd5e521242bf570bedd4",
+      "content_type": "text/html; charset=utf-8",
+      "file": "data/originals/osdr/EDA-api-reference.html",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "EDA-reference.html",
+      "url": "https://visualization.osdr.nasa.gov/eda/eda_reference",
+      "final_url": "https://visualization.osdr.nasa.gov/eda/eda_reference",
+      "retrieved_at_utc": "2026-11-15T19:01:47.395423+00:00",
+      "bytes": 81292,
+      "sha256": "763d1f260a58950c10062749499f707cab1db0bf2ce9df2a4eb0839c1d0d7de4",
+      "content_type": "text/html; charset=utf-8",
+      "file": "data/originals/osdr/EDA-reference.html",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "EDA-RR1-dashboard.html",
+      "url": "https://visualization.osdr.nasa.gov/eda/dashboard_RR-1",
+      "final_url": "https://visualization.osdr.nasa.gov/eda/dashboard_RR-1",
+      "retrieved_at_utc": "2026-11-15T19:01:47.519865+00:00",
+      "bytes": 706969,
+      "sha256": "d7284e1d82a9ca6fe56670fa7ac48fcff4fb361c4f6a6025ede7087352a7c0aa",
+      "content_type": "text/html; charset=utf-8",
+      "file": "data/originals/osdr/EDA-RR1-dashboard.html",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "EDA-RR1-tables.html",
+      "url": "https://visualization.osdr.nasa.gov/eda/tables_RR-1",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "name": "OSD-56-datacite.json",
+      "url": "https://api.datacite.org/dois/10.26030/nc96-xp67",
+      "final_url": "https://api.datacite.org/dois/10.26030/nc96-xp67",
+      "retrieved_at_utc": "2026-11-15T19:01:47.923664+00:00",
+      "bytes": 12209,
+      "sha256": "f61b9c8cd1f0bf2d2c6f8c1f8ba6650feb32fcc642dee4ea52caadc38315fa7c",
+      "content_type": "application/json; charset=utf-8",
+      "file": "data/originals/osdr/OSD-56-datacite.json",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "EDA-RR1-telemetry.json",
+      "url": "https://visualization.osdr.nasa.gov/eda/api/missions/RR-1/telemetry_data/",
+      "final_url": "https://visualization.osdr.nasa.gov/eda/api/missions/RR-1/telemetry_data/",
+      "retrieved_at_utc": "2026-11-15T19:02:34.886522+00:00",
+      "bytes": 2161658,
+      "sha256": "fd43dbfe164108c1038b702a82de5fe8d848429324a977304e6f19f4a71ff15f",
+      "content_type": "application/json",
+      "file": "data/originals/osdr/EDA-RR1-telemetry.json",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "EDA-RR1-radiation.json",
+      "url": "https://visualization.osdr.nasa.gov/eda/api/missions/RR-1/radiation_data/",
+      "final_url": "https://visualization.osdr.nasa.gov/eda/api/missions/RR-1/radiation_data/",
+      "retrieved_at_utc": "2026-11-15T19:02:33.255928+00:00",
+      "bytes": 3682,
+      "sha256": "664a2a2ffacea546a4c780dc80e0763f8fbfbd8fa0856fd4bfbc8e78b9b121ef",
+      "content_type": "application/json",
+      "file": "data/originals/osdr/EDA-RR1-radiation.json",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "EDA-missions.json",
+      "url": "https://visualization.osdr.nasa.gov/eda/api/missions/",
+      "final_url": "https://visualization.osdr.nasa.gov/eda/api/missions/",
+      "retrieved_at_utc": "2026-11-15T19:02:33.348658+00:00",
+      "bytes": 26206,
+      "sha256": "6163e2bda0272cb1a242eec698b383440898b19d8ac2e73942a2278fafc904de",
+      "content_type": "application/json",
+      "file": "data/originals/osdr/EDA-missions.json",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "OSD-51-doi-query.json",
+      "url": "https://api.datacite.org/dois?query=titles.title%3A%22Woman+skeletal+muscle+transcriptome+with+bed+rest+and+countermeasures%22&page%5Bsize%5D=5",
+      "final_url": "https://api.datacite.org/dois?query=titles.title%3A%22Woman+skeletal+muscle+transcriptome+with+bed+rest+and+countermeasures%22&page%5Bsize%5D=5",
+      "retrieved_at_utc": "2026-11-15T19:02:33.744506+00:00",
+      "bytes": 11490,
+      "sha256": "a0c959b28f3a8845ec69c15a16eebc44e0826ae42c7fa1c043ac26c769712dd4",
+      "content_type": "application/json; charset=utf-8",
+      "file": "data/originals/osdr/OSD-51-doi-query.json",
+      "local_sha256_reverified": true
+    },
+    {
+      "name": "OSD-51-datacite.json",
+      "url": "https://api.datacite.org/dois/10.26030/3w73-jn41",
+      "final_url": "https://api.datacite.org/dois/10.26030/3w73-jn41",
+      "retrieved_at_utc": "2026-11-15T19:04:14.822668+00:00",
+      "bytes": 63453,
+      "sha256": "99269cccb1c683143ff3b0edba304e7f92d27b625d998e0b95d9c8ac2223b671",
+      "content_type": "application/json; charset=utf-8",
+      "file": "data/originals/osdr/OSD-51-datacite.json",
+      "local_sha256_reverified": true
+    }
+  ],
+  "download_redirects": [
+    {
+      "source_host": "osdr.nasa.gov",
+      "target_host": "genelab-shared-repo-prod.s3.amazonaws.com",
+      "evidence": "302 from official OSD-56 metadata download route; proxy CONNECT403 on new host"
+    },
+    {
+      "source_host": "www.nasa.gov",
+      "target_host": "science.nasa.gov",
+      "evidence": "301 from official OSDR terms URL; proxy CONNECT403 on new host"
+    }
+  ],
+  "configuration_followup": {
+    "draft_status": "saved, requires_publish true",
+    "added_hosts": [
+      "genelab-shared-repo-prod.s3.amazonaws.com",
+      "science.nasa.gov"
+    ],
+    "runtime_applied": false,
+    "publication_performed": false
+  },
+  "not_performed": [
+    "Quantitative OSD51/56 archive download",
+    "Study-specific OSDR policy confirmation",
+    "Clinical interpretation or validation",
+    "Real importer/product code changes",
+    "Commit/push/environment publication"
+  ]
+}

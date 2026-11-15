@@ -1,0 +1,34 @@
+{
+  "checked_at_utc": "2026-11-15T19:56:55.613993+00:00",
+  "profiles": 14,
+  "actual_tabular_headers_checked": [
+    "CRF",
+    "MR079G",
+    "MR035G",
+    "BRSMImmune",
+    "MR080G",
+    "BUT_CGM",
+    "ACTES",
+    "EDA-RR1"
+  ],
+  "genetic_member_headers_checked": 180,
+  "genepix_variants": {
+    "633/532": 64,
+    "635/532": 89,
+    "633/543": 17
+  },
+  "archive_sha256_and_sizes_reverified": 3,
+  "isa_raw_file_mapping": "170/170 and10/10 exact",
+  "negative_controls": [
+    "Nonexistent CRF source column rejected",
+    "Unsupported999/532 channel variant rejected"
+  ],
+  "actual_initial_failures_found": [
+    "First profile incorrectly assumed uniform635/532 channels; corrected to per-file variants",
+    "Strict633-only check correctly failed on635 member, motivating exact variant detection",
+    "Required GeneName rejected five Agilent files; corrected to optional annotation while retaining probe/systematic IDs."
+  ],
+  "database_written": false,
+  "product_code_changed": false,
+  "optional_gene_name_absent_files": 5
+}

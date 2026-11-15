@@ -1,0 +1,1299 @@
+{
+  "reviewed_at_utc": "2026-11-15T18:51:34.480290+00:00",
+  "scope": "Small public samples from six remaining NLSP studies plus ACTES and ITBA; no bulk archive, real importer, application behavior, commit, push or environment publication.",
+  "datasets": [
+    {
+      "id": "MR035G",
+      "origin": "ground_analog",
+      "doi": "10.83263/7myc-5j86",
+      "title": "Bone Densitometry Assessment (Flight Analog)",
+      "creators_as_registered": [
+        {
+          "name": "Principal Investigator: Sibonga, Jean D.",
+          "nameType": "Personal",
+          "givenName": "Jean D.",
+          "familyName": "Sibonga",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Technical Assistant to Principal Investigator: Evans, Harlan",
+          "nameType": "Personal",
+          "givenName": "Harlan",
+          "familyName": "Evans",
+          "affiliation": [],
+          "nameIdentifiers": []
+        }
+      ],
+      "publisher": "Ames Research Center",
+      "publication_year": 2026,
+      "license": [
+        {
+          "lang": "en-US",
+          "rights": "Creative Commons Zero v1.0 Universal",
+          "rightsUri": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc0-1.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "citation": "Principal Investigator: Sibonga, Jean D.; Technical Assistant to Principal Investigator: Evans, Harlan (2026). Bone Densitometry Assessment (Flight Analog) [Dataset]. Ames Research Center. https://doi.org/10.83263/7myc-5j86",
+      "rights_evidence_url": "https://api.datacite.org/dois/10.83263/7myc-5j86",
+      "samples": [
+        {
+          "file": "data/originals/additional/MR035G-sample-1.csv",
+          "format": "csv",
+          "data_rows": 10,
+          "headers": [
+            "ID",
+            "CAMPAIGN",
+            "SUBJECT",
+            "TEST_PHASE",
+            "BR_DAY",
+            "SCAN_DATE",
+            "NET_AVG_BMD"
+          ],
+          "missing_per_column": {
+            "ID": 0,
+            "CAMPAIGN": 0,
+            "SUBJECT": 0,
+            "TEST_PHASE": 1,
+            "BR_DAY": 1,
+            "SCAN_DATE": 0,
+            "NET_AVG_BMD": 0
+          }
+        }
+      ],
+      "inspection": {
+        "unit_status": "NET_AVG_BMD unit not declared in CSV or reviewed readme; do not assume g/cm2.",
+        "time": "SCAN_DATE and BR_DAY/TEST_PHASE; no authoritative timezone; preserve raw dates.",
+        "limits": [
+          "Readme documents 2006 calibration correction factors; sample file is a different subject/date context. Do not apply those factors to this sample or apply them twice.",
+          "Heel DXA assessment is not a continuous sensor."
+        ]
+      },
+      "readiness": "source_sample_inspected_not_imported"
+    },
+    {
+      "id": "BRSMImmune",
+      "origin": "ground_analog",
+      "doi": "10.83263/75we-ch31",
+      "title": "Bed Rest Standard Measures: General Immunity",
+      "creators_as_registered": [
+        {
+          "name": "Co-Investigator: Crucian, Brian E.",
+          "nameType": "Personal",
+          "givenName": "Brian E.",
+          "familyName": "Crucian",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Principal Investigator: Sams, Clarence F.",
+          "nameType": "Personal",
+          "givenName": "Clarence F.",
+          "familyName": "Sams",
+          "affiliation": [],
+          "nameIdentifiers": []
+        }
+      ],
+      "publisher": "Ames Research Center",
+      "publication_year": 2026,
+      "license": [
+        {
+          "lang": "en-US",
+          "rights": "Creative Commons Zero v1.0 Universal",
+          "rightsUri": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc0-1.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "citation": "Co-Investigator: Crucian, Brian E.; Principal Investigator: Sams, Clarence F. (2026). Bed Rest Standard Measures: General Immunity [Dataset]. Ames Research Center. https://doi.org/10.83263/75we-ch31",
+      "rights_evidence_url": "https://api.datacite.org/dois/10.83263/75we-ch31",
+      "samples": [
+        {
+          "file": "data/originals/additional/BRSMImmune-sample-1.csv",
+          "format": "csv",
+          "data_rows": 30,
+          "headers": [
+            "ID",
+            "Campaign",
+            "SUBJECT",
+            "L-10",
+            "L-2",
+            "28/45",
+            "60/83",
+            "90",
+            "R+5/14"
+          ],
+          "missing_per_column": {
+            "ID": 0,
+            "Campaign": 0,
+            "SUBJECT": 0,
+            "L-10": 0,
+            "L-2": 20,
+            "28/45": 0,
+            "60/83": 4,
+            "90": 15,
+            "R+5/14": 7
+          }
+        }
+      ],
+      "inspection": {
+        "unit_status": "No per-analyte unit declared in selected CD8+ CD69+ CSV; percent/count semantics unconfirmed.",
+        "time": "Protocol labels L-10,L-2,28/45,60/83,90,R+5/14; not ISO dates or uniform intervals.",
+        "limits": [
+          "Do not split composite labels into invented dates. A protocol-relative time representation/mapping is needed before import; schema2 calendar fields alone do not represent this axis.",
+          "Requires laboratory measurements, not inference from vitals."
+        ]
+      },
+      "readiness": "source_sample_inspected_not_imported"
+    },
+    {
+      "id": "MR080G",
+      "origin": "ground_analog",
+      "doi": "10.83263/w056-8t76",
+      "title": "Aerobic Capacity (Flight Analog)",
+      "creators_as_registered": [
+        {
+          "name": "Principal Investigator: Moore, Alan D., Jr.",
+          "nameType": "Personal",
+          "givenName": "Alan D., Jr.",
+          "familyName": "Moore",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Technical Assistant to Principal Investigator: Wilson, Cassie A.",
+          "nameType": "Personal",
+          "givenName": "Cassie A.",
+          "familyName": "Wilson",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Principal Investigator: Ploutz- Snyder, Lori",
+          "nameType": "Personal",
+          "givenName": "Lori",
+          "familyName": "Ploutz- Snyder",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Technical Assistant to Principal Investigator: Everett-Downs, Meghan",
+          "nameType": "Personal",
+          "givenName": "Meghan",
+          "familyName": "Everett-Downs",
+          "affiliation": [],
+          "nameIdentifiers": []
+        }
+      ],
+      "publisher": "Ames Research Center",
+      "publication_year": 2026,
+      "license": [
+        {
+          "lang": "en-US",
+          "rights": "Creative Commons Zero v1.0 Universal",
+          "rightsUri": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc0-1.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "citation": "Principal Investigator: Moore, Alan D., Jr.; Technical Assistant to Principal Investigator: Wilson, Cassie A.; Principal Investigator: Ploutz- Snyder, Lori; Technical Assistant to Principal Investigator: Everett-Downs, Meghan (2026). Aerobic Capacity (Flight Analog) [Dataset]. Ames Research Center. https://doi.org/10.83263/w056-8t76",
+      "rights_evidence_url": "https://api.datacite.org/dois/10.83263/w056-8t76",
+      "samples": [
+        {
+          "file": "data/originals/additional/MR080G-sample-1.csv",
+          "format": "csv",
+          "data_rows": 4,
+          "headers": [
+            "ID",
+            "Campaign",
+            "Subject",
+            "Test_Phase",
+            "BR_Day",
+            "Date",
+            "Test",
+            "Stage",
+            "Time (min)",
+            "HR",
+            "VO2",
+            "VCO2",
+            "RER",
+            "VO2 (ml/kg/min)",
+            "VE",
+            "FEO2",
+            "FECO2"
+          ],
+          "missing_per_column": {
+            "ID": 0,
+            "Campaign": 0,
+            "Subject": 0,
+            "Test_Phase": 0,
+            "BR_Day": 0,
+            "Date": 0,
+            "Test": 0,
+            "Stage": 0,
+            "Time (min)": 4,
+            "HR": 0,
+            "VO2": 0,
+            "VCO2": 0,
+            "RER": 0,
+            "VO2 (ml/kg/min)": 0,
+            "VE": 0,
+            "FEO2": 0,
+            "FECO2": 0
+          }
+        }
+      ],
+      "inspection": {
+        "unit_status": "Time (min) and VO2 (ml/kg/min) explicit headers. HR is labelled bpm in matching test readme; do not infer unqualified VO2,VCO2,VE,FEO2 or FECO2 units.",
+        "time": "Date, stage, test phase and BR_Day; timezone not established.",
+        "limits": [
+          "Matching source readme f7321c09-1069-5b0a-b283-6cb509d69db8 corresponds to sample 060507; an earlier inspected060821 readme is retained as a separate artifact and is not evidence for this test.",
+          "Keep exercise physiology separate from resting HR and do not conflate absolute and weight-normalized VO2."
+        ]
+      },
+      "readiness": "source_sample_inspected_not_imported"
+    },
+    {
+      "id": "DTO684",
+      "origin": "flight",
+      "doi": "10.83263/0d67-bk75",
+      "title": "Radiation Measurements in Shuttle Crew Compartment",
+      "creators_as_registered": [
+        {
+          "name": "Principal Investigator: Badhwar, Gautam",
+          "nameType": "Personal",
+          "givenName": "Gautam",
+          "familyName": "Badhwar",
+          "affiliation": [],
+          "nameIdentifiers": []
+        }
+      ],
+      "publisher": "Ames Research Center",
+      "publication_year": 2026,
+      "license": [
+        {
+          "lang": "en-US",
+          "rights": "Creative Commons Zero v1.0 Universal",
+          "rightsUri": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc0-1.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "citation": "Principal Investigator: Badhwar, Gautam (2026). Radiation Measurements in Shuttle Crew Compartment [Dataset]. Ames Research Center. https://doi.org/10.83263/0d67-bk75",
+      "rights_evidence_url": "https://api.datacite.org/dois/10.83263/0d67-bk75",
+      "samples": [
+        {
+          "file": "data/originals/additional/DTO684-sample-1.xls",
+          "format": "xls",
+          "sheets": [
+            {
+              "name": "A9R6BAA",
+              "used_rows_including_labels": 13,
+              "used_columns": 6
+            }
+          ]
+        },
+        {
+          "file": "data/originals/additional/DTO684-sample-2.xls",
+          "format": "xls",
+          "sheets": [
+            {
+              "name": "DTO 684",
+              "used_rows_including_labels": 9,
+              "used_columns": 7
+            }
+          ]
+        }
+      ],
+      "inspection": {
+        "unit_status": "First XLS explicitly distinguishes neutron absorbed dose rate microGy/day and equivalent dose rate microSv/day. Second XLS dose-rate header is garbled I1Gy/day; preserve rather than silently repair.",
+        "time": "Shuttle missions, altitude and detector locations; no participant timestamps or personal exposures.",
+        "limits": [
+          "Text cells contain estimates and uncertainties; do not parse as plain scalar or invent clinical dose limits.",
+          "Header/description inconsistencies require source review before conversion."
+        ]
+      },
+      "readiness": "source_sample_inspected_not_imported"
+    },
+    {
+      "id": "96-E044",
+      "origin": "flight",
+      "doi": "10.83263/7nhp-yt75",
+      "title": "The Effects of EVA and Long-Term Exposure to Microgravity on Pulmonary Function",
+      "creators_as_registered": [
+        {
+          "name": "Co-Investigator: Darquenne, Chantal",
+          "nameType": "Personal",
+          "givenName": "Chantal",
+          "familyName": "Darquenne",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Co-Investigator: Elliott, Ann",
+          "nameType": "Personal",
+          "givenName": "Ann",
+          "familyName": "Elliott",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Co-Investigator: Paiva, Manuel",
+          "nameType": "Personal",
+          "givenName": "Manuel",
+          "familyName": "Paiva",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Co-Investigator: Prisk, G.",
+          "nameType": "Personal",
+          "givenName": "G.",
+          "familyName": "Prisk",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Principal Investigator: West, John",
+          "nameType": "Personal",
+          "givenName": "John",
+          "familyName": "West",
+          "affiliation": [],
+          "nameIdentifiers": []
+        }
+      ],
+      "publisher": "Ames Research Center",
+      "publication_year": 2026,
+      "license": [
+        {
+          "lang": "en-US",
+          "rights": "Creative Commons Zero v1.0 Universal",
+          "rightsUri": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc0-1.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "citation": "Co-Investigator: Darquenne, Chantal; Co-Investigator: Elliott, Ann; Co-Investigator: Paiva, Manuel; Co-Investigator: Prisk, G.; Principal Investigator: West, John (2026). The Effects of EVA and Long-Term Exposure to Microgravity on Pulmonary Function [Dataset]. Ames Research Center. https://doi.org/10.83263/7nhp-yt75",
+      "rights_evidence_url": "https://api.datacite.org/dois/10.83263/7nhp-yt75",
+      "samples": [
+        {
+          "file": "data/originals/additional/96-E044-sample-1.xls",
+          "format": "xls",
+          "sheets": [
+            {
+              "name": "96_E044_2100453381",
+              "used_rows_including_labels": 25,
+              "used_columns": 5
+            }
+          ]
+        }
+      ],
+      "inspection": {
+        "unit_status": "mmHg explicitly in four maximum-respiratory-pressure column headers.",
+        "time": "Preflight/early and late in-flight/postflight grouped assessments, not individual UTC timestamps.",
+        "limits": [
+          "Means +/- SE with number of measurements in parentheses; do not treat rows/counts as individual astronauts.",
+          "Public sample only; protected records were not requested or accessed."
+        ]
+      },
+      "readiness": "source_sample_inspected_not_imported"
+    },
+    {
+      "id": "MSD007",
+      "origin": "flight",
+      "doi": "10.83263/xj28-wp80",
+      "title": "Toxicological Assessment of Airborne Volatile Organic Compounds",
+      "creators_as_registered": [
+        {
+          "name": "Co-Investigator: Beck, Steve",
+          "nameType": "Personal",
+          "givenName": "Steve",
+          "familyName": "Beck",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Co-Investigator: Boyd, John",
+          "nameType": "Personal",
+          "givenName": "John",
+          "familyName": "Boyd",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Co-Investigator: Covington, Phillip",
+          "nameType": "Personal",
+          "givenName": "Phillip",
+          "familyName": "Covington",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Co-Investigator: Limero, Thomas",
+          "nameType": "Personal",
+          "givenName": "Thomas",
+          "familyName": "Limero",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Co-Investigator: Lind, Debra",
+          "nameType": "Personal",
+          "givenName": "Debra",
+          "familyName": "Lind",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Co-Investigator: Martin, Mildred",
+          "nameType": "Personal",
+          "givenName": "Mildred",
+          "familyName": "Martin",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Co-Investigator: Matney, Marilyn",
+          "nameType": "Personal",
+          "givenName": "Marilyn",
+          "familyName": "Matney",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Co-Investigator: Yang, Lily",
+          "nameType": "Personal",
+          "givenName": "Lily",
+          "familyName": "Yang",
+          "affiliation": [],
+          "nameIdentifiers": []
+        },
+        {
+          "name": "Principal Investigator: James, John",
+          "nameType": "Personal",
+          "givenName": "John",
+          "familyName": "James",
+          "affiliation": [],
+          "nameIdentifiers": []
+        }
+      ],
+      "publisher": "Ames Research Center",
+      "publication_year": 2026,
+      "license": [
+        {
+          "lang": "en-US",
+          "rights": "Creative Commons Zero v1.0 Universal",
+          "rightsUri": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+          "schemeUri": "https://spdx.org/licenses/",
+          "rightsIdentifier": "cc0-1.0",
+          "rightsIdentifierScheme": "SPDX"
+        }
+      ],
+      "citation": "Co-Investigator: Beck, Steve; Co-Investigator: Boyd, John; Co-Investigator: Covington, Phillip; Co-Investigator: Limero, Thomas; Co-Investigator: Lind, Debra; Co-Investigator: Martin, Mildred; Co-Investigator: Matney, Marilyn; Co-Investigator: Yang, Lily; Principal Investigator: James, John (2026). Toxicological Assessment of Airborne Volatile Organic Compounds [Dataset]. Ames Research Center. https://doi.org/10.83263/xj28-wp80",
+      "rights_evidence_url": "https://api.datacite.org/dois/10.83263/xj28-wp80",
+      "samples": [
+        {
+          "file": "data/originals/additional/MSD007-sample-1.xls",
+          "format": "xls",
+          "sheets": [
+            {
+              "name": "n6ppco2",
+              "used_rows_including_labels": 7,
+              "used_columns": 1
+            }
+          ]
+        },
+        {
+          "file": "data/originals/additional/MSD007-sample-2.xls",
+          "format": "xls",
+          "sheets": [
+            {
+              "name": "tin6ssas1005",
+              "used_rows_including_labels": 138,
+              "used_columns": 6
+            }
+          ]
+        }
+      ],
+      "inspection": {
+        "unit_status": "First dataset metadata declares CO2 partial pressure mmHg; XLS cells contain labels/chart only. Second table contains T-VALUE toxicity indexes, not measured concentrations or CO2 ppm.",
+        "time": "Sample intervals, date/time and Mir location context; timezone not established.",
+        "limits": [
+          "No numeric CO2 cell series is recoverable from the selected workbook using cell inspection; graph digitization not performed.",
+          "Keep index, concentration and personal exposure distinct. Do not turn a T-value into a clinical threshold."
+        ]
+      },
+      "readiness": "source_sample_inspected_not_imported"
+    },
+    {
+      "id": "ACTES",
+      "origin": "terrestrial",
+      "title": "Cardiorespiratory measurement from graded cycloergometer exercise testing",
+      "version": "1.0.0",
+      "citation": "Chabert, C., Mongin, D., Hermand, E., Collado, A., & Hue, O. (2022). Cardiorespiratory measurement from graded cycloergometer exercise testing (version 1.0.0). PhysioNet . RRID:SCR_007345. https://doi.org/10.13026/2qs3-kh43",
+      "card_url": "https://physionet.org/content/actes-cycloergometer-exercise/1.0.0/",
+      "license": "Open Data Commons Attribution License v1.0",
+      "license_uri": "https://opendatacommons.org/licenses/by/1-0/",
+      "reuse_duties": [
+        "Preserve attribution and license/database-right notices; include license text or URI when conveying data (4.2).",
+        "Public outputs/charts carry a source-linked notice that content is available under ODC Attribution License (4.3).",
+        "Retain source/version/DOI citations and applicable PhysioNet citation."
+      ],
+      "readiness": "source_sample_inspected_not_imported",
+      "samples": [
+        {
+          "file": "data/originals/additional/ACTES-test_measure.csv",
+          "data_rows": 52062,
+          "headers": [
+            "ID",
+            "time",
+            "RR",
+            "VO2",
+            "power"
+          ],
+          "missing_per_column": {
+            "ID": 0,
+            "time": 0,
+            "RR": 1148,
+            "VO2": 0,
+            "power": 0
+          }
+        }
+      ],
+      "inspection": {
+        "units": {
+          "time": "seconds relative to effort-test start",
+          "RR": "milliseconds",
+          "VO2": "mL/min",
+          "power": "watts"
+        },
+        "unit_evidence": "Official version1.0.0 page Data Description variable table",
+        "time": "Relative seconds centred on graded exercise start; no wall-clock timezone/UTC to invent.",
+        "limits": [
+          "52062 data rows plus header; page describes52063 lines.",
+          "Repeated measures from18 exercise tests, not52062 participants.",
+          "Protocol-relative seconds need an explicit time representation/mapping before calendar Record import. No code from linked research repository used."
+        ]
+      }
+    },
+    {
+      "id": "ITBA",
+      "origin": "terrestrial",
+      "title": "Wearable Device Dataset from Induced Stress and Structured Exercise Sessions",
+      "version": "1.0.1",
+      "citation": "Hongn, A., Bosch, F., Prado, L., & Bonomini, P. (2025). Wearable Device Dataset from Induced Stress and Structured Exercise Sessions (version 1.0.1). PhysioNet . RRID:SCR_007345. https://doi.org/10.13026/he0v-tf17",
+      "card_url": "https://physionet.org/content/wearable-device-dataset/1.0.1/",
+      "license": "Open Data Commons Attribution License v1.0",
+      "license_uri": "https://opendatacommons.org/licenses/by/1-0/",
+      "reuse_duties": [
+        "Preserve attribution and license/database-right notices; include license text or URI when conveying data (4.2).",
+        "Public outputs/charts carry a source-linked notice that content is available under ODC Attribution License (4.3).",
+        "Retain source/version/DOI citations and applicable PhysioNet citation."
+      ],
+      "readiness": "source_sample_inspected_not_imported",
+      "samples": [
+        {
+          "file": "data/originals/additional/ITBA-HR.csv",
+          "rows_including_preamble": 2217,
+          "data_rows": 2215,
+          "columns": 1,
+          "preamble_rows": 2,
+          "sample_rate_hz": 1.0
+        },
+        {
+          "file": "data/originals/additional/ITBA-TEMP.csv",
+          "rows_including_preamble": 8898,
+          "data_rows": 8896,
+          "columns": 1,
+          "preamble_rows": 2,
+          "sample_rate_hz": 4.0
+        },
+        {
+          "file": "data/originals/additional/ITBA-IBI.csv",
+          "rows_including_preamble": 871,
+          "data_rows": 870,
+          "columns": 2,
+          "preamble_rows": 1
+        }
+      ],
+      "inspection": {
+        "units": {
+          "HR": "beats/min",
+          "TEMP": "Celsius",
+          "IBI": "seconds offset and seconds duration"
+        },
+        "unit_evidence": "Data_Dictionary.csv plus IBI-specific README text; dictionary units unspecified for IBI, resolved by README.",
+        "time": "README explicitly declares UTC; calendar is shifted for de-identification, consistently across records. Preserve declared UTC and shift status; never align participants by shifted dates. HR begins10 seconds after TEMP/IBI in this session.",
+        "limits": [
+          "HR/TEMP: date-text first row and rate second row. IBI: one row with two date strings then offset/duration pairs; second row is data, not sampling rate.",
+          "Dictionary and constraints are not UTF8; cp1252 decoding used for inspection only, original bytes retained.",
+          "Respect documented duplicated/invalid sensors, interrupted and missing sessions; do not treat all sessions as clean.",
+          "Future importer must retain shifted-UTC context; current core does not allow source_time alongside UTC time. No importer or schema extension implemented here."
+        ]
+      }
+    },
+    {
+      "id": "OSD-51-meta",
+      "readiness": "network_blocked",
+      "url": "https://osdr.nasa.gov/osdr/data/osd/meta/51",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "downloaded": false,
+      "action": "Requires an approved/applied environment policy allowing the exact host; this task did not change network configuration or publish the environment."
+    },
+    {
+      "id": "OSD-51-files",
+      "readiness": "network_blocked",
+      "url": "https://osdr.nasa.gov/osdr/data/osd/files/51",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "downloaded": false,
+      "action": "Requires an approved/applied environment policy allowing the exact host; this task did not change network configuration or publish the environment."
+    },
+    {
+      "id": "OSD-56-meta",
+      "readiness": "network_blocked",
+      "url": "https://osdr.nasa.gov/osdr/data/osd/meta/56",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "downloaded": false,
+      "action": "Requires an approved/applied environment policy allowing the exact host; this task did not change network configuration or publish the environment."
+    },
+    {
+      "id": "OSD-56-files",
+      "readiness": "network_blocked",
+      "url": "https://osdr.nasa.gov/osdr/data/osd/files/56",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "downloaded": false,
+      "action": "Requires an approved/applied environment policy allowing the exact host; this task did not change network configuration or publish the environment."
+    },
+    {
+      "id": "EDA-card",
+      "readiness": "network_blocked",
+      "url": "https://visualization.osdr.nasa.gov/eda",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>",
+      "downloaded": false,
+      "action": "Requires an approved/applied environment policy allowing the exact host; this task did not change network configuration or publish the environment."
+    }
+  ],
+  "artifacts": [
+    {
+      "url": "https://nlsp.nasa.gov/api/v1/data/lsda_experiment/4469ebdc-0a65-55e8-bbff-3cf6b044c4c6/full",
+      "final_url": "https://nlsp.nasa.gov/api/v1/data/lsda_experiment/4469ebdc-0a65-55e8-bbff-3cf6b044c4c6/full",
+      "retrieved_at_utc": "2026-11-15T18:47:26.986502+00:00",
+      "bytes": 691084,
+      "sha256": "f433e6b327d5c258794d593795ab12d6e5d12337af85b3c8ce22c70b47727f6b",
+      "content_type": "application/json; charset=utf-8",
+      "file": "data/originals/additional/MR035G-metadata.json",
+      "locally_reverified_sha256": true
+    },
+    {
+      "url": "https://nlsp.nasa.gov/api/v1/data/lsda_experiment/e21cc209-b6c4-5b47-b33b-6e31f51b784f/full",
+      "final_url": "https://nlsp.nasa.gov/api/v1/data/lsda_experiment/e21cc209-b6c4-5b47-b33b-6e31f51b784f/full",
+      "retrieved_at_utc": "2026-11-15T18:47:26.929456+00:00",
+      "bytes": 459784,
+      "sha256": "7b84d2f9277a3594e64cba74c54a151ed929c7f9192e95b9ac6966fc0978cc83",
+      "content_type": "application/json; charset=utf-8",
+      "file": "data/originals/additional/BRSMImmune-metadata.json",
+      "locally_reverified_sha256": true
+    },
+    {
+      "url": "https://nlsp.nasa.gov/api/v1/data/lsda_experiment/07f12dd0-6725-582c-a4d2-618ed8b8c452/full",
+      "final_url": "https://nlsp.nasa.gov/api/v1/data/lsda_experiment/07f12dd0-6725-582c-a4d2-618ed8b8c452/full",
+      "retrieved_at_utc": "2026-11-15T18:47:26.973938+00:00",
+      "bytes": 836943,
+      "sha256": "4c1e8327e9c0f20a10584903350f221199b9b47e00136d68332033dd5947aad1",
+      "content_type": "application/json; charset=utf-8",
+      "file": "data/originals/additional/MR080G-metadata.json",
+      "locally_reverified_sha256": true
+    },
+    {
+      "url": "https://nlsp.nasa.gov/api/v1/data/lsda_experiment/b7b1eb07-f9e1-57a2-82d1-2970d49a6e94/full",
+      "final_url": "https://nlsp.nasa.gov/api/v1/data/lsda_experiment/b7b1eb07-f9e1-57a2-82d1-2970d49a6e94/full",
+      "retrieved_at_utc": "2026-11-15T18:47:26.908862+00:00",
+      "bytes": 474839,
+      "sha256": "c0cedfc71df7359cd891c23ff3f8dfb9fd82b1fc4a28ad72852938e7c4c29d03",
+      "content_type": "application/json; charset=utf-8",
+      "file": "data/originals/additional/DTO684-metadata.json",
+      "locally_reverified_sha256": true
+    },
+    {
+      "url": "https://nlsp.nasa.gov/api/v1/data/lsda_experiment/859f904d-7c4a-5994-baf9-47f2abc3013f/full",
+      "final_url": "https://nlsp.nasa.gov/api/v1/data/lsda_experiment/859f904d-7c4a-5994-baf9-47f2abc3013f/full",
+      "retrieved_at_utc": "2026-11-15T18:47:27.101798+00:00",
+      "bytes": 623823,
+      "sha256": "2a24f1f3564b9b896909c6e53346ef6732a86fd034dc9382fbb9e8db2a00506b",
+      "content_type": "application/json; charset=utf-8",
+      "file": "data/originals/additional/96-E044-metadata.json",
+      "locally_reverified_sha256": true
+    },
+    {
+      "url": "https://nlsp.nasa.gov/api/v1/data/lsda_experiment/adbd971a-9c65-5388-acef-ac52d749a113/full",
+      "final_url": "https://nlsp.nasa.gov/api/v1/data/lsda_experiment/adbd971a-9c65-5388-acef-ac52d749a113/full",
+      "retrieved_at_utc": "2026-11-15T18:47:27.525281+00:00",
+      "bytes": 547171,
+      "sha256": "f7a0d95365e2ff4814b3f14aeacda7b0446f2f9395dccc91461b9aadc84c1d14",
+      "content_type": "application/json; charset=utf-8",
+      "file": "data/originals/additional/MSD007-metadata.json",
+      "locally_reverified_sha256": true
+    },
+    {
+      "id": "OSD-51-meta",
+      "url": "https://osdr.nasa.gov/osdr/data/osd/meta/51",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "id": "OSD-51-files",
+      "url": "https://osdr.nasa.gov/osdr/data/osd/files/51",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "id": "OSD-56-meta",
+      "url": "https://osdr.nasa.gov/osdr/data/osd/meta/56",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "id": "OSD-56-files",
+      "url": "https://osdr.nasa.gov/osdr/data/osd/files/56",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "id": "ACTES-card",
+      "url": "https://physionet.org/content/actes-cycloergometer-exercise/",
+      "final_url": "https://physionet.org/content/actes-cycloergometer-exercise/1.0.0/",
+      "retrieved_at_utc": "2026-11-15T18:47:28.705123+00:00",
+      "bytes": 61758,
+      "sha256": "0b21978c21ea3eda453fcc66548496c1d0163c51f4aad13e9e78cce344d8129e",
+      "content_type": "text/html; charset=utf-8",
+      "file": "data/originals/additional/ACTES-card.html",
+      "locally_reverified_sha256": true
+    },
+    {
+      "id": "ITBA-card",
+      "url": "https://physionet.org/content/wearable-device-dataset/",
+      "final_url": "https://physionet.org/content/wearable-device-dataset/1.0.1/",
+      "retrieved_at_utc": "2026-11-15T18:47:28.762198+00:00",
+      "bytes": 70755,
+      "sha256": "ad2a9fa2ad733bf5c4e2201cfc3ce5d7b6f7972539e45ab9f5cbb2ab06646953",
+      "content_type": "text/html; charset=utf-8",
+      "file": "data/originals/additional/ITBA-card.html",
+      "locally_reverified_sha256": true
+    },
+    {
+      "id": "EDA-card",
+      "url": "https://visualization.osdr.nasa.gov/eda",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "name": "MR035G-sample-1.csv",
+      "publisher_label": "MR035G_Campaign_3_DXA_C3D_8881_6MO_Heel",
+      "url": "https://nlsp.nasa.gov/api/v1/files/bb8785d3-9761-559f-be36-c9b49beddb6a/download",
+      "final_url": "https://nlsp.nasa.gov/api/v1/files/bb8785d3-9761-559f-be36-c9b49beddb6a/download",
+      "retrieved_at_utc": "2026-11-15T18:48:24.034335+00:00",
+      "bytes": 463,
+      "sha256": "ec3523891e735011fab2416a7492db9a8f7543ab75758c1d628170093193fd5f",
+      "content_type": "text/csv; charset=utf-8",
+      "file": "data/originals/additional/MR035G-sample-1.csv",
+      "locally_reverified_sha256": true,
+      "publisher_md5": "9be082849c0b293d4803b23c99b1b064",
+      "publisher_checksum_verified": true
+    },
+    {
+      "name": "MR035G-file-1.json",
+      "publisher_label": "MR035G_Campaign_3_DXA_C3D_8881_6MO_Heel",
+      "url": "https://nlsp.nasa.gov/api/v1/data/lsdapub_ls_dataset_file/bb8785d3-9761-559f-be36-c9b49beddb6a/full",
+      "final_url": "https://nlsp.nasa.gov/api/v1/data/lsdapub_ls_dataset_file/bb8785d3-9761-559f-be36-c9b49beddb6a/full",
+      "retrieved_at_utc": "2026-11-15T18:48:23.902914+00:00",
+      "bytes": 152978,
+      "sha256": "813353b191c15b9db721f0b371a7264102eb65e44ea7ac08c06900aaaba03660",
+      "content_type": "application/json; charset=utf-8",
+      "file": "data/originals/additional/MR035G-file-1.json",
+      "locally_reverified_sha256": true
+    },
+    {
+      "name": "MR035G-sample-2.txt",
+      "publisher_label": "MR035G_Campaign_3_DXA_C3C_7772_ReadMe",
+      "url": "https://nlsp.nasa.gov/api/v1/files/50ac6ec3-0ae3-5ea0-8bef-abc2f861eba3/download",
+      "final_url": "https://nlsp.nasa.gov/api/v1/files/50ac6ec3-0ae3-5ea0-8bef-abc2f861eba3/download",
+      "retrieved_at_utc": "2026-11-15T18:48:23.992295+00:00",
+      "bytes": 480,
+      "sha256": "e256f1e7cc87a559e2c06c5359a9aae7b51a990e9d88836f5557664185ebd0cb",
+      "content_type": "text/plain; charset=utf-8",
+      "file": "data/originals/additional/MR035G-sample-2.txt",
+      "locally_reverified_sha256": true
+    },
+    {
+      "name": "MR035G-file-2.json",
+      "publisher_label": "MR035G_Campaign_3_DXA_C3C_7772_ReadMe",
+      "url": "https://nlsp.nasa.gov/api/v1/data/lsdapub_ls_dataset_file/50ac6ec3-0ae3-5ea0-8bef-abc2f861eba3/full",
+      "final_url": "https://nlsp.nasa.gov/api/v1/data/lsdapub_ls_dataset_file/50ac6ec3-0ae3-5ea0-8bef-abc2f861eba3/full",
+      "retrieved_at_utc": "2026-11-15T18:48:23.939001+00:00",
+      "bytes": 153119,
+      "sha256": "b74f523c4d67cce2024ac34e9d2e3fe8be9660a81799de727b0e6bf53dc3172e",
+      "content_type": "application/json; charset=utf-8",
+      "file": "data/originals/additional/MR035G-file-2.json",
+      "locally_reverified_sha256": true
+    },
+    {
+      "name": "MR035G-datacite.json",
+      "publisher_label": null,
+      "url": "https://api.datacite.org/dois/10.83263/7myc-5j86",
+      "final_url": "https://api.datacite.org/dois/10.83263/7myc-5j86",
+      "retrieved_at_utc": "2026-11-15T18:48:24.889061+00:00",
+      "bytes": 13964,
+      "sha256": "9064c62574528d964a5534bd3033906b0840eb80d5b8d59583ea75b238d698d6",
+      "content_type": "application/json; charset=utf-8",
+      "file": "data/originals/additional/MR035G-datacite.json",
+      "locally_reverified_sha256": true
+    },
+    {
+      "name": "BRSMImmune-sample-1.csv",
+      "publisher_label": "BRSMIMMUNE_Campaign_3__Immunology_CD8+_CD69+.csv",
+      "url": "https://nlsp.nasa.gov/api/v1/files/772fec68-2c42-5a57-bf93-fb3d165c924f/download",
+      "final_url": "https://nlsp.nasa.gov/api/v1/files/772fec68-2c42-5a57-bf93-fb3d165c924f/download",
+      "retrieved_at_utc": "2026-11-15T18:48:24.126342+00:00",
+      "bytes": 849,
+      "sha256": "be0dd964be716f5beb209834b0bba72c2ff6671c84674ef36022cdc88d0276af",
+      "content_type": "text/csv; charset=utf-8",
+      "file": "data/originals/additional/BRSMImmune-sample-1.csv",
+      "locally_reverified_sha256": true,
+      "publisher_md5": "9bd73ac9f720bda8c5b9373aa5dce85d",
+      "publisher_checksum_verified": true
+    },
+    {
+      "name": "BRSMImmune-file-1.json",
+      "publisher_label": "BRSMIMMUNE_Campaign_3__Immunology_CD8+_CD69+.csv",
+      "url": "https://nlsp.nasa.gov/api/v1/data/lsdapub_ls_dataset_file/772fec68-2c42-5a57-bf93-fb3d165c924f/full",
+      "final_url": "https://nlsp.nasa.gov/api/v1/data/lsdapub_ls_dataset_file/772fec68-2c42-5a57-bf93-fb3d165c924f/full",
+      "retrieved_at_utc": "2026-11-15T18:48:24.131314+00:00",
+      "bytes": 142083,
+      "sha256": "b0233aaff8d200ae15ba772bbc81fc6907aa74666ac68e975300b80419204b31",
+      "content_type": "application/json; charset=utf-8",
+      "file": "data/originals/additional/BRSMImmune-file-1.json",
+      "locally_reverified_sha256": true
+    },
+    {
+      "name": "BRSMImmune-datacite.json",
+      "publisher_label": null,
+      "url": "https://api.datacite.org/dois/10.83263/75we-ch31",
+      "final_url": "https://api.datacite.org/dois/10.83263/75we-ch31",
+      "retrieved_at_utc": "2026-11-15T18:48:25.033788+00:00",
+      "bytes": 20601,
+      "sha256": "76119fd120db8268c048c254155922f502e03fb593266514263a6079d22fde4d",
+      "content_type": "application/json; charset=utf-8",
+      "file": "data/originals/additional/BRSMImmune-datacite.json",
+      "locally_reverified_sha256": true
+    },
+    {
+      "name": "MR080G-sample-1.csv",
+      "publisher_label": "MR080G_Campaign_3_C3C_7772_Peak_060507_data_entry_avgs.csv",
+      "url": "https://nlsp.nasa.gov/api/v1/files/0bb0d611-c143-560a-b3b1-c14c0ef38cb0/download",
+      "final_url": "https://nlsp.nasa.gov/api/v1/files/0bb0d611-c143-560a-b3b1-c14c0ef38cb0/download",
+      "retrieved_at_utc": "2026-11-15T18:48:24.276338+00:00",
+      "bytes": 593,
+      "sha256": "a76ebcde2a6ac022a2a0815b3d3864c079e47aaf44038772b1e09a609bca3a36",
+      "content_type": "text/csv; charset=utf-8",
+      "file": "data/originals/additional/MR080G-sample-1.csv",
+      "locally_reverified_sha256": true,
+      "publisher_md5": "f6fed7caa0ab1364185ad00b05e1d7a0",
+      "publisher_checksum_verified": true
+    },
+    {
+      "name": "MR080G-file-1.json",
+      "publisher_label": "MR080G_Campaign_3_C3C_7772_Peak_060507_data_entry_avgs.csv",
+      "url": "https://nlsp.nasa.gov/api/v1/data/lsdapub_ls_dataset_file/0bb0d611-c143-560a-b3b1-c14c0ef38cb0/full",
+      "final_url": "https://nlsp.nasa.gov/api/v1/data/lsdapub_ls_dataset_file/0bb0d611-c143-560a-b3b1-c14c0ef38cb0/full",
+      "retrieved_at_utc": "2026-11-15T18:48:24.265166+00:00",
+      "bytes": 150823,
+      "sha256": "c2b4f7a0f737c883678abb2875213e7d8faf8bd5622a6105e106eb50ab559930",
+      "content_type": "application/json; charset=utf-8",
+      "file": "data/originals/additional/MR080G-file-1.json",
+      "locally_reverified_sha256": true
+    },
+    {
+      "name": "MR080G-datacite.json",
+      "publisher_label": null,
+      "url": "https://api.datacite.org/dois/10.83263/w056-8t76",
+      "final_url": "https://api.datacite.org/dois/10.83263/w056-8t76",
+      "retrieved_at_utc": "2026-11-15T18:48:25.287334+00:00",
+      "bytes": 13542,
+      "sha256": "f7a3e62984efd1dfd9fbf868dc2576b11db4b1365ddd43fdc832fd6f4211f2e0",
+      "content_type": "application/json; charset=utf-8",
+      "file": "data/originals/additional/MR080G-datacite.json",
+      "locally_reverified_sha256": true
+    },
+    {
+      "name": "DTO684-sample-1.xls",
+      "publisher_label": "JMDTO_684_13.xls_STS-94_DTO_684_2010_160_070655.xls",
+      "url": "https://nlsp.nasa.gov/api/v1/files/75491cf9-cdad-5daa-ae01-26d77dce5841/download",
+      "final_url": "https://nlsp.nasa.gov/api/v1/files/75491cf9-cdad-5daa-ae01-26d77dce5841/download",
+      "retrieved_at_utc": "2026-11-15T18:48:24.421736+00:00",
+      "bytes": 17920,
+      "sha256": "3e82153d055a9b3ce6833f16478f9bd54ca1b551d5d3b02710b2e134c433c906",
+      "content_type": "application/vnd.ms-excel",
+      "file": "data/originals/additional/DTO684-sample-1.xls",
+      "locally_reverified_sha256": true,
+      "publisher_md5": null,
+      "publisher_checksum_verified": false
+    },
+    {
+      "name": "DTO684-file-1.json",
+      "publisher_label": "JMDTO_684_13.xls_STS-94_DTO_684_2010_160_070655.xls",
+      "url": "https://nlsp.nasa.gov/api/v1/data/lsdapub_ls_dataset_file/75491cf9-cdad-5daa-ae01-26d77dce5841/full",
+      "final_url": "https://nlsp.nasa.gov/api/v1/data/lsdapub_ls_dataset_file/75491cf9-cdad-5daa-ae01-26d77dce5841/full",
+      "retrieved_at_utc": "2026-11-15T18:48:24.537105+00:00",
+      "bytes": 143814,
+      "sha256": "faffb1a5c8e67add720377b34c61d8f3d445802276d7f1d5acba092885841a5a",
+      "content_type": "application/json; charset=utf-8",
+      "file": "data/originals/additional/DTO684-file-1.json",
+      "locally_reverified_sha256": true
+    },
+    {
+      "name": "DTO684-sample-2.xls",
+      "publisher_label": "JMDTO_684_12.xls_STS-94_DTO_684_2010_160_060615.xls",
+      "url": "https://nlsp.nasa.gov/api/v1/files/bc4bd1ba-4025-5f8e-9a48-97e1252d5db3/download",
+      "final_url": "https://nlsp.nasa.gov/api/v1/files/bc4bd1ba-4025-5f8e-9a48-97e1252d5db3/download",
+      "retrieved_at_utc": "2026-11-15T18:48:24.716780+00:00",
+      "bytes": 21504,
+      "sha256": "494bdf457b45fc29f344caafd1c74fe21296b1c7e9f8f52b7f9a1ee59d034a3c",
+      "content_type": "application/vnd.ms-excel",
+      "file": "data/originals/additional/DTO684-sample-2.xls",
+      "locally_reverified_sha256": true,
+      "publisher_md5": null,
+      "publisher_checksum_verified": false
+    },
+    {
+      "name": "DTO684-file-2.json",
+      "publisher_label": "JMDTO_684_12.xls_STS-94_DTO_684_2010_160_060615.xls",
+      "url": "https://nlsp.nasa.gov/api/v1/data/lsdapub_ls_dataset_file/bc4bd1ba-4025-5f8e-9a48-97e1252d5db3/full",
+      "final_url": "https://nlsp.nasa.gov/api/v1/data/lsdapub_ls_dataset_file/bc4bd1ba-4025-5f8e-9a48-97e1252d5db3/full",
+      "retrieved_at_utc": "2026-11-15T18:48:24.834526+00:00",
+      "bytes": 143047,
+      "sha256": "f34c99822ff02ecb291b34333767126d4d3ce33bb96e4af2aca14712d73bdb08",
+      "content_type": "application/json; charset=utf-8",
+      "file": "data/originals/additional/DTO684-file-2.json",
+      "locally_reverified_sha256": true
+    },
+    {
+      "name": "DTO684-datacite.json",
+      "publisher_label": null,
+      "url": "https://api.datacite.org/dois/10.83263/0d67-bk75",
+      "final_url": "https://api.datacite.org/dois/10.83263/0d67-bk75",
+      "retrieved_at_utc": "2026-11-15T18:48:25.079866+00:00",
+      "bytes": 15313,
+      "sha256": "676777f13e9899ed5f1159f89f81f359e5bc0c9f58c52b2a3798a67824226970",
+      "content_type": "application/json; charset=utf-8",
+      "file": "data/originals/additional/DTO684-datacite.json",
+      "locally_reverified_sha256": true
+    },
+    {
+      "name": "96-E044-sample-1.xls",
+      "publisher_label": "96_E044_2100453381.xls_Expedition_3_96-E044_2010_211_010705.xls",
+      "url": "https://nlsp.nasa.gov/api/v1/files/6094895e-8300-500c-9700-f18e6f5e996a/download",
+      "final_url": "https://nlsp.nasa.gov/api/v1/files/6094895e-8300-500c-9700-f18e6f5e996a/download",
+      "retrieved_at_utc": "2026-11-15T18:48:25.032297+00:00",
+      "bytes": 26112,
+      "sha256": "e12abcbccde60b4ca86cb9ca601c6e10682458ddfedee04e6d378fd8b735ea8d",
+      "content_type": "application/vnd.ms-excel",
+      "file": "data/originals/additional/96-E044-sample-1.xls",
+      "locally_reverified_sha256": true,
+      "publisher_md5": null,
+      "publisher_checksum_verified": false
+    },
+    {
+      "name": "96-E044-file-1.json",
+      "publisher_label": "96_E044_2100453381.xls_Expedition_3_96-E044_2010_211_010705.xls",
+      "url": "https://nlsp.nasa.gov/api/v1/data/lsdapub_ls_dataset_file/6094895e-8300-500c-9700-f18e6f5e996a/full",
+      "final_url": "https://nlsp.nasa.gov/api/v1/data/lsdapub_ls_dataset_file/6094895e-8300-500c-9700-f18e6f5e996a/full",
+      "retrieved_at_utc": "2026-11-15T18:48:25.154430+00:00",
+      "bytes": 153093,
+      "sha256": "e1d19475e3d1df4a55398f29e3cc51c0b6e8e1594e6480f357cb407f079f471d",
+      "content_type": "application/json; charset=utf-8",
+      "file": "data/originals/additional/96-E044-file-1.json",
+      "locally_reverified_sha256": true
+    },
+    {
+      "name": "96-E044-datacite.json",
+      "publisher_label": null,
+      "url": "https://api.datacite.org/dois/10.83263/7nhp-yt75",
+      "final_url": "https://api.datacite.org/dois/10.83263/7nhp-yt75",
+      "retrieved_at_utc": "2026-11-15T18:48:25.248807+00:00",
+      "bytes": 19220,
+      "sha256": "33f5eaa6844100bc367e5778b752e4658710f596c0126608aeaf9ba31fd6420f",
+      "content_type": "application/json; charset=utf-8",
+      "file": "data/originals/additional/96-E044-datacite.json",
+      "locally_reverified_sha256": true
+    },
+    {
+      "name": "MSD007-sample-1.xls",
+      "publisher_label": "JMMIRMSD007_59.xls",
+      "url": "https://nlsp.nasa.gov/api/v1/files/d1b61f58-d797-5207-b0a5-36d2ac78e1a6/download",
+      "final_url": "https://nlsp.nasa.gov/api/v1/files/d1b61f58-d797-5207-b0a5-36d2ac78e1a6/download",
+      "retrieved_at_utc": "2026-11-15T18:48:25.269193+00:00",
+      "bytes": 36352,
+      "sha256": "5b5376a3359646072c83cd464223e8b2fec999ead7eee2484924f9391d883bca",
+      "content_type": "application/vnd.ms-excel",
+      "file": "data/originals/additional/MSD007-sample-1.xls",
+      "locally_reverified_sha256": true,
+      "publisher_md5": null,
+      "publisher_checksum_verified": false
+    },
+    {
+      "name": "MSD007-file-1.json",
+      "publisher_label": "JMMIRMSD007_59.xls",
+      "url": "https://nlsp.nasa.gov/api/v1/data/lsdapub_ls_dataset_file/d1b61f58-d797-5207-b0a5-36d2ac78e1a6/full",
+      "final_url": "https://nlsp.nasa.gov/api/v1/data/lsdapub_ls_dataset_file/d1b61f58-d797-5207-b0a5-36d2ac78e1a6/full",
+      "retrieved_at_utc": "2026-11-15T18:48:25.278678+00:00",
+      "bytes": 155254,
+      "sha256": "3fee1b317767971c80099878a6eac4ae387516e08e9facc2a66265e18b209807",
+      "content_type": "application/json; charset=utf-8",
+      "file": "data/originals/additional/MSD007-file-1.json",
+      "locally_reverified_sha256": true
+    },
+    {
+      "name": "MSD007-datacite.json",
+      "publisher_label": null,
+      "url": "https://api.datacite.org/dois/10.83263/xj28-wp80",
+      "final_url": "https://api.datacite.org/dois/10.83263/xj28-wp80",
+      "retrieved_at_utc": "2026-11-15T18:48:25.512182+00:00",
+      "bytes": 24953,
+      "sha256": "ec3f595608f844fa48b0f46075153808211c887b9397bdff63565202f6b93c0a",
+      "content_type": "application/json; charset=utf-8",
+      "file": "data/originals/additional/MSD007-datacite.json",
+      "locally_reverified_sha256": true
+    },
+    {
+      "name": "ACTES-LICENSE.txt",
+      "publisher_label": null,
+      "url": "https://physionet.org/files/actes-cycloergometer-exercise/1.0.0/LICENSE.txt",
+      "final_url": "https://physionet-open.s3.amazonaws.com/actes-cycloergometer-exercise/1.0.0/LICENSE.txt",
+      "retrieved_at_utc": "2026-11-15T18:48:25.975441+00:00",
+      "bytes": 20402,
+      "sha256": "86c0ad300f6d380591298bc03652e30b81f65954bbf22435812bcfd46812ab06",
+      "content_type": "binary/octet-stream",
+      "file": "data/originals/additional/ACTES-LICENSE.txt",
+      "locally_reverified_sha256": true,
+      "publisher_sha256": "86c0ad300f6d380591298bc03652e30b81f65954bbf22435812bcfd46812ab06",
+      "publisher_checksum_verified": true
+    },
+    {
+      "name": "ACTES-SHA256SUMS.txt",
+      "publisher_label": null,
+      "url": "https://physionet.org/files/actes-cycloergometer-exercise/1.0.0/SHA256SUMS.txt",
+      "final_url": "https://physionet.org/files/actes-cycloergometer-exercise/1.0.0/SHA256SUMS.txt",
+      "retrieved_at_utc": "2026-11-15T18:48:25.394924+00:00",
+      "bytes": 342,
+      "sha256": "894d0d195fe5a869759f701ba51c2d16894dcd2682ce4029fe35fc730d01db0c",
+      "content_type": "text/plain; charset=utf-8",
+      "file": "data/originals/additional/ACTES-SHA256SUMS.txt",
+      "locally_reverified_sha256": true
+    },
+    {
+      "name": "ACTES-test_measure.csv",
+      "publisher_label": null,
+      "url": "https://physionet.org/files/actes-cycloergometer-exercise/1.0.0/test_measure.csv",
+      "final_url": "https://physionet-open.s3.amazonaws.com/actes-cycloergometer-exercise/1.0.0/test_measure.csv",
+      "retrieved_at_utc": "2026-11-15T18:48:26.156428+00:00",
+      "bytes": 1588131,
+      "sha256": "14a9df027caf00ee1dc39f1493e708c27a7da88794ff69a59442326ef7aa0516",
+      "content_type": "binary/octet-stream",
+      "file": "data/originals/additional/ACTES-test_measure.csv",
+      "locally_reverified_sha256": true,
+      "publisher_sha256": "14a9df027caf00ee1dc39f1493e708c27a7da88794ff69a59442326ef7aa0516",
+      "publisher_checksum_verified": true
+    },
+    {
+      "name": "ITBA-LICENSE.txt",
+      "publisher_label": null,
+      "url": "https://physionet.org/files/wearable-device-dataset/1.0.1/LICENSE.txt",
+      "final_url": "https://physionet-open.s3.amazonaws.com/wearable-device-dataset/1.0.1/LICENSE.txt",
+      "retrieved_at_utc": "2026-11-15T18:48:26.023394+00:00",
+      "bytes": 20402,
+      "sha256": "86c0ad300f6d380591298bc03652e30b81f65954bbf22435812bcfd46812ab06",
+      "content_type": "binary/octet-stream",
+      "file": "data/originals/additional/ITBA-LICENSE.txt",
+      "locally_reverified_sha256": true,
+      "publisher_sha256": "86c0ad300f6d380591298bc03652e30b81f65954bbf22435812bcfd46812ab06",
+      "publisher_checksum_verified": true
+    },
+    {
+      "name": "ITBA-SHA256SUMS.txt",
+      "publisher_label": null,
+      "url": "https://physionet.org/files/wearable-device-dataset/1.0.1/SHA256SUMS.txt",
+      "final_url": "https://physionet.org/files/wearable-device-dataset/1.0.1/SHA256SUMS.txt",
+      "retrieved_at_utc": "2026-11-15T18:48:25.894173+00:00",
+      "bytes": 72437,
+      "sha256": "9f9b292b0d2827592c328706e16c8ec1855482cb23946ca57218453247579d8c",
+      "content_type": "text/plain; charset=utf-8",
+      "file": "data/originals/additional/ITBA-SHA256SUMS.txt",
+      "locally_reverified_sha256": true
+    },
+    {
+      "name": "ITBA-README.txt",
+      "publisher_label": null,
+      "url": "https://physionet.org/files/wearable-device-dataset/1.0.1/README.txt",
+      "final_url": "https://physionet-open.s3.amazonaws.com/wearable-device-dataset/1.0.1/README.txt",
+      "retrieved_at_utc": "2026-11-15T18:48:26.358379+00:00",
+      "bytes": 2247,
+      "sha256": "7fe978ade3de804f8d91b68cfb56fd7fb03499f87669a6824d08efa6819bfc33",
+      "content_type": "binary/octet-stream",
+      "file": "data/originals/additional/ITBA-README.txt",
+      "locally_reverified_sha256": true,
+      "publisher_sha256": "7fe978ade3de804f8d91b68cfb56fd7fb03499f87669a6824d08efa6819bfc33",
+      "publisher_checksum_verified": true
+    },
+    {
+      "name": "ITBA-Data_Dictionary.csv",
+      "publisher_label": null,
+      "url": "https://physionet.org/files/wearable-device-dataset/1.0.1/Data_Dictionary.csv",
+      "final_url": "https://physionet-open.s3.amazonaws.com/wearable-device-dataset/1.0.1/Data_Dictionary.csv",
+      "retrieved_at_utc": "2026-11-15T18:48:26.499280+00:00",
+      "bytes": 639,
+      "sha256": "70642e6a04c617181f62438aca2399a204e233e2b4d0a5c7bad2efbc48921ecb",
+      "content_type": "binary/octet-stream",
+      "file": "data/originals/additional/ITBA-Data_Dictionary.csv",
+      "locally_reverified_sha256": true,
+      "publisher_sha256": "70642e6a04c617181f62438aca2399a204e233e2b4d0a5c7bad2efbc48921ecb",
+      "publisher_checksum_verified": true
+    },
+    {
+      "name": "ITBA-data_constraints.txt",
+      "publisher_label": null,
+      "url": "https://physionet.org/files/wearable-device-dataset/1.0.1/data_constraints.txt",
+      "final_url": "https://physionet-open.s3.amazonaws.com/wearable-device-dataset/1.0.1/data_constraints.txt",
+      "retrieved_at_utc": "2026-11-15T18:48:26.562193+00:00",
+      "bytes": 1241,
+      "sha256": "ebbba2ec9ce7e94734b6badc3791abeaa6e0a202e8fe492293b36417ab4c3c7e",
+      "content_type": "binary/octet-stream",
+      "file": "data/originals/additional/ITBA-data_constraints.txt",
+      "locally_reverified_sha256": true,
+      "publisher_sha256": "ebbba2ec9ce7e94734b6badc3791abeaa6e0a202e8fe492293b36417ab4c3c7e",
+      "publisher_checksum_verified": true
+    },
+    {
+      "name": "ITBA-Wearable_Dataset_",
+      "publisher_label": null,
+      "url": "https://physionet.org/files/wearable-device-dataset/1.0.1/Wearable_Dataset/",
+      "final_url": "https://physionet.org/files/wearable-device-dataset/1.0.1/Wearable_Dataset/",
+      "retrieved_at_utc": "2026-11-15T18:48:26.306965+00:00",
+      "bytes": 627,
+      "sha256": "416b29f3acee516518f80b0106515dd02089be3a97acfd187982f7fe920a2a99",
+      "content_type": "text/html; charset=utf-8",
+      "file": "data/originals/additional/ITBA-Wearable_Dataset_",
+      "locally_reverified_sha256": true
+    },
+    {
+      "name": "ITBA-STRESS-list.html",
+      "url": "https://physionet.org/files/wearable-device-dataset/1.0.1/Wearable_Dataset/STRESS/",
+      "final_url": "https://physionet.org/files/wearable-device-dataset/1.0.1/Wearable_Dataset/STRESS/",
+      "retrieved_at_utc": "2026-11-15T18:49:24.576929+00:00",
+      "bytes": 4338,
+      "sha256": "8bc39bf285f270196ce752f86e6aa33c31cdbf9afa463f25453fffe096fb0728",
+      "content_type": "text/html; charset=utf-8",
+      "file": "data/originals/additional/ITBA-STRESS-list.html",
+      "locally_reverified_sha256": true
+    },
+    {
+      "name": "ITBA-session-list.html",
+      "url": "https://physionet.org/files/wearable-device-dataset/1.0.1/Wearable_Dataset/STRESS/S01/",
+      "final_url": "https://physionet.org/files/wearable-device-dataset/1.0.1/Wearable_Dataset/STRESS/S01/",
+      "retrieved_at_utc": "2026-11-15T18:49:24.687458+00:00",
+      "bytes": 1094,
+      "sha256": "94ac75f16aed15408a74f4131959cde6196cbd498a34ac19a67534fec61dcb72",
+      "content_type": "text/html; charset=utf-8",
+      "file": "data/originals/additional/ITBA-session-list.html",
+      "locally_reverified_sha256": true
+    },
+    {
+      "name": "ITBA-HR.csv",
+      "url": "https://physionet.org/files/wearable-device-dataset/1.0.1/Wearable_Dataset/STRESS/S01/HR.csv",
+      "final_url": "https://physionet-open.s3.amazonaws.com/wearable-device-dataset/1.0.1/Wearable_Dataset/STRESS/S01/HR.csv",
+      "retrieved_at_utc": "2026-11-15T18:49:25.181953+00:00",
+      "bytes": 15153,
+      "sha256": "47cb96ae9f63cd53378250093b107a2d2e356dab4c9f44cde8e86ae233b4feaa",
+      "content_type": "binary/octet-stream",
+      "file": "data/originals/additional/ITBA-HR.csv",
+      "locally_reverified_sha256": true,
+      "publisher_sha256": "47cb96ae9f63cd53378250093b107a2d2e356dab4c9f44cde8e86ae233b4feaa",
+      "publisher_checksum_verified": true
+    },
+    {
+      "name": "ITBA-TEMP.csv",
+      "url": "https://physionet.org/files/wearable-device-dataset/1.0.1/Wearable_Dataset/STRESS/S01/TEMP.csv",
+      "final_url": "https://physionet-open.s3.amazonaws.com/wearable-device-dataset/1.0.1/Wearable_Dataset/STRESS/S01/TEMP.csv",
+      "retrieved_at_utc": "2026-11-15T18:49:25.657167+00:00",
+      "bytes": 62098,
+      "sha256": "f649e28f74990e220a2cf29972e95d1233334cf81b7c0f668e5e59774f1799c2",
+      "content_type": "binary/octet-stream",
+      "file": "data/originals/additional/ITBA-TEMP.csv",
+      "locally_reverified_sha256": true,
+      "publisher_sha256": "f649e28f74990e220a2cf29972e95d1233334cf81b7c0f668e5e59774f1799c2",
+      "publisher_checksum_verified": true
+    },
+    {
+      "name": "ITBA-IBI.csv",
+      "url": "https://physionet.org/files/wearable-device-dataset/1.0.1/Wearable_Dataset/STRESS/S01/IBI.csv",
+      "final_url": "https://physionet-open.s3.amazonaws.com/wearable-device-dataset/1.0.1/Wearable_Dataset/STRESS/S01/IBI.csv",
+      "retrieved_at_utc": "2026-11-15T18:49:26.065574+00:00",
+      "bytes": 17959,
+      "sha256": "63d5b1bf9bb6e23fbecd0ec1c922101feeabf986c9158d6cc71dca662684d92e",
+      "content_type": "binary/octet-stream",
+      "file": "data/originals/additional/ITBA-IBI.csv",
+      "locally_reverified_sha256": true,
+      "publisher_sha256": "63d5b1bf9bb6e23fbecd0ec1c922101feeabf986c9158d6cc71dca662684d92e",
+      "publisher_checksum_verified": true
+    },
+    {
+      "name": "MR080G-readme.txt",
+      "url": "https://nlsp.nasa.gov/api/v1/files/388a1742-1aeb-52ae-8bcb-c70ea429d839/download",
+      "final_url": "https://nlsp.nasa.gov/api/v1/files/388a1742-1aeb-52ae-8bcb-c70ea429d839/download",
+      "retrieved_at_utc": "2026-11-15T18:49:26.389795+00:00",
+      "bytes": 515,
+      "sha256": "aaea958abe55ed00f2354714f40a34ace3e54f02992306cc320ea1b3a69f68cf",
+      "content_type": "text/plain; charset=utf-8",
+      "file": "data/originals/additional/MR080G-readme.txt",
+      "locally_reverified_sha256": true
+    },
+    {
+      "name": "MSD007-sample-2.xls",
+      "url": "https://nlsp.nasa.gov/api/v1/files/feef9005-f9f1-581e-a9c1-25597fc4d2fc/download",
+      "final_url": "https://nlsp.nasa.gov/api/v1/files/feef9005-f9f1-581e-a9c1-25597fc4d2fc/download",
+      "retrieved_at_utc": "2026-11-15T18:49:26.742558+00:00",
+      "bytes": 29184,
+      "sha256": "332aae264897f8a6e2d0a0b9e5b6a8e292a59a581da9d4dba2775d5770f66a6c",
+      "content_type": "application/vnd.ms-excel",
+      "file": "data/originals/additional/MSD007-sample-2.xls",
+      "locally_reverified_sha256": true,
+      "publisher_md5": null,
+      "publisher_checksum_verified": false
+    },
+    {
+      "name": "MSD007-file-2.json",
+      "url": "https://nlsp.nasa.gov/api/v1/data/lsdapub_ls_dataset_file/feef9005-f9f1-581e-a9c1-25597fc4d2fc/full",
+      "final_url": "https://nlsp.nasa.gov/api/v1/data/lsdapub_ls_dataset_file/feef9005-f9f1-581e-a9c1-25597fc4d2fc/full",
+      "retrieved_at_utc": "2026-11-15T18:49:27.254434+00:00",
+      "bytes": 156937,
+      "sha256": "78e1e4e0d2a2c5ff937d2e7f703d73cdecfe9b5b04425379f3385e5854bea81d",
+      "content_type": "application/json; charset=utf-8",
+      "file": "data/originals/additional/MSD007-file-2.json",
+      "locally_reverified_sha256": true
+    },
+    {
+      "name": "MR080G-matching-readme.txt",
+      "url": "https://nlsp.nasa.gov/api/v1/files/f7321c09-1069-5b0a-b283-6cb509d69db8/download",
+      "final_url": "https://nlsp.nasa.gov/api/v1/files/f7321c09-1069-5b0a-b283-6cb509d69db8/download",
+      "retrieved_at_utc": "2026-11-15T18:49:59.300286+00:00",
+      "bytes": 536,
+      "sha256": "f1e284b8c8ea608b3d41ecf22e16ae754ae5cdf49f13219a137da43795401a19",
+      "content_type": "text/plain; charset=utf-8",
+      "file": "data/originals/additional/MR080G-matching-readme.txt",
+      "locally_reverified_sha256": true
+    }
+  ],
+  "source_bound": "Inspection findings apply to selected artifacts and pinned releases only, not every file or participant. Revisit if provider revises artifacts, units, licensing or protocols.",
+  "clinical_validation": false
+}

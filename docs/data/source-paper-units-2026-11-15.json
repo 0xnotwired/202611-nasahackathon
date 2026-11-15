@@ -1,0 +1,351 @@
+{
+  "reviewed_at_utc": "2026-11-15T20:14:11.996439+00:00",
+  "scope": "Source-specific unit investigation for selected CRF,MR035G and BRSMImmune files; no scientific unit assigned from unrelated papers or values.",
+  "methodology": "claim-provenance-discipline: distinguish exact CSV binding, paper-level information, cohort overlap and unobserved source content.",
+  "artifacts": [
+    {
+      "name": "CRF-pubmed.html",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/19476163/",
+      "final_url": "https://pubmed.ncbi.nlm.nih.gov/19476163/",
+      "bytes": 5590,
+      "sha256": "666b7560bd59c6a16343c64a8ebc1c78d9cdf7414063565678ef80a5c5b08cf6",
+      "retrieved_at_utc": "2026-11-15T20:09:27.437412+00:00",
+      "file": "data/originals/papers/CRF-pubmed.html",
+      "content_verified": "Browser/cookie challenge HTML, not article/abstract evidence"
+    },
+    {
+      "name": "CRF-ntrs-search.json",
+      "url": "https://ntrs.nasa.gov/api/citations/search?q=Long-duration+head-down+bed+rest+project+overview+vital+signs+fluid+balance",
+      "final_url": "https://ntrs.nasa.gov/api/citations/search?q=Long-duration+head-down+bed+rest+project+overview+vital+signs+fluid+balance",
+      "bytes": 1182,
+      "sha256": "ba96ad572a21e9fb10a964cdbf8d32195b3f21d1b8a73eb5e9e560c2b83d5b8b",
+      "retrieved_at_utc": "2026-11-15T20:09:27.804998+00:00",
+      "file": "data/originals/papers/CRF-ntrs-search.json",
+      "content_verified": "NTRS search metadata; search hits are not automatically exact-paper matches"
+    },
+    {
+      "name": "MR035G-pubmed.html",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/19476166/",
+      "final_url": "https://pubmed.ncbi.nlm.nih.gov/19476166/",
+      "bytes": 5590,
+      "sha256": "ac38e874667596ab5ab29bfd0d854f3b6cdf1e41f0c55dd21181ab67f6f581eb",
+      "retrieved_at_utc": "2026-11-15T20:09:27.439303+00:00",
+      "file": "data/originals/papers/MR035G-pubmed.html",
+      "content_verified": "Browser/cookie challenge HTML, not article/abstract evidence"
+    },
+    {
+      "name": "MR035G-ntrs-search.json",
+      "url": "https://ntrs.nasa.gov/api/citations/search?q=Skeletal+effects+of+long-duration+head-down+bed+rest",
+      "final_url": "https://ntrs.nasa.gov/api/citations/search?q=Skeletal+effects+of+long-duration+head-down+bed+rest",
+      "bytes": 35672,
+      "sha256": "07185ee6eaedf611cb3c233c3fd208e972db856e3d60265e883fa909c2cf0ee5",
+      "retrieved_at_utc": "2026-11-15T20:09:27.977116+00:00",
+      "file": "data/originals/papers/MR035G-ntrs-search.json",
+      "content_verified": "NTRS search metadata; search hits are not automatically exact-paper matches"
+    },
+    {
+      "name": "BRSMImmune-pubmed.html",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/19476168/",
+      "final_url": "https://pubmed.ncbi.nlm.nih.gov/19476168/",
+      "bytes": 5590,
+      "sha256": "9351649a50eb4d4c9d5526e2b05d4423440e5c2bd77f046bf7f9e61bb945adc5",
+      "retrieved_at_utc": "2026-11-15T20:09:27.629978+00:00",
+      "file": "data/originals/papers/BRSMImmune-pubmed.html",
+      "content_verified": "Browser/cookie challenge HTML, not article/abstract evidence"
+    },
+    {
+      "name": "BRSMImmune-ntrs-search.json",
+      "url": "https://ntrs.nasa.gov/api/citations/search?q=Immune+status+latent+viral+reactivation+stress+long-duration+head-down+bed+rest",
+      "final_url": "https://ntrs.nasa.gov/api/citations/search?q=Immune+status+latent+viral+reactivation+stress+long-duration+head-down+bed+rest",
+      "bytes": 1182,
+      "sha256": "3875c66290dc8bf547cf3531f051b760c259b4d7ce4b96d9fa484c64208a2579",
+      "retrieved_at_utc": "2026-11-15T20:09:28.097763+00:00",
+      "file": "data/originals/papers/BRSMImmune-ntrs-search.json",
+      "content_verified": "NTRS search metadata; search hits are not automatically exact-paper matches"
+    },
+    {
+      "name": "vitals-ntrs.json",
+      "url": "https://ntrs.nasa.gov/api/citations/search?q=%22vital+signs%22&page.size=25",
+      "final_url": "https://ntrs.nasa.gov/api/citations/search?q=%22vital+signs%22&page.size=25",
+      "bytes": 100535,
+      "sha256": "2e8cd1be8fdd3af0a8accc377db85596d7fb172964a4d87814410714823b570d",
+      "retrieved_at_utc": "2026-11-15T20:10:08.869246+00:00",
+      "file": "data/originals/papers/vitals-ntrs.json",
+      "content_verified": "NTRS search metadata; search hits are not automatically exact-paper matches"
+    },
+    {
+      "name": "crf-title-ntrs.json",
+      "url": "https://ntrs.nasa.gov/api/citations/search?q=%22fluid+balance%22+%22Meck%22&page.size=25",
+      "final_url": "https://ntrs.nasa.gov/api/citations/search?q=%22fluid+balance%22+%22Meck%22&page.size=25",
+      "bytes": 1181,
+      "sha256": "ca09017e40ae20468ef781f0ff29997cc0aa02ad35b63b2608d9a9ffe238c160",
+      "retrieved_at_utc": "2026-11-15T20:10:08.542823+00:00",
+      "file": "data/originals/papers/crf-title-ntrs.json",
+      "content_verified": "NTRS search metadata; search hits are not automatically exact-paper matches"
+    },
+    {
+      "name": "bone-title-ntrs.json",
+      "url": "https://ntrs.nasa.gov/api/citations/search?q=%22skeletal+effects%22&page.size=25",
+      "final_url": "https://ntrs.nasa.gov/api/citations/search?q=%22skeletal+effects%22&page.size=25",
+      "bytes": 68683,
+      "sha256": "74bc951ec19e0ead09135c27168a76fee0e2ea4ee6968faa83f34420ad277f76",
+      "retrieved_at_utc": "2026-11-15T20:10:08.293589+00:00",
+      "file": "data/originals/papers/bone-title-ntrs.json",
+      "content_verified": "NTRS search metadata; search hits are not automatically exact-paper matches"
+    },
+    {
+      "name": "immune-title-ntrs.json",
+      "url": "https://ntrs.nasa.gov/api/citations/search?q=%22Immune+status%22+%22bed+rest%22&page.size=25",
+      "final_url": "https://ntrs.nasa.gov/api/citations/search?q=%22Immune+status%22+%22bed+rest%22&page.size=25",
+      "bytes": 8305,
+      "sha256": "e80ed1f0dd9fe76dac7714370409cd1355bf29b0ca439aecb653c8d9355a6e50",
+      "retrieved_at_utc": "2026-11-15T20:10:08.065120+00:00",
+      "file": "data/originals/papers/immune-title-ntrs.json",
+      "content_verified": "NTRS search metadata; search hits are not automatically exact-paper matches"
+    },
+    {
+      "name": "immune-author-ntrs.json",
+      "url": "https://ntrs.nasa.gov/api/citations/search?q=%22Crucian%22+%222009%22&page.size=25",
+      "final_url": "https://ntrs.nasa.gov/api/citations/search?q=%22Crucian%22+%222009%22&page.size=25",
+      "bytes": 30119,
+      "sha256": "287b21d262e69809b4e604f6bc978d3e457a8065cd4b4334a03f0f106c807c18",
+      "retrieved_at_utc": "2026-11-15T20:10:08.491655+00:00",
+      "file": "data/originals/papers/immune-author-ntrs.json",
+      "content_verified": "NTRS search metadata; search hits are not automatically exact-paper matches"
+    },
+    {
+      "name": "bone-author-ntrs.json",
+      "url": "https://ntrs.nasa.gov/api/citations/search?q=%22Spector%22+%222009%22&page.size=25",
+      "final_url": "https://ntrs.nasa.gov/api/citations/search?q=%22Spector%22+%222009%22&page.size=25",
+      "bytes": 29609,
+      "sha256": "2cecaae5804308391a965b025bd613fd4ea1f7b806f4330431f292313ffcd002",
+      "retrieved_at_utc": "2026-11-15T20:10:08.662364+00:00",
+      "file": "data/originals/papers/bone-author-ntrs.json",
+      "content_verified": "NTRS search metadata; search hits are not automatically exact-paper matches"
+    },
+    {
+      "name": "immune-20070024710.pdf",
+      "url": "https://ntrs.nasa.gov/api/citations/20070024710/downloads/20070024710.pdf",
+      "final_url": "https://ntrs.nasa.gov/api/citations/20070024710/downloads/20070024710.pdf",
+      "bytes": 141177,
+      "sha256": "bdb984131bcde40d0efb53d0d0f34818d4f47fc0ceebc04fd2ac14c422183b12",
+      "retrieved_at_utc": "2026-11-15T20:10:55.310593+00:00",
+      "file": "data/originals/papers/immune-20070024710.pdf",
+      "content_verified": "Source response retained; PDF/text content checked where cited below"
+    },
+    {
+      "name": "immune-20070024710.txt",
+      "url": "https://ntrs.nasa.gov/api/citations/20070024710/downloads/20070024710.txt",
+      "final_url": "https://ntrs.nasa.gov/api/citations/20070024710/downloads/20070024710.txt",
+      "bytes": 43508,
+      "sha256": "825b8aec9275d2c395a3984c9f847b5911ab272385a3dd0fe0d524a2273cdd4a",
+      "retrieved_at_utc": "2026-11-15T20:10:55.458638+00:00",
+      "file": "data/originals/papers/immune-20070024710.txt",
+      "content_verified": "Source response retained; PDF/text content checked where cited below"
+    },
+    {
+      "name": "meck-bedrest-ntrs.json",
+      "url": "https://ntrs.nasa.gov/api/citations/search?q=%22Meck%22+%22bed+rest%22&page.size=50",
+      "final_url": "https://ntrs.nasa.gov/api/citations/search?q=%22Meck%22+%22bed+rest%22&page.size=50",
+      "bytes": 33873,
+      "sha256": "49863d7c5f6dc94e54339bbd35ca3cc4c826d9f479cfa603629a09c28d9b0a65",
+      "retrieved_at_utc": "2026-11-15T20:10:55.513225+00:00",
+      "file": "data/originals/papers/meck-bedrest-ntrs.json",
+      "content_verified": "NTRS search metadata; search hits are not automatically exact-paper matches"
+    },
+    {
+      "name": "spector-bedrest-ntrs.json",
+      "url": "https://ntrs.nasa.gov/api/citations/search?q=%22Spector%22+%22bed+rest%22&page.size=50",
+      "final_url": "https://ntrs.nasa.gov/api/citations/search?q=%22Spector%22+%22bed+rest%22&page.size=50",
+      "bytes": 63458,
+      "sha256": "3b6ae0b79558b46a157b6bf9fc056c12759ffc4a1985feaf0465c8e6e1db4c20",
+      "retrieved_at_utc": "2026-11-15T20:10:55.563398+00:00",
+      "file": "data/originals/papers/spector-bedrest-ntrs.json",
+      "content_verified": "NTRS search metadata; search hits are not automatically exact-paper matches"
+    },
+    {
+      "name": "crucian-bedrest-ntrs.json",
+      "url": "https://ntrs.nasa.gov/api/citations/search?q=%22Crucian%22+%22bed+rest%22&page.size=50",
+      "final_url": "https://ntrs.nasa.gov/api/citations/search?q=%22Crucian%22+%22bed+rest%22&page.size=50",
+      "bytes": 44041,
+      "sha256": "49a622f86027e8e1eb56dd894f31541983e3a43c73b0261a976f6374af7b834c",
+      "retrieved_at_utc": "2026-11-15T20:10:55.660238+00:00",
+      "file": "data/originals/papers/crucian-bedrest-ntrs.json",
+      "content_verified": "NTRS search metadata; search hits are not automatically exact-paper matches"
+    },
+    {
+      "name": "standard-20080013330.pdf",
+      "url": "https://ntrs.nasa.gov/api/citations/20080013330/downloads/20080013330.pdf",
+      "final_url": "https://ntrs.nasa.gov/api/citations/20080013330/downloads/20080013330.pdf",
+      "bytes": 178236,
+      "sha256": "e154d250ed3fba2ed20087aed15c08907ba3f8ef993964f9e463894641062e4b",
+      "retrieved_at_utc": "2026-11-15T20:12:06.524248+00:00",
+      "file": "data/originals/papers/standard-20080013330.pdf",
+      "content_verified": "Source response retained; PDF/text content checked where cited below"
+    },
+    {
+      "name": "standard-20080013330.txt",
+      "url": "https://ntrs.nasa.gov/api/citations/20080013330/downloads/20080013330.txt",
+      "final_url": "https://ntrs.nasa.gov/api/citations/20080013330/downloads/20080013330.txt",
+      "bytes": 11551,
+      "sha256": "333a6f795ffbd5087d316598c9024f072cd756374a2088892c63f11c72f08502",
+      "retrieved_at_utc": "2026-11-15T20:12:06.351448+00:00",
+      "file": "data/originals/papers/standard-20080013330.txt",
+      "content_verified": "Source response retained; PDF/text content checked where cited below"
+    },
+    {
+      "name": "cardiovascular-20080010634.pdf",
+      "url": "https://ntrs.nasa.gov/api/citations/20080010634/downloads/20080010634.pdf",
+      "final_url": "https://ntrs.nasa.gov/api/citations/20080010634/downloads/20080010634.pdf",
+      "bytes": 143165,
+      "sha256": "9d52aa8d39f7cc4f9f9daf1d81844d5702d84601932eee226aacb0524a079aee",
+      "retrieved_at_utc": "2026-11-15T20:12:06.489742+00:00",
+      "file": "data/originals/papers/cardiovascular-20080010634.pdf",
+      "content_verified": "Source response retained; PDF/text content checked where cited below"
+    },
+    {
+      "name": "cardiovascular-20080010634.txt",
+      "url": "https://ntrs.nasa.gov/api/citations/20080010634/downloads/20080010634.txt",
+      "final_url": "https://ntrs.nasa.gov/api/citations/20080010634/downloads/20080010634.txt",
+      "bytes": 39286,
+      "sha256": "21663abccef9fdfe813cb3ea99346211c0775d8a8f6ac9231154ece442c9111c",
+      "retrieved_at_utc": "2026-11-15T20:12:06.491257+00:00",
+      "file": "data/originals/papers/cardiovascular-20080010634.txt",
+      "content_verified": "Source response retained; PDF/text content checked where cited below"
+    },
+    {
+      "name": "PMCID-converter.json",
+      "url": "https://pmc.ncbi.nlm.nih.gov/utils/idconv/v1.0/?ids=19476163,19476166,19476168&format=json",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "name": "pubmed-export.txt",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/19476166/?format=pubmed",
+      "final_url": "https://pubmed.ncbi.nlm.nih.gov/19476166/?format=pubmed",
+      "bytes": 5590,
+      "sha256": "e1f87e0ec81e7915b5d7672c4fb59f398569f70396b5548fc05a401a14b0b25b",
+      "retrieved_at_utc": "2026-11-15T20:12:27.553793+00:00",
+      "file": "data/originals/papers/pubmed-export.txt",
+      "content_verified": "Browser/cookie challenge HTML, not article/abstract evidence"
+    },
+    {
+      "name": "bone-exact-ntrs.json",
+      "url": "https://ntrs.nasa.gov/api/citations/search?q=%2219476166%22",
+      "final_url": "https://ntrs.nasa.gov/api/citations/search?q=%2219476166%22",
+      "bytes": 1181,
+      "sha256": "3b54800a1184ac71f86dfe5a1044d73db77ae5d8b046636e8fb82379a1d1674d",
+      "retrieved_at_utc": "2026-11-15T20:12:27.590296+00:00",
+      "file": "data/originals/papers/bone-exact-ntrs.json",
+      "content_verified": "NTRS search metadata; search hits are not automatically exact-paper matches"
+    },
+    {
+      "name": "CRF-exact-ntrs.json",
+      "url": "https://ntrs.nasa.gov/api/citations/search?q=%2219476163%22",
+      "final_url": "https://ntrs.nasa.gov/api/citations/search?q=%2219476163%22",
+      "bytes": 1181,
+      "sha256": "096627dc81d8a3996f08248951e57f3d1eba65f4f8d6108634c1004e69cb5bba",
+      "retrieved_at_utc": "2026-11-15T20:12:27.378567+00:00",
+      "file": "data/originals/papers/CRF-exact-ntrs.json",
+      "content_verified": "NTRS search metadata; search hits are not automatically exact-paper matches"
+    }
+  ],
+  "exact_requested_papers": [
+    {
+      "study": "CRF",
+      "pmid": "19476163",
+      "citation": "Meck JV, Dreyer SA, Warren LE. Long-duration head-down bed rest: project overview, vital signs, and fluid balance. Aviat Space Environ Med.2009;80(5Suppl):A1-8.",
+      "retrieval": "PubMed response is challenge HTML; exact full paper not found by current NTRS search."
+    },
+    {
+      "study": "MR035G",
+      "pmid": "19476166",
+      "citation": "Spector ER, Smith SM, Sibonga JD. Skeletal effects of long-duration head-down bed rest. Aviat Space Environ Med.2009;80(5Suppl):A23-8.",
+      "retrieval": "PubMed response is challenge HTML; exact full paper not found by current NTRS search."
+    },
+    {
+      "study": "BRSMImmune",
+      "pmid": "19476168",
+      "citation": "Crucian BE et al. Immune status, latent viral reactivation, and stress during long-duration head-down bed rest. Aviat Space Environ Med.2009;80(5Suppl):A37-44.",
+      "retrieval": "PubMed response is challenge HTML; related earlier NTRS draft found, not represented as the final2009 paper."
+    }
+  ],
+  "new_primary_sources": [
+    {
+      "ntrs_id": "20070024710",
+      "title": "Assessment of Immune Status, Latent Viral Reactivation and Stress during Long Duration Bed Rest as an Analog for Spaceflight",
+      "version": "DRAFT FINAL REV20 June22,2007, as printed in PDF",
+      "url": "https://ntrs.nasa.gov/api/citations/20070024710/downloads/20070024710.pdf",
+      "evidence": [
+        {
+          "pdf_page": 6,
+          "finding": "Results explicitly describe constitutive CD8+/CD69+ levels in percent; no exact denominator or selected30-subject export-field mapping established."
+        },
+        {
+          "pdf_page": 3,
+          "finding": "Methods describe10 subjects from FAP studies2,3,4; figure2B roster has10 pseudonymous subjects, all present among30 distinct subjects in selected CSV. Only10/30 overlap; not a blanket unit dictionary."
+        }
+      ],
+      "not_inferred": [
+        "No %ofCD8 versus %oflymphocytes denominator assigned",
+        "No clinical normal range or threshold adopted",
+        "No percent unit applied to all30 subjects/other immune analytes"
+      ]
+    },
+    {
+      "ntrs_id": "20080013330",
+      "title": "NASA Standard Measures Overview",
+      "version": "March2008 overview",
+      "url": "https://ntrs.nasa.gov/api/citations/20080013330/downloads/20080013330.pdf",
+      "evidence": [
+        {
+          "pdf_page": 4,
+          "finding": "Lists daily BP,HR,respiratory rate,temperature,body weight and fluid measurements; no physical-unit mapping for selected CRF CSV."
+        }
+      ]
+    },
+    {
+      "ntrs_id": "20080010634",
+      "title": "Cardiovascular Adaptations to Long Duration Head-Down Tilt Bed Rest",
+      "url": "https://ntrs.nasa.gov/api/citations/20080010634/downloads/20080010634.pdf",
+      "evidence": [
+        {
+          "pdf_page": 26,
+          "finding": "Related study table labels Weight kg and Height m, while methods use Height cm in a body-surface-area equation. This proves related publications can use different height representations; it is not authority to assign the unqualified CRF Height column."
+        }
+      ]
+    }
+  ],
+  "unit_decisions": [
+    {
+      "study": "CRF",
+      "status": "selected_column_units_unconfirmed",
+      "fields": [
+        "Pulse",
+        "SysBP",
+        "DiaBP",
+        "Resp Rate",
+        "Weight",
+        "Body Temp",
+        "Height"
+      ],
+      "allowed": "Preserve with explicit unknown unit where schema permits; no conversions, scientific comparison or clinical thresholds.",
+      "needed": "Campaign3 DailyVitals data dictionary/form/protocol tying each exported column to physical units and scale."
+    },
+    {
+      "study": "MR035G",
+      "status": "NET_AVG_BMD_unit_unconfirmed",
+      "allowed": "Preserve unknown; no automatic g/cm2 or volumetric/areal conversion.",
+      "needed": "Selected Campaign3 Heel NET_AVG_BMD output definition and unit, tied to Hologic analysis/export revision."
+    },
+    {
+      "study": "BRSMImmune",
+      "status": "paper_level_percent_evidence_found_exact_export_denominator_unconfirmed",
+      "allowed": "Source summary may describe paper-level percent outcome; do not map selected30-subject CSV to a scientific percentage until denominator/scope documented.",
+      "needed": "CD8+CD69+ gating denominator, scale and applicability to all selected campaigns/subjects; distinguish unstimulated versus mitogen-stimulated assays."
+    }
+  ],
+  "no_external_contact": true,
+  "no_product_changes": true,
+  "no_commits_pushes_or_network_changes": true,
+  "falsifier": "Reopen unit decisions when exact export dictionary, final full paper with explicit matching export/protocol, or provider clarification is obtained."
+}

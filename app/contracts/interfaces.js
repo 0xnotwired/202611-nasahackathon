@@ -83,7 +83,7 @@
  * }} EpisodeModule */
 /** @typedef {{card:(situation:Situation,config:MissionConfig,rules:object[])=>{data:unknown,gaps:unknown,suggestion:object|null,no_guidance:boolean,not_assessed:unknown,alert:{text:string}|null}} Copilot */
 /** @typedef {{generate:(store:Store,episodeId:string,config:MissionConfig,context:{clock:()=>string})=>Promise<Result<{id:string,text:string,origins:string[],pending_send:boolean}>>}} Summary */
-/** @typedef {{records:Record[],rejected:unknown,skipped:unknown}} ImportReport */
+/** @typedef {{records:Record[],rejected:Array<{row:number,code:string,field:string}>,skipped:Array<{row:number,column:string,reason:string}>}} ImportReport */
 /** @typedef {{
  * importCRF:(text:string)=>Result<ImportReport>,
  * importAdaptation:(text:string,options:{study:string})=>Result<ImportReport>,

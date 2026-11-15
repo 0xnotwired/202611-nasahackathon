@@ -1,0 +1,326 @@
+{
+  "reviewed_at_utc": "2026-11-15T19:41:06.658566+00:00",
+  "scope": "Selected acquired sample artifacts; source-corroborated format decisions and explicit interpretation/conversion restrictions. No product/importer changes.",
+  "methodology": "claim-provenance-discipline: authoritative text/header declarations are distinguished from collection-level source corroboration and unresolved facts. No unit guessed from numeric magnitude or typical clinical practice.",
+  "datasets": [
+    {
+      "id": "CRF",
+      "units_confirmed": {},
+      "units_unresolved": [
+        "Pulse",
+        "SysBP",
+        "DiaBP",
+        "Resp Rate",
+        "Weight",
+        "Body Temp",
+        "Height"
+      ],
+      "time": {
+        "parse_format": "%m/%d/%Y %H:%M",
+        "precision": "minute",
+        "timezone": null,
+        "calendar": "unknown",
+        "evidence": "113 selected Date values parse as month/day/year;70 have second component>12 and refute day/month/year. All113 Vitals Time fields parse as24-hour H:MM.",
+        "status": "source_corroborated_format_not_timezone_confirmation",
+        "sample_from": "2007-07-06",
+        "sample_to": "2007-10-26"
+      },
+      "disposition": "Retain numeric raw values with unit:null and unit_status:unknown; no conversion, clinical range, aggregate comparison or scientific interpretation of these columns. Exclude Comment and Bowel Movement Description.",
+      "source": "data/originals/CRF-daily-vitals.csv",
+      "unit_evidence_gap": "Original CSV and reviewed experiment/dataset/file metadata do not tie physical units/scales to these columns; no linked sample-specific dictionary found. Familiar clinical conventions and other-campaign forms are not evidence for this file.",
+      "source_sha256": "6aa6705dd04fed8fa9c27bc7e87a42e0b172253c25787f141c2da8dab54ab1b5"
+    },
+    {
+      "id": "MR079G",
+      "units_confirmed": {
+        "Value": "ft-lb (verbatim Units field)"
+      },
+      "units_unresolved": [],
+      "time": {
+        "parse_format": "%m/%d/%Y",
+        "precision": "date",
+        "timezone": null,
+        "calendar": "unknown",
+        "selected_canonical_date": "2009-03-12",
+        "raw_selected": "3/12/2009",
+        "evidence": "Same-subject/same-campaign090317 control has3/17/2009, refuting day/month. Additional same-campaign090524 file has5/24/2009 for a different subject; corroborates format only, no identity join. Both match filename YYMMDD. Selected090312 corresponds2009-03-12.",
+        "status": "source_corroborated_format_from_same_subject_collection"
+      },
+      "disposition": "Preserve source ft-lb string and test/position/phase/day. No automatic foot-pound-force conversion until unit quantity/method semantics are pinned; date is not midnightUTC.",
+      "source": "data/originals/MR079G-muscle-function.csv",
+      "source_sha256": "5d5edf0d9fdf49d67cf2ada21dc0978afb1f6adfc4f56926b6fdd136a3bfb638"
+    },
+    {
+      "id": "MR035G",
+      "units_confirmed": {},
+      "units_unresolved": [
+        "NET_AVG_BMD"
+      ],
+      "time": {
+        "parse_format": "%Y-%m-%d",
+        "precision": "date",
+        "timezone": null,
+        "calendar": "unknown",
+        "evidence": "All10 selected SCAN_DATE values are valid unambiguousISO calendar dates;4 unique dates from2008-02-19 to2009-01-17.",
+        "status": "source_format_verified"
+      },
+      "disposition": "Keep BMD unit explicitly unknown; do not label g/cm2 or convert merely from DXA convention. Preserve protocol, region and replicate context. Reviewed calibration readme concerns other subject/date contexts and does not establish sample units or justify reapplying factors.",
+      "source": "data/originals/additional/MR035G-sample-1.csv",
+      "source_sha256": "ec3523891e735011fab2416a7492db9a8f7543ab75758c1d628170093193fd5f"
+    },
+    {
+      "id": "BRSMImmune",
+      "units_confirmed": {},
+      "units_unresolved": [
+        "CD8+ CD69+ selected analyte values"
+      ],
+      "time": {
+        "axis": "protocol_relative",
+        "labels": [
+          "L-10",
+          "L-2",
+          "28/45",
+          "60/83",
+          "90",
+          "R+5/14"
+        ],
+        "timezone": null,
+        "evidence": "Selected CSV column headings are protocol labels/composites, not absolute dates or equal intervals.",
+        "status": "protocol_axis_preserved_calendar_mapping_not_established"
+      },
+      "disposition": "No percent/count label, clinical threshold or date invention. Preserve literal timepoint labels and unknown units. Current calendar-only source_time is insufficient for these relative/composite labels; future importer needs explicit relative-time representation.",
+      "source": "data/originals/additional/BRSMImmune-sample-1.csv",
+      "source_sha256": "be0dd964be716f5beb209834b0bba72c2ff6671c84674ef36022cdc88d0276af"
+    },
+    {
+      "id": "MR080G",
+      "units_confirmed": {
+        "Time (min)": "min",
+        "VO2 (ml/kg/min)": "mL/kg/min",
+        "HR": "bpm supported by exact-test matching readme",
+        "VO2": "L/min",
+        "VCO2": "L/min",
+        "VE": "L/min at BTPS",
+        "FEO2": "%",
+        "FECO2": "%",
+        "RER": "1 (dimensionless respiratory exchange ratio)"
+      },
+      "units_unresolved": [],
+      "time": {
+        "parse_format": "%m/%d/%Y",
+        "precision": "date",
+        "timezone": null,
+        "calendar": "unknown",
+        "selected_canonical_date": "2006-05-07",
+        "raw_selected": "5/7/2006",
+        "evidence": "Source collection control080220 has2/20/2008 and same Date header. Month/day/year uniquely parses this disambiguator and matches YYMMDD suffix; selected060507 and matching readme correspond to2006-05-07.",
+        "status": "source_corroborated_collection_format"
+      },
+      "disposition": "Preserve same-test physical units and VE BTPS condition; no physical conversion. Keep date, exercise stage and method; no generalization to other campaigns.",
+      "source": "data/originals/additional/MR080G-sample-1.csv",
+      "matching_readme": "data/originals/additional/MR080G-matching-readme.txt",
+      "source_sha256": "a76ebcde2a6ac022a2a0815b3d3864c079e47aaf44038772b1e09a609bca3a36",
+      "unit_evidence_followup": "unit-dictionary-followup-2026-11-15.json"
+    },
+    {
+      "id": "BUT_CGM",
+      "units_confirmed": {
+        "Glycemia": "mmol/L (official-linked author companion source evidence)"
+      },
+      "units_unresolved": [],
+      "time": {
+        "parse_format": "%Y-%m-%d %H:%M:%S",
+        "precision": "second",
+        "timezone": null,
+        "calendar": "shifted",
+        "evidence": "Official README documents participant-specific date shifts; no CGM timezone established.",
+        "status": "source_format_and_shift_verified_timezone_unknown"
+      },
+      "disposition": "Preserve shifted source calendar and participant namespace; no inferredUTC, DST reconstruction or cross-subject calendar alignment. Prior pinned source evidence remains in acquisition manifest."
+    },
+    {
+      "id": "ACTES",
+      "units_confirmed": {
+        "time": "s elapsed relative to effort-test start",
+        "RR": "ms",
+        "VO2": "mL/min",
+        "power": "W"
+      },
+      "units_unresolved": [],
+      "time": {
+        "axis": "relative_seconds",
+        "timezone": null,
+        "status": "explicit_provider_relative_axis"
+      },
+      "disposition": "Do not fabricate wall-clock dates. Future importer needs a relative axis distinct from source calendar fields. Keep participant/test IDs and source variable definitions.",
+      "source": "data/originals/additional/ACTES-card.html",
+      "source_sha256": "0b21978c21ea3eda453fcc66548496c1d0163c51f4aad13e9e78cce344d8129e"
+    },
+    {
+      "id": "ITBA",
+      "units_confirmed": {
+        "HR": "bpm",
+        "TEMP": "Celsius",
+        "IBI offset": "s",
+        "IBI duration": "s"
+      },
+      "units_unresolved": [],
+      "time": {
+        "precision": "second and sample/offset precision per signal",
+        "timezone": "UTC (explicit provider declaration)",
+        "calendar": "shifted",
+        "status": "provider_declared_UTC_and_deidentification_shift"
+      },
+      "disposition": "HR/TEMP have date preamble plus sample rate; IBI has one double-date preamble then offset/duration pairs. Preserve shiftedUTC and different start times rather than pretending simultaneous starts. Current core forbids source_time with UTC; future importer must retain shift context explicitly. Respect invalid/duplicated/interrupted-session constraints.",
+      "source": "data/originals/additional/ITBA-README.txt",
+      "source_sha256": "7fe978ade3de804f8d91b68cfb56fd7fb03499f87669a6824d08efa6819bfc33"
+    },
+    {
+      "id": "96-E044",
+      "units_confirmed": {
+        "maximum respiratory pressures": "mmHg"
+      },
+      "units_unresolved": [],
+      "time": {
+        "axis": "grouped_flight_phase",
+        "status": "no_individual_UTC_axis"
+      },
+      "disposition": "Retain mean, SE and measurement count; never turn group rows into astronaut-level events.",
+      "source": "data/originals/additional/96-E044-sample-1.xls",
+      "source_sha256": "e12abcbccde60b4ca86cb9ca601c6e10682458ddfedee04e6d378fd8b735ea8d"
+    },
+    {
+      "id": "DTO684",
+      "units_confirmed": {
+        "first workbook neutron absorbed dose rate": "microGy/day",
+        "first workbook neutron equivalent dose rate": "microSv/day"
+      },
+      "units_unresolved": [
+        "Second workbook garbled dose-rate header"
+      ],
+      "time": {
+        "axis": "mission_detector_context",
+        "status": "not_individual_timestamp"
+      },
+      "disposition": "No automatic repair of garbled unit or conversion between absorbed/equivalent dose; preserve source uncertainties/flight/location.",
+      "source": "data/originals/additional/DTO684-sample-1.xls",
+      "source_sha256": "3e82153d055a9b3ce6833f16478f9bd54ca1b551d5d3b02710b2e134c433c906"
+    },
+    {
+      "id": "MSD007",
+      "units_confirmed": {
+        "CO2 metadata quantity": "partial pressure mmHg"
+      },
+      "units_unresolved": [
+        "Toxicity-index numerical scale is not a measured concentration"
+      ],
+      "time": {
+        "axis": "sample_interval_and_location",
+        "timezone": null,
+        "status": "source_context_preserved"
+      },
+      "disposition": "SelectedCO2XLS is chart-only, not a numeric cell series. The second table is T-values: do not convert to ppm or concentrations.",
+      "source": "data/originals/additional/MSD007-sample-2.xls",
+      "source_sha256": "332aae264897f8a6e2d0a0b9e5b6a8e292a59a581da9d4dba2775d5770f66a6c"
+    }
+  ],
+  "new_disambiguating_artifacts": [
+    {
+      "file": "data/originals/technical/MR079G-090317.csv",
+      "url": "https://nlsp.nasa.gov/api/v1/files/27cbb492-2e52-5e0a-a88d-80514024cb39/download",
+      "final_url": "https://nlsp.nasa.gov/api/v1/files/27cbb492-2e52-5e0a-a88d-80514024cb39/download",
+      "bytes": 1312,
+      "sha256": "ba59f1e3d413d987648c8a62d3764e86575107d983805a0138cc8f0a6ebcb47d",
+      "retrieved_at_utc": "2026-11-15T19:39:45.942169+00:00",
+      "date_values": [
+        "3/17/2009"
+      ],
+      "headers": [
+        "ID",
+        "Campaign",
+        "Subject",
+        "Date",
+        "Test_Phase",
+        "BR_Day",
+        "Test",
+        "Position",
+        "Value",
+        "Units",
+        "Acceptable Range Lower Bound",
+        "Acceptable Range Upper Bound"
+      ],
+      "rows": 12
+    },
+    {
+      "file": "data/originals/technical/MR079G-090524.csv",
+      "url": "https://nlsp.nasa.gov/api/v1/files/f953ae51-6460-595c-8a6f-a57db0a43e88/download",
+      "final_url": "https://nlsp.nasa.gov/api/v1/files/f953ae51-6460-595c-8a6f-a57db0a43e88/download",
+      "bytes": 1321,
+      "sha256": "f2b73cb392428fe1bdd630cb25916b9204e04d9397c14b9e0084513e0fad3881",
+      "retrieved_at_utc": "2026-11-15T19:39:46.005217+00:00",
+      "date_values": [
+        "5/24/2009"
+      ],
+      "headers": [
+        "ID",
+        "Campaign",
+        "Subject",
+        "Date",
+        "Test_Phase",
+        "BR_Day",
+        "Test",
+        "Position",
+        "Value",
+        "Units",
+        "Acceptable Range Lower Bound",
+        "Acceptable Range Upper Bound"
+      ],
+      "rows": 12
+    },
+    {
+      "file": "data/originals/technical/MR080G-080220.csv",
+      "url": "https://nlsp.nasa.gov/api/v1/files/6b44459c-2bab-5c7a-bf51-78f9b5622fe3/download",
+      "final_url": "https://nlsp.nasa.gov/api/v1/files/6b44459c-2bab-5c7a-bf51-78f9b5622fe3/download",
+      "bytes": 1190,
+      "sha256": "7c17e6cfb662b172aab3b3425e9df4bbc478d54334297ad561a51f9a430fb9ce",
+      "retrieved_at_utc": "2026-11-15T19:39:46.046035+00:00",
+      "date_values": [
+        "2/20/2008"
+      ],
+      "headers": [
+        "ID",
+        "Campaign",
+        "Subject",
+        "Test_Phase",
+        "BR_Day",
+        "Date",
+        "Test",
+        "Stage",
+        "Time (min)",
+        "HR",
+        "VO2",
+        "VCO2",
+        "RER",
+        "VO2 (ml/kg/min)",
+        "VE",
+        "FEO2",
+        "FECO2"
+      ],
+      "rows": 8
+    }
+  ],
+  "safe_resolution_rule": "Parse only formats validated for the exact adapter/collection, preserve raw text/precision and source scope. Unknown units stay explicit and block scientific interpretation/conversion. No unknown-zone date is convertedUTC. This resolves handling, not absent provider facts.",
+  "remaining_source_evidence": [
+    "CRF per-column physical units/scaling tied to Campaign3DailyVitals",
+    "MR035G NET_AVG_BMD source unit",
+    "BRSMImmune per-analyte unit/scale and protocol label definitions",
+    "Authoritative timezone/calendar-shift metadata for NASA calendar samples"
+  ],
+  "not_performed": [
+    "Unit conversions or clinical interpretation",
+    "Provider/organizer contact",
+    "Application/importer implementation",
+    "Dependency installation",
+    "Commits/pushes/environment changes"
+  ]
+}

@@ -1,6 +1,9 @@
 # Dataset use conditions and delivery
 
-Reviewed November 15, 2026. Scope: acquired CRF, MR079G and BUT CGM samples.
+Reviewed November15,2026. The original sections cover CRF, MR079G and BUT CGM.
+The current all-source [event terms review](SPACE_APPS_DATA_REVIEW.md) governs
+submission eligibility and supersedes any inference that a verified data
+license alone establishes organizer acceptance.
 Evidence: [legal review record](data/use-conditions-2026-11-15.json),
 [acquisition manifest](data/acquisition-2026-11-15.json), and
 [dataset citations](DATASET_CITATIONS.md).
@@ -77,3 +80,35 @@ samples. CRF's variable-unit dictionary and authoritative source-time/UTC
 interpretation remain open technical questions. Resolving a license does
 not establish measurement units or timestamp semantics. No environment
 configuration or publication was changed by this verification.
+
+## Current all-source delivery decision
+
+Continue the original app and labeled synthetic data, source links, metadata
+manifests and complete citations. Do not introduce real optional third-party
+rows into the submitted product while event eligibility is unresolved. This
+preserves the chosen research sources and does not relicense their data.
+Eight NLSP CC0 declarations are verified; OSDR/EDA policy scope still needs
+direct verification. The three PhysioNet licenses permit ordinary reuse
+with conditions but are not automatically OSI software licenses.
+
+OSDR metadata originals contain investigator contact fields and stay ignored.
+Current .gitignore/HTTP checks demonstrate source separation, not that a
+future archive is cleared. Final package/media checks remain M23 work.
+
+## OSDR policy evidence follow-up
+
+Public OSD51/56 now have positive repository-level unrestricted-use evidence
+for the NASA-managed AWS distribution, corroborated by NASA's guide. Empty
+study license fields do not contradict that statement or assign CC0/CCBY.
+See [the scoped investigation](OSDR_EDA_USE_RESEARCH.md). Confirm selected
+file distribution/notices before bundling. EDA is not explicitly mapped to
+that bucket declaration, so its direct-policy applicability remains open.
+
+## Provisional use and local real-import follow-up
+
+The user authorizes provisional PhysioNet use with all conditions/citations
+and removal if the organization declines. This supersedes the earlier hold
+on introducing third-party rows. M21 CSV adapters and an isolated local
+IndexedDB verification workflow now exist. Neither source originals nor the
+local profile are tracked/bundled. Real output notices and final packaging
+inspection still apply; no official organizer acceptance is invented.

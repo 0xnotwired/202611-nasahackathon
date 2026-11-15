@@ -151,8 +151,26 @@ Working and provenance rules are in [AGENTS.md](AGENTS.md). AI use must be recor
 
 The next results are understanding the integrated mission situation, completing plan tasks and reviewing changes with applicable procedures and follow-up. Their verification must cover missing data, provenance, consistency across views, task recovery, accessibility and understanding of the next step.
 
-The repository contains documentation, two mockups, M00 foundation and the implemented M01–M05 data core. The stack decisions are recorded in [IMPLEMENTATION_LAYERS.md](docs/IMPLEMENTATION_LAYERS.md). Run `node --test` for foundation, domain and G0/G1 checks, `python3 scripts/check_docs.py` for documentation consistency, and `npm run serve` for the minimal modular shell. No dependencies need installation. The [G0 record](docs/experiments/G0.md) documents user-authorized local integration, 37 passing tests, the HTTP browser check and the unverified file-origin CORS control. The [G1 record](docs/experiments/G1.md) adds 83 passing tests and actual IndexedDB persistence/restart checks. The user accepted and closed G1/F1 on November15; the [source-uncertainty follow-up](docs/experiments/SOURCE_UNCERTAINTY.md) brings the suite to87 passing tests. Branch `f2` is the starting point for the next phase; M06–M12 remain pending. Three small real CSV samples are now acquired; [schema2 preserves source dates without a known zone and explicit unknown units](docs/experiments/SOURCE_UNCERTAINTY.md); CRF units remain source-unconfirmed; no real-file importers, product views, clinical validation or deployment are included. To contribute, follow [AGENTS.md](AGENTS.md) and propose changes through branches and pull requests. The integration branch is `english`.
+The repository contains documentation, two mockups, M00 foundation and the implemented M01–M05 data core. The stack decisions are recorded in [IMPLEMENTATION_LAYERS.md](docs/IMPLEMENTATION_LAYERS.md). Run `node --test` for foundation, domain and G0/G1 checks, `python3 scripts/check_docs.py` for documentation consistency, and `npm run serve` for the minimal modular shell. No dependencies need installation. The [G0 record](docs/experiments/G0.md) documents user-authorized local integration, 37 passing tests, the HTTP browser check and the unverified file-origin CORS control. The [G1 record](docs/experiments/G1.md) adds 83 passing tests and actual IndexedDB persistence/restart checks. The user accepted and closed G1/F1 on November15; the [source-uncertainty follow-up](docs/experiments/SOURCE_UNCERTAINTY.md) brings the suite to87 passing tests. Branch `f2` is the starting point for the next phase; M06–M12 remain pending. Small real samples from twelve dataset sources are now acquired ([additional manifest](docs/data/additional-acquisition-2026-11-15.json)); [schema2 preserves source dates without a known zone and explicit unknown units](docs/experiments/SOURCE_UNCERTAINTY.md); CRF units remain source-unconfirmed; selected M21 CSV importers are now implemented and independently reviewed, with100 passing tests and3861 records persisted in an isolated local profile. Product views, clinical validation and deployment remain pending. To contribute, follow [AGENTS.md](AGENTS.md) and propose changes through branches and pull requests. The integration branch is `english`.
 
 ## License
 
 Apache License 2.0. See [LICENSE](LICENSE). Third-party resources and their licenses are listed in [docs/RESOURCES_USED.md](docs/RESOURCES_USED.md).
+
+Dataset preparation now includes EDA RR-1 telemetry/radiation and OSD-51/56
+metadata. [The event-specific data review](docs/SPACE_APPS_DATA_REVIEW.md)
+distinguishes verified licenses from event eligibility and lists remaining
+OSDR policy/download redirects. The synthetic demo remains separate from the new optional real-source import workflow; the review does not certify an unbuilt final distribution.
+
+Dataset preparation profiles and current technical limits are documented in
+[DATA_IMPORT_PREPARATION.md](docs/DATA_IMPORT_PREPARATION.md). All180 genetic
+raw files are now acquired and inspected; unresolved unit facts remain
+explicit restrictions on scientific interpretation, not guessed defaults.
+
+Real-source import: [M21](docs/experiments/M21.md) provides pure CSV adapters
+for CRF, MR079G, MR035G, the verified MR080G test and BUT CGM. With original
+samples available locally, run `python3 scripts/import-real-samples.py` to
+verify custody and load the isolated local IndexedDB profile.
+[Integration evidence](docs/experiments/REAL_IMPORT.md) records3861 exact
+records, restart recovery and duplicate-free reruns. Unknown units remain
+unknown; no clinical interpretation or source-data publication is implied.
