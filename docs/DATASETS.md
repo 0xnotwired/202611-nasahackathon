@@ -1,164 +1,163 @@
-# Revisión de datasets para Space Apps: salud de astronautas
+# Dataset review for Space Apps: astronaut health
 
-Consulta realizada: 2026-11-14T15:30:14.906452+00:00
+Query run: 2026-11-14T15:30:14.906452+00:00
 
-Se consultaron las ocho fichas completas de NLSP mediante la API pública usada por la web, el catálogo humano y metadatos/listados de archivos de OSD-51 y OSD-56. Se comprobaron descargas pequeñas de los ocho estudios NLSP. No se descargaron ni procesaron todos sus archivos ni los ZIP masivos de OSDR.
+The eight full NLSP study cards were consulted through the public API used by the website, along with the human catalog and the metadata/file listings of OSD-51 and OSD-56. Small downloads from the eight NLSP studies were checked. Not all of their files, nor the bulk OSDR ZIPs, were downloaded or processed.
 
-## Recomendación
+## Recommendation
 
-Usar CRF Daily Vitals como primera base empírica para reproducir mediciones y visualizar cambios personales. Incorporar fuerza, capacidad aeróbica y DXA como evaluaciones periódicas. Inmunología exige laboratorio. Mantener datos ambientales y de radiación como contexto separado. OSD-51/56 permiten análisis molecular, pero no entrenan por sí solos un predictor validado de riesgo clínico diario.
+Use CRF Daily Vitals as the first empirical base to reproduce measurements and visualize personal changes. Add strength, aerobic capacity and DXA as periodic assessments. Immunology requires a laboratory. Keep environmental and radiation data as separate context. OSD-51/56 allow molecular analysis, but do not by themselves train a validated predictor of daily clinical risk.
 
-## Inventario NLSP
+## NLSP inventory
 
-Los conteos corresponden al árbol devuelto por la API en esta consulta; no son conteos de sujetos ni garantía de exhaustividad.
+The counts correspond to the tree returned by the API in this query; they are not subject counts or a guarantee of completeness.
 
 ### 1. Isokinetic Muscle Function (Flight Analog) — MR079G
 
-[Ficha NASA](https://nlsp.nasa.gov/explore/data/details/f97392b8-b9dd-5bae-af9e-dd76a33bf049?dataType=lsda_experiment) · [API de metadatos](https://nlsp.nasa.gov/api/v1/data/lsda_experiment/f97392b8-b9dd-5bae-af9e-dd76a33bf049/full)
+[NASA card](https://nlsp.nasa.gov/explore/data/details/f97392b8-b9dd-5bae-af9e-dd76a33bf049?dataType=lsda_experiment) · [Metadata API](https://nlsp.nasa.gov/api/v1/data/lsda_experiment/f97392b8-b9dd-5bae-af9e-dd76a33bf049/full)
 
-Programa: Ground. Estado declarado: Data preservation is complete.  All datasets are publicly available.
+Program: Ground. Declared status: Data preservation is complete.  All datasets are publicly available.
 
-Árbol disponible: 11 grupos y 400 entradas de archivo.
+Available tree: 11 groups and 400 file entries.
 
-Fuerza y resistencia de rodilla, tobillo y tronco. Muestra CSV comprobada: 12 filas; incluye Value, Units y límites de rango del archivo. Esos rangos no deben presentarse como límites médicos universales.
+Knee, ankle and trunk strength and endurance. CSV sample checked: 12 rows; includes Value, Units and the file's range limits. Those ranges must not be presented as universal medical limits.
 
 ### 2. Case Report Form — CRF
 
-[Ficha NASA](https://nlsp.nasa.gov/explore/data/details/eeb9bd34-bdd4-5115-b139-adf2c9927962?dataType=lsda_experiment) · [API de metadatos](https://nlsp.nasa.gov/api/v1/data/lsda_experiment/eeb9bd34-bdd4-5115-b139-adf2c9927962/full)
+[NASA card](https://nlsp.nasa.gov/explore/data/details/eeb9bd34-bdd4-5115-b139-adf2c9927962?dataType=lsda_experiment) · [Metadata API](https://nlsp.nasa.gov/api/v1/data/lsda_experiment/eeb9bd34-bdd4-5115-b139-adf2c9927962/full)
 
-Programa: Ground. Estado declarado: Data preservation is complete.  All datasets are publicly available.
+Program: Ground. Declared status: Data preservation is complete.  All datasets are publicly available.
 
-Árbol disponible: 25 grupos y 301 entradas de archivo.
+Available tree: 25 groups and 301 file entries.
 
-Mejor punto de partida para monitoreo diario. Muestra CSV comprobada: 113 filas, 17 columnas; 13 PRE_TEST, 89 IN_TEST y 11 POST_TEST. Pulso, presión sistólica/diastólica, respiración, peso y temperatura son numéricos en las 113 filas. Otros campos contienen NA. Campaign 3 Daily Vitals enumera 23 archivos; Campaign 1 enumera 4; CFT70 VITALS enumera 3. Son conteos de archivos, no un censo validado de participantes.
+Best starting point for daily monitoring. CSV sample checked: 113 rows, 17 columns; 13 PRE_TEST, 89 IN_TEST and 11 POST_TEST. Pulse, systolic/diastolic blood pressure, respiration, weight and temperature are numeric in all 113 rows. Other fields contain NA. Campaign 3 Daily Vitals lists 23 files; Campaign 1 lists 4; CFT70 VITALS lists 3. These are file counts, not a validated census of participants.
 
 ### 3. Bone Densitometry Assessment (Flight Analog) — MR035G
 
-[Ficha NASA](https://nlsp.nasa.gov/explore/data/details/4469ebdc-0a65-55e8-bbff-3cf6b044c4c6?dataType=lsda_experiment) · [API de metadatos](https://nlsp.nasa.gov/api/v1/data/lsda_experiment/4469ebdc-0a65-55e8-bbff-3cf6b044c4c6/full)
+[NASA card](https://nlsp.nasa.gov/explore/data/details/4469ebdc-0a65-55e8-bbff-3cf6b044c4c6?dataType=lsda_experiment) · [Metadata API](https://nlsp.nasa.gov/api/v1/data/lsda_experiment/4469ebdc-0a65-55e8-bbff-3cf6b044c4c6/full)
 
-Programa: Ground. Estado declarado: Data preservation is complete.  All datasets are publicly available.
+Program: Ground. Declared status: Data preservation is complete.  All datasets are publicly available.
 
-Árbol disponible: 11 grupos y 1063 entradas de archivo.
+Available tree: 11 groups and 1063 file entries.
 
-Densidad mineral ósea y composición corporal mediante DXA. CSV comprobado: 10 filas con NET_AVG_BMD y puntos temporales antes/después/seguimiento. Mediciones puntuales, no un sensor continuo. Validar unidades en documentación antes de integrar.
+Bone mineral density and body composition by DXA. CSV checked: 10 rows with NET_AVG_BMD and before/after/follow-up time points. Point measurements, not a continuous sensor. Validate units in the documentation before integrating.
 
 ### 4. Bed Rest Standard Measures: General Immunity — BRSMImmune
 
-[Ficha NASA](https://nlsp.nasa.gov/explore/data/details/e21cc209-b6c4-5b47-b33b-6e31f51b784f?dataType=lsda_experiment) · [API de metadatos](https://nlsp.nasa.gov/api/v1/data/lsda_experiment/e21cc209-b6c4-5b47-b33b-6e31f51b784f/full)
+[NASA card](https://nlsp.nasa.gov/explore/data/details/e21cc209-b6c4-5b47-b33b-6e31f51b784f?dataType=lsda_experiment) · [Metadata API](https://nlsp.nasa.gov/api/v1/data/lsda_experiment/e21cc209-b6c4-5b47-b33b-6e31f51b784f/full)
 
-Programa: Ground. Estado declarado: Data preservation is complete.  All datasets are publicly available.
+Program: Ground. Declared status: Data preservation is complete.  All datasets are publicly available.
 
-Árbol disponible: 2 grupos y 46 entradas de archivo.
+Available tree: 2 groups and 46 file entries.
 
-Subpoblaciones y función inmunológica. CSV comprobado: 30 filas, columna SUBJECT y momentos L-10, L-2, 28/45, 60/83, 90, R+5/14. Requiere medición de laboratorio y diccionario de unidades por analito; no inferir inmunidad a partir del pulso.
+Immune subpopulations and function. CSV checked: 30 rows, SUBJECT column and time points L-10, L-2, 28/45, 60/83, 90, R+5/14. It requires laboratory measurement and a unit dictionary per analyte; do not infer immunity from pulse.
 
 ### 5. Aerobic Capacity (Flight Analog) — MR080G
 
-[Ficha NASA](https://nlsp.nasa.gov/explore/data/details/07f12dd0-6725-582c-a4d2-618ed8b8c452?dataType=lsda_experiment) · [API de metadatos](https://nlsp.nasa.gov/api/v1/data/lsda_experiment/07f12dd0-6725-582c-a4d2-618ed8b8c452/full)
+[NASA card](https://nlsp.nasa.gov/explore/data/details/07f12dd0-6725-582c-a4d2-618ed8b8c452?dataType=lsda_experiment) · [Metadata API](https://nlsp.nasa.gov/api/v1/data/lsda_experiment/07f12dd0-6725-582c-a4d2-618ed8b8c452/full)
 
-Programa: Ground. Estado declarado: Data preservation is complete.  All datasets are publicly available.
+Program: Ground. Declared status: Data preservation is complete.  All datasets are publicly available.
 
-Árbol disponible: 10 grupos y 1505 entradas de archivo.
+Available tree: 10 groups and 1505 file entries.
 
-Capacidad aeróbica, respuesta al ejercicio, HR, VO2, VCO2, RER. CSV comprobado: 4 filas por etapas de una prueba. Separar de frecuencia cardíaca en reposo.
+Aerobic capacity, exercise response, HR, VO2, VCO2, RER. CSV checked: 4 rows by stage of a test. Keep separate from resting heart rate.
 
 ### 6. Radiation Measurements in Shuttle Crew Compartment — DTO 684
 
-[Ficha NASA](https://nlsp.nasa.gov/explore/data/details/b7b1eb07-f9e1-57a2-82d1-2970d49a6e94?dataType=lsda_experiment) · [API de metadatos](https://nlsp.nasa.gov/api/v1/data/lsda_experiment/b7b1eb07-f9e1-57a2-82d1-2970d49a6e94/full)
+[NASA card](https://nlsp.nasa.gov/explore/data/details/b7b1eb07-f9e1-57a2-82d1-2970d49a6e94?dataType=lsda_experiment) · [Metadata API](https://nlsp.nasa.gov/api/v1/data/lsda_experiment/b7b1eb07-f9e1-57a2-82d1-2970d49a6e94/full)
 
-Programa: Shuttle Program. Estado declarado: Data preservation is complete. All datasets are publicly available.
+Program: Shuttle Program. Declared status: Data preservation is complete. All datasets are publicly available.
 
-Árbol disponible: 13 grupos y 13 entradas de archivo.
+Available tree: 13 groups and 13 file entries.
 
-Radiación en el Shuttle. Hay 13 grupos/archivos: 11 TIFF y 2 XLS. Se descargó un TIFF y ambos XLS. Tablas con dosis de neutrones y tasas de dosis según ubicación; diferenciar dosis absorbida en µGy/día de equivalente en µSv/día. Parte del texto descriptivo presenta unidades inconsistentes: preferir tablas y artículo original. No es una serie clínica individual ni radiación marciana.
+Radiation on the Shuttle. There are 13 groups/files: 11 TIFF and 2 XLS. One TIFF and both XLS files were downloaded. Tables with neutron doses and dose rates by location; distinguish absorbed dose in µGy/day from equivalent dose in µSv/day. Part of the descriptive text has inconsistent units: prefer the tables and the original article. It is not an individual clinical series or Martian radiation.
 
 ### 7. The Effects of EVA and Long-Term Exposure to Microgravity on Pulmonary Function — 96-E044
 
-[Ficha NASA](https://nlsp.nasa.gov/explore/data/details/859f904d-7c4a-5994-baf9-47f2abc3013f?dataType=lsda_experiment) · [API de metadatos](https://nlsp.nasa.gov/api/v1/data/lsda_experiment/859f904d-7c4a-5994-baf9-47f2abc3013f/full)
+[NASA card](https://nlsp.nasa.gov/explore/data/details/859f904d-7c4a-5994-baf9-47f2abc3013f?dataType=lsda_experiment) · [Metadata API](https://nlsp.nasa.gov/api/v1/data/lsda_experiment/859f904d-7c4a-5994-baf9-47f2abc3013f/full)
 
-Programa: International Space Station (ISS). Estado declarado: Data preservation is complete. Privacy-protected datasets are available via data request. Remaining datasets are publicly available.
+Program: International Space Station (ISS). Declared status: Data preservation is complete. Privacy-protected datasets are available via data request. Remaining datasets are publicly available.
 
-Árbol disponible: 9 grupos y 9 entradas de archivo.
+Available tree: 9 groups and 9 file entries.
 
-Función pulmonar de astronautas en ISS, antes/durante/después y relación con EVA. 9 archivos XLS públicos. Muestra Maximum Respiratory Pressures leída: tabla de medias, incertidumbres y número de mediciones; no registros individuales continuos. El estudio avisa que parte de los datos protegidos requiere solicitud.
+Lung function of astronauts on the ISS, before/during/after and its relation to EVA. 9 public XLS files. Maximum Respiratory Pressures sample read: a table of means, uncertainties and number of measurements; not continuous individual records. The study warns that part of the protected data requires a request.
 
 ### 8. Toxicological Assessment of Airborne Volatile Organic Compounds — MSD007
 
-[Ficha NASA](https://nlsp.nasa.gov/explore/data/details/adbd971a-9c65-5388-acef-ac52d749a113?dataType=lsda_experiment) · [API de metadatos](https://nlsp.nasa.gov/api/v1/data/lsda_experiment/adbd971a-9c65-5388-acef-ac52d749a113/full)
+[NASA card](https://nlsp.nasa.gov/explore/data/details/adbd971a-9c65-5388-acef-ac52d749a113?dataType=lsda_experiment) · [Metadata API](https://nlsp.nasa.gov/api/v1/data/lsda_experiment/adbd971a-9c65-5388-acef-ac52d749a113/full)
 
-Programa: Nasa-Mir. Estado declarado: Data preservation is complete. All datasets are publicly available.
+Program: Nasa-Mir. Declared status: Data preservation is complete. All datasets are publicly available.
 
-Árbol disponible: 64 grupos y 68 entradas de archivo.
+Available tree: 64 groups and 68 file entries.
 
-Contaminantes del aire en Mir: CO2, CO, formaldehído, compuestos orgánicos e índices toxicológicos. Una muestra XLS de CO2 contiene un gráfico, no tabla numérica accesible por lectura de celdas. Se comprobó otra tabla XLS con contaminantes y T-values de cinco muestras. Son datos ambientales de otra misión, no emparejados con sujetos de bed rest.
+Air contaminants on Mir: CO2, CO, formaldehyde, organic compounds and toxicological indices. A CO2 XLS sample contains a chart, not a numeric table readable by cell. Another XLS table with contaminants and T-values for five samples was checked. These are environmental data from another mission, not paired with bed-rest subjects.
 
 ## OSDR
 
 ### OSD-51
 
-[Ficha NASA](https://osdr.nasa.gov/bio/repo/data/studies/OSD-51) · [Metadatos](https://osdr.nasa.gov/osdr/data/osd/meta/51) · [Archivos](https://osdr.nasa.gov/osdr/data/osd/files/51)
+[NASA card](https://osdr.nasa.gov/bio/repo/data/studies/OSD-51) · [Metadata](https://osdr.nasa.gov/osdr/data/osd/meta/51) · [Files](https://osdr.nasa.gov/osdr/data/osd/files/51)
 
-Woman skeletal muscle transcriptome with bed rest and countermeasures. Estudio WISE-2005, terrestre, mujeres sanas, tres grupos descritos de 8 participantes: control, nutrición y ejercicio. Expresión génica en biopsias de sóleo y vasto lateral antes/después de 60 días de reposo. Los 340 registros de muestra de los metadatos incluyen replicación técnica; no representan 340 participantes. Listado: 4 archivos no restringidos: metadatos ISA, anotación de microarray y dos ZIP de datos crudos de ~206 y ~192 MB. Se verificaron metadatos y listado, no descarga de ZIP ni calidad de matrices.
+Woman skeletal muscle transcriptome with bed rest and countermeasures. WISE-2005 study, ground-based, healthy women, three described groups of 8 participants: control, nutrition and exercise. Gene expression in soleus and vastus lateralis biopsies before/after 60 days of bed rest. The 340 sample records in the metadata include technical replicates; they do not represent 340 participants. Listing: 4 unrestricted files: ISA metadata, microarray annotation and two raw data ZIPs of ~206 and ~192 MB. Metadata and listing were checked, not the ZIP download or matrix quality.
 
 ### OSD-56
 
-[Ficha NASA](https://osdr.nasa.gov/bio/repo/data/studies/OSD-56) · [Metadatos](https://osdr.nasa.gov/osdr/data/osd/meta/56) · [Archivos](https://osdr.nasa.gov/osdr/data/osd/files/56)
+[NASA card](https://osdr.nasa.gov/bio/repo/data/studies/OSD-56) · [Metadata](https://osdr.nasa.gov/osdr/data/osd/meta/56) · [Files](https://osdr.nasa.gov/osdr/data/osd/files/56)
 
-Gene expression profiling of human peripheral blood lymphocytes cultured in modeled microgravity. Cultivo celular humano en biorreactor terrestre frente a control 1g. Microarray de mRNA, 10 muestras en metadatos; no implica 10 astronautas o donantes independientes. El artículo integra miRNA/mRNA y el conjunto compañero de miRNA es OSD-55. Listado: 2 archivos no restringidos, metadatos ISA y ZIP crudo de ~52.7 MB. Se verificaron metadatos y listado, no descarga del ZIP ni calidad de matrices.
+Gene expression profiling of human peripheral blood lymphocytes cultured in modeled microgravity. Human cell culture in a ground bioreactor versus a 1g control. mRNA microarray, 10 samples in the metadata; it does not imply 10 independent astronauts or donors. The article integrates miRNA/mRNA and the companion miRNA set is OSD-55. Listing: 2 unrestricted files, ISA metadata and a ~52.7 MB raw ZIP. Metadata and listing were checked, not the ZIP download or matrix quality.
 
-## Fuentes complementarias (búsqueda del 15/11/2026)
+## Complementary sources (search of 15/11/2026)
 
-Encontradas para calibrar el generador sintético (M05), alimentar Hábitat y ampliar el visor de casos (M21–M22). Solo se leyeron sus fichas públicas: **no se descargó ni se procesó ningún archivo**. Ninguna aporta datos de astronautas individuales.
+Found to calibrate the synthetic generator (M05), feed Habitat and extend the cases viewer (M21–M22). Only their public cards were read: **no file was downloaded or processed**. None provides individual astronaut data.
 
-### Pruebas máximas en cinta, Universidad de Málaga — terrestre
+### Maximal treadmill tests, University of Malaga — ground
 
-[Ficha PhysioNet](https://physionet.org/content/treadmill-exercise-cardioresp/) · DOI 10.13026/7ezk-j442
+[PhysioNet card](https://physionet.org/content/treadmill-exercise-cardioresp/) · DOI 10.13026/7ezk-j442
 
-992 pruebas máximas graduadas en cinta, con frecuencia cardíaca, VO2, VCO2, frecuencia respiratoria y ventilación respiración a respiración, más la velocidad de la cinta. Atletas amateurs y profesionales de 10 a 63 años. Dos archivos: `subject-info.csv` (una fila por prueba, con edad, talla, peso, temperatura y humedad) y la serie temporal. Faltan VO2, VCO2 y VE en 30 pruebas.
+992 graded maximal treadmill tests, with heart rate, VO2, VCO2, respiratory rate and ventilation breath by breath, plus treadmill speed. Amateur and professional athletes aged 10 to 63. Two files: `subject-info.csv` (one row per test, with age, height, weight, temperature and humidity) and the time series. VO2, VCO2 and VE are missing in 30 tests.
 
-Uso propuesto: dar forma realista a las curvas del generador y reproducir pruebas en el visor de casos, rotuladas como terrestres. **Atletas en tierra no son astronautas en vuelo.** Licencia no leída en la ficha: confirmarla antes de redistribuir archivos.
+Proposed use: give realistic shapes to the generator's curves and replay tests in the cases viewer, labeled as ground data. **Athletes on the ground are not astronauts in flight.** License not read on the card: confirm it before redistributing files.
 
-### Prueba graduada en cicloergómetro — terrestre
+### Graded cycle ergometer test — ground
 
-[Ficha PhysioNet](https://physionet.org/content/actes-cycloergometer-exercise/) · DOI 10.13026/2qs3-kh43
+[PhysioNet card](https://physionet.org/content/actes-cycloergometer-exercise/) · DOI 10.13026/2qs3-kh43
 
-Intervalos entre latidos, VO2 y potencia mecánica latido a latido durante pruebas graduadas en cicloergómetro, el mismo tipo de equipo que el CEVIS de la ISS. Tamaño de muestra y licencia no verificados.
+Beat-to-beat intervals, VO2 and mechanical power during graded cycle ergometer tests, the same type of equipment as the ISS CEVIS. Sample size and license not verified.
 
-### Wearable en estrés y ejercicio estructurado (ITBA) — terrestre
+### Wearable during stress and structured exercise (ITBA) — ground
 
-[Ficha PhysioNet](https://www.physionet.org/content/wearable-device-dataset/) · DOI 10.13026/he0v-tf17 · licencia Open Data Commons Attribution v1.0
+[PhysioNet card](https://www.physionet.org/content/wearable-device-dataset/) · DOI 10.13026/he0v-tf17 · Open Data Commons Attribution v1.0 license
 
-Empatica E4 en sesiones de estrés (36 voluntarios), ejercicio aeróbico (30) y anaeróbico (31) en bicicleta fija; personas de 18 a 30 años. Archivos crudos de temperatura, actividad electrodérmica, pulso, acelerómetro, intervalos y frecuencia cardíaca. Los autores documentan sesiones incompletas y artefactos de señal.
+Empatica E4 during stress sessions (36 volunteers), aerobic exercise (30) and anaerobic exercise (31) on a stationary bike; people aged 18 to 30. Raw files for temperature, electrodermal activity, pulse, accelerometer, intervals and heart rate. The authors document incomplete sessions and signal artifacts.
 
-Uso propuesto: ejemplo real de datos de wearable con huecos y artefactos. Una frecuencia cardíaca derivada de fotopletismografía en ejercicio no equivale a un electrocardiograma.
+Proposed use: a real example of wearable data with gaps and artifacts. A heart rate derived from photoplethysmography during exercise is not equivalent to an electrocardiogram.
 
-### Environmental Data App (OSDR) — vuelo, ambiente
+### Environmental Data App (OSDR) — flight, environment
 
-[Aplicación](https://visualization.osdr.nasa.gov/eda)
+[Application](https://visualization.osdr.nasa.gov/eda)
 
-Temperatura, humedad relativa y CO₂ de la cabina de la ISS y de control en tierra, más radiación (rayos cósmicos galácticos, anomalía del Atlántico Sur, dosis total y acumulada). Misiones listadas: RR-1 a RR-28 (no todas), APEX-03-1, APEX-03-2, APEX-04 y VEG-01C. Permite descargar datos crudos y resumidos desde la sección de tablas.
+ISS cabin and ground control temperature, relative humidity and CO₂, plus radiation (galactic cosmic rays, South Atlantic Anomaly, total and cumulative dose). Missions listed: RR-1 to RR-28 (not all), APEX-03-1, APEX-03-2, APEX-04 and VEG-01C. Raw and summary data can be downloaded from the tables section.
 
-Uso propuesto: Hábitat con datos ambientales reales de vuelo. Límites: son misiones de biología, no de un tripulante; el dato es de la cabina, no de un módulo asignado a una persona. La página no documenta formatos, API ni términos de uso: verificarlos antes de integrar. La radiación sigue sujeta a la regla del límite de 600 mSv sin confirmar.
+Proposed use: Habitat with real flight environmental data. Limits: these are biology missions, not a crew member's; the data is from the cabin, not from a module assigned to a person. The page does not document formats, API or terms of use: verify them before integrating. Radiation is still subject to the rule on the unconfirmed 600 mSv limit.
 
-### Descartadas por ahora
+### Ruled out for now
 
-- **LSDA y LSAH.** Contienen datos de investigación y clínicos de astronautas, pero se liberan por [solicitud formal](https://lsda.jsc.nasa.gov/explore/lsdahome/datarequest) y acuerdo de uso. No es viable en el plazo del hackathon.
-- **Inspiration4 (SOMA, en OSDR).** Datos procesados públicos y crudos bajo solicitud con aprobación de un comité ([NASA](https://www.nasa.gov/osdr-latest-news-i4-mission-datasets/)). Mayormente ómica de cuatro civiles en un vuelo de tres días. Que haya datos de reloj inteligente publicados no está verificado (ver B18).
+- **LSDA and LSAH.** They contain research and clinical astronaut data, but release it through a [formal request](https://lsda.jsc.nasa.gov/explore/lsdahome/datarequest) and a data use agreement. Not feasible within the hackathon timeframe.
+- **Inspiration4 (SOMA, in OSDR).** Processed data is public and raw data is available on request with committee approval ([NASA](https://www.nasa.gov/osdr-latest-news-i4-mission-datasets/)). Mostly omics from four civilians on a three-day flight. Whether smartwatch data was published is not verified (see B18).
 
-## Límites de integración
+## Integration limits
 
-- Análogo terrestre, cultivo celular, ISS, Shuttle y Mir son contextos distintos: preservarlos en cada medición y visualización.
-- No unir registros de diferentes campañas o misiones como si fueran una persona. Validar identificadores, cohorte y momento de toma antes de cualquier enlace.
-- Conservar Test_Phase junto con BR_Day: el número del día solo no indica de forma inequívoca antes/durante/después.
-- Preservar identificadores como texto, incluidos ceros iniciales, y normalizar NA sin convertirlo en cero.
-- Confirmar unidades, calibración, protocolo y replicados. No confundir número de mediciones con participantes.
-- Las mediciones no incluyen por sí solas etiquetas diagnósticas ni validan umbrales clínicos o acciones terapéuticas.
-- Hay comentarios clínicos libres en CRF: excluirlos de una demostración pública salvo que su uso sea necesario y revisado.
-- Una comparación con baseline muestra desviación; no demuestra enfermedad ni causa.
+- Ground analog, cell culture, ISS, Shuttle and Mir are different contexts: keep them in every measurement and visualization.
+- Do not merge records from different campaigns or missions as if they were one person. Validate identifiers, cohort and time of collection before any link.
+- Keep Test_Phase together with BR_Day: the day number alone does not unambiguously indicate before/during/after.
+- Keep identifiers as text, including leading zeros, and normalize NA without turning it into zero.
+- Confirm units, calibration, protocol and replicates. Do not confuse number of measurements with participants.
+- Measurements do not by themselves include diagnostic labels or validate clinical thresholds or therapeutic actions.
+- There are free-text clinical comments in CRF: exclude them from a public demo unless their use is necessary and reviewed.
+- A comparison with baseline shows deviation; it does not prove disease or cause.
 
-## Evidencia local
+## Local evidence
 
-Los JSON conservan respuestas originales. sample-downloads.json registra fuentes y resultados de las primeras descargas. CRF-sample.csv permite inspeccionar la muestra de signos vitales. SHA256SUMS.json permite comprobar integridad de los artefactos locales.
+The JSON files keep the original responses. sample-downloads.json records the sources and results of the first downloads. CRF-sample.csv lets you inspect the vital signs sample. SHA256SUMS.json lets you check the integrity of the local artifacts.
 
-
-Nota de traslado: los archivos originales y muestras mencionados en Evidencia local se conservaron en el workspace de investigación y no están incluidos en esta carga al repositorio. Los URL oficiales permiten consultar las fuentes.
+Transfer note: the original files and samples mentioned under Local evidence were kept in the research workspace and are not included in this upload to the repository. The official URLs allow the sources to be consulted.

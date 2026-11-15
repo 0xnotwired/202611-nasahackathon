@@ -1,120 +1,120 @@
-> Restricción vigente: estos repositorios son solo inspiración. No incorporar, adaptar ni instalar su código como funcionalidad del producto. Las recomendaciones históricas de integración quedan reemplazadas por la instrucción de implementación propia en ../AGENTS.md.
+> Current restriction: these repositories are inspiration only. Do not incorporate, adapt or install their code as product functionality. Historical integration recommendations are superseded by the own-implementation instruction in ../AGENTS.md.
 
-# Bibliografía y repositorios para el desafío de salud espacial
+# Bibliography and repositories for the space health challenge
 
-Selección consultada el 14 de noviembre de 2026. Se revisaron fichas editoriales, documentación oficial y README de los repositorios. Las propuestas de uso y prioridades son recomendaciones para este proyecto. No se instalaron ni ejecutaron estas bibliotecas.
+Selection consulted on November 14, 2026. Publisher pages, official documentation and repository READMEs were reviewed. Usage proposals and priorities are recommendations for this project. These libraries were not installed or run.
 
-El análisis posterior de los libros, estándares, manual y ocho informes HRP está en [BASE_ACADEMICA.md](BASE_ACADEMICA.md), citas por página, matriz de evidencia y bibliografía. Es una revisión dirigida de secciones pertinentes, no una lectura íntegra de todos los documentos ni una revisión sistemática.
+The later analysis of the books, standards, handbook and eight HRP reports is in [ACADEMIC_BASE.md](ACADEMIC_BASE.md), with page citations, evidence matrix and bibliography. It is a targeted review of relevant sections, not a full reading of every document or a systematic review.
 
-## Libros completos gratuitos
+## Free full books
 
-Criterio del usuario: seleccionar únicamente recursos gratuitos. Se excluyen los dos títulos comerciales de la selección anterior.
+The user's criterion: select only free resources. The two commercial titles from the earlier selection are excluded.
 
-### Human Adaptation to Spaceflight: The Role of Food and Nutrition — 2.ª edición, 2021
+### Human Adaptation to Spaceflight: The Role of Food and Nutrition — 2nd edition, 2021
 
-Página oficial: https://www.nasa.gov/directorates/esdmd/hhp/human-adaptation-to-spaceflight-the-role-of-food-and-nutrition/
+Official page: https://www.nasa.gov/directorates/esdmd/hhp/human-adaptation-to-spaceflight-the-role-of-food-and-nutrition/
 
-PDF completo: https://www.nasa.gov/wp-content/uploads/2024/08/human-adaptation-2021-final-b.pdf
+Full PDF: https://www.nasa.gov/wp-content/uploads/2024/08/human-adaptation-2021-final-b.pdf
 
-NASA ofrece la descarga gratuita de esta edición. Organiza la adaptación y nutrición por sistemas fisiológicos, incluyendo hueso, músculo y salud ocular, y trata datos de ISS y análogos terrestres. Primera lectura recomendada entre los libros completos gratuitos localizados. Se descargó el PDF completo de 135 páginas, con páginas impresas enfrentadas, y se analizaron secciones de energía, fluidos, hueso, músculo, sistema cardiovascular, visión e inmunidad; véase BASE_ACADEMICA.md para las citas y los límites.
+NASA offers this edition as a free download. It organizes adaptation and nutrition by physiological system, including bone, muscle and eye health, and covers ISS and ground analog data. Recommended first read among the free full books found. The full 135-page PDF, with facing printed pages, was downloaded and the sections on energy, fluids, bone, muscle, cardiovascular system, vision and immunity were analyzed; see ACADEMIC_BASE.md for citations and limits.
 
-### Nutritional Biochemistry of Space Flight — Smith, Zwart, Kloeris y Heer, 2009
+### Nutritional Biochemistry of Space Flight — Smith, Zwart, Kloeris and Heer, 2009
 
-PDF completo alojado por NASA: https://www.nasa.gov/wp-content/uploads/2023/03/nutritional-biochemistry-of-space-flight.pdf
+Full PDF hosted by NASA: https://www.nasa.gov/wp-content/uploads/2023/03/nutritional-biochemistry-of-space-flight.pdf
 
-Se comprobó el PDF completo, de 220 páginas. Trata requisitos nutricionales, energía, vitaminas, minerales, actividad extravehicular e interacciones entre nutrientes y medicamentos. Lectura complementaria de fundamentos; por su fecha, contrastar afirmaciones operativas con evidencia más reciente.
+The full 220-page PDF was checked. It covers nutritional requirements, energy, vitamins, minerals, extravehicular activity and nutrient–drug interactions. A complementary read on fundamentals; given its date, check operational claims against more recent evidence.
 
-Ambos títulos están disponibles gratuitamente para lectura; no se asume una licencia abierta de reutilización de todo su contenido.
+Both titles are freely available to read; an open license to reuse all of their content is not assumed.
 
-## Manuales e informes públicos
+## Public handbooks and reports
 
 ### NASA Human Research Program — Evidence Reports
 
 https://humanresearchroadmap.nasa.gov/Evidence/
 
-Colección pública de informes y artículos de evidencia por riesgo. Sirve para justificar la selección de indicadores y distinguir evidencia, incertidumbre y lagunas. Registrar el informe concreto y su fecha al extraer una afirmación. La colección también refiere a un Evidence Book histórico de 2009; preferir los informes más recientes disponibles para la pregunta concreta.
+Public collection of evidence reports and articles by risk. Useful to justify the choice of indicators and to distinguish evidence, uncertainty and gaps. Record the specific report and its date when extracting a claim. The collection also refers to a historical 2009 Evidence Book; prefer the most recent reports available for the specific question.
 
-### NASA-STD-3001, volumen 1: Crew Health
+### NASA-STD-3001, volume 1: Crew Health
 
 https://www.nasa.gov/reference/nasa-std-3001v1/
 
-Estándar público sobre salud de la tripulación antes, durante y después de la misión. Útil para fundamentar qué necesidades médicas debe cubrir una solución. No convierte automáticamente una regla experimental del proyecto en un criterio médico validado.
+Public standard on crew health before, during and after the mission. Useful to ground which medical needs a solution must cover. It does not automatically turn an experimental project rule into a validated medical criterion.
 
-### NASA-STD-3001, volumen 2: Human Factors, Habitability, and Environmental Health
+### NASA-STD-3001, volume 2: Human Factors, Habitability, and Environmental Health
 
 https://www.nasa.gov/reference/nasa-std-3001v2/
 
-Estándar público para sistemas con los que interactúa la tripulación. Fuente para investigar interfaces, factores humanos y condiciones ambientales. Consultar la revisión vigente desde la página oficial antes de fijar requisitos específicos.
+Public standard for systems the crew interacts with. A source to research interfaces, human factors and environmental conditions. Check the current revision on the official page before fixing specific requirements.
 
 ### Human Integration Design Handbook — NASA
 
 https://www.nasa.gov/human-integration-design-handbook/
 
-Manual público complementario del volumen 2. La página ofrece la revisión 1 y documentos relacionados. Útil para el fundamento de decisiones de interfaz y ergonomía; contrastar requisitos normativos con el estándar vigente.
+Public handbook complementing volume 2. The page offers revision 1 and related documents. Useful to ground interface and ergonomics decisions; check normative requirements against the current standard.
 
-## Repositorios
+## Repositories
 
-### nasa/OSDR_Tutorials — datos y documentación
+### nasa/OSDR_Tutorials — data and documentation
 
 https://github.com/nasa/OSDR_Tutorials
 
-Documentación: https://osdr-tutorials.readthedocs.io/en/latest/
+Documentation: https://osdr-tutorials.readthedocs.io/en/latest/
 
-Prioridad alta para explorar OSDR, acceso a archivos y APIs. Es un repositorio de documentación y ejemplos, no una aplicación de monitoreo ni un cliente específico para NLSP.
+High priority to explore OSDR, file access and APIs. It is a documentation and examples repository, not a monitoring application or an NLSP-specific client.
 
-Dos guías particularmente útiles:
+Two particularly useful guides:
 
-- Ambiente: https://github.com/nasa/OSDR_Tutorials/blob/main/source/pages/guides/environmental_data_application.md
-- Radiación: https://github.com/nasa/OSDR_Tutorials/blob/main/source/pages/guides/radlab_portal.md
+- Environment: https://github.com/nasa/OSDR_Tutorials/blob/main/source/pages/guides/environmental_data_application.md
+- Radiation: https://github.com/nasa/OSDR_Tutorials/blob/main/source/pages/guides/radlab_portal.md
 
-La guía EDA describe temperatura, humedad y CO2 de cabina ISS, controles terrestres y radiación vinculados a campañas Rodent Research. Eso describe el contexto de colección, no datos clínicos humanos. RadLab describe series de sensores con tiempo, nave y módulo, y exportación CSV/TSV/JSON. Es una vía prometedora para investigar series ambientales adicionales a los archivos históricos ya revisados; no se comprobó aquí la descarga de esas APIs.
+The EDA guide describes ISS cabin temperature, humidity and CO2, ground controls and radiation linked to Rodent Research campaigns. That describes the collection context, not human clinical data. RadLab describes sensor series with time, spacecraft and module, and CSV/TSV/JSON export. It is a promising way to investigate environmental series beyond the historical files already reviewed; downloading from those APIs was not verified here.
 
-### ebi-gene-expression-group/anatomogram — figura corporal interactiva
+### ebi-gene-expression-group/anatomogram — interactive body figure
 
 https://github.com/ebi-gene-expression-group/anatomogram
 
-Componente React/SVG de Expression Atlas, EMBL-EBI, con selección, resaltado y eventos de clic por tejido. Es un candidato directo para explorar el cuerpo humano por regiones. Su propósito original es mostrar expresión génica, por lo que habría que adaptar el significado de los estados a nuestros indicadores.
+React/SVG component from Expression Atlas, EMBL-EBI, with selection, highlighting and click events per tissue. A direct candidate to explore the human body by regions. Its original purpose is to show gene expression, so the meaning of the states would have to be adapted to our indicators.
 
-El README declara código Apache-2.0 e imágenes CC BY 4.0. Conservar atribución de los recursos gráficos. No se verificó compatibilidad del paquete con una futura versión de React; se pueden evaluar los SVG por separado.
+The README declares Apache-2.0 code and CC BY 4.0 images. Keep attribution for the graphic resources. Compatibility of the package with a future React version was not verified; the SVGs can be evaluated separately.
 
-### plotly/plotly.js — evolución de indicadores
+### plotly/plotly.js — indicator progress
 
 https://github.com/plotly/plotly.js
 
-Biblioteca JavaScript independiente para gráficos interactivos. Candidata para mostrar mediciones, tendencias y anotaciones de cambios de fase de CRF. README declara licencia MIT. Para funcionamiento sin conexión se requiere incluir los recursos en la aplicación y evitar dependencias de CDN en ejecución.
+Standalone JavaScript library for interactive charts. A candidate to show measurements, trends and annotations of CRF phase changes. The README declares the MIT license. Offline operation requires bundling the resources in the application and avoiding runtime CDN dependencies.
 
-### dexie/Dexie.js — persistencia local
+### dexie/Dexie.js — local persistence
 
 https://github.com/dexie/Dexie.js
 
-Capa sobre IndexedDB para almacenar registros en el navegador. Útil si se elige una aplicación web con operación local. Licencia Apache-2.0 comprobada. Guardar datos localmente no resuelve por sí solo caché de la aplicación, cifrado, respaldo ni recuperación; esos aspectos dependen de la arquitectura elegida.
+A layer over IndexedDB to store records in the browser. Useful if a web application with local operation is chosen. Apache-2.0 license verified. Storing data locally does not by itself solve application caching, encryption, backup or recovery; those depend on the chosen architecture.
 
-### neuropsychology/NeuroKit — procesamiento de señales fisiológicas
+### neuropsychology/NeuroKit — physiological signal processing
 
 https://github.com/neuropsychology/NeuroKit
 
-Paquete Python NeuroKit2 para procesar ECG, respiración, actividad electrodérmica y otras señales; incluye ejemplos y simulación. README declara licencia MIT. Incorporarlo si se obtienen señales con resolución temporal adecuada. Un pulso diario de CRF no basta para calcular variabilidad entre latidos ni equivale a un ECG.
+Python package NeuroKit2 to process ECG, respiration, electrodermal activity and other signals; includes examples and simulation. The README declares the MIT license. Incorporate it if signals with adequate time resolution are obtained. A daily CRF pulse reading is not enough to compute beat-to-beat variability and is not equivalent to an ECG.
 
-### MIT-LCP/wfdb-python — lectura de señales y anotaciones
+### MIT-LCP/wfdb-python — reading signals and annotations
 
 https://github.com/MIT-LCP/wfdb-python
 
-Herramientas Python para leer, escribir y analizar señales y anotaciones en formato WFDB. Incluye notebook de demostración. Licencia MIT comprobada. Candidato si se decide explorar datos de PhysioNet; su formato y población deben preservarse y no etiquetarse como datos de astronautas.
+Python tools to read, write and analyze signals and annotations in WFDB format. Includes a demo notebook. MIT license verified. A candidate if PhysioNet data is explored; its format and population must be preserved and not labeled as astronaut data.
 
-### OHIF/Viewers — imágenes médicas
+### OHIF/Viewers — medical images
 
 https://github.com/OHIF/Viewers
 
-Visor web extensible con soporte DICOMweb, visualización y anotación de imágenes médicas. README declara licencia MIT. Candidato si la propuesta incorpora imágenes DICOM; no es un requisito para presentar CSV ni implica que nuestros datasets contengan imágenes diagnósticas. La rama master se describe como desarrollo/beta; evaluar una publicación estable para integrar.
+Extensible web viewer with DICOMweb support, visualization and annotation of medical images. The README declares the MIT license. A candidate if the proposal incorporates DICOM images; it is not a requirement to present CSV and does not imply that our datasets contain diagnostic images. The master branch is described as development/beta; evaluate a stable release before integrating.
 
-## Orden de exploración recomendado
+## Recommended exploration order
 
-1. Evidence Reports y NASA-STD-3001 para fundamentar qué monitorear y cómo comunicarlo.
-2. Human Adaptation to Spaceflight (2021) para comprender los sistemas fisiológicos y la nutrición.
-3. CRF y sus diccionarios/protocolos para concretar el formato de nuestras mediciones.
-4. Anatomogram y Plotly para probar el recorrido visual.
-5. Dexie si se elige persistencia local en navegador.
-6. NeuroKit/WFDB si se incorporan señales; OHIF si se incorporan imágenes.
-7. Nutritional Biochemistry of Space Flight como referencia complementaria histórica y los informes públicos de NASA para investigar los casos elegidos.
+1. Evidence Reports and NASA-STD-3001 to ground what to monitor and how to communicate it.
+2. Human Adaptation to Spaceflight (2021) to understand the physiological systems and nutrition.
+3. CRF and its dictionaries/protocols to define the format of our measurements.
+4. Anatomogram and Plotly to try out the visual journey.
+5. Dexie if local browser persistence is chosen.
+6. NeuroKit/WFDB if signals are incorporated; OHIF if images are incorporated.
+7. Nutritional Biochemistry of Space Flight as a historical complementary reference, and NASA's public reports to research the chosen cases.
 
-Esta lista propone recursos según los objetivos del desafío; no constituye una selección definitiva del stack ni de las funciones del producto.
+This list proposes resources according to the challenge goals; it is not a final selection of the stack or of the product's features.

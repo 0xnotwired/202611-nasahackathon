@@ -1,0 +1,19 @@
+id,bounded_claim,type,source,pdf_pages,locator,limit
+E01,Multidimensional preventive monitoring,normative requirement,S03,18-21,V1 3003; V1 3004,Does not validate a software diagnostic rule
+E02,"Energy, mass and function need context",synthesis of studies,S01,21-23,chapter 4,Do not identify the cause of an isolated change in mass
+E03,Fluid redistribution is not a diagnosis of dehydration,synthesis of flight experiments,S01,32-33,chapter 5,Does not rule out dehydration from other causes
+E04,Function and response to exercise vary between subjects,synthesis and acknowledged limitations,S07,5-6;37-38;43-44;138,summary and conclusions,No controlled in-flight efficacy trial; no universal prescription
+E05,Bone density and fracture probability are not equivalent,synthesis and stated gap,S08,6-9,summary and introduction,No universal conversion from DXA change to fracture
+E06,"Sleep, circadian rhythm and work are distinct dimensions",synthesis,S09,4-7,summary and introduction,2016 report; update specific models
+E07,Immunity requires specialized assays,human and experimental synthesis,S10,4-7,summary and evidence,Do not infer immunity from pulse or cell culture
+E08,SANS requires specific evaluation and has open mechanisms,synthesis,S12,7;42;50-51,summary;monitoring;gaps,Self-report does not replace eye imaging
+E09,Radiological risk incorporates models and uncertainties,synthesis/modeling,S13,10-11;42-44;55,summary;models;conclusion,Do not convert a sensor rate into a personal clinical probability
+E10,Old and missing data must be flagged,normative requirement,S04,200,V2 10020,Data validity is not health
+E11,Critical color needs another cue,normative requirement,S04,212,V2 10045,Does not prescribe our clinical state scheme
+E12,Decision aids explain reasons and limits,normative requirement,S04,226-227,V2 10170;V2 10171,Does not validate clinical efficacy
+E13,Procedures show data and progress; avoid alert overload,design guide,S05,1050;1059-1060,10.9;10.10,Evaluate usability with our product's tasks
+E14,"Valid data, availability and backup",design guide,S05,1071-1073,10.12.3-10.12.7,Evaluate the chosen architecture; do not claim resilience without testing
+E15,Exercise and nutrition cohort with 13 crew members,abstract of original study,S14,,PMID22549960,8 iRED and 5 ARED; not attributable to the device alone
+E16,Reduced sleep in Shuttle and ISS cohorts,abstract of observational study,S15,,PMID25127232,No validated individual algorithm
+E17,Jugular flow changes measured by ultrasound in 11 crew members,abstract of prospective cohort,S16,,PMID31722025,No screening through pulse and blood pressure
+E18,Sleep architecture requires an appropriate method,abstract of original study,S17,,PMID39523514,Do not assign REM/NREM from self-reported hours

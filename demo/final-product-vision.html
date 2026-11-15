@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Órbita · final product vision</title>
+<style>
+:root{
+  --bg:#080e16;--panel:#101a26;--panel2:#142130;--line:#243243;--text:#eef4f8;--muted:#a2b1c3;
+  --cyan:#7ce8d3;--blue:#8ebdff;--amber:#f2c782;--violet:#c7a6ff;--rose:#ff9fb2;
+  --radius:16px;--sans:Inter,"Segoe UI",system-ui,Arial,sans-serif;--mono:"SFMono-Regular",Consolas,monospace
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.45}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:var(--cyan)}
+.aviso-vision{position:sticky;top:0;z-index:20;background:#1c1606;border-bottom:1px solid #4a3b12;color:var(--amber);
+  padding:7px 20px;font-size:13px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.aviso-vision strong{color:#ffe2a8}
+.app{display:grid;grid-template-columns:232px 1fr;min-height:calc(100vh - 34px)}
+nav{border-right:1px solid var(--line);padding:18px 12px;background:#0a121c;position:sticky;top:34px;height:calc(100vh - 34px);overflow:auto}
+.marca{display:flex;align-items:center;gap:10px;padding:4px 8px 16px}
+.marca .orb{width:30px;height:30px;border-radius:50%;border:2px solid var(--cyan);position:relative}
+.marca .orb::after{content:"";position:absolute;width:8px;height:8px;border-radius:50%;background:var(--cyan);top:-4px;left:9px}
+.marca b{font-size:19px;letter-spacing:.5px}
+.nav-grupo{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);padding:12px 10px 4px}
+nav button{display:flex;width:100%;text-align:left;background:none;border:0;padding:8px 10px;border-radius:10px;color:var(--muted);gap:8px;align-items:center}
+nav button:hover{background:var(--panel)}
+nav button[aria-current="page"]{background:var(--panel2);color:var(--text);box-shadow:inset 3px 0 0 var(--cyan)}
+nav button .mod{margin-left:auto;font:11px var(--mono);color:#6f8196}
+nav .sentir{margin-top:10px;background:#1b2a1f;color:#c9f3d9;border:1px solid #2f5a3d}
+main{padding:24px 30px 60px;min-width:0}
+.cabecera{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+h1{font-size:28px;margin:0 0 4px;font-weight:650}
+h2{font-size:17px;margin:0 0 10px;font-weight:600}
+h3{font-size:14px;margin:0 0 6px;color:var(--muted);font-weight:600}
+.sub{color:var(--muted);margin:0}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.span2{grid-column:span 2}.span3{grid-column:span 3}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.panel.chico{padding:12px 14px}
+.dato{font-size:26px;font-weight:650}
+.dato small{font-size:13px;color:var(--muted);font-weight:500}
+.chip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:999px;padding:2px 9px;font-size:12px;color:var(--muted);white-space:nowrap}
+.chip.sint{border-color:#4b3f6b;color:var(--violet)}
+.chip.analogo{border-color:#5a4a1e;color:var(--amber)}
+.chip.vuelo{border-color:#1f5249;color:var(--cyan)}
+.chip.sinreg{border-style:dashed;color:#93a0ae}
+.chip.ok{border-color:#2a4d6e;color:var(--blue)}
+.chip.bloq{border-color:#6b2f3c;color:var(--rose)}
+.fila{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.entre{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.muted{color:var(--muted)}
+.mono{font-family:var(--mono);font-size:12px}
+.nota{font-size:12.5px;color:var(--muted);border-left:2px solid var(--line);padding-left:10px;margin-top:10px}
+.nota b{color:var(--text);font-weight:600}
+.lista{list-style:none;margin:0;padding:0}
+.lista li{padding:9px 0;border-top:1px solid var(--line);display:flex;gap:10px;align-items:flex-start}
+.lista li:first-child{border-top:0}
+.ico{width:22px;height:22px;border-radius:50%;flex:0 0 22px;display:grid;place-items:center;font-size:12px;border:1px solid var(--line)}
+.ico.hecho{background:#12324a;border-color:#2a4d6e;color:var(--blue)}
+.ico.pend{color:var(--muted)}
+.ico.bloq{background:#3a1820;border-color:#6b2f3c;color:var(--rose)}
+.ico.dif{background:#3a2e10;border-color:#5a4a1e;color:var(--amber)}
+.sel{display:flex;gap:6px;flex-wrap:wrap}
+.sel button{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 12px;color:var(--muted)}
+.sel button[aria-pressed="true"]{background:var(--panel2);border-color:var(--cyan);color:var(--text)}
+.btn{background:var(--cyan);color:#062019;border:0;border-radius:10px;padding:9px 14px;font-weight:600}
+.btn.sec{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:7px 8px;border-top:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:12px;border-top:0}
+svg text{fill:var(--muted);font-family:var(--sans);font-size:11px}
+.vista{display:none}.vista.activa{display:block}
+.franja{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:2px;height:46px;margin:8px 0 4px}
+.franja i{border-radius:2px;display:block;position:relative}
+.leyenda{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:6px}
+.leyenda span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:12px;height:12px;border-radius:3px;display:inline-block}
+.rayado{background:repeating-linear-gradient(45deg,#2a3645 0 3px,#121b26 3px 6px)}
+.copiloto{background:linear-gradient(180deg,#112033,#0f1a27);border:1px solid #2a4d6e}
+.copiloto .quien{font-size:12px;color:var(--blue);text-transform:uppercase;letter-spacing:1px}
+.paso{display:flex;gap:12px;padding:12px;border:1px solid var(--line);border-radius:12px;margin-top:8px;background:var(--panel2)}
+.paso .n{font:600 13px var(--mono);color:var(--cyan);width:26px}
+.paso.actual{border-color:var(--cyan)}
+.paso.hecho{opacity:.65}
+.mod-card{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--panel2)}
+.mod-card b{font:600 12px var(--mono);color:var(--cyan)}
+.fase{font-size:11px;color:var(--muted)}
+.leyenda-capa{font-size:12px;color:var(--muted)}
+.subtitulo-tour{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);max-width:1320px;background:rgba(4,8,13,.92);
+  border:1px solid #2a4d6e;border-radius:14px;padding:14px 22px;font-size:21px;line-height:1.35;z-index:50;display:none;text-align:center}
+.subtitulo-tour small{display:block;font-size:14px;color:var(--muted);margin-top:4px}
+body.tour .subtitulo-tour{display:block}
+@media (max-width:900px){.app{grid-template-columns:1fr}nav{position:static;height:auto}.g2,.g3,.g4{grid-template-columns:1fr}.span2,.span3{grid-column:auto}}
+</style>
+</head>
+<body>
+<div class="aviso-vision" role="note">
+  <strong>Final product vision.</strong>
+  <span>This is how Órbita would look with all 25 modules built. All data is synthetic and fictional. None of this is product code or reviewed clinical content.</span>
+</div>
+
+<div class="app">
+<nav aria-label="Sections">
+  <div class="marca"><span class="orb" aria-hidden="true"></span><b>Órbita</b></div>
+  <div class="nav-grupo">Your mission</div>
+  <button data-v="midia">My day <span class="mod">M12</span></button>
+  <button data-v="salud">My health <span class="mod">M08</span></button>
+  <button data-v="aerobico">Aerobic capacity <span class="mod">M09</span></button>
+  <button data-v="habitat">Habitat <span class="mod">M10</span></button>
+  <div class="nav-grupo">Do</div>
+  <button data-v="plan">My plan <span class="mod">M15</span></button>
+  <button data-v="abordo">On board <span class="mod">M15</span></button>
+  <button data-v="evolucion">My progress <span class="mod">M11</span></button>
+  <div class="nav-grupo">Sharing and data</div>
+  <button data-v="resumen">Summary and privacy <span class="mod">M18</span></button>
+  <button data-v="nasa">NASA cases <span class="mod">M22</span></button>
+  <div class="nav-grupo">For the team</div>
+  <button data-v="modulos">Module map <span class="mod">plan</span></button>
+  <button class="sentir" data-v="sentir">＋ I feel different <span class="mod">M20</span></button>
+</nav>
+
+<main id="main">
+
+<!-- ============ MY DAY ============ -->
+<section class="vista" id="v-midia" aria-labelledby="t-midia">
+  <div class="cabecera">
+    <div><h1 id="t-midia">Good morning, <span data-nombre></span></h1>
+      <p class="sub"><span data-dia></span> · Mission configuration: <b data-conf-txt></b></p></div>
+    <div class="fila" id="sel-tripulante-midia"></div>
+  </div>
+  <div class="grid g3">
+    <div class="panel span2">
+      <h2>Today in your plan</h2>
+      <ul class="lista" id="hoy-plan"></ul>
+    </div>
+    <div class="panel copiloto">
+      <div class="quien">Copilot · explicit rules</div>
+      <p id="copiloto-dia" style="margin:8px 0 12px"></p>
+      <button class="btn" data-ir="sentir">I feel different</button>
+      <p class="nota">The copilot does not diagnose or recommend treatments. If there is no reviewed rule, it says so.</p>
+    </div>
+    <div class="panel"><h3>Aerobic capacity</h3><div id="dia-aer"></div></div>
+    <div class="panel"><h3>Last night's sleep</h3><div id="dia-sueno"></div></div>
+    <div class="panel"><h3>Habitat · your module</h3><div id="dia-hab"></div></div>
+  </div>
+</section>
+
+<!-- ============ MY HEALTH ============ -->
+<section class="vista" id="v-salud" aria-labelledby="t-salud">
+  <div class="cabecera">
+    <div><h1 id="t-salud">My health</h1><p class="sub">Symptoms, signs and rest, with their origin and age.</p></div>
+    <div class="fila" id="sel-tripulante-salud"></div>
+  </div>
+  <div class="grid g2">
+    <div class="panel span2">
+      <h2>Symptom log · last 21 days</h2>
+      <p class="sub">Three distinct states. A day not recorded is not a day with nothing new.</p>
+      <div class="franja" id="franja-sintomas" aria-label="Record state per day"></div>
+      <div class="leyenda">
+        <span><i class="sw" style="background:#2b6f9e"></i>I recorded a symptom</span>
+        <span><i class="sw" style="background:#1f4a3f"></i>I confirmed there was none</span>
+        <span><i class="sw rayado"></i>Not recorded</span>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Resting pulse</h2>
+      <div id="graf-pulso"></div>
+      <p class="nota">Morning measurements, before exercise. A heart rate taken during exercise is <b>not</b> mixed into this series.</p>
+    </div>
+    <div class="panel">
+      <h2>Sleep</h2>
+      <div id="graf-sueno"></div>
+      <p class="nota">Self-report and actigraphy estimates are different methods: they are shown separately, and actigraphy does not measure sleep stages.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AEROBIC CAPACITY (Iván's proposal) ============ -->
+<section class="vista" id="v-aerobico" aria-labelledby="t-aer">
+  <div class="cabecera">
+    <div><h1 id="t-aer">Aerobic capacity</h1>
+      <p class="sub">Tracking of your sessions and of how your capacity changes, on a timeline. Iván's proposal.</p></div>
+    <div class="fila" id="sel-tripulante-aer"></div>
+  </div>
+  <div class="grid g4" id="aer-kpis"></div>
+  <div class="panel" style="margin-top:14px">
+    <div class="entre"><h2>Mission timeline</h2><span class="chip sint">synthetic</span></div>
+    <p class="sub">Each column is a day. Top: the aerobic session; bottom: whether intensity was recorded.</p>
+    <div class="franja" id="franja-sesiones" style="height:56px"></div>
+    <div class="franja" id="franja-fc" style="height:12px;margin-top:2px"></div>
+    <div class="leyenda">
+      <span><i class="sw" style="background:#4cc9b0"></i>Treadmill · continuous</span>
+      <span><i class="sw" style="background:#1d8a77"></i>Treadmill · intervals</span>
+      <span><i class="sw" style="background:#8ebdff"></i>Cycle ergometer · continuous</span>
+      <span><i class="sw" style="background:#4a7fd1"></i>Cycle ergometer · intervals</span>
+      <span><i class="sw" style="background:#2c3a4a"></i>Confirmed rest</span>
+      <span><i class="sw rayado"></i>Not recorded</span>
+      <span><i class="sw" style="background:#f2c782"></i>Heart rate not recorded</span>
+    </div>
+  </div>
+  <div class="grid g3" style="margin-top:14px">
+    <div class="panel span2">
+      <div class="entre"><h2>Aerobic capacity tests</h2><span class="muted mono">mL/kg/min</span></div>
+      <div id="graf-pruebas"></div>
+      <p class="nota">Two methods, two series. <b>Measured VO2peak</b> (with gas analysis) and the <b>estimated index</b> (extrapolated heart rate, not validated in flight) are not joined in one line: they are not comparable. Sources: B19, B20.</p>
+    </div>
+    <div class="panel">
+      <h2>Weekly load</h2>
+      <div id="graf-semanal"></div>
+      <p class="nota">Aerobic minutes per week. It describes what you did; it is not a goal.</p>
+    </div>
+  </div>
+  <div class="grid g2" style="margin-top:14px">
+    <div class="panel">
+      <h2>What was your change associated with?</h2>
+      <p class="sub">Comparison within your own history, between tests done with the same method.</p>
+      <div id="tabla-comparacion"></div>
+    </div>
+    <div class="panel">
+      <h2>Why there is no "winning routine"</h2>
+      <ul class="lista">
+        <li><span class="ico">1</span><span>In NASA's Sprint study, high-intensity training did not outperform the usual routine on VO2peak. Participants chose their group (A02).</span></li>
+        <li><span class="ico">2</span><span>Among 46 astronauts there was no no-exercise group: how much capacity would have changed without it is unknown (A03).</span></li>
+        <li><span class="ico">3</span><span>Capacity tends to drop early in flight and recover over the days, whatever each person does (B19). A change between tests mixes exercise and adaptation.</span></li>
+        <li><span class="ico">4</span><span>Missing intensity is not counted as low intensity: it stays <i>not recorded</i> (B24).</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HABITAT ============ -->
+<section class="vista" id="v-habitat" aria-labelledby="t-hab">
+  <div class="cabecera">
+    <div><h1 id="t-hab">Habitat</h1><p class="sub">The environment of the module you were in, at the same time as your records.</p></div>
+    <span class="chip sint">synthetic</span>
+  </div>
+  <div class="grid g3">
+    <div class="panel span2"><h2>CO₂ in your module · last 14 days</h2><div id="graf-co2"></div>
+      <p class="nota">The value and its unit are shown. There is no clinical threshold in this application: a color does not say "normal" or "dangerous".</p></div>
+    <div class="panel"><h2>Radiation</h2>
+      <p><span class="chip sinreg">Not shown</span></p>
+      <p class="sub">The 600 mSv career limit appears in a technical brief but is not confirmed in the NASA-STD-3001 standard (S03). Until it is confirmed, Órbita does not show it.</p></div>
+    <div class="panel"><h3>Temperature</h3><div id="hab-temp"></div></div>
+    <div class="panel"><h3>Relative humidity</h3><div id="hab-hum"></div></div>
+    <div class="panel"><h3>Matching</h3><p class="sub">Only environmental data from the same module and the same interval are linked. If they do not match, it says: "no compatible data".</p></div>
+  </div>
+</section>
+
+<!-- ============ MY PLAN ============ -->
+<section class="vista" id="v-plan" aria-labelledby="t-plan">
+  <div class="cabecera">
+    <div><h1 id="t-plan">My plan</h1><p class="sub">What was prescribed, what was done and what could not be done, separately.</p></div>
+    <div class="fila" id="sel-tripulante-plan"></div>
+  </div>
+  <div class="grid g2">
+    <div class="panel"><h2>This week</h2><ul class="lista" id="plan-semana"></ul></div>
+    <div class="panel">
+      <h2>I completed my task ≠ my capacity improved</h2>
+      <p class="sub">Completing a session does not color your capacity as "good". The physical response shows in the tests, with their method and date (A02).</p>
+      <div id="plan-cumplimiento" style="margin-top:12px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ON BOARD ============ -->
+<section class="vista" id="v-abordo" aria-labelledby="t-abordo">
+  <div class="cabecera">
+    <div><h1 id="t-abordo">On board</h1><p class="sub">Guided procedures that know what equipment your mission has.</p></div>
+    <div class="sel" role="group" aria-label="Mission configuration">
+      <button data-config="ISS" aria-pressed="true">ISS · treadmill and cycle ergometer</button>
+      <button data-config="Orion" aria-pressed="false">Orion · flywheel only</button>
+    </div>
+  </div>
+  <div class="grid g3">
+    <div class="panel span2" id="procedimiento"></div>
+    <div class="panel">
+      <h2>Procedure card</h2>
+      <table>
+        <tr><th>Version</th><td class="mono">demo-0.3</td></tr>
+        <tr><th>Clinical review</th><td><span class="chip bloq">not reviewed</span></td></tr>
+        <tr><th>Method source</th><td>Submaximal cycle ergometer tests described in B19 and S07</td></tr>
+        <tr><th>Equipment</th><td>Cycle ergometer, heart rate monitor</td></tr>
+      </table>
+      <p class="nota">Demo procedure. Its content must be reviewed before being presented as applicable guidance. Each execution stores the version used.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ I FEEL DIFFERENT ============ -->
+<section class="vista" id="v-sentir" aria-labelledby="t-sentir">
+  <div class="cabecera">
+    <div><h1 id="t-sentir">I feel different</h1><p class="sub">An episode brings together what you recorded, what is known, what is missing and what you can do.</p></div>
+  </div>
+  <div class="panel">
+    <h2>What do you notice?</h2>
+    <div class="sel" id="catalogo"></div>
+    <p class="nota">You record what you observe, not a diagnosis. Catalog based on the symptoms most recorded in flight (B01, B02).</p>
+  </div>
+  <div id="episodio" style="margin-top:14px"></div>
+</section>
+
+<!-- ============ MY PROGRESS ============ -->
+<section class="vista" id="v-evolucion" aria-labelledby="t-evo">
+  <div class="cabecera">
+    <div><h1 id="t-evo">My progress</h1><p class="sub">Observations, measurements, actions and outcomes on a single timeline.</p></div>
+    <div class="fila" id="sel-tripulante-evo"></div>
+  </div>
+  <div class="panel"><table id="tabla-evolucion"></table>
+    <p class="nota">Records are not edited: a correction is a new record that points to the earlier one.</p></div>
+</section>
+
+<!-- ============ SUMMARY AND PRIVACY ============ -->
+<section class="vista" id="v-resumen" aria-labelledby="t-res">
+  <div class="cabecera">
+    <div><h1 id="t-res">Summary and privacy</h1><p class="sub">A summary that is understandable without back-and-forth, and a log of what left the device.</p></div>
+  </div>
+  <div class="grid g2">
+    <div class="panel"><div class="entre"><h2>Summary for the medical team</h2><span class="chip sint">synthetic</span></div>
+      <pre id="resumen-texto" class="mono" style="white-space:pre-wrap;background:#0b131d;border:1px solid var(--line);border-radius:10px;padding:12px;margin:0"></pre>
+      <div class="fila" style="margin-top:10px"><button class="btn" id="btn-compartir">Share summary</button><span class="muted" style="font-size:12px">Nothing leaves without this action.</span></div></div>
+    <div class="panel"><h2>What left the device</h2>
+      <ul class="lista" id="compartidos"></ul>
+      <p class="nota"><b>No encryption.</b> Data is unlocked per session, but it is not encrypted on disk. Órbita does not promise confidentiality it does not have (decision D7).</p></div>
+  </div>
+</section>
+
+<!-- ============ NASA CASES ============ -->
+<section class="vista" id="v-nasa" aria-labelledby="t-nasa">
+  <div class="cabecera">
+    <div><h1 id="t-nasa">NASA cases</h1><p class="sub">Public NASA data in a separate viewer. Never mixed with your history.</p></div>
+  </div>
+  <div class="grid g3">
+    <div class="panel"><div class="entre"><h2>CRF Daily Vitals</h2><span class="chip analogo">ground analog</span></div><p class="sub">Daily vital signs to replay measurements and see personal changes.</p><p><span class="chip sinreg">File not loaded</span></p></div>
+    <div class="panel"><div class="entre"><h2>MR080G · aerobic capacity</h2><span class="chip analogo">ground analog</span></div><p class="sub">VO2, VCO2, RER and heart rate by stage of a test. Connects with the aerobic capacity view.</p><p><span class="chip sinreg">File not loaded</span></p></div>
+    <div class="panel"><div class="entre"><h2>MR079G · strength</h2><span class="chip analogo">ground analog</span></div><p class="sub">Knee, ankle and trunk strength and endurance. The ranges in the file are not medical limits.</p><p><span class="chip sinreg">File not loaded</span></p></div>
+  </div>
+  <p class="nota">No NASA figures are shown in this vision: the files are not in the repository yet (they block phase F5). A ground analog is not an astronaut, and two cohorts are not one person.</p>
+</section>
+
+<!-- ============ MODULE MAP ============ -->
+<section class="vista" id="v-modulos" aria-labelledby="t-mod">
+  <div class="cabecera">
+    <div><h1 id="t-mod">Module map</h1><p class="sub">The 25 modules of the orchestration plan and where each one appears in this vision.</p></div>
+    <span class="chip">In the repo: all pending</span>
+  </div>
+  <div id="mapa-modulos"></div>
+</section>
+
+</main>
+</div>
+<div class="subtitulo-tour" id="subtitulo" aria-live="polite"></div>
+
+<script>
+"use strict";
+/* ---------- Deterministic synthetic data ---------- */
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const DIA_ACTUAL=142, DURACION=180;
+const TRIPULACION=[
+  {id:"t1",nombre:"Elena",semilla:11,base:42.0,prefInt:0.55,modulo:"Destiny"},
+  {id:"t2",nombre:"Tomás",semilla:23,base:39.5,prefInt:0.20,modulo:"Columbus"},
+  {id:"t3",nombre:"Lucía",semilla:37,base:44.5,prefInt:0.75,modulo:"Kibō"},
+  {id:"t4",nombre:"Kenji",semilla:51,base:37.8,prefInt:0.35,modulo:"Harmony"}
+];
+function generar(t){
+  const r=rng(t.semilla);
+  const dias=[];
+  for(let d=1;d<=DIA_ACTUAL;d++){
+    const u=r();
+    let estado,sesion=null;
+    if(u<0.08) estado="sin_registro";
+    else if(u<0.21||d<5) estado="confirmado_sin_novedad";
+    else{
+      estado="registrado";
+      const equipo=r()<0.55?"Treadmill":"Cycle ergometer";
+      const modalidad=r()<t.prefInt?"intervals":"continuous";
+      const min=Math.round(22+r()*20);
+      const fc=r()<0.17?null:Math.round((modalidad==="intervals"?80:68)+r()*12);
+      sesion={equipo,modalidad,min,fc,arnes:equipo==="Treadmill"?Math.round(60+r()*20):null};
+    }
+    dias.push({d,estado,sesion});
+  }
+  // Tests: measured VO2peak before flight; estimated index in flight.
+  const pruebas=[{d:-60,metodo:"Measured VO2peak",valor:+t.base.toFixed(1)}];
+  for(const d of [15,45,75,105,135]){
+    const caida=0.16*t.base, rec=Math.min(1,(d-15)/200)*caida*(0.6+0.8*t.prefInt);
+    const v=t.base-caida+rec+(r()-0.5)*3.2;
+    pruebas.push({d,metodo:"Estimated index",valor:+v.toFixed(1)});
+  }
+  const sueno=[];for(let d=DIA_ACTUAL-13;d<=DIA_ACTUAL;d++){const x=r();sueno.push({d,auto:x<0.15?null:+(5.4+r()*2.2).toFixed(1),acti:x<0.3?null:+(5.1+r()*2.1).toFixed(1)})}
+  const pulso=[];for(let d=DIA_ACTUAL-20;d<=DIA_ACTUAL;d++){pulso.push({d,v:r()<0.2?null:Math.round(56+r()*10)})}
+  const sintomas=[];for(let d=DIA_ACTUAL-20;d<=DIA_ACTUAL;d++){const x=r();sintomas.push({d,estado:x<0.22?"sin_registro":x<0.42?"registrado":"confirmado_sin_novedad"})}
+  return {...t,dias,pruebas,sueno,pulso,sintomas};
+}
+const DATOS=Object.fromEntries(TRIPULACION.map(t=>[t.id,generar(t)]));
+const HAB=(()=>{const r=rng(99);const co2=[],temp=[],hum=[];for(let i=0;i<14*6;i++){co2.push(r()<0.05?null:Math.round(2300+900*Math.sin(i/9)+r()*500));temp.push(+(21.5+r()*1.6).toFixed(1));hum.push(Math.round(38+r()*14))}return{co2,temp,hum}})();
+
+let actual="t1", config="ISS";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ---------- Own line chart (SVG) that joins neither gaps nor methods ---------- */
+function linea(series,{w=640,h=210,ymin,ymax,xlab=d=>d,unidad=""}={}){
+  const todos=series.flatMap(s=>s.puntos.filter(p=>p.y!=null));
+  const xs=todos.map(p=>p.x);const x0=Math.min(...xs),x1=Math.max(...xs);
+  const lo=ymin??Math.floor(Math.min(...todos.map(p=>p.y))-2), hi=ymax??Math.ceil(Math.max(...todos.map(p=>p.y))+2);
+  const L=40,R=12,T=12,B=26;
+  const X=x=>L+(x-x0)/((x1-x0)||1)*(w-L-R), Y=y=>T+(1-(y-lo)/((hi-lo)||1))*(h-T-B);
+  let g=`<svg viewBox="0 0 ${w} ${h}" width="100%" role="img">`;
+  for(let k=0;k<=4;k++){const v=lo+(hi-lo)*k/4;g+=`<line x1="${L}" x2="${w-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="#1d2a39"/><text x="${L-6}" y="${Y(v)+4}" text-anchor="end">${+v.toFixed(hi-lo<12?1:0)}</text>`}
+  const ticks=[...new Set(todos.map(p=>p.x))];const paso=Math.ceil(ticks.length/7);
+  ticks.forEach((x,i)=>{if(i%paso===0)g+=`<text x="${X(x)}" y="${h-8}" text-anchor="middle">${xlab(x)}</text>`});
+  for(const s of series){
+    let tramo=[];const tramos=[];
+    for(const p of s.puntos){if(p.y==null){if(tramo.length)tramos.push(tramo);tramo=[];}else tramo.push(p)}
+    if(tramo.length)tramos.push(tramo);
+    if(s.unir!==false)for(const tr of tramos)if(tr.length>1)g+=`<polyline fill="none" stroke="${s.color}" stroke-width="2.2" ${s.punteado?'stroke-dasharray="5 4"':''} points="${tr.map(p=>X(p.x)+","+Y(p.y)).join(" ")}"/>`;
+    for(const p of s.puntos)if(p.y!=null)g+=s.forma==="cuadro"?`<rect x="${X(p.x)-5}" y="${Y(p.y)-5}" width="10" height="10" fill="${s.color}"><title>${esc(s.nombre)}: ${p.y} ${unidad}</title></rect>`:`<circle cx="${X(p.x)}" cy="${Y(p.y)}" r="4" fill="${s.color}"><title>${esc(s.nombre)}: ${p.y} ${unidad}</title></circle>`;
+    for(const p of s.puntos)if(p.y==null)g+=`<text x="${X(p.x)}" y="${h-B-4}" text-anchor="middle" style="fill:#f2c782">·</text>`;
+  }
+  g+="</svg>";
+  g+=`<div class="leyenda">${series.map(s=>`<span><i class="sw" style="background:${s.color}"></i>${esc(s.nombre)}</span>`).join("")}${series.some(s=>s.puntos.some(p=>p.y==null))?'<span style="color:#f2c782">· not recorded (line is not joined)</span>':""}</div>`;
+  return g;
+}
+function barras(vals,{w=320,h=180,color="#7ce8d3",lab=i=>i}={}){
+  const max=Math.max(...vals.map(v=>v??0))||1,L=30,B=24,T=10,bw=(w-L-6)/vals.length;
+  let g=`<svg viewBox="0 0 ${w} ${h}" width="100%" role="img">`;
+  vals.forEach((v,i)=>{const x=L+i*bw+2;if(v==null){g+=`<rect x="${x}" y="${T}" width="${bw-4}" height="${h-T-B}" fill="url(#ray)"/>`}else{const bh=(v/max)*(h-T-B);g+=`<rect x="${x}" y="${h-B-bh}" width="${bw-4}" height="${bh}" rx="3" fill="${color}"><title>${v} min</title></rect>`}
+    g+=`<text x="${x+(bw-4)/2}" y="${h-8}" text-anchor="middle">${lab(i)}</text>`});
+  g+=`<text x="${L-4}" y="${T+8}" text-anchor="end">${max}</text><defs><pattern id="ray" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="3" height="6" fill="#2a3645"/></pattern></defs></svg>`;
+  return g;
+}
+function chipOrigen(){return '<span class="chip sint">synthetic</span>'}
+function selector(cont){
+  const el=$(cont);if(!el)return;
+  el.innerHTML='<div class="sel" role="group" aria-label="Crew member">'+TRIPULACION.map(t=>`<button data-trip="${t.id}" aria-pressed="${t.id===actual}">${t.nombre}</button>`).join("")+"</div>";
+}
+
+/* ---------- Render of each view ---------- */
+function ultimaSesion(D){for(let i=D.dias.length-1;i>=0;i--)if(D.dias[i].sesion)return D.dias[i];return null}
+function renderComun(){
+  const D=DATOS[actual];
+  $$("[data-nombre]").forEach(e=>e.textContent=D.nombre);
+  $$("[data-dia]").forEach(e=>e.textContent=`Day ${DIA_ACTUAL} of ${DURACION}`);
+  $$("[data-conf-txt]").forEach(e=>e.textContent=config==="ISS"?"ISS (treadmill and cycle ergometer)":"Orion (flywheel only)");
+  ["#sel-tripulante-midia","#sel-tripulante-salud","#sel-tripulante-aer","#sel-tripulante-plan","#sel-tripulante-evo"].forEach(selector);
+}
+function renderMiDia(){
+  const D=DATOS[actual], u=ultimaSesion(D), ult=D.pruebas.at(-1);
+  const hoy=D.dias.at(-1);
+  $("#hoy-plan").innerHTML=[
+    `<li><span class="ico hecho">✓</span><div><b>Aerobic session</b> · ${u?`${u.sesion.equipo.toLowerCase()}, ${u.sesion.modalidad}, ${u.sesion.min} min`:"—"}<div class="muted">Done on day ${u?u.d:"—"} · ${u&&u.sesion.fc==null?'<span class="chip sinreg">heart rate not recorded</span>':'intensity recorded'}</div></div></li>`,
+    `<li><span class="ico pend">○</span><div><b>Sleep entry</b><div class="muted">Pending · if you do not record it, it stays "not recorded", not "nothing new"</div></div></li>`,
+    `<li><span class="ico pend">○</span><div><b>Aerobic capacity test</b> · day 165<div class="muted">Planned · procedure in On board</div></div></li>`,
+    config==="Orion"?`<li><span class="ico bloq">!</span><div><b>Treadmill session</b><div class="muted">Not available on Orion: there is no treadmill. Pending until your plan says otherwise.</div></div></li>`:`<li><span class="ico dif">~</span><div><b>Yesterday's treadmill session</b><div class="muted">You recorded a difficulty: uncomfortable harness. It is kept; it does not count as completed.</div></div></li>`
+  ].join("");
+  const sinRegSueno=D.sueno.slice(-3).filter(s=>s.auto==null).length;
+  $("#copiloto-dia").innerHTML=sinRegSueno?`${sinRegSueno} sleep entr${sinRegSueno===1?"y is":"ies are"} missing in the last 3 days. I cannot say how you slept on those days. Do you want to record ${sinRegSueno===1?"it":"them"}?`:`Your last aerobic capacity test was ${DIA_ACTUAL-ult.d} days ago. The next one is planned for day 165.`;
+  $("#dia-aer").innerHTML=`<div class="dato">${ult.valor} <small>mL/kg/min</small></div><div class="fila"><span class="chip">${ult.metodo}</span>${chipOrigen()}</div><div class="muted" style="margin-top:6px">Day ${ult.d} · ${DIA_ACTUAL-ult.d} days ago</div>`;
+  const s=D.sueno.at(-1);
+  $("#dia-sueno").innerHTML=s.auto==null?`<div class="dato">—</div><span class="chip sinreg">not recorded</span><div class="muted" style="margin-top:6px">We do not know how you slept.</div>`:`<div class="dato">${s.auto} <small>h · self-report</small></div>${chipOrigen()}`;
+  $("#dia-hab").innerHTML=`<div class="dato">${HAB.co2.at(-1)} <small>ppm CO₂</small></div><div class="fila"><span class="chip">${D.modulo}</span>${chipOrigen()}</div><div class="muted" style="margin-top:6px">Same module, last 4 h</div>`;
+}
+function renderSalud(){
+  const D=DATOS[actual];
+  const col={registrado:"#2b6f9e",confirmado_sin_novedad:"#1f4a3f"};
+  $("#franja-sintomas").innerHTML=D.sintomas.map(s=>`<i class="${s.estado==="sin_registro"?"rayado":""}" style="${s.estado!=="sin_registro"?"background:"+col[s.estado]:""}" title="Day ${s.d}: ${({registrado:"recorded",confirmado_sin_novedad:"confirmed none",sin_registro:"not recorded"})[s.estado]}"></i>`).join("");
+  $("#graf-pulso").innerHTML=linea([{nombre:"Resting pulse (bpm)",color:"#7ce8d3",puntos:D.pulso.map(p=>({x:p.d,y:p.v}))}],{h:190,xlab:d=>"D"+d,unidad:"bpm"});
+  $("#graf-sueno").innerHTML=linea([
+    {nombre:"Self-report (h)",color:"#c7a6ff",puntos:D.sueno.map(p=>({x:p.d,y:p.auto}))},
+    {nombre:"Actigraphy (h)",color:"#8ebdff",punteado:true,forma:"cuadro",puntos:D.sueno.map(p=>({x:p.d,y:p.acti}))}],{h:190,ymin:4,ymax:9,xlab:d=>"D"+d,unidad:"h"});
+}
+function semanas(D){const w=[];for(let i=0;i<Math.ceil(DIA_ACTUAL/7);i++){const ds=D.dias.slice(i*7,i*7+7);const regs=ds.filter(x=>x.estado!=="sin_registro");w.push(regs.length===0?null:ds.reduce((a,x)=>a+(x.sesion?x.sesion.min:0),0))}return w}
+function comparacion(D){
+  const p=D.pruebas.filter(x=>x.metodo==="Estimated index");const filas=[];
+  for(let i=1;i<p.length;i++){
+    const ds=D.dias.filter(x=>x.d>p[i-1].d&&x.d<=p[i].d);
+    const ses=ds.filter(x=>x.sesion);const intMin=ses.filter(x=>x.sesion.modalidad==="intervals").reduce((a,x)=>a+x.sesion.min,0);
+    const tot=ses.reduce((a,x)=>a+x.sesion.min,0);const sinFc=ses.filter(x=>x.sesion.fc==null).length;const sinReg=ds.filter(x=>x.estado==="sin_registro").length;
+    filas.push({desde:p[i-1].d,hasta:p[i].d,predom:intMin/tot>=0.5?"more intervals":"more continuous",pctInt:Math.round(100*intMin/tot),cambio:+(p[i].valor-p[i-1].valor).toFixed(1),sinFc,sinReg,n:ses.length});
+  }
+  return filas;
+}
+function renderAerobico(){
+  const D=DATOS[actual];
+  const ses=D.dias.filter(x=>x.sesion), min=ses.reduce((a,x)=>a+x.sesion.min,0);
+  const sinFc=ses.filter(x=>x.sesion.fc==null).length, sinReg=D.dias.filter(x=>x.estado==="sin_registro").length;
+  const pIdx=D.pruebas.filter(x=>x.metodo==="Estimated index");
+  $("#aer-kpis").innerHTML=[
+    `<div class="panel chico"><h3>Sessions recorded</h3><div class="dato">${ses.length}</div><div class="muted">${Math.round(min/60)} h in ${DIA_ACTUAL} days</div></div>`,
+    `<div class="panel chico"><h3>Last test (index)</h3><div class="dato">${pIdx.at(-1).valor} <small>mL/kg/min</small></div><div class="muted">${(pIdx.at(-1).valor-pIdx.at(-2).valor>=0?"+":"")+(pIdx.at(-1).valor-pIdx.at(-2).valor).toFixed(1)} since the previous one (same method)</div></div>`,
+    `<div class="panel chico"><h3>Intensity not recorded</h3><div class="dato">${sinFc}</div><div class="muted">sessions without heart rate</div></div>`,
+    `<div class="panel chico"><h3>Days not recorded</h3><div class="dato">${sinReg}</div><div class="muted">not counted as rest</div></div>`].join("");
+  const color=s=>s.equipo==="Treadmill"?(s.modalidad==="intervals"?"#1d8a77":"#4cc9b0"):(s.modalidad==="intervals"?"#4a7fd1":"#8ebdff");
+  $("#franja-sesiones").innerHTML=D.dias.map(x=>x.estado==="sin_registro"?`<i class="rayado" title="Day ${x.d}: not recorded"></i>`:x.sesion?`<i style="background:${color(x.sesion)};opacity:${0.55+x.sesion.min/90}" title="Day ${x.d}: ${x.sesion.equipo}, ${x.sesion.modalidad}, ${x.sesion.min} min"></i>`:`<i style="background:#2c3a4a" title="Day ${x.d}: confirmed rest"></i>`).join("");
+  $("#franja-fc").innerHTML=D.dias.map(x=>`<i style="background:${x.sesion&&x.sesion.fc==null?"#f2c782":"transparent"}"></i>`).join("");
+  $("#graf-pruebas").innerHTML=linea([
+    {nombre:"Measured VO2peak (before flight)",color:"#c7a6ff",forma:"cuadro",unir:false,puntos:D.pruebas.filter(x=>x.metodo==="Measured VO2peak").map(p=>({x:p.d,y:p.valor}))},
+    {nombre:"Estimated index (in flight)",color:"#7ce8d3",puntos:pIdx.map(p=>({x:p.d,y:p.valor}))}],{h:220,xlab:d=>d<0?"L"+d:"D"+d,unidad:"mL/kg/min"});
+  const w=semanas(D).slice(-10);
+  $("#graf-semanal").innerHTML=barras(w,{lab:i=>"W"+(Math.ceil(DIA_ACTUAL/7)-w.length+i+1)});
+  const f=comparacion(D);
+  $("#tabla-comparacion").innerHTML=`<table><tr><th>Between tests</th><th>Predominant</th><th>Change</th><th>Gaps</th></tr>${f.map(r=>`<tr><td>Day ${r.desde} → ${r.hasta}</td><td>${r.predom} <span class="muted">(${r.pctInt}% intervals, ${r.n} sessions)</span></td><td><b>${r.cambio>=0?"+":""}${r.cambio.toFixed(1)}</b> <span class="muted">mL/kg/min</span></td><td>${r.sinFc} without HR · ${r.sinReg} ${r.sinReg===1?"day":"days"} not recorded</td></tr>`).join("")}</table>
+  <p class="nota"><b>Based on ${f.length} intervals from a single person.</b> What it shows is an association, not a cause. The change also reflects adaptation to flight, which tends to recover capacity over the days (B19). No comparison is made between crew members.</p>`;
+}
+function renderHabitat(){
+  const pts=HAB.co2.map((v,i)=>({x:i,y:v}));
+  $("#graf-co2").innerHTML=linea([{nombre:"CO₂ (ppm) · every 4 h",color:"#f2c782",puntos:pts}],{h:220,xlab:i=>"D"+(DIA_ACTUAL-13+Math.floor(i/6)),unidad:"ppm"});
+  $("#hab-temp").innerHTML=`<div class="dato">${HAB.temp.at(-1)} <small>°C</small></div>${chipOrigen()}`;
+  $("#hab-hum").innerHTML=`<div class="dato">${HAB.hum.at(-1)} <small>%</small></div>${chipOrigen()}`;
+}
+function renderPlan(){
+  const D=DATOS[actual];
+  const ult7=D.dias.slice(-7);
+  $("#plan-semana").innerHTML=ult7.map(x=>{
+    if(x.estado==="sin_registro")return `<li><span class="ico pend">?</span><div><b>Day ${x.d} · aerobic session</b><div class="muted">Not recorded: we do not know whether it was done</div></div></li>`;
+    if(!x.sesion)return `<li><span class="ico hecho">–</span><div><b>Day ${x.d} · rest</b><div class="muted">You confirmed there was no session</div></div></li>`;
+    return `<li><span class="ico hecho">✓</span><div><b>Day ${x.d} · ${x.sesion.equipo.toLowerCase()}, ${x.sesion.modalidad}</b><div class="muted">${x.sesion.min} min${x.sesion.arnes?` · harness ${x.sesion.arnes}% of body weight`:""} · ${x.sesion.fc==null?"intensity not recorded":"mean HR "+x.sesion.fc+"% of peak"}</div></div></li>`}).join("");
+  const reg=D.dias.filter(x=>x.estado==="registrado").length, conf=D.dias.filter(x=>x.estado==="confirmado_sin_novedad").length, sr=D.dias.filter(x=>x.estado==="sin_registro").length;
+  $("#plan-cumplimiento").innerHTML=`<table><tr><th>State</th><th>Days</th></tr><tr><td>Session recorded</td><td>${reg}</td></tr><tr><td>Confirmed rest</td><td>${conf}</td></tr><tr><td>Not recorded</td><td>${sr}</td></tr></table>`;
+}
+let paso=0, interrumpido=false;
+function renderAbordo(){
+  $$("[data-config]").forEach(b=>{if(b.tagName==="BUTTON")b.setAttribute("aria-pressed",b.dataset.config===config)});
+  const el=$("#procedimiento");
+  if(config==="Orion"){
+    el.innerHTML=`<div class="entre"><h2>Submaximal aerobic capacity test</h2><span class="chip bloq">not available</span></div>
+      <p>This procedure needs a <b>cycle ergometer</b>. Orion only has a flywheel, which allows rowing but not a staged cycle ergometer test.</p>
+      <p class="sub">There is no documented, reviewed alternative for this configuration. The test stays <b>pending</b> and is kept in your plan; it is marked neither as done nor as skipped.</p>
+      <p class="nota">On Artemis, the flywheel is the only device; its efficacy has not yet been fully evaluated (B26). The planned exploration equipment does not include a treadmill (B25).</p>`;
+    return;
+  }
+  const pasos=[
+    ["Confirm equipment","Cycle ergometer and heart rate monitor available and working."],
+    ["Preparation","Record the time and whether you exercised before. This stays as context for the measurement."],
+    ["Stages","Three submaximal stages of equal duration, as prescribed by your medical team."],
+    ["Record result","It is stored with its method (estimated index), the procedure version and the date."]];
+  el.innerHTML=`<div class="entre"><h2>Submaximal aerobic capacity test</h2><span class="chip ok">available on ISS</span></div>
+   <p class="sub">Purpose: track your aerobic capacity with the same method as your previous tests, so that they are comparable.</p>
+   ${pasos.map((p,i)=>`<div class="paso ${i<paso?"hecho":i===paso&&!interrumpido?"actual":""}"><span class="n">${i<paso?"✓":i+1}</span><div><b>${p[0]}</b><div class="muted">${p[1]}</div></div></div>`).join("")}
+   ${interrumpido?`<p class="nota"><b>Interrupted at step ${paso+1}.</b> What was done is kept; what is pending stays in your plan. It does not count as completed.</p>`:""}
+   <div class="fila" style="margin-top:12px">
+     <button class="btn" id="btn-paso" ${paso>=pasos.length||interrumpido?"disabled":""}>${paso>=pasos.length?"Completed":"Next step"}</button>
+     <button class="btn sec" id="btn-interrumpir" ${paso>=pasos.length||interrumpido?"disabled":""}>I cannot continue</button>
+     <button class="btn sec" id="btn-reiniciar">Reset demo</button></div>`;
+}
+const CATALOGO=["Fatigue","Headache","Congestion","Irritated skin","Back pain","Slept poorly","Nausea"];
+let sintoma=null;
+function renderSentir(){
+  $("#catalogo").innerHTML=CATALOGO.map(c=>`<button data-sint="${c}" aria-pressed="${c===sintoma}">${c}</button>`).join("");
+  const el=$("#episodio");
+  if(!sintoma){el.innerHTML="";return}
+  const D=DATOS[actual], u=ultimaSesion(D), ult=D.pruebas.at(-1), s=D.sueno.slice(-3);
+  const sinSueno=s.filter(x=>x.auto==null).length, hoyPulso=D.pulso.at(-1).v;
+  el.innerHTML=`<div class="grid g3">
+   <div class="panel"><h3>1 · What you recorded</h3><p><b>${sintoma}</b> · day ${DIA_ACTUAL}, 08:40</p><span class="chip sint">synthetic</span></div>
+   <div class="panel"><h3>2 · What we know</h3><ul class="lista">
+     <li>Last session: day ${u.d}, ${u.sesion.equipo.toLowerCase()} ${u.sesion.modalidad}, ${u.sesion.min} min</li>
+     <li>Last aerobic test: ${ult.valor} mL/kg/min (${ult.metodo.toLowerCase()}), ${DIA_ACTUAL-ult.d} days ago</li>
+     <li>CO₂ in ${D.modulo}: ${HAB.co2.at(-1)} ppm, same interval</li></ul></div>
+   <div class="panel"><h3>3 · What is missing</h3><ul class="lista">
+     ${sinSueno?`<li><span class="chip sinreg">not recorded</span> sleep for ${sinSueno} of the last 3 nights</li>`:""}
+     ${hoyPulso==null?`<li><span class="chip sinreg">not recorded</span> today's resting pulse</li>`:`<li>Today's resting pulse: ${hoyPulso} bpm</li>`}
+     <li>There is no reviewed rule for "${sintoma.toLowerCase()}"</li></ul></div>
+   <div class="panel copiloto span2"><div class="quien">Copilot · a single alert per episode</div>
+     <p style="margin:8px 0">There is no reviewed guidance for this. What I can do: help you complete what is missing and put together a summary for your medical team.</p>
+     <h3 style="margin-top:12px">4 · What you can do</h3>
+     <div class="fila"><button class="btn sec" data-ir="salud">Record sleep and pulse</button><button class="btn sec" data-ir="resumen">Prepare summary</button></div></div>
+   <div class="panel"><h3>5 · What happened</h3><p class="muted">Pending. If an action is not completed, the difficulty is recorded.</p>
+     <h3 style="margin-top:12px">6 · What comes next</h3><p class="muted">The episode stays open in My progress until you close it.</p></div></div>`;
+}
+function renderEvolucion(){
+  const D=DATOS[actual];const filas=[];
+  for(const x of D.dias.slice(-10).reverse()){
+    if(x.estado==="sin_registro")filas.push([x.d,"Activity","—",'<span class="chip sinreg">not recorded</span>']);
+    else if(x.sesion)filas.push([x.d,"Action",`${x.sesion.equipo}, ${x.sesion.modalidad}, ${x.sesion.min} min`,'<span class="chip ok">recorded</span>']);
+    else filas.push([x.d,"Activity","Rest",'<span class="chip ok">confirmed nothing new</span>']);
+    const p=D.pruebas.find(q=>q.d===x.d);if(p)filas.push([x.d,"Measurement",`${p.metodo}: ${p.valor} mL/kg/min`,'<span class="chip ok">recorded</span>']);
+  }
+  if(sintoma)filas.unshift([DIA_ACTUAL,"Episode",`I feel different: ${sintoma.toLowerCase()}`,'<span class="chip">open</span>']);
+  filas.splice(3,0,[DIA_ACTUAL-3,"Correction","Session duration: 28 min (corrects an entry of 82 min)",'<span class="chip">corrects earlier record</span>']);
+  $("#tabla-evolucion").innerHTML=`<tr><th>Day</th><th>Type</th><th>Detail</th><th>State</th><th>Origin</th></tr>`+filas.map(f=>`<tr><td>${f[0]}</td><td>${f[1]}</td><td>${f[2]}</td><td>${f[3]}</td><td>${chipOrigen()}</td></tr>`).join("");
+}
+const COMPARTIDOS=[];
+function renderResumen(){
+  const D=DATOS[actual],ult=D.pruebas.at(-1),f=comparacion(D);
+  $("#resumen-texto").textContent=`ÓRBITA · SUMMARY · SYNTHETIC DATA
+Crew member: ${D.nombre} · Day ${DIA_ACTUAL} of ${DURACION} · ${config}
+
+Open episode: ${sintoma??"none"}
+Aerobic capacity: ${ult.valor} mL/kg/min (${ult.metodo}), day ${ult.d}
+Change since the previous test (same method): ${f.at(-1).cambio>=0?"+":""}${f.at(-1).cambio} mL/kg/min
+Sessions without heart rate: ${D.dias.filter(x=>x.sesion&&x.sesion.fc==null).length}
+Days not recorded: ${D.dias.filter(x=>x.estado==="sin_registro").length} (not equivalent to rest)
+
+Not recorded does not mean nothing new.
+This summary is understandable without a reply: it needs no back-and-forth.`;
+  $("#compartidos").innerHTML=COMPARTIDOS.length?COMPARTIDOS.map(c=>`<li><span class="ico hecho">↗</span><div><b>${c.que}</b><div class="muted">${c.cuando} · destination: medical team · explicit action by the crew member</div></div></li>`).join(""):`<li><span class="ico pend">–</span><div class="muted">Nothing has left the device yet.</div></li>`;
+}
+const MODULOS=[
+ ["M00","Foundation","F0","Contracts in code and contract tests","—"],["M01","Core","F1","Record, three states, origin","whole app"],["M02","Mission","F1","Configuration: equipment and communication","On board · My day"],["M03","Catalogs","F1","Observations and activities","I feel different"],
+ ["M04","Store","F1","Local persistence, immutable records","My progress"],["M05","Synthetic scenario","F1","Four fictional crew members","whole app"],["M06","Readings","F2","Comparability, series, gaps","Aerobic capacity"],["M07","Base interface","F2","Own charts and labels","whole app"],
+ ["M08","My health view","F2","Symptoms, pulse, sleep","My health"],["M09","Adaptation view","F2","Aerobic capacity (Iván)","Aerobic capacity"],["M10","Habitat view","F2","CO₂, temperature, humidity","Habitat"],["M11","My progress view","F2","Single timeline","My progress"],
+ ["M12","My day view","F2","Summary of the day","My day"],["M13","Procedures","F3","Step engine and blocking by equipment","On board"],["M14","Plan","F3","Prescribed, done, difficulty","My plan"],["M15","My plan and On board views","F3","Plan and procedure screens","My plan · On board"],
+ ["M16","Episode","F4","Six parts of the episode","I feel different"],["M17","Copilot","F4","Explicit rules, one alert","My day · episode"],["M18","Summary","F4","Self-contained summary","Summary"],["M19","Privacy","F4","Log of what was shared","Summary"],
+ ["M20","I feel different view","F4","Episode screen","I feel different"],["M24","Simulated sync and ground panel","F4","Delivery queue and ground view (decision D9)","not shown in this vision"],["M21","NASA importers","F5","Reading public files","NASA cases"],["M22","NASA cases view","F5","Separate viewer","NASA cases"],["M23","Packaging","F6","A single HTML file","this page"]];
+function renderModulos(){
+  const fases={F0:"Foundation",F1:"Data core",F2:"Understand",F3:"Complete the plan",F4:"Review a change",F5:"NASA cases",F6:"Closure"};
+  $("#mapa-modulos").innerHTML=Object.entries(fases).map(([f,n])=>`<div class="panel" style="margin-bottom:12px"><div class="entre"><h2>${f} · ${n}</h2></div><div class="grid g4">${MODULOS.filter(m=>m[2]===f).map(m=>`<div class="mod-card"><b>${m[0]}</b> ${esc(m[1])}<div class="muted" style="font-size:12.5px">${esc(m[3])}</div><div class="fase">Seen in: ${esc(m[4])}</div></div>`).join("")}</div></div>`).join("")+
+  `<p class="nota">If time runs short, the plan cuts from the end: first M23, then F5, then F4. Every phase delivered is complete; there are no half versions.</p>`;
+}
+
+/* ---------- Navigation ---------- */
+const RENDER={midia:renderMiDia,salud:renderSalud,aerobico:renderAerobico,habitat:renderHabitat,plan:renderPlan,abordo:renderAbordo,sentir:renderSentir,evolucion:renderEvolucion,resumen:renderResumen,nasa:()=>{},modulos:renderModulos};
+let vista="midia";
+function ir(v){vista=v;$$(".vista").forEach(s=>s.classList.toggle("activa",s.id==="v-"+v));$$("nav button").forEach(b=>b.toggleAttribute("aria-current",b.dataset.v===v));$$("nav button[aria-current]").forEach(b=>b.setAttribute("aria-current","page"));refrescar();window.scrollTo(0,0)}
+function refrescar(){renderComun();RENDER[vista]()}
+document.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.v)ir(b.dataset.v);
+  else if(b.dataset.ir)ir(b.dataset.ir);
+  else if(b.dataset.trip){actual=b.dataset.trip;refrescar()}
+  else if(b.dataset.config){config=b.dataset.config;paso=0;interrumpido=false;refrescar()}
+  else if(b.dataset.sint){sintoma=b.dataset.sint;refrescar()}
+  else if(b.id==="btn-paso"){paso++;refrescar()}
+  else if(b.id==="btn-interrumpir"){interrumpido=true;refrescar()}
+  else if(b.id==="btn-reiniciar"){paso=0;interrumpido=false;refrescar()}
+  else if(b.id==="btn-compartir"){COMPARTIDOS.unshift({que:"Summary for day "+DIA_ACTUAL,cuando:"today, "+new Date().toTimeString().slice(0,5)});refrescar()}
+});
+/* Tour mode for the video: window.tour(view, text, detail, state) */
+window.tour=function(v,texto,detalle,estado={}){
+  document.body.classList.add("tour");
+  if(estado.trip)actual=estado.trip;if(estado.config)config=estado.config;if("sintoma" in estado)sintoma=estado.sintoma;
+  if("paso" in estado)paso=estado.paso;if("interrumpido" in estado)interrumpido=estado.interrumpido;
+  if(estado.compartir&&!COMPARTIDOS.length)COMPARTIDOS.unshift({que:"Summary for day "+DIA_ACTUAL,cuando:"today, 08:52"});
+  ir(v);if(estado.scroll)window.scrollTo(0,estado.scroll);
+  $("#subtitulo").innerHTML=esc(texto)+(detalle?`<small>${esc(detalle)}</small>`:"");
+};
+ir(location.hash.slice(1)in RENDER?location.hash.slice(1):"midia");
+</script>
+</body>
+</html>

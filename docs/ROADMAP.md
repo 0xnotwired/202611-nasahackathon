@@ -1,76 +1,76 @@
-# Roadmap de Órbita: salud, adaptación física y hábitat
+# Órbita roadmap: health, physical adaptation and habitat
 
-Estado: dirección de producto elegida por el usuario; la secuencia de implementación es una propuesta del asistente. El recorrido confirmado y el diseño funcional se registran en PRODUCTO.md. Existe una maqueta HTML con datos sintéticos para presentar el concepto (LEEME_DEMO.md); no implica integración NASA ni cierre de los niveles clínicos descritos aquí. No hay stack definitivo. La carga inicial de documentación y demo al repositorio fue solicitada por el usuario; no autoriza desplegar la aplicación. Se organiza por resultados del producto, siguiendo destination-driven-construction.
+Status: product direction chosen by the user; the implementation sequence is the assistant's proposal. The confirmed journey and the functional design are recorded in PRODUCT.md. There is an HTML mockup with synthetic data to present the concept (DEMO_README.md); it does not imply NASA integration or completion of the clinical levels described here. There is no final stack. The initial upload of documentation and demo to the repository was requested by the user; it does not authorize deploying the application. It is organized by product outcomes, following destination-driven-construction.
 
-Cómo se reparte este roadmap entre agentes, en fases y módulos: [PLAN_ORQUESTACION.md](PLAN_ORQUESTACION.md).
+How this roadmap is split among agents, into phases and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md).
 
-## Destino
+## Destination
 
-Una herramienta visual personal que permita al astronauta comprender su salud, adaptación física y entorno; seguir su plan de cuidado; medir, entender cambios y consultar orientación fundamentada. El mapa organiza el estado conocido, la línea temporal conserva el contexto, el plan conecta resultados con acciones y A bordo guía los procedimientos. Una misma medición y una misma regla deben tener el mismo significado en todas las pantallas. Los tres dominios son alcance central por decisión del usuario, no extensiones futuras (PRODUCTO.md, DEC-002).
+A personal visual tool that lets the astronaut understand their health, physical adaptation and environment; follow their care plan; measure, understand changes and consult grounded guidance. The map organizes the known status, the timeline keeps the context, the plan connects results with actions and On board guides the procedures. The same measurement and the same rule must mean the same thing on every screen. The three domains are core scope by the user's decision, not future extensions (PRODUCT.md, DEC-002).
 
-El copiloto conecta el recorrido elegido: «Me siento distinto → registro lo que ocurre → la herramienta me ayuda a medir correctamente → veo mi evolución → entiendo el siguiente paso». También acompaña «Mi día»: mediciones programadas, ejercicio/nutrición prescritos, pruebas periódicas y revisión ambiental. Sus intervenciones son ayuda contextual dentro de cada nivel; no requieren un chatbot ni autorizan al sistema a generar criterios médicos nuevos.
+The copilot connects the chosen journey: "I feel different → I record what is happening → the tool helps me measure correctly → I see my progress → I understand the next step". It also supports "My day": scheduled measurements, prescribed exercise/nutrition, periodic tests and environmental review. Its interventions are contextual help within each level; they do not require a chatbot or authorize the system to generate new medical criteria.
 
-El historial, las explicaciones y las guías deberían poder consultarse sin conexión. Esta es una recomendación arquitectónica para la propuesta, no un requisito confirmado por el usuario. La elección de tecnologías queda pendiente de una comprobación de compatibilidad y licencias.
+History, explanations and guides should be available offline. This is an architectural recommendation for the proposal, not a requirement confirmed by the user. The choice of technologies is pending a compatibility and license check.
 
-## Preparación: concretar el caso demostrable
+## Preparation: define the demonstrable case
 
-- Elegir una situación de misión y los indicadores que se pueden medir con el equipo disponible.
-- Tomar CRF Daily Vitals como candidato inicial para pulso, presión, respiración, temperatura y peso. Comprobar unidades y protocolos antes de usar los valores.
-- Concretar adaptación física con MR079G, MR080G y MR035G según la función elegida. Distinguir masa, fuerza, resistencia, capacidad aeróbica y densidad ósea; verificar qué exámenes son posibles a bordo y cuáles aportan historial previo/posterior.
-- Verificar fuentes ambientales del caso, sensor, lugar y tiempo: MSD007/DTO 684 para casos históricos; investigar RadLab/EDA para series adicionales. No hay datos integrados emparejados comprobados entre todas las fuentes.
-- Auditar cobertura de una campaña y separar sujeto, fase, mediciones repetidas y ausencias. La muestra de 113 filas ya revisada permite explorar el formato, pero no sustituye esta auditoría.
-- Identificar fuentes específicas para cada explicación, guía de medición y orientación de atención. Revisar su aplicabilidad a una misión espacial.
-- Elegir un escenario con datos reales y distinguir de forma visible la procedencia terrestre. Si hacen falta casos sintéticos, identificarlos desde su creación.
-- Para demostrar los tres dominios en una misma misión ficticia, usar una simulación identificada si no hay correspondencia real. Conservar los casos NASA originales por separado para explorar su evidencia; no unir cohortes como un astronauta.
-- Definir pantallas y contenido del recorrido antes de fijar librerías: Mi día, cuerpo, adaptación física, hábitat, evolución, Mi plan, procedimientos y resumen para comunicación.
+- Choose a mission situation and the indicators that can be measured with the available equipment.
+- Take CRF Daily Vitals as the initial candidate for pulse, blood pressure, respiration, temperature and weight. Check units and protocols before using the values.
+- Define physical adaptation with MR079G, MR080G and MR035G according to the chosen function. Distinguish mass, strength, endurance, aerobic capacity and bone density; verify which exams are possible on board and which provide pre/post history.
+- Verify environmental sources for the case, sensor, place and time: MSD007/DTO 684 for historical cases; investigate RadLab/EDA for additional series. No paired integrated data between all sources has been verified.
+- Audit a campaign's coverage and separate subject, phase, repeated measurements and gaps. The 113-row sample already reviewed allows the format to be explored, but does not replace this audit.
+- Identify specific sources for each explanation, measurement guide and care guidance. Review their applicability to a space mission.
+- Choose a scenario with real data and visibly distinguish ground origin. If synthetic cases are needed, identify them as such from creation.
+- To demonstrate the three domains in the same fictional mission, use an identified simulation if there is no real match. Keep the original NASA cases separate to explore their evidence; do not merge cohorts as one astronaut.
+- Define screens and journey content before choosing libraries: My day, body, physical adaptation, habitat, progress, My plan, procedures and communication summary.
 
-Resultado de salida: un caso, sus fuentes, sus límites y criterios verificables de aceptación. No hay valores de alerta ni ventanas de referencia previamente aprobados.
+Exit result: a case, its sources, its limits and verifiable acceptance criteria. There are no previously approved alert values or reference windows.
 
-## Nivel 1: comprender mi situación de misión
+## Level 1: understand my mission situation
 
-El astronauta consulta salud personal, adaptación física y hábitat en un caso coherente, distingue lo conocido de lo pendiente y entiende origen y contexto. Puede explorar pruebas periódicas, actividad y ambiente por tiempo, con sus limitaciones. El mapa y las vistas textuales acceden a la misma información. Las fases, unidades y métodos son visibles; un cambio estadístico no se presenta como diagnóstico. Si el caso es simulado, la interfaz lo identifica.
+The astronaut checks personal health, physical adaptation and habitat in a coherent case, distinguishes what is known from what is pending and understands origin and context. They can explore periodic tests, activity and environment over time, with their limitations. The map and the text views access the same information. Phases, units and methods are visible; a statistical change is not presented as a diagnosis. If the case is simulated, the interface says so.
 
-Desde este nivel se conservan datos originales, procedencia, unidades, ausencias y persistencia de las transformaciones necesarias. Si se adopta funcionamiento local, incluir los recursos requeridos sin depender de CDN durante el uso.
+From this level on, original data, provenance, units, gaps and persistence of the necessary transformations are kept. If local operation is adopted, include the required resources without depending on a CDN during use.
 
-Terminado cuando las gráficas coinciden con los datos del caso; la exploración real NASA coincide con archivos comprobados; y se distinguen fases, métodos, contexto ambiental, errores de importación, datos simulados y falta de información. Los exámenes ausentes no aparecen como resultados saludables.
+Done when the charts match the case data; the real NASA exploration matches verified files; and phases, methods, environmental context, import errors, simulated data and missing information are distinguished. Missing exams do not appear as healthy results.
 
-## Nivel 2: completar mi rutina y seguir mi plan
+## Level 2: complete my routine and follow my plan
 
-El astronauta consulta qué acciones le corresponden según el plan asignado y sus frecuencias: mediciones, ejercicio, nutrición, pruebas físicas y revisión del entorno. A bordo explica propósito, equipo e instrucciones de cada tarea sustentada. Registra valor, unidad, contexto y ejecución, corrige entradas inválidas y recupera el seguimiento. El copiloto presenta preguntas y procedimientos documentados; la información desconocida permanece explícita. Cada tipo de examen conserva su frecuencia real; no se programa una DXA diaria ni se supone equipo a bordo sin verificarlo.
+The astronaut checks which actions correspond to them according to the assigned plan and its frequencies: measurements, exercise, nutrition, physical tests and environmental review. On board explains the purpose, equipment and instructions of each supported task. They record value, unit, context and execution, correct invalid entries and recover follow-up. The copilot presents documented questions and procedures; unknown information stays explicit. Each type of exam keeps its real frequency; a daily DXA is not scheduled and equipment on board is not assumed without verification.
 
-Cada resultado tiene una explicación y un siguiente paso fundamentado: completar contexto, repetir bajo un procedimiento documentado, seguir una guía revisada o preparar una consulta médica, según el caso y la evidencia. Las reglas experimentales se identifican y no se presentan como criterios médicos de vuelo validados.
+Each result has an explanation and a grounded next step: complete context, repeat under a documented procedure, follow a reviewed guide or prepare a medical consultation, depending on the case and the evidence. Experimental rules are identified and not presented as validated flight medical criteria.
 
-Terminado cuando puede completarse y recuperarse una tarea del plan, ver su efecto en el historial y entender lo pendiente. Deben distinguirse plan prescrito, actividad registrada y resultado observado. No se inventan valores cuando una medición falta.
+Done when a plan task can be completed and recovered, its effect seen in the history and what is pending understood. Prescribed plan, recorded activity and observed result must be distinguished. Values are not invented when a measurement is missing.
 
-## Nivel 3: revisar un cambio y continuar el cuidado
+## Level 3: review a change and continue care
 
-El astronauta inicia «Me siento distinto» y el copiloto vincula observación, mediciones, pruebas físicas, cumplimiento del plan y ambiente del lugar/momento cuando hay correspondencia. Explica cambios y límites, identifica información faltante y abre un procedimiento aplicable. La presentación de datos juntos no demuestra causalidad. Se accede también a comunicación o ayuda disponible sin obligar a completar el cuestionario.
+The astronaut starts "I feel different" and the copilot links observation, measurements, physical tests, plan completion and the environment of the place/time when there is a match. It explains changes and limits, identifies missing information and opens an applicable procedure. Presenting data together does not prove causation. Communication or available help can also be reached without having to complete the questionnaire.
 
-El usuario puede revisar acciones pendientes, registrar seguimiento y exportar un resumen con indicadores, evolución, datos faltantes y fuentes pertinentes para comunicar una preocupación. Los comentarios clínicos libres de CRF no se incluyen en la demostración por defecto.
+The user can review pending actions, record follow-up and export a summary with indicators, progress, missing data and relevant sources to communicate a concern. Free-text clinical comments from CRF are not included in the demo by default.
 
-Terminado cuando mapa, historial, chequeo y exportación muestran resultados consistentes y el recorrido completo es utilizable mediante teclado, con texto adicional a cualquier color de estado.
+Done when the map, history, check-in and export show consistent results and the full journey is usable with the keyboard, with text in addition to any status color.
 
-Este recorrido integrado es el objetivo recomendado para la entrega. La maqueta y el video actuales muestran solo el chequeo y no cierran este nivel ni todo el alcance elegido. Si el tiempo se agota, explicitar el nivel alcanzado y el alcance pendiente sin presentar el chequeo aislado como cumplimiento de la integración completa.
+This integrated journey is the recommended goal for the delivery. The current mockup and video only show the check-in and do not complete this level or the full chosen scope. If time runs out, state the level reached and the pending scope without presenting the isolated check-in as fulfilling the full integration.
 
-## Cierre de la entrega del hackathon
+## Closing the hackathon delivery
 
-Revisar adversarialmente cada nivel al construirlo y comprobar que mantiene las propiedades anteriores. Ejecutar comprobaciones locales exigidas por cada afirmación o cambio en el momento correspondiente. Al alcanzar el horizonte de entrega, realizar una revisión integrada y luego las pruebas integradas pertinentes; no dejar la corrección de datos o la revisión de contenido médico para este cierre.
+Adversarially review each level as it is built and check that it keeps the earlier properties. Run the local checks required by each claim or change at the corresponding time. When the delivery horizon is reached, do an integrated review and then the relevant integrated tests; do not leave data correction or medical content review for this closing step.
 
-Comprobar el recorrido completo con:
+Check the full journey with:
 
-- Datos presentes y ausentes; archivo o entrada inválidos; unidades y fechas ambiguas.
-- Identificadores con ceros iniciales y separación de campañas y fases.
-- Distinción entre cambio observado, regla experimental y diagnóstico.
-- Persistencia y, si se adopta, uso sin conexión de extremo a extremo.
-- Consistencia del mapa, las gráficas, los registros y el resumen exportado.
-- Integración de salud, pruebas físicas, contramedidas y ambiente sin duplicar o cambiar el significado del mismo registro.
-- Distinción de mediciones diarias, evaluaciones periódicas e historial de exámenes que requieren equipo terrestre.
-- Accesibilidad y comprensión del siguiente paso por alguien sin conocimientos médicos completos.
+- Present and missing data; invalid file or input; ambiguous units and dates.
+- Identifiers with leading zeros and separation of campaigns and phases.
+- Distinction between observed change, experimental rule and diagnosis.
+- Persistence and, if adopted, end-to-end offline use.
+- Consistency of the map, charts, records and exported summary.
+- Integration of health, physical tests, countermeasures and environment without duplicating or changing the meaning of the same record.
+- Distinction between daily measurements, periodic assessments and history of exams that require ground equipment.
+- Accessibility and understanding of the next step by someone without full medical knowledge.
 
-Preparar una presentación con problema, recorrido de uso, contribución concreta de NASA, evidencia y limitaciones. Mostrar funciones que realmente se ejecutan. Registrar fuentes, licencias y uso de IA según las reglas del evento. La publicación requiere una instrucción aplicable del usuario.
+Prepare a presentation with the problem, usage journey, concrete NASA contribution, evidence and limitations. Show features that actually run. Record sources, licenses and AI use according to the event rules. Publishing requires an applicable instruction from the user.
 
-## Condiciones de una demostración coherente
+## Conditions for a coherent demo
 
-La presentación debe mostrar la utilidad para el astronauta: comprender su situación, realizar una tarea, consultar adaptación y hábitat y entender una acción. Las fuentes NASA aportan evidencia y datos con sus contextos originales; un caso sintético integra la experiencia cuando no hay datos reales emparejados. El estado de los procedimientos y reglas debe estar visible. Salud, adaptación y hábitat comparten historial y plan; añadir tres paneles independientes no demuestra esa integración.
+The presentation must show the usefulness for the astronaut: understand their situation, perform a task, check adaptation and habitat and understand an action. NASA sources provide evidence and data in their original contexts; a synthetic case integrates the experience when there is no real paired data. The status of procedures and rules must be visible. Health, adaptation and habitat share history and plan; adding three independent panels does not demonstrate that integration.
 
-Reservar tiempo para revisión y presentación. Ajustar el número de recorridos implementados al tiempo disponible, sin rebajar integridad ni eliminar silenciosamente dominios del producto elegido. No hay una estimación de jornadas validada sin conocer el equipo, el tiempo y el caso clínico/ambiental.
+Reserve time for review and presentation. Adjust the number of journeys implemented to the time available, without lowering integrity or silently removing domains from the chosen product. There is no validated estimate of working days without knowing the team, the time and the clinical/environmental case.

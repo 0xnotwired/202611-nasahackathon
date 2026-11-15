@@ -1,163 +1,169 @@
-# CLAUDE.md — guía de sesión para agentes en Órbita
+# CLAUDE.md — session guide for agents working on Órbita
 
-## Qué es este archivo y quién gana
+## What this file is and what wins
 
-- **[AGENTS.md](AGENTS.md)** es el manual del producto: alcance, reglas de evidencia, cómo se construye por módulos, invariantes del recorrido. **Si este archivo lo contradice, gana AGENTS.md.**
-- El orden completo de autoridad entre archivos está al principio de AGENTS.md. Este archivo va último: no define producto.
-- **CLAUDE.md** (este archivo) cubre lo que AGENTS.md no: cómo trabajar una sesión sin repetir errores que ya ocurrieron acá, y por dónde seguir.
+- **[AGENTS.md](AGENTS.md)** is the product manual: scope, evidence rules, how the product is built by modules, walkthrough invariants. **If this file contradicts it, AGENTS.md wins.**
+- The full order of authority between files is at the top of AGENTS.md. This file comes last: it does not define the product.
+- **CLAUDE.md** (this file) covers what AGENTS.md does not: how to work through a session without repeating mistakes that already happened here, and where to pick up.
 
-No repite el README ni AGENTS.md. Leelos.
+It does not repeat the README or AGENTS.md. Read them.
 
-## Orden de lectura para una sesión nueva
+## Reading order for a new session
 
 1. [AGENTS.md](AGENTS.md)
-2. [docs/PROPUESTA_FINAL.md](docs/PROPUESTA_FINAL.md) — qué es el producto
-3. [docs/MEJORAS_PROPUESTA.md](docs/MEJORAS_PROPUESTA.md) — qué cambió y por qué
-4. [docs/PLAN_ORQUESTACION.md](docs/PLAN_ORQUESTACION.md) — fases, módulos, roles y compuertas
-5. [docs/CONTRATOS.md](docs/CONTRATOS.md) y tu orden en [docs/ordenes/](docs/ordenes/), si vas a construir o revisar un módulo
-6. [docs/ROADMAP_AGENTES.md](docs/ROADMAP_AGENTES.md) — cuándo está terminado cada nivel, y el registro de relevos
-7. [docs/DATASETS.md](docs/DATASETS.md) antes de tocar datos
+2. [docs/FINAL_PROPOSAL.md](docs/FINAL_PROPOSAL.md) — what the product is
+3. [docs/PROPOSAL_IMPROVEMENTS.md](docs/PROPOSAL_IMPROVEMENTS.md) — what changed and why
+4. [docs/ORCHESTRATION_PLAN.md](docs/ORCHESTRATION_PLAN.md) — phases, modules, roles and gates
+5. [docs/CONTRACTS.md](docs/CONTRACTS.md) and your work order in [docs/work-orders/](docs/work-orders/), if you are going to build or review a module
+6. [docs/AGENT_ROADMAP.md](docs/AGENT_ROADMAP.md) — when each level is done, and the handoff log
+7. [docs/DATASETS.md](docs/DATASETS.md) before touching data
 
-Si sos constructor o revisor, tu rol y el formato de tu informe están en el plan. Si nadie te asignó un módulo, no empieces uno: preguntá.
+If you are a builder or a reviewer, your role and your report format are in the plan. If nobody assigned you a module, do not start one: ask.
 
-## Mapa del repositorio
+## Repository map
 
 ```
-AGENTS.md                 manual del producto; gana sobre este archivo
-CLAUDE.md                 esta guía
-README.md                 presentación para personas
-demo/orbita.html          maqueta de un archivo, datos ficticios; NO se modifica al construir app/
-docs/PROPUESTA_FINAL.md   propuesta vigente y criterios de aceptación
-docs/MEJORAS_PROPUESTA.md mejoras M1–M9 derivadas de la serie B
-docs/ROADMAP.md           niveles desde el producto
-docs/PLAN_ORQUESTACION.md fases, olas, módulos, roles, compuertas
-docs/CONTRATOS.md         interfaces entre módulos y reglas R1–R9; solo el orquestador lo edita
-docs/modulos.csv          tablero: rutas propias, dependencias y estado de cada módulo
-docs/ordenes/             una orden de trabajo por módulo (M00–M24)
-docs/ROADMAP_AGENTES.md   casillas de cada nivel + registro de relevos
-docs/BASE_ACADEMICA.md    fuentes S01–S18 (y copia de A01–A06)
-docs/INVESTIGACION_APLICADA.md    fuentes A01–A06
-docs/INVESTIGACION_AMPLIADA_B.md  fuentes B01–B18, con nivel de lectura
-docs/MATRIZ_*.csv         una fila por fuente o afirmación
-docs/DATASETS.md          qué hay en NLSP/OSDR y sus límites de integración
-scripts/check_docs.py     consistencia de matrices, tablero de módulos y enlaces
-app/                      aún no existe; ahí va el producto, una carpeta por módulo
+AGENTS.md                      product manual; wins over this file
+CLAUDE.md                      this guide
+README.md                      presentation for people
+demo/orbita.html               single-file mockup, fictional data; NOT modified when building app/
+demo/final-product-vision.html visualization of the finished product for the team; not product code
+docs/FINAL_PROPOSAL.md         current proposal and acceptance criteria
+docs/PROPOSAL_IMPROVEMENTS.md  improvements M1–M9 derived from series B
+docs/ROADMAP.md                levels, from the product side
+docs/ORCHESTRATION_PLAN.md     phases, waves, modules, roles, gates
+docs/CONTRACTS.md              interfaces between modules and rules R1–R9; only the orchestrator edits it
+docs/modules.csv               board: owned paths, dependencies and status of each module
+docs/work-orders/              one work order per module (M00–M24)
+docs/AGENT_ROADMAP.md          checklist for each level + handoff log
+docs/ACADEMIC_BASE.md          sources S01–S18 (and a copy of A01–A06)
+docs/APPLIED_RESEARCH.md       sources A01–A06
+docs/EXTENDED_RESEARCH_B.md    sources B01–B26, with reading level
+docs/*_MATRIX*.csv             one row per source or claim
+docs/DATASETS.md               what NLSP/OSDR and other sources contain, and their integration limits
+scripts/check_docs.py          consistency of matrices, module board and links
+app/                           does not exist yet; the product goes there, one folder per module
 ```
 
-## La regla central
+## The central rule
 
-**Órbita nunca presenta como sabido algo que no se sabe.** Casi todo lo demás es consecuencia:
+**Órbita never presents as known something that is not known.** Almost everything else follows from it:
 
-- «Sin registro» no es «sin novedad». NA no es cero.
-- Un análogo terrestre no es un astronauta. Dos cohortes no son una persona.
-- El silencio del copiloto no es «todo bien».
-- Una cifra leída en un resumen no es una cifra verificada.
+- "Not recorded" is not "nothing new". NA is not zero.
+- A ground analog is not an astronaut. Two cohorts are not one person.
+- The copilot's silence is not "all fine".
+- A figure read in an abstract is not a verified figure.
 
-Las dos direcciones de error no pesan igual. Mostrar «sin evaluar» cuando había dato es molesto y se nota. Mostrar «normal» cuando no había dato es silencioso y es el error que este producto existe para evitar. **Ante la duda, mostrar menos certeza.**
+The two directions of error do not weigh the same. Showing "not assessed" when there was data is annoying and gets noticed. Showing "normal" when there was no data is silent, and it is the error this product exists to avoid. **When in doubt, show less certainty.**
 
-## Errores que ya ocurrieron en este repo
+## Mistakes that already happened in this repo
 
-Cada regla viene de un hecho de la sesión del 14/11/2026. Ninguna tiene imposición automática salvo donde se indica.
+Each rule comes from something that happened in the sessions of 14–15/11/2026. None is automatically enforced unless stated.
 
-### 1. Atribuir autores o revistas de memoria
+### 1. Attributing authors or journals from memory
 
-Al redactar la serie B se escribieron tres atribuciones que no estaban en ninguna fuente recuperada («Lyell 2017», «Jones 2024», «JAMA Ophthalmol 2020»). Se detectaron en revisión y se quitaron antes del commit.
+While writing series B, three attributions were written that were not in any retrieved source ("Lyell 2017", "Jones 2024", "JAMA Ophthalmol 2020"). They were caught in review and removed before the commit.
 
-**Regla:** autor, año, revista y cifra solo se escriben si están en el texto que se recuperó en esa sesión. Si no, se cita por título o URL.
-**Mecanismo:** ninguno automático. Revisión manual.
+**Rule:** author, year, journal and figure are only written if they are in text retrieved in that session. Otherwise, cite by title or URL.
+**Mechanism:** none automatic. Manual review.
 
-### 2. Citar cifras de un resumen como si fueran del artículo
+### 2. Citing figures from an abstract as if they came from the article
 
-PMC devolvió una verificación de navegador en lugar del artículo en varias descargas, así que la serie B se escribió casi entera desde resúmenes. Cuando el usuario aportó los PDF de B01, B03 y B06 (15/11), la lectura completa **corrigió una afirmación**: el «diez veces más que los registros médicos» de B03 compara cohortes distintas, no a las mismas personas, y ya se había trasladado a MEJORAS_PROPUESTA.md. Hoy son TC B01, B03, B06, B07 y B09.
+PMC returned a browser check instead of the article on several downloads, so series B was written almost entirely from abstracts. When the user provided the PDFs of B01, B03 and B06 (15/11), the full reading **corrected a claim**: B03's "ten times more than medical records" compares different cohorts, not the same people, and it had already been carried into PROPOSAL_IMPROVEMENTS.md.
 
-**Regla:** toda fuente nueva lleva nivel de lectura: `TC` (texto completo), `R` (resumen) o `S` (fragmento o fuente secundaria). Una cifra de nivel R o S no va a la presentación sin abrir el original.
-**Mecanismo:** columna `nivel_lectura` en `MATRIZ_INVESTIGACION_B.csv`. El script no valida su contenido. Al subir una fuente a TC, buscar con `grep` cada afirmación que dependía de ella en los otros documentos: una corrección en un solo archivo deja la versión errónea viva en otro.
+**Rule:** every new source carries a reading level: `FT` (full text), `AB` (abstract) or `S` (snippet or secondary source). A figure at level AB or S does not go into the presentation without opening the original. Full texts read with an automated extraction tool (section 6 of series B) must also be checked against the PDF before presenting.
+**Mechanism:** column `reading_level` in `RESEARCH_MATRIX_B.csv`. The script does not validate its content. When a source is upgraded to FT, `grep` every claim that depended on it in the other documents: a correction in a single file leaves the wrong version alive in another.
 
-Los PDF que aporta el usuario se leen pero **no se suben al repo**: no todos tienen licencia abierta (B03 no la tiene).
+PDFs provided by the user are read but **not uploaded to the repo**: not all of them have an open license (B03 does not).
 
-### 3. Páginas de NASA que parecen vacías
+### 3. NASA pages that look empty
 
-`nlsp.nasa.gov` y `osdr.nasa.gov` cargan su contenido con JavaScript: una lectura simple devuelve solo el título del portal. `spaceappschallenge.org` bloquea la lectura automática.
+`nlsp.nasa.gov` and `osdr.nasa.gov` load their content with JavaScript: a plain fetch returns only the portal title. `spaceappschallenge.org` blocks automated reading.
 
-**Regla:** «la página no tiene datos» no es una conclusión válida para estos sitios. Usar los endpoints de API anotados en DATASETS.md, o pedir el archivo al usuario. El texto oficial del desafío 2026 **no está verificado**; REQUIREMENTS.md conserva la versión del usuario.
+**Rule:** "the page has no data" is not a valid conclusion for these sites. Use the API endpoints noted in DATASETS.md, or ask the user for the file. The official 2026 challenge text is **not verified**; REQUIREMENTS.md keeps the user's version.
 
-### 4. La palabra «MVP»
+### 4. The word "MVP"
 
-Apareció en dos documentos (hallazgo A01) pese a que el proyecto se construye por niveles. Corregida el 14/11.
+It appeared in two documents (finding A01) even though the project is built in levels. Fixed on 14/11.
 
-**Regla:** no proponer MVP, «versión rápida» ni prototipo descartable. Bajo presión de tiempo se construyen menos niveles, completos.
-**Mecanismo:** `grep -rn "MVP" docs README.md` debe devolver solo las menciones que niegan el término.
+**Rule:** do not propose an MVP, a "quick version" or a throwaway prototype. Under time pressure, fewer levels are built, complete.
+**Mechanism:** `grep -rn "MVP" docs README.md` must return only the mentions that reject the term.
 
-### 5. Documentos duplicados
+### 5. Duplicated documents
 
-`INVESTIGACION_APLICADA.md` está copiado dentro de `BASE_ACADEMICA.md`. La corrección del punto 4 hubo que hacerla dos veces.
+`APPLIED_RESEARCH.md` is copied inside `ACADEMIC_BASE.md`. The fix for item 4 had to be made twice.
 
-**Regla:** al editar una afirmación de A01–A06, buscarla en ambos archivos. No crear una tercera copia.
+**Rule:** when editing a claim from A01–A06, look for it in both files. Do not create a third copy.
 
-## Valores que son decisiones, no descuidos
+### 6. Losing track of the working branch
 
-| Valor | Dónde | Por qué no «normalizarlo» |
+On 15/11 a local branch `integracion` appeared, checked out and identical to `claude`, without anyone recording why. Nothing was lost, but work could have landed on the wrong branch.
+
+**Rule:** run `git branch --show-current` before every commit, and do not delete branches you did not create.
+
+## Values that are decisions, not oversights
+
+| Value | Where | Why not to "normalize" it |
 |---|---|---|
-| 6–8 voluntarios | PROPUESTA_FINAL, prueba formativa | Tamaño de detección de problemas, no de validación; su límite está declarado (B14) |
-| 600 mSv | MEJORAS M5 | Requisito de programa leído en un resumen técnico; **sin confirmar** en S03. No mostrar hasta confirmarlo |
-| Tres estados de registro | ROADMAP_AGENTES, modelo de datos | No colapsar a dos: es la mejora M2 |
-| Un aviso por episodio | MEJORAS M4 | No es un límite arbitrario; viene de B13 |
+| 6–8 volunteers | FINAL_PROPOSAL, formative test | A problem-detection size, not a validation size; its limit is stated (B14) |
+| 600 mSv | IMPROVEMENTS M5 | Program requirement read in a technical brief; **not confirmed** in S03. Do not show until confirmed |
+| Three record states | AGENT_ROADMAP, data model | Do not collapse to two: that is improvement M2 |
+| One alert per episode | IMPROVEMENTS M4 | Not an arbitrary limit; it comes from B13 |
+| Simulated sync | ORCHESTRATION_PLAN D9 | Chosen by the user for time reasons; a real server is a later level, not a hidden one |
 
-No existen umbrales clínicos en este repo. Si aparece uno en el código, es un error.
+There are no clinical thresholds in this repo. If one appears in the code, it is a bug.
 
-## Comandos verificados
-
-Ejecutados el 14/11/2026 en la rama `claude`:
+## Verified commands
 
 ```bash
 python3 scripts/check_docs.py
 ```
 
-Un resultado `OK` prueba esto y solo esto: las matrices A y B se leen como CSV y sus ids coinciden con los de sus documentos; cada módulo de `docs/modulos.csv` tiene su orden; las rutas propias no se solapan; cada dependencia está en una fase u ola anterior; el plan nombra los mismos módulos; y los enlaces relativos entre `.md` resuelven. **No prueba** que las cifras sean correctas, que las fuentes digan lo que se afirma, ni que un agente haya respetado sus rutas al escribir código. El script se vio fallar por un enlace roto real y por seis roturas deliberadas del tablero (solape de rutas, dependencia posterior, dependencia en la misma ola, orden huérfana, estado desconocido, dependencia inexistente).
+An `OK` result proves this and only this: matrices A and B parse as CSV and their ids match those in their documents; every module in `docs/modules.csv` has its work order; owned paths do not overlap; every dependency sits in an earlier phase or wave; the plan names the same modules; and relative links between `.md` files resolve. It **does not prove** that figures are correct, that sources say what is claimed, or that an agent respected their paths when writing code. The script was seen failing on a real broken link and on six deliberate breakages of the board (overlapping paths, later dependency, same-wave dependency, orphan work order, unknown status, nonexistent dependency).
 
-No hay build, lint ni pruebas de producto: no existe código de producto todavía. La maqueta se abre en un navegador. No inventar otros comandos.
+There is no build, lint or product test: no product code exists yet. The mockup is opened in a browser. Do not invent other commands.
 
-`node --test` será el comando de pruebas cuando M00 cree `package.json`. Se comprobó el 14/11 que corre un módulo ES con su prueba en Node 22 sin instalar nada. Nada se comprobó en un navegador.
+`node --test` will be the test command once M00 creates `package.json`. On 14/11 it was verified that it runs an ES module with its test on Node 22 without installing anything. Nothing was verified in a browser.
 
 ## Git
 
-Aplica la disciplina de `git-discipline`: etiqueta de restauración antes de cada sesión (`git tag -a pre-session-<fecha>`), solo operaciones que agregan historia (`commit`, `merge`, `revert`), nunca `rebase`, `squash` ni `push --force`, y verificar con `git status` y `git log` antes de afirmar un estado.
+Apply the `git-discipline` skill: a restore tag before each session (`git tag -a pre-session-<date>`), only history-adding operations (`commit`, `merge`, `revert`), never `rebase`, `squash` or `push --force`, and check `git status` and `git log` before stating a status.
 
-- **Nadie hace commit directo a la rama por defecto**: ni el dueño, ni el equipo, ni un agente. AGENTS.md lo exige porque es un repo de equipo. Se trabaja en ramas y se propone por PR.
-- **Tener acceso de escritura no es permiso para `git commit` ni `git push`.** Cada commit y cada push necesita una instrucción del usuario para esa tarea. Una autorización vale para esa acción, no para el resto de la sesión.
-- La rama `claude` se creó y se subió el 14/11/2026 por instrucción explícita del usuario. Es la rama de integración.
-- Las ramas de módulo se llaman `mod/mNN-nombre`. **No `claude/...`**: Git responde `cannot lock ref` mientras exista la rama `claude`. Comprobado el 14/11.
-- Los commits de un agente llevan el prefijo `docs(agent):`, `feat(agent):` o `fix(agent):` para poder filtrarlos, y la línea de coautoría que indique la sesión.
-- Todo archivo desechable de prueba entra a `.gitignore` en la misma acción que lo crea.
+- **Nobody commits directly to the default branch**: not the owner, not the team, not an agent. AGENTS.md requires it because this is a team repo. Work happens on branches and is proposed through PRs.
+- **Write access is not permission to `git commit` or `git push`.** Every commit and every push needs an instruction from the user for that task. An authorization covers that action, not the rest of the session.
+- The `english` branch was created on 15/11/2026 at the user's request, because the hackathon requires English. **It is the integration branch from now on.** The `claude` branch keeps the Spanish history up to that date.
+- Module branches are named `mod/mNN-name`. **Not `claude/...`**: Git answers `cannot lock ref` while the `claude` branch exists. Verified on 14/11.
+- An agent's commits carry the prefix `docs(agent):`, `feat(agent):` or `fix(agent):` so they can be filtered, plus the co-author line given by the session.
+- Every throwaway test file goes into `.gitignore` in the same action that creates it.
 
-## Skills de Anna
+## Anna's skills
 
-El usuario pide aplicar siempre las skills de `github.com/annatchijova/SKILLS`. No están instaladas en este repo: se leen desde un clon. Las que más pesan acá:
+The user asks that the skills from `github.com/annatchijova/SKILLS` always be applied. They are not installed in this repo: they are read from a clone. The ones that matter most here:
 
-| Skill | Dónde se aplica |
+| Skill | Where it applies |
 |---|---|
-| `destination-driven-construction` | Niveles del roadmap; sin MVP |
-| `claim-provenance-discipline` | Toda afirmación científica; niveles de lectura |
-| `honest-degradation` | Tres estados de registro; almacenamiento que falla a la vista |
-| `validate-at-the-boundary` | Validación de `Registro` al entrar |
-| `falsifiable-testing` | Ver cada prueba fallar antes de confiar en ella |
-| `secure-by-construction` | Datos de salud: modelo de amenaza antes del código |
-| `surgical-patcher` | Editar por anclas; no reescribir archivos enteros |
-| `llm-out-of-the-loop` | El copiloto decide con reglas explícitas; un modelo, si lo hubiera, solo narra |
-| `readme-architecture`, `honest-technical-oratory` | README y presentación |
+| `destination-driven-construction` | Roadmap levels; no MVP |
+| `claim-provenance-discipline` | Every scientific claim; reading levels |
+| `honest-degradation` | Three record states; storage that fails visibly |
+| `validate-at-the-boundary` | Validating `Record` on entry |
+| `falsifiable-testing` | Watch every test fail before trusting it |
+| `secure-by-construction` | Health data: threat model before code |
+| `surgical-patcher` | Edit by anchors; do not rewrite whole files |
+| `llm-out-of-the-loop` | The copilot decides with explicit rules; a model, if there were one, only narrates |
+| `readme-architecture`, `honest-technical-oratory` | README and presentation |
 
-`terminal-first` y `working-on-main` son preferencias personales de su autora y **no** se aplican acá: este repo exige ramas.
+`terminal-first` and `working-on-main` are personal preferences of their author and do **not** apply here: this repo requires branches.
 
-## Antes de dar algo por terminado
+## Before calling something done
 
-- [ ] Ninguna pantalla ni exportación muestra «sin registro» como «sin novedad», ni NA como cero. *(Regla central)*
-- [ ] Todo dato muestra su origen: sintético, análogo terrestre o vuelo. *(Regla central; AGENTS.md)*
-- [ ] Toda fuente nueva tiene nivel de lectura, y ningún autor, año o cifra salió de memoria. *(Errores 1 y 2)*
-- [ ] Si se tocó A01–A06, el cambio está en los dos archivos. *(Error 5)*
-- [ ] `grep -rn "MVP"` no encontró propuestas de MVP. *(Error 4)*
-- [ ] No se añadió ningún umbral clínico ni se «normalizó» un valor de la tabla de decisiones.
-- [ ] `python3 scripts/check_docs.py` da `OK`, y el informe dice qué prueba eso y qué no. *(Comandos verificados)*
-- [ ] `git status` y `git log` consultados antes de informar el estado. *(Git)*
-- [ ] Commit y push solo con autorización para esta tarea, en una rama. *(Git)*
-- [ ] Si construiste un módulo: `git diff --stat` solo muestra tus rutas propias y no tocaste `docs/CONTRATOS.md`. *(AGENTS.md, Construcción por módulos)*
-- [ ] El registro de relevos de `docs/ROADMAP_AGENTES.md` refleja lo verificado, no lo intentado.
+- [ ] No screen or export shows "not recorded" as "nothing new", or NA as zero. *(Central rule)*
+- [ ] Every piece of data shows its origin: synthetic, ground analog or flight. *(Central rule; AGENTS.md)*
+- [ ] Every new source has a reading level, and no author, year or figure came from memory. *(Mistakes 1 and 2)*
+- [ ] If A01–A06 was touched, the change is in both files. *(Mistake 5)*
+- [ ] `grep -rn "MVP"` found no MVP proposals. *(Mistake 4)*
+- [ ] No clinical threshold was added and no value from the decisions table was "normalized".
+- [ ] `python3 scripts/check_docs.py` returns `OK`, and the report says what that proves and what it does not. *(Verified commands)*
+- [ ] `git status`, `git log` and `git branch --show-current` checked before reporting status. *(Git; mistake 6)*
+- [ ] Commit and push only with authorization for this task, on a branch. *(Git)*
+- [ ] If you built a module: `git diff --stat` shows only your owned paths and you did not touch `docs/CONTRACTS.md`. *(AGENTS.md, Building by modules)*
+- [ ] The handoff log in `docs/AGENT_ROADMAP.md` reflects what was verified, not what was attempted.

@@ -1,160 +1,156 @@
 #!/usr/bin/env python3
-"""Comprueba la consistencia de la documentación y del tablero de módulos.
+"""Checks the consistency of the documentation and the module board.
 
-Verifica, y nada más que esto:
-  1. Cada matriz de investigación se lee como CSV con filas completas, y sus ids
-     coinciden con los citados en su documento.
-  2. docs/modulos.csv: ids únicos, estado válido, cada módulo tiene su orden de
-     trabajo y cada orden pertenece a un módulo.
-  3. Las rutas propias de dos módulos no se solapan.
-  4. Cada dependencia existe y está en una fase anterior, o en la misma fase y
-     una ola anterior.
-  5. La tabla de módulos de PLAN_ORQUESTACION.md nombra los mismos ids.
-  6. Los enlaces relativos de los .md apuntan a archivos que existen.
+It verifies this, and nothing more:
+  1. Each research matrix parses as CSV with complete rows, and its ids match
+     the ones cited in its document.
+  2. docs/modules.csv: unique ids, valid status, every module has its work
+     order and every work order belongs to a module.
+  3. The owned paths of two modules do not overlap.
+  4. Every dependency exists and sits in an earlier phase, or in the same phase
+     and an earlier wave.
+  5. The module table in ORCHESTRATION_PLAN.md names the same ids.
+  6. Relative links in .md files point to files that exist.
 
-No comprueba que las cifras citadas sean correctas, que las fuentes digan lo que
-se afirma, ni que un agente haya respetado sus rutas propias al escribir código.
-Uso: python3 scripts/check_docs.py   (código de salida 1 si hay algún fallo)
+It does not check that cited figures are correct, that sources say what is
+claimed, or that an agent respected their owned paths when writing code.
+Usage: python3 scripts/check_docs.py   (exit code 1 if anything fails)
 """
 import csv
 import re
 import sys
 from pathlib import Path
 
-RAIZ = Path(__file__).resolve().parent.parent
-DOCS = RAIZ / "docs"
+ROOT = Path(__file__).resolve().parent.parent
+DOCS = ROOT / "docs"
 
-# (matriz, documento, patrón de id)
-PARES = [
-    ("MATRIZ_INVESTIGACION_APLICADA.csv", "INVESTIGACION_APLICADA.md", r"\bA0\d\b"),
-    ("MATRIZ_INVESTIGACION_B.csv", "INVESTIGACION_AMPLIADA_B.md", r"\bB\d\d\b"),
+# (matrix, document, id pattern)
+PAIRS = [
+    ("APPLIED_RESEARCH_MATRIX.csv", "APPLIED_RESEARCH.md", r"\bA0\d\b"),
+    ("RESEARCH_MATRIX_B.csv", "EXTENDED_RESEARCH_B.md", r"\bB\d\d\b"),
 ]
-ESTADOS = {"pendiente", "en_curso", "en_revision", "integrado", "bloqueado"}
+STATUSES = {"pending", "in_progress", "in_review", "integrated", "blocked"}
 
 
-def comprobar_matriz(nombre_csv, nombre_md, patron):
-    fallos = []
-    ruta_csv, ruta_md = DOCS / nombre_csv, DOCS / nombre_md
-    for ruta in (ruta_csv, ruta_md):
-        if not ruta.is_file():
-            return [f"falta el archivo {ruta.relative_to(RAIZ)}"]
-    with ruta_csv.open(encoding="utf-8", newline="") as f:
-        filas = list(csv.reader(f))
-    if not filas:
-        return [f"{nombre_csv}: vacío"]
-    ancho = len(filas[0])
-    for n, fila in enumerate(filas[1:], start=2):
-        if len(fila) != ancho:
-            fallos.append(f"{nombre_csv}: fila {n} tiene {len(fila)} columnas, se esperaban {ancho}")
-    ids_csv = {fila[0] for fila in filas[1:] if fila}
-    ids_md = set(re.findall(patron, ruta_md.read_text(encoding="utf-8")))
-    for falta in sorted(ids_md - ids_csv):
-        fallos.append(f"{falta} se cita en {nombre_md} pero no está en {nombre_csv}")
-    for falta in sorted(ids_csv - ids_md):
-        fallos.append(f"{falta} está en {nombre_csv} pero no se cita en {nombre_md}")
-    return fallos
+def check_matrix(csv_name, md_name, pattern):
+    failures = []
+    csv_path, md_path = DOCS / csv_name, DOCS / md_name
+    for path in (csv_path, md_path):
+        if not path.is_file():
+            return [f"missing file {path.relative_to(ROOT)}"]
+    with csv_path.open(encoding="utf-8", newline="") as f:
+        rows = list(csv.reader(f))
+    if not rows:
+        return [f"{csv_name}: empty"]
+    width = len(rows[0])
+    for n, row in enumerate(rows[1:], start=2):
+        if len(row) != width:
+            failures.append(f"{csv_name}: row {n} has {len(row)} columns, expected {width}")
+    csv_ids = {row[0] for row in rows[1:] if row}
+    md_ids = set(re.findall(pattern, md_path.read_text(encoding="utf-8")))
+    for missing in sorted(md_ids - csv_ids):
+        failures.append(f"{missing} is cited in {md_name} but is not in {csv_name}")
+    for missing in sorted(csv_ids - md_ids):
+        failures.append(f"{missing} is in {csv_name} but is not cited in {md_name}")
+    return failures
 
 
-def se_solapan(a, b):
-    """Dos rutas se solapan si son iguales o una es carpeta que contiene a la otra."""
+def overlap(a, b):
+    """Two paths overlap if they are equal or one is a folder containing the other."""
     if a == b:
         return True
     return (a.endswith("/") and b.startswith(a)) or (b.endswith("/") and a.startswith(b))
 
 
-def comprobar_modulos():
-    fallos = []
-    ruta = DOCS / "modulos.csv"
-    if not ruta.is_file():
-        return ["falta docs/modulos.csv"]
-    with ruta.open(encoding="utf-8", newline="") as f:
-        filas = list(csv.DictReader(f))
-    por_id = {}
-    for fila in filas:
-        mid = fila["id"]
-        if mid in por_id:
-            fallos.append(f"modulos.csv: id repetido {mid}")
-        por_id[mid] = fila
-        if fila["estado"] not in ESTADOS:
-            fallos.append(f"modulos.csv: {mid} tiene estado desconocido «{fila['estado']}»")
-        if not (DOCS / fila["orden"]).is_file():
-            fallos.append(f"modulos.csv: {mid} apunta a una orden que no existe: {fila['orden']}")
-        if not fila["rutas"].strip():
-            fallos.append(f"modulos.csv: {mid} no declara rutas propias")
+def check_modules():
+    failures = []
+    path = DOCS / "modules.csv"
+    if not path.is_file():
+        return ["missing docs/modules.csv"], 0
+    with path.open(encoding="utf-8", newline="") as f:
+        rows = list(csv.DictReader(f))
+    by_id = {}
+    for row in rows:
+        mid = row["id"]
+        if mid in by_id:
+            failures.append(f"modules.csv: repeated id {mid}")
+        by_id[mid] = row
+        if row["status"] not in STATUSES:
+            failures.append(f"modules.csv: {mid} has unknown status '{row['status']}'")
+        if not (DOCS / row["work_order"]).is_file():
+            failures.append(f"modules.csv: {mid} points to a work order that does not exist: {row['work_order']}")
+        if not row["paths"].strip():
+            failures.append(f"modules.csv: {mid} declares no owned paths")
 
-    ordenes_csv = {fila["orden"] for fila in filas}
-    carpeta = DOCS / "ordenes"
-    if carpeta.is_dir():
-        for orden in sorted(carpeta.glob("*.md")):
-            relativa = f"ordenes/{orden.name}"
-            if relativa not in ordenes_csv:
-                fallos.append(f"{relativa} no pertenece a ningún módulo de modulos.csv")
+    orders_csv = {row["work_order"] for row in rows}
+    folder = DOCS / "work-orders"
+    if folder.is_dir():
+        for order in sorted(folder.glob("*.md")):
+            relative = f"work-orders/{order.name}"
+            if relative not in orders_csv:
+                failures.append(f"{relative} does not belong to any module in modules.csv")
 
-    ids = list(por_id)
+    ids = list(by_id)
     for i, a in enumerate(ids):
         for b in ids[i + 1:]:
-            for ra in por_id[a]["rutas"].split(";"):
-                for rb in por_id[b]["rutas"].split(";"):
-                    if se_solapan(ra.strip(), rb.strip()):
-                        fallos.append(f"rutas solapadas: {a} ({ra}) y {b} ({rb})")
+            for pa in by_id[a]["paths"].split(";"):
+                for pb in by_id[b]["paths"].split(";"):
+                    if overlap(pa.strip(), pb.strip()):
+                        failures.append(f"overlapping paths: {a} ({pa}) and {b} ({pb})")
 
-    for mid, fila in por_id.items():
-        for dep in filter(None, fila["depende_de"].split(";")):
-            if dep not in por_id:
-                fallos.append(f"{mid} depende de {dep}, que no existe")
+    for mid, row in by_id.items():
+        for dep in filter(None, row["depends_on"].split(";")):
+            if dep not in by_id:
+                failures.append(f"{mid} depends on {dep}, which does not exist")
                 continue
-            propia = (int(fila["fase"]), int(fila["ola"]))
-            ajena = (int(por_id[dep]["fase"]), int(por_id[dep]["ola"]))
-            if not ajena < propia:
-                fallos.append(
-                    f"{mid} (fase {propia[0]}, ola {propia[1]}) depende de {dep} "
-                    f"(fase {ajena[0]}, ola {ajena[1]}), que no se construye antes"
+            own = (int(row["phase"]), int(row["wave"]))
+            other = (int(by_id[dep]["phase"]), int(by_id[dep]["wave"]))
+            if not other < own:
+                failures.append(
+                    f"{mid} (phase {own[0]}, wave {own[1]}) depends on {dep} "
+                    f"(phase {other[0]}, wave {other[1]}), which is not built earlier"
                 )
 
-    plan = DOCS / "PLAN_ORQUESTACION.md"
+    plan = DOCS / "ORCHESTRATION_PLAN.md"
     if plan.is_file():
-        en_plan = set(re.findall(r"^\| (M\d\d) \|", plan.read_text(encoding="utf-8"), flags=re.M))
-        for falta in sorted(set(por_id) - en_plan):
-            fallos.append(f"{falta} está en modulos.csv pero no en la tabla de PLAN_ORQUESTACION.md")
-        for falta in sorted(en_plan - set(por_id)):
-            fallos.append(f"{falta} está en PLAN_ORQUESTACION.md pero no en modulos.csv")
+        in_plan = set(re.findall(r"^\| (M\d\d) \|", plan.read_text(encoding="utf-8"), flags=re.M))
+        for missing in sorted(set(by_id) - in_plan):
+            failures.append(f"{missing} is in modules.csv but not in the ORCHESTRATION_PLAN.md table")
+        for missing in sorted(in_plan - set(by_id)):
+            failures.append(f"{missing} is in ORCHESTRATION_PLAN.md but not in modules.csv")
     else:
-        fallos.append("falta docs/PLAN_ORQUESTACION.md")
-    return fallos, len(por_id)
+        failures.append("missing docs/ORCHESTRATION_PLAN.md")
+    return failures, len(by_id)
 
 
-def comprobar_enlaces():
-    fallos = []
-    archivos = sorted(DOCS.rglob("*.md")) + sorted(RAIZ.glob("*.md"))
-    for md in archivos:
-        texto = md.read_text(encoding="utf-8")
-        for destino in re.findall(r"\]\(([^)#\s]+)(?:#[^)]*)?\)", texto):
-            if re.match(r"[a-z]+:", destino):  # http:, https:, mailto:
+def check_links():
+    failures = []
+    files = sorted(DOCS.rglob("*.md")) + sorted(ROOT.glob("*.md"))
+    for md in files:
+        text = md.read_text(encoding="utf-8")
+        for target in re.findall(r"\]\(([^)#\s]+)(?:#[^)]*)?\)", text):
+            if re.match(r"[a-z]+:", target):  # http:, https:, mailto:
                 continue
-            if not (md.parent / destino).exists():
-                fallos.append(f"{md.relative_to(RAIZ)}: enlace roto a {destino}")
-    return fallos
+            if not (md.parent / target).exists():
+                failures.append(f"{md.relative_to(ROOT)}: broken link to {target}")
+    return failures
 
 
 def main():
-    fallos = []
-    for par in PARES:
-        fallos += comprobar_matriz(*par)
-    resultado = comprobar_modulos()
-    if isinstance(resultado, tuple):
-        fallos_modulos, cuantos = resultado
-    else:
-        fallos_modulos, cuantos = resultado, 0
-    fallos += fallos_modulos
-    fallos += comprobar_enlaces()
-    if fallos:
-        print("FALLA")
-        for f in fallos:
+    failures = []
+    for pair in PAIRS:
+        failures += check_matrix(*pair)
+    module_failures, count = check_modules()
+    failures += module_failures
+    failures += check_links()
+    if failures:
+        print("FAIL")
+        for f in failures:
             print("  -", f)
         return 1
     print(
-        f"OK: {len(PARES)} matrices consistentes; {cuantos} módulos con orden, "
-        "rutas sin solapes y dependencias en orden; enlaces relativos resueltos."
+        f"OK: {len(PAIRS)} consistent matrices; {count} modules with work orders, "
+        "non-overlapping paths and ordered dependencies; relative links resolved."
     )
     return 0
 

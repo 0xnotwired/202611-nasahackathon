@@ -1,152 +1,153 @@
-# Órbita — Tu salud, a bordo
+# Órbita — Your health, on board
 
-[Propuesta final](docs/PROPUESTA_FINAL.md) · [Plan de construcción](docs/PLAN_ORQUESTACION.md) · [Diseño técnico](docs/TECNICO.md) · [Base académica](docs/BASE_ACADEMICA.md) · [Demo](demo/orbita.html) · [Visión del producto final](demo/vision-producto-final.html)
+[Final proposal](docs/FINAL_PROPOSAL.md) · [Build plan](docs/ORCHESTRATION_PLAN.md) · [Technical design](docs/TECHNICAL.md) · [Academic base](docs/ACADEMIC_BASE.md) · [Demo](demo/orbita.html) · [Final product vision](demo/final-product-vision.html)
 
-Durante una misión espacial, el astronauta necesita comprender cómo está, qué cambió y qué acciones de cuidado puede realizar con los recursos disponibles.
+During a space mission, an astronaut needs to understand how they are doing, what has changed and which care actions they can take with the resources at hand.
 
-**Órbita es una propuesta de aplicación personal de salud para astronautas que integra su cuerpo, su adaptación física y el ambiente de la misión para ayudarlos a realizar y dar seguimiento a las acciones de cuidado.**
+**Órbita is a proposed personal health application for astronauts that brings together their body, their physical adaptation and the mission environment to help them carry out and follow up on care actions.**
 
-> Órbita acompaña al astronauta desde lo que siente hasta lo que puede hacer: integra salud, adaptación física y hábitat con procedimientos guiados y seguimiento personal durante la misión.
+> Órbita goes with the astronaut from what they feel to what they can do: it combines health, physical adaptation and habitat with guided procedures and personal follow-up during the mission.
 
-Propuesta para el desafío [Create Health Monitoring Software for Astronauts on Space Missions — NASA Space Apps 2026](https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/).
+Proposal for the challenge [Create Health Monitoring Software for Astronauts on Space Missions — NASA Space Apps 2026](https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/).
 
-## La experiencia del astronauta
+## The astronaut's experience
 
-Al abrir la aplicación, **Mi día** reuniría la información disponible, los cambios observados y las próximas tareas. Desde ahí, el astronauta podría consultar su cuerpo, revisar su evolución, seguir su rutina o iniciar **Me siento distinto**.
+When the app opens, **My day** would gather the available information, the changes observed and the upcoming tasks. From there, the astronaut could check their body, review their progress, follow their routine or start **I feel different**.
 
-| Parte | Qué puede hacer el astronauta |
+| Part | What the astronaut can do |
 |---|---|
-| **Mi salud** | Registrar síntomas, signos vitales y descanso; explorar su cuerpo y entender las mediciones. |
-| **Adaptación** | Revisar fuerza, resistencia, capacidad aeróbica e historial óseo, junto con ejercicio y alimentación registrados. |
-| **Hábitat** | Consultar condiciones ambientales del lugar y periodo: temperatura, humedad, CO₂ o radiación, según los datos disponibles. |
-| **Mi plan** | Seguir mediciones, pruebas, ejercicio, nutrición y otras acciones indicadas; registrar cumplimiento y dificultades. |
-| **A bordo** | Ejecutar procedimientos guiados con propósito, equipo necesario, instrucciones y siguiente paso fundamentado. |
-| **Mi evolución** | Ver cómo se relacionan en el tiempo las observaciones, las mediciones y las acciones realizadas. |
+| **My health** | Record symptoms, vital signs and rest; explore their body and understand the measurements. |
+| **Adaptation** | Review strength, endurance, aerobic capacity and bone history, alongside recorded exercise and nutrition. |
+| **Habitat** | Check environmental conditions for the place and period: temperature, humidity, CO₂ or radiation, depending on available data. |
+| **My plan** | Follow assigned measurements, tests, exercise, nutrition and other actions; record completion and difficulties. |
+| **On board** | Run guided procedures with their purpose, required equipment, instructions and a grounded next step. |
+| **My progress** | See how observations, measurements and actions taken relate to each other over time. |
 
-Estas partes comparten historial, contexto y seguimiento. Salud, adaptación y hábitat pertenecen al alcance central del producto.
+These parts share history, context and follow-up. Health, adaptation and habitat belong to the product's core scope.
 
-### El papel del copiloto
+### The copilot's role
 
-El copiloto es la ayuda contextual que conecta el recorrido. Usa la información disponible y los procedimientos aplicables para explicar qué revisar, qué falta conocer y qué tarea puede realizarse con el equipo de esa misión. La interfaz conversacional y la IA generativa son opciones por definir; el concepto no depende de ellas.
+The copilot is the contextual help that connects the journey. It uses the available information and applicable procedures to explain what to check, what is still unknown and which task can be done with that mission's equipment. A conversational interface and generative AI are options still to be decided; the concept does not depend on them.
 
-El copiloto organizaría cada episodio con seis preguntas: **qué registraste, qué sabemos, qué falta, qué podés hacer, qué ocurrió y qué sigue pendiente**. La preparación, las dificultades y las interrupciones forman parte del registro, además del valor medido.
+The copilot would organize each episode around six questions: **what you recorded, what we know, what is missing, what you can do, what happened and what is still pending**. Preparation, difficulties and interruptions are part of the record, not just the measured value.
 
-### Un recorrido concreto
+### A concrete walkthrough
 
-En un escenario de demostración con datos ficticios:
+In a demo scenario with fictional data:
 
-1. El astronauta registra que siente más cansancio.
-2. Órbita permite revisar descanso, mediciones recientes, pruebas físicas, actividad y ambiente correspondiente, cuando existe información compatible.
-3. El copiloto ayuda a completar el contexto y abre el procedimiento pertinente.
-4. El astronauta realiza la tarea y registra el resultado.
-5. El episodio queda disponible para seguimiento o consulta médica.
+1. The astronaut records that they feel more tired.
+2. Órbita lets them review rest, recent measurements, physical tests, activity and the matching environment, when compatible information exists.
+3. The copilot helps complete the context and opens the relevant procedure.
+4. The astronaut performs the task and records the result.
+5. The episode stays available for follow-up or medical consultation.
 
-**Observar → comprender → realizar una acción → registrar el resultado → continuar el cuidado.**
+**Observe → understand → take an action → record the result → continue care.**
 
-Una coincidencia temporal entre ambiente y síntomas se presenta como contexto; no demuestra su causa.
+A temporal coincidence between environment and symptoms is presented as context; it does not prove their cause.
 
-## Qué buscamos diferenciar
+## What we aim to set apart
 
-La propuesta se concentra en completar acciones de cuidado y conservar su resultado. Los gráficos y el mapa permiten explorar información dentro de ese recorrido.
+The proposal focuses on completing care actions and keeping their result. Charts and the body map let the astronaut explore information within that journey.
 
-Los procedimientos considerarían los recursos disponibles. Si una prueba requiere un equipo ausente, la aplicación explicaría esa limitación y presentaría la alternativa documentada o la necesidad de apoyo. Cada examen conservaría su método y frecuencia: el historial de una DXA no implica que pueda realizarse a bordo.
+Procedures would take available resources into account. If a test requires missing equipment, the app would explain that limitation and present the documented alternative or the need for support. Each exam would keep its method and frequency: a DXA history does not mean a DXA can be done on board.
 
-Cada orientación debe conservar su fuente, versión y condiciones de aplicación. Las reglas clínicas concretas y los procedimientos de atención requieren selección y revisión; no se deducen automáticamente de los datasets.
+Every piece of guidance must keep its source, version and conditions of use. Specific clinical rules and care procedures require selection and review; they are not automatically derived from the datasets.
 
-La demostración integrada propuesta mostraría un mismo episodio con dos configuraciones de misión: con el equipo necesario y sin él. El comportamiento debe cambiar de forma visible y conservar el seguimiento. Es una función pendiente; su utilidad se evaluaría frente a métricas e instrucciones estáticas. NASA ya investiga guías autónomas como AMOS: no afirmamos una primicia mundial.
+The proposed integrated demo would show the same episode under two mission configurations: with and without the required equipment. Behavior must change visibly while keeping the follow-up. This feature is pending; its usefulness would be evaluated against metrics and static instructions. NASA already researches autonomous guides such as AMOS: we do not claim a world first.
 
-## Probar la maqueta actual
+## Try the current mockup
 
-1. Descargá [demo/orbita.html](demo/orbita.html) mediante **Download raw file** en GitHub.
-2. Abrí el archivo en un navegador actual.
-3. Explorá el cuerpo y los gráficos, seleccioná **Me siento distinto** y completá el chequeo con datos ficticios.
-4. Consultá **Mi evolución** y prepará un resumen TXT.
+1. Download [demo/orbita.html](demo/orbita.html) with **Download raw file** on GitHub.
+2. Open the file in a current browser.
+3. Explore the body and the charts, select **I feel different** and complete the check-in with fictional data.
+4. Open **My progress** and prepare a TXT summary.
 
-[demo/vision-producto-final.html](demo/vision-producto-final.html) muestra cómo se vería Órbita con los 24 módulos del plan construidos, incluido el seguimiento de capacidad aeróbica propuesto por Iván. Es una visualización para el equipo, con datos sintéticos de cuatro tripulantes ficticios: no es código de producto ni reemplaza a los módulos de `app/`.
+[demo/final-product-vision.html](demo/final-product-vision.html) shows how Órbita would look with the plan's 25 modules built, including the aerobic capacity tracking proposed by Iván. It is a visualization for the team, with synthetic data for four fictional crew members: it is not product code and does not replace the modules in `app/`.
 
-No requiere instalación, servidor ni cuenta. La interfaz es autocontenida y el recorrido funciona sin internet; los enlaces externos a NASA requieren conexión. El guardado y la recuperación dependen del almacenamiento permitido por el navegador. Compartir el HTML no comparte los registros de otro navegador.
+No installation, server or account is needed. The interface is self-contained and the walkthrough works offline; external links to NASA require a connection. Saving and restoring depend on the storage the browser allows. Sharing the HTML does not share the records stored in another browser.
 
-[Instrucciones y alcance de las verificaciones](docs/LEEME_DEMO.md).
+[Instructions and scope of the checks](docs/DEMO_README.md).
 
-### Estado real del proyecto
+### Actual project status
 
-| Disponible | Pendiente de implementación |
+| Available | Pending implementation |
 |---|---|
-| Maqueta HTML con datos sintéticos, cuerpo interactivo y gráficos. | Integración de salud, adaptación física, hábitat y plan compartido. |
-| Chequeo guiado, guardado local de demostración y resumen TXT. | Procedimientos adaptados a recursos de misión y seguimiento integrado de resultados. |
-| Definición del producto, roadmap y revisión académica dirigida. | Conectores de sensores, sincronización y arquitectura definitiva de persistencia. |
-| Plan de construcción en 25 módulos, con contratos y órdenes de trabajo. | Todo el código del producto: la carpeta `app/` todavía no existe. |
+| HTML mockup with synthetic data, interactive body and charts. | Integration of health, physical adaptation, habitat and a shared plan. |
+| Guided check-in, local demo storage and TXT summary. | Procedures adapted to mission resources and integrated follow-up of results. |
+| Product definition, roadmap and targeted academic review. | Sensor connectors, sync and a final persistence architecture. |
+| Build plan in 25 modules, with contracts and work orders. | All product code: the `app/` folder does not exist yet. |
 
-La maqueta muestra principalmente el chequeo inicial. No tiene integración de sensores, datos NASA cargados, comunicación médica, modelo de IA ni protocolos clínicos validados. Usar únicamente información ficticia en la demo. La selección de fuentes NASA no implica certificación o aprobación de la herramienta.
+The mockup mainly shows the initial check-in. It has no sensor integration, loaded NASA data, medical communication, AI model or validated clinical protocols. Use only fictional information in the demo. Choosing NASA sources does not imply certification or endorsement of the tool.
 
-## Funcionamiento sin conexión y escalabilidad
+## Offline operation and scalability
 
-La recomendación arquitectónica es **operación local con sincronización cuando haya conectividad**: consultar historial y procedimientos, registrar mediciones y continuar tareas localmente; compartir registros y recibir actualizaciones cuando sea posible. La sincronización, los respaldos y la resolución de conflictos están pendientes de diseño e implementación.
+The architectural recommendation is **local operation with sync when connectivity is available**: browse history and procedures, record measurements and continue tasks locally; share records and receive updates when possible. For the hackathon, the trip to the ground team is a **simulated sync** (decision D9): a send queue, a simulated link and a ground panel inside the same app, labeled as such on screen. A real server, backups and conflict resolution are a later level.
 
-Para crecer, proponemos un núcleo propio al que se puedan agregar:
+To grow, we propose our own core to which the following can be added:
 
-- **Sensores y fuentes**, mediante conectores con procedencia, unidades y métodos explícitos.
-- **Procedimientos**, con requisitos de equipo, pasos, fuentes y versiones.
-- **Configuraciones de misión**, según entorno, recursos y comunicación disponibles.
-- **Tripulantes**, manteniendo separados sus registros y permisos.
+- **Sensors and sources**, through connectors with explicit provenance, units and methods.
+- **Procedures**, with equipment requirements, steps, sources and versions.
+- **Mission configurations**, according to environment, resources and available communication.
+- **Crew members**, keeping their records and permissions separate.
 
-Esta es una dirección de diseño; todavía no existen pruebas de carga, capacidad concurrente ni escalabilidad demostrada. Ver [diseño técnico](docs/TECNICO.md).
+This is a design direction; there are no load tests, concurrency figures or demonstrated scalability yet. See the [technical design](docs/TECHNICAL.md).
 
-## Fundamento científico y datos NASA
+## Scientific basis and NASA data
 
-La [base académica](docs/BASE_ACADEMICA.md) reúne una revisión dirigida de libros, estándares, el Human Integration Design Handbook y ocho informes HRP. Distingue evidencia científica, requisitos normativos e inferencias de diseño. No es una revisión sistemática ni una validación clínica del software.
+The [academic base](docs/ACADEMIC_BASE.md) gathers a targeted review of books, standards, the Human Integration Design Handbook and eight HRP reports. It distinguishes scientific evidence, normative requirements and design inferences. It is neither a systematic review nor a clinical validation of the software.
 
-La [investigación ampliada](docs/INVESTIGACION_APLICADA.md) añade lectura dirigida de seis textos completos y una [matriz de hallazgos y propuestas](docs/MATRIZ_INVESTIGACION_APLICADA.csv):
+The [extended research](docs/APPLIED_RESEARCH.md) adds a targeted reading of six full texts and a [matrix of findings and proposals](docs/APPLIED_RESEARCH_MATRIX.csv):
 
-- **AMOS:** preparación, configuración y dificultades durante procedimientos.
-- **Sprint y estudio multisistema:** separar ejercicio realizado de respuesta física individual.
-- **Seguimiento óseo:** conservar método, región y antigüedad del examen.
-- **Sueño:** distinguir descanso, autoinforme y estimaciones instrumentales.
-- **CO₂:** mostrar contexto ambiental sin atribuir causalidad automáticamente.
+- **AMOS:** preparation, configuration and difficulties during procedures.
+- **Sprint and multisystem study:** separate exercise performed from individual physical response.
+- **Bone follow-up:** keep the exam's method, region and age.
+- **Sleep:** distinguish rest, self-report and instrument estimates.
+- **CO₂:** show environmental context without automatically attributing causation.
 
-Las fuentes fundamentan decisiones de diseño; no validan Órbita. Los procedimientos concretos y los criterios de atención médica siguen pendientes de selección y revisión. La guía oficial de evaluación que pudo consultarse corresponde a 2025; su correspondencia con 2026 permanece por verificar.
+Sources ground design decisions; they do not validate Órbita. Specific procedures and medical care criteria are still pending selection and review. The official evaluation guide we could consult is from 2025; whether it matches 2026 remains to be verified.
 
-| Fuente candidata | Uso pertinente |
+| Candidate source | Relevant use |
 |---|---|
-| **CRF Daily Vitals** | Explorar signos vitales y masa/peso registrados en un análogo terrestre de reposo en cama. |
-| **MR079G / MR080G / MR035G** | Investigar fuerza, capacidad aeróbica e historial de densitometría, respectivamente. |
-| **MSD007 / DTO 684** | Explorar casos históricos de ambiente de Mir y radiación en Shuttle. |
+| **CRF Daily Vitals** | Explore vital signs and mass/weight recorded in a bed-rest ground analog. |
+| **MR079G / MR080G / MR035G** | Investigate strength, aerobic capacity and densitometry history, respectively. |
+| **MSD007 / DTO 684** | Explore historical cases of Mir environment and Shuttle radiation. |
+| **OSDR Environmental Data App** | Real ISS cabin temperature, humidity and CO₂ for Habitat (terms of use to be verified). |
 
-Los estudios, participantes, misiones, métodos y frecuencias se conservan por separado salvo correspondencia verificada. No se comprobó una serie real emparejada que integre todas estas variables para un mismo astronauta. Un escenario sintético identificado permite demostrar el recorrido integrado sin fabricar esa correspondencia.
+Studies, participants, missions, methods and frequencies are kept separate unless a match is verified. No real paired series integrating all these variables for a single astronaut was found. An identified synthetic scenario allows the integrated journey to be demonstrated without fabricating that match.
 
-[Revisión de datasets](docs/DATASETS.md) · [Matriz de evidencia](docs/MATRIZ_EVIDENCIA.csv) · [Referencias BibTeX](docs/REFERENCIAS.bib)
+[Dataset review](docs/DATASETS.md) · [Evidence matrix](docs/EVIDENCE_MATRIX.csv) · [BibTeX references](docs/REFERENCES.bib)
 
-## Cómo se construye
+## How it is built
 
-El producto todavía no está construido. Lo que existe es el plan para construirlo con varios agentes de IA en paralelo, bajo revisión de personas.
+The product is not built yet. What exists is the plan to build it with several AI agents in parallel, under human review.
 
-- **25 módulos en 7 fases.** Cada fase entrega algo que el astronauta puede usar: guardar registros sin perder su origen, ver su situación, completar un procedimiento, cerrar un episodio.
-- **Un módulo, un agente, una carpeta.** Los módulos se comunican por [contratos](docs/CONTRATOS.md) fijados de antemano, y cada agente recibe una [orden de trabajo](docs/ordenes/) con sus criterios de aceptación.
-- **Quien construye no se aprueba a sí mismo.** Otro agente revisa ejecutando, y una persona aprueba cada fase.
-- **Sin MVP.** Si el tiempo no alcanza, se entrega la última fase completa y se dice cuál es.
+- **25 modules in 7 phases.** Each phase delivers something the astronaut can use: save records without losing their origin, see their situation, complete a procedure, close an episode.
+- **One module, one agent, one folder.** Modules communicate through [contracts](docs/CONTRACTS.md) fixed in advance, and each agent receives a [work order](docs/work-orders/) with its acceptance criteria.
+- **Whoever builds does not approve their own work.** Another agent reviews by running it, and a person approves each phase.
+- **No MVP.** If time runs short, the last complete phase is delivered and named as such.
 
-El detalle está en el [plan de orquestación](docs/PLAN_ORQUESTACION.md) y el estado de cada módulo en [docs/modulos.csv](docs/modulos.csv). El stack propuesto (HTML, CSS y JavaScript sin dependencias) espera confirmación del equipo.
+The details are in the [orchestration plan](docs/ORCHESTRATION_PLAN.md) and each module's status in [docs/modules.csv](docs/modules.csv). The proposed stack (HTML, CSS and JavaScript with no dependencies) awaits the team's confirmation.
 
-## Implementación propia
+## Own implementation
 
-**Toda funcionalidad del producto debe ser escrita por el equipo. Los repositorios externos se consultan únicamente como inspiración, comparación e investigación.**
+**All product functionality must be written by the team. External repositories are consulted only for inspiration, comparison and research.**
 
-Por instrucción del usuario conforme al reglamento informado, no copiar, adaptar, portar ni incorporar código de esos repositorios, incluidos paquetes utilizados para implementar funcionalidades de Órbita. Las recomendaciones anteriores de integración quedan reemplazadas por esta regla, aunque las licencias permitan reutilización. Tampoco usar IA para reproducir o transformar ese código.
+By the user's instruction, in line with the reported rules, do not copy, adapt, port or incorporate code from those repositories, including packages used to implement Órbita features. Earlier integration recommendations are superseded by this rule, even if licenses allow reuse. Do not use AI to reproduce or transform that code either.
 
-Las reglas de trabajo y procedencia están en [AGENTS.md](AGENTS.md). El uso de IA debe registrarse según las reglas aplicables del evento. La licencia del código propio sigue pendiente de decisión del equipo.
+Working and provenance rules are in [AGENTS.md](AGENTS.md). AI use must be recorded according to the event's applicable rules. The license for our own code is still pending a team decision.
 
-## Documentación y próximos resultados
+## Documentation and next results
 
-- [Propuesta final, demostración y criterios de aceptación](docs/PROPUESTA_FINAL.md).
-- [Qué mejorar de la propuesta original](docs/MEJORAS_PROPUESTA.md) y [tercera ampliación académica, serie B](docs/INVESTIGACION_AMPLIADA_B.md) con su [matriz](docs/MATRIZ_INVESTIGACION_B.csv).
-- [Plan de orquestación](docs/PLAN_ORQUESTACION.md), [contratos entre módulos](docs/CONTRATOS.md), [órdenes de trabajo](docs/ordenes/) y [tablero de módulos](docs/modulos.csv).
-- [Niveles y criterios de cada nivel](docs/ROADMAP_AGENTES.md) y [guía de sesión para agentes](CLAUDE.md).
-- [Producto y decisiones de alcance](docs/PRODUCTO.md).
-- [Objetivos del desafío y criterios del proyecto](docs/REQUIREMENTS.md).
-- [Roadmap y criterios de cierre](docs/ROADMAP.md).
-- [Fuentes gratuitas y referencias conceptuales](docs/RESOURCES.md).
-- [Arquitectura propuesta e investigación de repositorios](docs/TECNICO.md).
+- [Final proposal, demo and acceptance criteria](docs/FINAL_PROPOSAL.md).
+- [What to improve from the original proposal](docs/PROPOSAL_IMPROVEMENTS.md) and [third academic extension, series B](docs/EXTENDED_RESEARCH_B.md) with its [matrix](docs/RESEARCH_MATRIX_B.csv).
+- [Orchestration plan](docs/ORCHESTRATION_PLAN.md), [contracts between modules](docs/CONTRACTS.md), [work orders](docs/work-orders/) and [module board](docs/modules.csv).
+- [Levels and criteria for each level](docs/AGENT_ROADMAP.md) and [session guide for agents](CLAUDE.md).
+- [Product and scope decisions](docs/PRODUCT.md).
+- [Challenge goals and project criteria](docs/REQUIREMENTS.md).
+- [Roadmap and closing criteria](docs/ROADMAP.md).
+- [Free sources and conceptual references](docs/RESOURCES.md).
+- [Proposed architecture and repository research](docs/TECHNICAL.md).
 
-Los siguientes resultados son comprender la situación integrada de misión, completar tareas del plan y revisar cambios con procedimientos aplicables y seguimiento. Su verificación debe cubrir datos ausentes, procedencia, consistencia entre vistas, recuperación de tareas, accesibilidad y comprensión del siguiente paso.
+The next results are understanding the integrated mission situation, completing plan tasks and reviewing changes with applicable procedures and follow-up. Their verification must cover missing data, provenance, consistency across views, task recovery, accessibility and understanding of the next step.
 
-El repositorio contiene documentación, un plan de construcción y una maqueta. El stack está propuesto y sin confirmar. El único comando disponible es `python3 scripts/check_docs.py`, que comprueba la consistencia de la documentación y del tablero de módulos; no hay build, pruebas de producto, pruebas clínicas ni despliegue. Para colaborar, seguir [AGENTS.md](AGENTS.md) y proponer cambios mediante ramas y pull requests.
+The repository contains documentation, a build plan and a mockup. The stack is proposed and not confirmed. The only available command is `python3 scripts/check_docs.py`, which checks the consistency of the documentation and the module board; there is no build, product test, clinical test or deployment. To contribute, follow [AGENTS.md](AGENTS.md) and propose changes through branches and pull requests. The integration branch is `english`.
