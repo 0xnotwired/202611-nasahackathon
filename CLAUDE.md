@@ -66,7 +66,7 @@ Nothing of the product exists. The plan, contracts 0.4, 25 work orders with thei
    - the organizers' answer on "already-made projects", dependencies and attribution-only datasets;
    - the demo procedure and its clinical source (F3 content), and [V1 4030] in NASA-STD-3001 (radiation limit in M10).
 
-What an agent must not do while these are open: invent the BUT CGM columns or unit, write NLSP authors or years, add a dependency, copy items from a published questionnaire, put a threshold in a function, or download original NASA or PhysioNet files into the repository.
+What an agent must not do while these are open: invent the BUT CGM columns or unit, write NLSP authors or years, add a library without the user's approval, copy items from a published questionnaire, put a threshold in a function, or download original NASA or PhysioNet files into the repository.
 
 ## The central rule
 

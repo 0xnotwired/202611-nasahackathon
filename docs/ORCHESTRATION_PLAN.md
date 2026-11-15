@@ -20,7 +20,7 @@ There is no MVP. If time runs out, the highest level that passed its gate is del
 | # | Decision | Proposal | If rejected |
 |---|---|---|---|
 | D1 | Language | HTML, CSS and untranspiled JavaScript, ES modules | All work orders change |
-| D2 | Product dependencies | None by default. The user decided on 15/11/2026: no already-made projects from others, except necessary dependencies and libraries (npm). The event rules allow open-source, cited dependencies | Only the user can approve one, by name; not negotiable by an agent. Conditions in AGENTS.md |
+| D2 | Libraries and projects | Libraries (npm) are allowed; other people's projects are not, in any form. None is needed until the first chart. The event rules allow open-source, cited dependencies | An agent proposes a library; only the user approves it, by name. Conditions in AGENTS.md |
 | D3 | Persistence | IndexedDB behind our own interface, with an in-memory store declared as fallback | M04 changes |
 | D4 | Tests | `node --test` on domain code; the interface is checked with a manual browser script | The criteria of every work order change |
 | D5 | Structure | New `app/`; `demo/orbita.html` is not touched | — |

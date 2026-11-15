@@ -21,7 +21,7 @@ Each decision is a bet about the future. This table says what it rests on and wh
 | # | Decision | Rests on | Evidence today | Reopen if |
 |---|---|---|---|---|
 | D1 | Untranspiled ES modules | The same file runs in Node and in the browser | BROWSER and RUN: [E00-P2](experiments/E00-foundation-probes.md), Chrome 153 and Node 22 | A browser the team presents on fails to load them |
-| D2 | No product dependencies | Everything needed is in the platform | The event rules allow open-source, cited dependencies (see AGENTS.md); the user decided on 15/11/2026 that no already-made project is used, except necessary dependencies and libraries (npm); the default stays none | The user approves a named dependency as necessary; it then needs an OSI license read in its repository, a pinned version, a citation and an experiment |
+| D2 | Libraries allowed, other people's projects not | M00 to M05 need nothing beyond the platform | The event rules allow open-source, cited dependencies (see AGENTS.md); the user decided on 15/11/2026 that no already-made project is used, but libraries installed with npm are fine | The user approves a named library; it then needs an OSI license read in its repository, a pinned version and a row in the resources list, plus an experiment if it draws data states |
 | D3 | IndexedDB behind our own interface | It persists across a browser restart | BROWSER: E00-P4 and E00-P5, Chrome 153 only | It fails in a presentation browser or in the packaged file |
 | D4 | `node --test` for the domain | It runs with nothing installed | RUN: E00-P1, with its negative control | A domain rule cannot be tested without a DOM |
 | D5 | New `app/`; the mockup is not touched | The mockup stays as a reference | Not an empirical claim | — |
