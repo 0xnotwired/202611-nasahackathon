@@ -1,6 +1,6 @@
 # Work order M06 — Readings
 
-Phase F2 · wave 1 · level 1 · contracts version 0.3
+Phase F2 · wave 1 · level 1 · contracts version 0.4
 
 **Goal.** Answer the queries every view uses, so that the same data means the same thing in all of them.
 
@@ -23,6 +23,7 @@ Phase F2 · wave 1 · level 1 · contracts version 0.3
 - [ ] `environment` from another place is not returned as the subject's exposure.
 - [ ] `cumulative` returns `total: null` with no data, and counts the gaps when there are some.
 - [ ] There is no threshold constant anywhere in the module.
+- [ ] `attention` returns `no_criterion` for a variable without a criterion and `not_assessed` for `not_recorded`, missing value or different unit; never `within` without a criterion.
 - [ ] Every test was seen failing against broken code before passing, and the report says how.
 - [ ] `git diff --stat` against the integration branch shows only owned paths.
 
@@ -38,6 +39,8 @@ Copy these predictions into `docs/experiments/M06.md` **before** writing the imp
 | M06-P4 | `cumulative` over values 2 and 3 plus one `not_recorded` day; then over no data | `{ total: 5, n: 2, gaps: 1 }`; then `total` is `null` | Return 0 when there is no data (R2) |
 | M06-P5 | `environment({ place: "A", interval })` with a record from place B inside the interval | Only the ids from place A; `coverage` names the sensors | Drop the place filter |
 | M06-P6 | `series` for subject A with records of subject B in the store | No id of B in `points` or in any group | Drop the subject filter (R9) |
+| M06-P7 | `attention` for a pulse record with no criterion in the config; for a `not_recorded` record with a criterion; for a record in mmol/L against a criterion in mg/dL; for a value above `high` | `no_criterion`; `not_assessed`; `not_assessed` naming the unit; `outside` | Return `within` when there is no criterion |
+| M06-P8 | `attention` for a value exactly between `low` and `high` of a demo criterion | `within`, and the result carries the criterion with `review_status: "demo"` | Drop the criterion from the result |
 
 ## Out of scope
 

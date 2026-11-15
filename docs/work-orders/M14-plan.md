@@ -1,6 +1,6 @@
 # Work order M14 — Plan
 
-Phase F3 · wave 1 · level 2 · contracts version 0.3
+Phase F3 · wave 1 · level 2 · contracts version 0.4
 
 **Goal.** Keep track of assigned tasks and separate what was assigned, what was done and what was observed afterwards.
 
@@ -21,6 +21,7 @@ Phase F3 · wave 1 · level 2 · contracts version 0.3
 - [ ] `not_done` accepts a structured note with the reason.
 - [ ] Each task keeps who assigned it.
 - [ ] A periodic exam is not scheduled daily.
+- [ ] `progress` counts done, not done and pending separately; no streaks, points or rewards, and nothing depends on a result.
 - [ ] Every test was seen failing against broken code before passing, and the report says how.
 - [ ] `git diff --stat` against the integration branch shows only owned paths.
 
@@ -34,6 +35,8 @@ Copy these predictions into `docs/experiments/M14.md` **before** writing the imp
 | M14-P2 | `tasksFor` the day after an unmarked task | Its `completion` is `pending` | Turn old tasks into `not_done` |
 | M14-P3 | `mark` as `not_done` with a note | The note is stored and `assigned_by` is unchanged | Drop the note |
 | M14-P4 | `linkResult` on a `pending` task | `result_ids` holds the id and `completion` is still `pending` | Set `done` when a result is linked |
+| M14-P5 | `progress` for a day with 2 done, 1 not done and 1 pending | `{ total: 4, done: 2, not_done: 1, pending: 1 }` | Count pending as done |
+| M14-P6 | `progress` after linking a result to a done task | Same counts as before | Add a bonus when a result is linked |
 
 ## Out of scope
 

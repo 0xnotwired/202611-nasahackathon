@@ -1,6 +1,6 @@
 # Work order M01 — Core
 
-Phase F1 · wave 1 · level 0 · contracts version 0.3
+Phase F1 · wave 1 · level 0 · contracts version 0.4
 
 **Goal.** Define what a valid record is and when two records can be compared.
 
@@ -24,6 +24,7 @@ Phase F1 · wave 1 · level 0 · contracts version 0.3
 - [ ] `areComparable` returns the reason when unit, method, variable or subject differ.
 - [ ] No function converts one state into another.
 - [ ] It passes the `core` contract suite.
+- [ ] `ORIGINS` includes `terrestrial`, and a record with it validates.
 - [ ] Every test was seen failing against broken code before passing, and the report says how.
 - [ ] `git diff --stat` against the integration branch shows only owned paths.
 
@@ -38,6 +39,7 @@ Copy these predictions into `docs/experiments/M01.md` **before** writing the imp
 | M01-P3 | Create a record with id `"007"`; then with id `7` | The first keeps `id === "007"`; the second is rejected | Coerce the id with `String()` or `Number()` |
 | M01-P4 | `areComparable(a, b)` where only `method` differs; then with subject, variable, unit and method equal | `{ comparable: false }` with a reason that names `method`; then `{ comparable: true }` | Leave `method` out of the comparison (R3) |
 | M01-P5 | For every state in `STATES`, `createRecord` with that state; then with the state `"x"` and with no state | The record comes back with the same state, for all three; `"x"` and a missing state are rejected | Default a missing state to `confirmed_none` (R1) |
+| M01-P6 | `validateRecord` with `origin: "terrestrial"`, then with `origin: "ground"` | The first is valid; the second is rejected with `error.field` equal to `origin` | Accept any origin text |
 
 ## Out of scope
 

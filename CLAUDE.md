@@ -115,7 +115,7 @@ On 15/11 a local branch `integracion` appeared, checked out and identical to `cl
 | One alert per episode | IMPROVEMENTS M4 | Not an arbitrary limit; it comes from B13 |
 | Simulated sync | ORCHESTRATION_PLAN D9 | Chosen by the user for time reasons; a real server is a later level, not a hidden one |
 
-There are no clinical thresholds in this repo. If one appears in the code, it is a bug.
+There are no clinical thresholds in this repo's logic. A criterion for attention may exist only as data in `MissionConfig.attention_criteria`, with who defined it, its source and its review status (D11, rule R6); the demo ones say "team demo". A threshold written into a function is a bug.
 
 ## Verified commands
 

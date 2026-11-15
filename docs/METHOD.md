@@ -71,7 +71,7 @@ Any module that touches one of these rules shows, in its record, that this break
 | R8 | Share or enqueue from inside `generate` |
 | R9 | Drop the `subject` filter from a query |
 
-R6 (no clinical thresholds) has no mutation and no automatic mechanism. The reviewer reads the module for numeric comparisons against measured values and reports it at level READ.
+R6 (no clinical thresholds in code) has one partial mechanism since contracts 0.4: M06 tests that `attention` never returns `within` without a criterion in the configuration (mutation: return `within` when there is none). Everything else has no automatic check: the reviewer reads every module for numeric comparisons against measured values that do not come from `attention_criteria`, and reports it at level READ.
 
 ## The reviewer replicates
 

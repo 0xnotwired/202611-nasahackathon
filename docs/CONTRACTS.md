@@ -1,6 +1,6 @@
 # Órbita: contracts between modules
 
-Version 0.3 · November 15, 2026 · **proposal**, pending gate G0. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
+Version 0.4 · November 15, 2026 · **proposal**, pending gate G0. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
 
 Plan and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). Rationale for the rules: [PROPOSAL_IMPROVEMENTS.md](PROPOSAL_IMPROVEMENTS.md) and [AGENTS.md](../AGENTS.md).
 
@@ -25,7 +25,7 @@ Plan and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). Rationale for 
 | R3 | Two records are compared only if subject, variable, unit and method match. Otherwise the reason is returned | M01, M06 |
 | R4 | `origin` travels with the data to the screen and the export | All |
 | R5 | An execution stores the version of the procedure it used | M13 |
-| R6 | No module contains clinical thresholds, scores or diagnoses | Review; there is no automatic mechanism |
+| R6 | No module's code contains clinical thresholds, scores or diagnoses. A criterion for attention exists only as data in `MissionConfig.attention_criteria`, with who defined it, its source and its review status; a variable without one shows "no attention criterion defined for this mission". Nothing computes a mood or depression score | Review; M06 test that a variable with no criterion never returns `within` |
 | R7 | A saved record is never modified or deleted. Correcting means adding a record with `corrects` | M04 |
 | R8 | Nothing leaves the device without an explicit action by the astronaut, and that action is logged | M18, M19, M24 |
 | R9 | One subject's data is never mixed with another's, and NASA data is never assigned to the synthetic subject | M04, M21 |
@@ -46,7 +46,8 @@ Record
   value, unit     required if type is measurement, environment or exam and state is recorded
   method          instrument or "self_report"
   time            ISO 8601; for environment, also interval { from, to }
-  origin          synthetic | ground_analog | flight | cell_culture
+  origin          synthetic | ground_analog | terrestrial | flight | cell_culture
+                  (terrestrial: people on Earth who are not in a spaceflight analog)
   source          id from the sources catalog, or "user_entered"
   mission_phase   text
   subject         text
@@ -59,6 +60,16 @@ MissionConfig
   available_equipment   list of ids from the equipment catalog
   communication         real_time | delayed | no_link
   phases                list of { name, from, to }
+  environment           station | spacecraft | rover | surface_base
+  gravity_note          text, optional; explanation only, changes no calculation
+  attention_criteria    list of AttentionCriterion; may be empty
+
+AttentionCriterion
+  id, variable, unit
+  low?, high?           at least one; compared only when the record's unit equals `unit`
+  defined_by            who set it (e.g. "flight surgeons" or "team demo")
+  source                citation or "team_defined"
+  review_status         demo | reviewed
 
 Procedure
   id, version, title, purpose
@@ -171,7 +182,11 @@ environment(store, { place, interval })
    → { records, coverage: { from, to, sensors } }
 cumulative(store, { subject, variable, from, to })
    → { total | null, unit, n, gaps }       total is null if there is no data at all
+attention(record, config)
+   → { status: "within" | "outside" | "no_criterion" | "not_assessed", criterion?, reason? }
 ```
+
+`attention` only compares against a criterion present in the configuration. `not_recorded`, `confirmed_none`, a missing value or a different unit give `not_assessed` with the reason; no criterion gives `no_criterion`. It never returns `within` without a criterion.
 
 `readings` does not decide what is normal. It returns data and how much supports it.
 
@@ -193,6 +208,7 @@ With missing equipment, `start` returns a `blocked` execution with its `missing`
 
 ```
 tasksFor(store, { subject, day })                              → Result<Task[]>
+progress(store, { subject, day })      → Result<{ total, done, not_done, pending }>
 mark(store, taskId, { completion, execution_id?, note? })      → Result<Task>
 linkResult(store, taskId, recordId)                            → Result<Task>
 ```
@@ -244,7 +260,10 @@ generate(store, episodeId, config, { clock })
 ```
 importCRF(text)                      → Result<{ records, rejected, skipped }>
 importAdaptation(text, { study })    → Result<{ records, rejected, skipped }>
+importGlucose(text, { subject })     → Result<{ records, rejected, skipped }>
 ```
+
+`importGlucose` reads the BUT CGM glucose files: records come out with `origin: "terrestrial"`, variable `glucose`, the file's unit, and `not_recorded` for empty or NaN values.
 
 Imported text is untrusted input: it is validated row by row. Records come out with `origin: "ground_analog"`, the file's `subject` and `Test_Phase` in `mission_phase`. Free-text clinical comments are not imported; `skipped` says how many.
 
@@ -277,6 +296,9 @@ M07 delivers the components every view uses, so the same data looks the same eve
 - `originLabel(origin)`: synthetic, ground analog or flight.
 - `valueWithContext(record)`: value, unit, method, time and age.
 - `accessibleTable`, `lineChart` (our own SVG, with visible gaps and an equivalent table).
+- `dataStateBadge(record, { clock })`: color plus text for the state of the data — current, old, not recorded, confirmed nothing new, not comparable. Color never means "normal".
+- `attentionBadge(result)`: shows the output of `readings.attention` with the criterion's `defined_by`, source and review status; `no_criterion` and `not_assessed` read as such. "demo" reads as such.
+- Change from the personal baseline is shown as text with how many measurements support it, never as a color judgment.
 
 Everything works with the keyboard. No state is conveyed by color alone. Views receive `services` as a parameter and do not import `store`.
 
@@ -291,3 +313,4 @@ Everything works with the keyboard. No state is conveyed by color alone. Views r
 | 0.1 | 2026-11-14 | Initial version | All |
 | 0.2 | 2026-11-15 | `Delivery` shape and `sync` interface (D9, simulated option C) | M24; M19 and M18 only as providers |
 | 0.3 | 2026-11-15 | Translated to English, including identifiers, data fields and folder names; `deliveries` collection added to the store | All |
+| 0.4 | 2026-11-15 | User decisions D10–D14: R6 reworded (criteria only as configuration data); `terrestrial` origin; `environment`, `gravity_note`, `attention_criteria` in `MissionConfig`; `readings.attention`; `plan.progress`; `importGlucose`; `dataStateBadge` and `attentionBadge` | M01, M02, M03, M05, M06, M07, M14, M15, M21 |

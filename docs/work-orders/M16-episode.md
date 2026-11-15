@@ -1,6 +1,6 @@
 # Work order M16 — Episode
 
-Phase F4 · wave 1 · level 3 · contracts version 0.3
+Phase F4 · wave 1 · level 3 · contracts version 0.4
 
 **Goal.** Assemble the care episode with its six parts from what is in the history.
 

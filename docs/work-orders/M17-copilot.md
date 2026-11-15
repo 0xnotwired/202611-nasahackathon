@@ -1,6 +1,6 @@
 # Work order M17 — Copilot
 
-Phase F4 · wave 2 · level 3 · contracts version 0.3
+Phase F4 · wave 2 · level 3 · contracts version 0.4
 
 **Goal.** Turn an episode's situation into a card that shows data before suggestions and admits not knowing.
 

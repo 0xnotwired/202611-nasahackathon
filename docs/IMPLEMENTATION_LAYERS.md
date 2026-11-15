@@ -29,6 +29,11 @@ Each decision is a bet about the future. This table says what it rests on and wh
 | D7 | Per-session unlock, sharing log, **no encryption** | The app promises no confidentiality it lacks | Not an empirical claim; stated on screen | A real server is added, or real personal data is entered |
 | D8 | Records are never edited or deleted | A correction is a new record | To be shown by M04-P1 and M04-P2 | Storage size becomes a problem on the device |
 | D9 | Simulated sync | The `sync` interface can be reimplemented by a real server | To be shown by M24 | The team builds the server: reopens D7 |
+| D10 | Color shows the state of the data, not "normal" | The central rule; the challenge suggests color for status at a glance | User decision, 15/11/2026 | A clinical reviewer joins and defines what a status color may mean |
+| D11 | Attention criteria only as configuration data, set per mission by flight surgeons; demo criteria labeled "team demo, not clinical" | R6 and the challenge's question on when a result warrants attention | User decision, 15/11/2026; contracts 0.4 | A reviewed clinical source is adopted |
+| D12 | Environments (station, spacecraft, rover, surface base) as `MissionConfig` presets, not separate screens | The equipment and communication axes already model them | User decision, 15/11/2026 | A demo needs behavior the two axes cannot express |
+| D13 | Blood sugar from BUT CGM (CC BY 4.0, `terrestrial` origin); mood as a team self-report 1–5, synthetic, no score | Both named by the challenge; no open mood data; published questionnaires are not free to copy | User decision, 15/11/2026; DATASETS.md | An open flight or analog dataset for either appears |
+| D14 | Gamification limited to the day's plan progress ("n of m done"); no streaks, points or rewards for results | Streaks push measuring for its own sake; rewards for results would grade health | User decision, 15/11/2026 | First thing cut if time runs short |
 
 Status on 15/11/2026: D9 was chosen by the user. D1, D2, D3, D4 and D6 match the stack the user listed and asked to continue with on 15/11/2026. D5, D7 and D8 were confirmed by the user on 15/11/2026 by accepting the orchestrator's recommendation with its reasons; gate G0 still needs its experiments and the threat model.
 

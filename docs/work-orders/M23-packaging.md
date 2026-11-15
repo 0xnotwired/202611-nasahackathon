@@ -1,6 +1,6 @@
 # Work order M23 — Packaging
 
-Phase F6 · wave 1 · level - · contracts version 0.3
+Phase F6 · wave 1 · level - · contracts version 0.4
 
 **Goal.** Produce a single HTML file that opens with a double click, like the current mockup.
 

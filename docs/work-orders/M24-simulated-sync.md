@@ -1,6 +1,6 @@
 # Work order M24 — Simulated sync and ground panel
 
-Phase F4 · wave 3 · level 3 · contracts version 0.3
+Phase F4 · wave 3 · level 3 · contracts version 0.4
 
 **Goal.** Show the path from the tablet to the medical team (decision D9, simulated option C): the astronaut chooses what to send, the delivery waits in a queue if there is no link, travels with a simulated delay and reaches a ground panel with its send and receive times.
 

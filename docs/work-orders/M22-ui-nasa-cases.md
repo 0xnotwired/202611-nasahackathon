@@ -1,6 +1,6 @@
 # Work order M22 — NASA cases view
 
-Phase F5 · wave 2 · level 4 · contracts version 0.3
+Phase F5 · wave 2 · level 4 · contracts version 0.4
 
 **Goal.** Explore the real cases in a viewer separate from the fictional scenario.
 

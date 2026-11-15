@@ -118,3 +118,15 @@ Extensible web viewer with DICOMweb support, visualization and annotation of med
 7. Nutritional Biochemistry of Space Flight as a historical complementary reference, and NASA's public reports to research the chosen cases.
 
 This list proposes resources according to the challenge goals; it is not a final selection of the stack or of the product's features.
+
+## Resources listed by the challenge page (pasted by the user, November 15, 2026)
+
+The user pasted the "NASA Data & Resources" and "Space Agency Partner Resources" lists from the challenge page. Each page was fetched on the same day; the fetch tool returns an extraction, not the page, so reading level is S for all of them and no figure below goes into the presentation before the original is opened. The challenge statement itself was not part of the paste.
+
+| Page | What it gave | What it did not give |
+|---|---|---|
+| [Hazards of Human Spaceflight](https://www.nasa.gov/hrp/hazards/) | Five hazards: space radiation, isolation and confinement, distance from Earth, gravity fields, hostile/closed environments, each with a short summary and a link to a detail page | The detail pages |
+| [Risks of Human Spaceflight](https://www.nasa.gov/hrp/risks/) | 17 named risks in three groups (11 physiology, 5 behavioral performance and human factors, 1 radiation) | Detail per risk; the page names none for monitoring |
+| [Ongoing HRP Research in Space](https://www.nasa.gov/hrp/ongoing-hrp-research/) | 21 titles, among them Standard Measures and Artemis II Standard Measures | Dates and descriptions |
+| [Monitoring Radiation for Astronaut Health](https://www.asc-csa.gc.ca/eng/news/articles/2026/2026-02-26-monitoring-radiation-astronaut-health.asp) (CSA) | The Canadian Active Neutron Spectrometer and its predecessors, named | Any dose figure or limit: it does **not** settle the radiation-limit questions ([V1 4030], 600 mSv) |
+| [Why Do We Conduct Science Experiments in Space?](https://www.asc-csa.gc.ca/eng/iss/science/why-do-we-conduct-science-experiments-in-space.asp) (CSA) | A general overview of ISS human research | Monitoring procedures, protocols or data-sharing content |

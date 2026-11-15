@@ -1,6 +1,6 @@
 # Work order M10 — Habitat view
 
-Phase F2 · wave 2 · level 1 · contracts version 0.3
+Phase F2 · wave 2 · level 1 · contracts version 0.4
 
 **Goal.** Show the environmental conditions of the place and period, without turning them into personal exposure.
 

@@ -13,6 +13,16 @@ The copilot integrates recording, guided measurement, follow-up and traceable gu
 
 The user later extended the direction: integrate **personal health, muscle/bone/physical capacity adaptation and habitat** into a single product for the astronaut. Adaptation and environment move into core scope. The copilot must connect those domains with procedures and a care plan, both in the preventive routine and when recording a change. The current mockup and video mainly show the check-in and do not yet represent this full scope. PRODUCT.md, DEC-002, records the update.
 
+## Challenge text received on November 15, 2026
+
+On November 15, 2026 the user pasted the challenge's Background, Objectives and Potential Considerations. It matches the goals and options below. The site still blocks automated reading, so the text is the user's copy, not a fetch. Points it makes explicit that the earlier version did not:
+
+- Example indicators named by the challenge: blood pressure, heart rate, blood sugar, body temperature, daily sleep hours and mood.
+- The five hazards (space radiation, isolation and confinement, distance from Earth, gravity fields, hostile closed environments) and the health problems they can contribute to (immune changes, bone density loss, cardiovascular events, inadequate nutrition, behavioral health conditions).
+- Astronauts must be able to assess themselves during a mission; the tool should not assume they know how.
+
+Gaps found against the plan on 15/11/2026 and closed the same day by user decisions D10–D14 (IMPLEMENTATION_LAYERS.md, contracts 0.4): color shows the state of the data; attention criteria are mission configuration with their source; environments are configuration presets; blood sugar from BUT CGM and mood as a team self-report without a score; gamification limited to the day's plan progress.
+
 ## Core goals of the challenge
 
 - Create a visual tool for astronauts to assess their own health during space missions.

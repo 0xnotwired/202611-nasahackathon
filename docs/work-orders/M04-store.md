@@ -1,6 +1,6 @@
 # Work order M04 — Store
 
-Phase F1 · wave 2 · level 0 · contracts version 0.3
+Phase F1 · wave 2 · level 0 · contracts version 0.4
 
 **Goal.** Be the only door to persistence, with two implementations of the same contract: in memory and IndexedDB.
 

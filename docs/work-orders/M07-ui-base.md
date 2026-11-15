@@ -1,6 +1,6 @@
 # Work order M07 — Base interface
 
-Phase F2 · wave 1 · level 1 · contracts version 0.3
+Phase F2 · wave 1 · level 1 · contracts version 0.4
 
 **Goal.** Build the shell, the navigation and the shared components that make a piece of data look the same in every view.
 
@@ -25,6 +25,8 @@ Phase F2 · wave 1 · level 1 · contracts version 0.3
 - [ ] The chart shows gaps as gaps and offers the same information as a table.
 - [ ] All navigation can be done with the keyboard and focus is visible.
 - [ ] Component models are tested in Node; drawing is checked with the manual script.
+- [ ] `dataStateBadge` distinguishes current, old, not recorded, confirmed nothing new and not comparable by text alone; no badge says "normal".
+- [ ] `attentionBadge` shows `defined_by`, source and review status, and reads `no_criterion` as "no attention criterion defined for this mission".
 - [ ] Every test was seen failing against broken code before passing, and the report says how.
 - [ ] `git diff --stat` against the integration branch shows only owned paths.
 
@@ -40,6 +42,7 @@ Copy these predictions into `docs/experiments/M07.md` **before** writing the imp
 | M07-P4 | Shell model when one view's module answers `not_implemented` | That view shows "not available yet"; the navigation still lists every view | Let the error stop the shell |
 | M07-P5 | Shell model built on a memory store | A storage notice with text is present | Hide the notice when `persistent` is `false` |
 | M07-P6 | Open `app/index.html` with a double click, then through the server | From `file://` a plain-text notice says the page must be opened through the local server; through the server the shell replaces it. BROWSER level; if not run, the record says "not verified in a browser" | Remove the static notice: the page is blank from `file://` |
+| M07-P7 | `dataStateBadge` for each data state; `attentionBadge` for `no_criterion` and for a demo `outside` | Five different texts, none containing "normal" or "fine"; the attention texts name the missing criterion, and the demo one says "demo" with its source | Map `no_criterion` to a green "OK" |
 
 ## Out of scope
 

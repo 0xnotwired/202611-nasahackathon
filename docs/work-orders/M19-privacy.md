@@ -1,6 +1,6 @@
 # Work order M19 — Privacy
 
-Phase F4 · wave 1 · level 3 · contracts version 0.3
+Phase F4 · wave 1 · level 3 · contracts version 0.4
 
 **Goal.** Keep the session and the log of what the astronaut decided to share.
 

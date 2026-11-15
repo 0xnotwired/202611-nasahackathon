@@ -1,6 +1,6 @@
 # Work order M05 — Synthetic scenario
 
-Phase F1 · wave 2 · level 0 · contracts version 0.3
+Phase F1 · wave 2 · level 0 · contracts version 0.4
 
 **Goal.** Generate the demo's fictional case: one astronaut, three domains, two mission configurations.
 
@@ -23,6 +23,8 @@ Phase F1 · wave 2 · level 0 · contracts version 0.3
 - [ ] Every record passes `validateRecord` and carries `origin: "synthetic"`.
 - [ ] No value comes from a NASA dataset.
 - [ ] There is at least one record in each of the three states.
+- [ ] The scenario includes one configuration per environment (station, spacecraft, rover, surface base) and synthetic `mood` records.
+- [ ] At most two variables carry demo attention criteria, each with `review_status: "demo"` and `defined_by: "team demo"`.
 - [ ] Every test was seen failing against broken code before passing, and the report says how.
 - [ ] `git diff --stat` against the integration branch shows only owned paths.
 
@@ -36,6 +38,7 @@ Copy these predictions into `docs/experiments/M05.md` **before** writing the imp
 | M05-P2 | Run `validateRecord` on every record and read its `origin` | All valid; every `origin` is `synthetic` | Set one record's origin to `flight` (R4) |
 | M05-P3 | Count records by state, by `place` among `environment` records, and tasks by `completion` | At least one record in each of the three states; `environment` records for at least two places; at least one `pending` task | Generate only `recorded` records |
 | M05-P4 | Check both configurations against the demo procedure's `required_equipment` | Exactly one has all of it and one does not; one is `real_time` and one `delayed` | Give both configurations the equipment |
+| M05-P5 | List the configurations and their `environment`; count `attention_criteria` across all | Four environments, one each; at most two criteria, all `demo` | Mark a demo criterion as `reviewed` |
 
 ## Out of scope
 

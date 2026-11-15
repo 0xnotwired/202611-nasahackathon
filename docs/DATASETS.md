@@ -132,6 +132,20 @@ ISS cabin and ground control temperature, relative humidity and CO₂, plus radi
 
 Proposed use: Habitat with real flight environmental data. Limits: these are biology missions, not a crew member's; the data is from the cabin, not from a module assigned to a person. The page does not document formats, API or terms of use: verify them before integrating. Radiation is still subject to the rule on the unconfirmed 600 mSv limit.
 
+### Blood sugar and mood: what was found (15/11/2026)
+
+The challenge names blood sugar and mood among its example indicators. Searched on 15/11/2026; every item below is reading level S (search snippet or tool extraction) and goes into no presentation before the original is opened.
+
+**Blood sugar in flight.** Continuous glucose monitors were worn by the crew of the commercial Axiom Mission 4 (2025) in the Suite Ride study, reported as the first continuous glucose monitoring of crew aboard the station; the sources are a company press release and news reports, not a paper. Bed rest analogs report reduced insulin sensitivity (for example a 28-day bed rest study in PMC2856785, and a 60-day bed rest study that used continuous glucose monitors). This supports glucose as an indicator affected by the gravity-fields hazard; it gives no threshold and none is taken from it.
+
+**Blood sugar data.**
+- *BUT CGM* (Brno University of Technology Continuous Glycaemia, ECG, Activity and Food Intake Database), PhysioNet, version 1.0.0, DOI 10.13026/hv8f-3w60. License read on its page: Creative Commons Attribution 4.0, open access. 60 healthy, mostly active adults, about ten days in free-living conditions, Dexcom G7 every 5 minutes, plus ECG, activity, sleep and a daily questionnaire (mental load, sleep quality, illness symptoms). Ground, not flight. Gaps are filled with NaN in the signal files. Candidate: usable, cite, origin = ground (not an astronaut, not an analog).
+- *CGMacros*, PhysioNet. License: Creative Commons Attribution-NonCommercial-ShareAlike 4.0. **Ruled out**: a non-commercial clause is a restriction and not an OSI license.
+
+**Mood in flight and analogs.** NASA's behavioral health work uses validated self-report instruments: an HRP Investigators' Workshop 2026 poster (NTRS 20260002661) lists the Profile of Mood States daily and the Beck Depression Inventory weekly in its isolation suite, and reports that positive affect declines over time in isolation. NASA's Cognition battery is preceded by an 18-item Alertness and Mood Survey. HERA standard measures collect weekly emotional and mental state questionnaires.
+- **Instruments are not free to copy.** Validated questionnaires of this kind are generally published under copyright. Their items are not reproduced in Órbita, and Órbita computes no mood or depression score (R6). Not verified in this session which instruments, if any, are in the public domain.
+- **Data.** NLSP has a "Standard Measures - HERA" collection (behavioral health and cortisol). An NTRS abstract (20220014080) says standard measures data are shared through data sharing agreements or retrospective access. Not open on that evidence; no open mood dataset found.
+
 ### Ruled out for now
 
 - **Maximal treadmill tests, University of Malaga (PhysioNet, DOI 10.13026/7ezk-j442).** Ruled out on 15/11/2026: its license is the PhysioNet Contributor Review Health Data License 1.5.0, not an open data license, so it cannot be shown to be "freely and publicly available without restriction" as the 2026 Space Apps terms require for non-NASA material. The cycle ergometer set above covers the same use.

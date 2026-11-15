@@ -1,6 +1,6 @@
 # Work order M12 — My day view
 
-Phase F2 · wave 2 · level 1 · contracts version 0.3
+Phase F2 · wave 2 · level 1 · contracts version 0.4
 
 **Goal.** Be the entry screen: what is known today, what changed and what is pending.
 

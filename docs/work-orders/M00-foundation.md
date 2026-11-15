@@ -1,6 +1,6 @@
 # Work order M00 — Foundation
 
-Phase F0 · wave 1 · level - · contracts version 0.3
+Phase F0 · wave 1 · level - · contracts version 0.4
 
 **Goal.** Get the ground ready so the other modules can be built in parallel: contracts in code, reusable contract tests, placeholders for each module and the way to run and test everything.
 

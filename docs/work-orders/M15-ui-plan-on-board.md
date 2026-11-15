@@ -1,6 +1,6 @@
 # Work order M15 — My plan and On board views
 
-Phase F3 · wave 2 · level 2 · contracts version 0.3
+Phase F3 · wave 2 · level 2 · contracts version 0.4
 
 **Goal.** Show the day's tasks and guide the execution of a procedure step by step.
 
@@ -22,6 +22,7 @@ Phase F3 · wave 2 · level 2 · contracts version 0.3
 - [ ] "I could not complete it" asks for the difficulty and stores it.
 - [ ] Source, version and review status of the procedure are visible; "demo" reads as such.
 - [ ] Assigned plan, action taken and result are shown as three things.
+- [ ] The day's plan shows progress as "n of m done", with not done and pending visible; no streaks, points or badges for results or for "nothing new".
 - [ ] Every test was seen failing against broken code before passing, and the report says how.
 - [ ] `git diff --stat` against the integration branch shows only owned paths.
 
@@ -36,6 +37,7 @@ Copy these predictions into `docs/experiments/M15.md` **before** writing the imp
 | M15-P3 | Interrupt at step 2, leave the view, come back | The model offers to resume at step 2 | Start again from step 0 |
 | M15-P4 | Model for a procedure whose `review_status` is `demo` | The text says "demo"; source and version are present | Hide the review status |
 | M15-P5 | My plan model for a task marked `done` with no result | Assigned, done and result are three fields; result reads "not recorded" | Show the result as fine when the task is done |
+| M15-P6 | My plan model for a day with 2 done, 1 not done, 1 pending | Text "2 of 4 done"; the not done and pending items are listed by name; no streak or score field | Hide not done items from the count |
 
 ## Out of scope
 

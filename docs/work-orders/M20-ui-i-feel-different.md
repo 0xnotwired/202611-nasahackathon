@@ -1,6 +1,6 @@
 # Work order M20 — I feel different view
 
-Phase F4 · wave 3 · level 3 · contracts version 0.3
+Phase F4 · wave 3 · level 3 · contracts version 0.4
 
 **Goal.** Take the astronaut from an observation to follow-up, in a complete episode.
 

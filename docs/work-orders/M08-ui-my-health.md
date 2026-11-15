@@ -1,6 +1,6 @@
 # Work order M08 — My health view
 
-Phase F2 · wave 2 · level 1 · contracts version 0.3
+Phase F2 · wave 2 · level 1 · contracts version 0.4
 
 **Goal.** Show the astronaut's symptoms, vital signs and rest with their context.
 

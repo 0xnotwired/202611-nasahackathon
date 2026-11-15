@@ -1,6 +1,6 @@
 # Work order M11 — My progress view
 
-Phase F2 · wave 2 · level 1 · contracts version 0.3
+Phase F2 · wave 2 · level 1 · contracts version 0.4
 
 **Goal.** Bring observations, measurements, actions and results together on one timeline.
 

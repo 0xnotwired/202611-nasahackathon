@@ -1,6 +1,6 @@
 # Work order M02 — Mission
 
-Phase F1 · wave 1 · level 0 · contracts version 0.3
+Phase F1 · wave 1 · level 0 · contracts version 0.4
 
 **Goal.** Represent the mission configuration along its two axes: available equipment and communication mode.
 
@@ -20,6 +20,8 @@ Phase F1 · wave 1 · level 0 · contracts version 0.3
 - [ ] `hasEquipment` returns `false` for equipment that is not listed; it never assumes it is there.
 - [ ] `phaseAt` returns `null` outside every phase, not the nearest one.
 - [ ] It passes the `mission` contract suite.
+- [ ] `environment` outside the four values is rejected; `attention_criteria` entries without `defined_by`, `source`, `review_status`, or with neither `low` nor `high`, are rejected.
+- [ ] `gravity_note` is accepted as text and nothing reads it as a number.
 - [ ] Every test was seen failing against broken code before passing, and the report says how.
 - [ ] `git diff --stat` against the integration branch shows only owned paths.
 
@@ -32,6 +34,8 @@ Copy these predictions into `docs/experiments/M02.md` **before** writing the imp
 | M02-P1 | `validateConfig` with `communication: "sometimes"`, and with the field missing | Both rejected, `error.field` is `communication` | Accept any text |
 | M02-P2 | `hasEquipment` for an id in the list, one not in the list, and one not in the catalog | `true`, `false`, `false` | Return `true` for an unknown id |
 | M02-P3 | `phaseAt` at a time before the first phase and after the last | `null` both times | Fall back to the nearest phase |
+| M02-P4 | `validateConfig` with `environment: "moon"`; then with an `attention_criteria` entry that has no `source` | Both rejected, naming `environment` and `source` | Accept the entry without `source` |
+| M02-P5 | `validateConfig` with a criterion that has neither `low` nor `high` | Rejected, naming the criterion | Accept an empty criterion |
 
 ## Out of scope
 

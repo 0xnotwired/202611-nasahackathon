@@ -1,6 +1,6 @@
 # Work order M18 — Summary
 
-Phase F4 · wave 2 · level 3 · contracts version 0.3
+Phase F4 · wave 2 · level 3 · contracts version 0.4
 
 **Goal.** Generate an episode summary for medical support that can be understood without back-and-forth.
 
