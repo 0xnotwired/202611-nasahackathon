@@ -77,6 +77,17 @@ to the unqualified CRF Weight/Height fields by analogy or from plausible values.
 - Immunology: CD8+CD69+ gate denominator and percent/count scale tied to the
   selected campaigns, including unstimulated versus stimulated panel context.
 
+Bounded NTRS search, 2026-11-15 (RUN, three queries to the public
+`ntrs.nasa.gov/api/citations/search` endpoint): the full title phrase of the
+CRF source paper (Meck, Dreyer and Warren 2009, PMID 19476163) returned 0
+results; "Meck bed rest vital signs" returned 0; the control query "bed rest"
+returned 754, so the endpoint works and the paper is simply not found there
+under those terms. The NLSP experiment, dataset and file metadata were already
+reviewed earlier (DATASETS.md). Even a copy of the paper would need to bind its
+units to this exact export before the importer could use them. The next step
+needs a person: request the Campaign3 DailyVitals data dictionary (units, scale,
+revision) and the date-handling policy from the data provider through NLSP.
+
 The safe importer disposition remains preservation with explicit unknown
 units where supported; no conversion or scientific interpretation based on
 these unresolved columns. This is a known evidence limit, not a completed
