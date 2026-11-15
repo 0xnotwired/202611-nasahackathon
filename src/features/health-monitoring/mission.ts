@@ -50,3 +50,17 @@ export function formatDate(value: string) {
     timeZone: "UTC",
   }).format(new Date(value));
 }
+
+export function formatTimestamp(value: string) {
+  return (
+    new Intl.DateTimeFormat("es-AR", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23",
+      timeZone: "UTC",
+    }).format(new Date(value)) + " UTC"
+  );
+}

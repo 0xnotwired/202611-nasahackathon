@@ -1,7 +1,9 @@
-import { Check, ClipboardList, Download } from "lucide-react";
+import { Download } from "lucide-react";
 import type { Astronaut } from "../schemas";
 import type { DemoMission } from "../mission";
-import { compareEvaluations, formatDate, numberFormat } from "../mission";
+import { formatTimestamp } from "../mission";
+import type { HistoryContext } from "../dashboard-state";
+import { buildReview } from "../review";
 import type { DemoJournal } from "./use-demo-journal";
 
 export function FollowupView({
@@ -9,39 +11,27 @@ export function FollowupView({
   mission,
   journal,
   update,
+  context,
 }: {
   astronaut: Astronaut;
   mission: DemoMission;
   journal: DemoJournal;
   update: (patch: Partial<DemoJournal>) => void;
+  context: HistoryContext;
 }) {
-  const completed = mission.sessions.filter(
-    (session) => journal.completed[session.id] ?? session.completed,
-  ).length;
-  const comparison = compareEvaluations(
-    mission.evaluations.at(-2),
-    mission.evaluations.at(-1),
-  );
-  const text = [
-    `Órbita · Revisión simulada de ${astronaut.callsign}`,
-    "Estado: preparado, no enviado. Datos ficticios, sin validación clínica.",
-    "",
-    "Evaluaciones:",
-    ...mission.evaluations.map(
-      (evaluation) =>
-        `${formatDate(evaluation.recordedAt)}: ${evaluation.value === null ? "Sin dato" : `${numberFormat.format(evaluation.value)} ${evaluation.unit}`} · ${evaluation.method}`,
-    ),
-    `Comparación más reciente: ${comparison.difference === null ? comparison.reason : `${numberFormat.format(comparison.difference)} · cambio descriptivo`}`,
-    "",
-    `Sesiones completadas: ${completed}/${mission.sessions.length}`,
-    `Observación: ${journal.difficulty || "Sin observación registrada."}`,
-    `Pregunta para el especialista: ${journal.question || "Sin pregunta registrada."}`,
-  ].join("\n");
-
+  const current = buildReview(astronaut, mission, context, journal);
+  const outdated =
+    journal.prepared !== null && journal.prepared.text !== current.text;
   const download = () => {
     if (!journal.prepared) return;
     const url = URL.createObjectURL(
-      new Blob([journal.prepared.text], { type: "text/plain;charset=utf-8" }),
+      new Blob(
+        [
+          `Preparado: ${formatTimestamp(journal.prepared.savedAt)}\n\n`,
+          journal.prepared.text,
+        ],
+        { type: "text/plain;charset=utf-8" },
+      ),
     );
     const link = document.createElement("a");
     link.href = url;
@@ -49,98 +39,104 @@ export function FollowupView({
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
-
   return (
     <>
       <div className="page-heading">
         <div>
           <h1 id="contenido" tabIndex={-1}>
-            Seguimiento
+            Revisión
           </h1>
-          <p>Reuní tus registros y prepará el contexto para una revisión.</p>
+          <p>
+            Preparación local del historial seleccionado y las observaciones del
+            usuario.
+          </p>
         </div>
-        <span className="badge">
-          {journal.prepared ? "Preparado, no enviado" : "Borrador local"}
+        <span className="state-label">
+          {journal.prepared ? "Copia preparada · no enviada" : "Borrador local"}
         </span>
       </div>
       <div className="content-grid equal-columns">
         <section className="panel">
           <div className="panel-heading">
-            <div>
-              <h2>Tu pregunta para el especialista</h2>
-              <p>
-                ¿Qué te gustaría revisar sobre tus evaluaciones o tu actividad?
-              </p>
-            </div>
+            <h2>Contexto de la revisión</h2>
+            <p>{current.scope}</p>
           </div>
           <label htmlFor="review-question">
-            Pregunta o contexto de la revisión
+            Pregunta para el especialista
             <textarea
               id="review-question"
+              name="review-question"
               rows={5}
               maxLength={2000}
-              placeholder="Escribí una pregunta para acompañar tu resumen."
+              placeholder="Por ejemplo: revisar la comparabilidad de las últimas evaluaciones…"
               value={journal.question}
-              onChange={(event) =>
-                update({ question: event.target.value, prepared: null })
-              }
+              onChange={(event) => update({ question: event.target.value })}
             />
           </label>
           <p className="field-help">
-            El borrador se conserva en este navegador. Todavía no hay un
-            servicio de envío.
+            El borrador se conserva en este navegador. Preparar crea una copia
+            del período, la referencia y los registros actuales.
           </p>
           <button
             className="button primary"
             type="button"
             onClick={() =>
-              update({ prepared: { text, savedAt: new Date().toISOString() } })
+              update({
+                prepared: {
+                  text: current.text,
+                  savedAt: new Date().toISOString(),
+                  scope: current.scope,
+                },
+              })
             }
           >
-            <ClipboardList size={17} aria-hidden="true" />
-            Preparar resumen
+            {journal.prepared
+              ? "Actualizar copia preparada"
+              : "Preparar resumen"}
           </button>
-          {journal.prepared ? (
-            <p className="saved-status" role="status">
-              <Check size={17} aria-hidden="true" />
-              Resumen preparado. No se ha enviado.
+          <p className="save-feedback" role="status">
+            {journal.prepared
+              ? outdated
+                ? "El contexto actual difiere de la copia preparada."
+                : "Copia preparada con el contexto actual. No se ha enviado."
+              : ""}
+          </p>
+          {outdated ? (
+            <p className="notice">
+              La copia conserva sus registros originales. Actualizala para
+              incluir los cambios del período, los datos o las observaciones.
             </p>
           ) : null}
         </section>
         <section className="panel review-preview">
-          <div className="panel-heading">
+          <div className="panel-heading inline-heading">
             <div>
-              <h2>
-                {journal.prepared
-                  ? "Resumen preparado"
-                  : "Vista previa del resumen"}
-              </h2>
+              <h2>{journal.prepared ? "Copia preparada" : "Vista previa"}</h2>
               <p>
-                {astronaut.callsign} · {astronaut.mission}
+                {journal.prepared
+                  ? formatTimestamp(journal.prepared.savedAt)
+                  : current.scope}
               </p>
             </div>
-          </div>
-          <pre>{journal.prepared?.text ?? text}</pre>
-          {journal.prepared ? (
-            <>
-              <p className="field-help">
-                Guardado el {formatDate(journal.prepared.savedAt)} en este
-                navegador.
-              </p>
+            {journal.prepared ? (
               <button
+                type="button"
                 className="button secondary"
                 onClick={download}
-                type="button"
               >
-                <Download size={17} aria-hidden="true" />
-                Descargar resumen
+                <Download size={16} aria-hidden="true" />
+                Descargar copia
               </button>
-            </>
-          ) : (
-            <p className="field-help">
-              Preparar el resumen guarda una copia del contexto actual.
+            ) : null}
+          </div>
+          {journal.prepared ? (
+            <p className="snapshot-scope">
+              Alcance de la copia:{" "}
+              {journal.prepared.scope ??
+                "No registrado por la versión anterior"}
             </p>
-          )}
+          ) : null}
+          <pre>{journal.prepared?.text ?? current.text}</pre>
         </section>
       </div>
     </>

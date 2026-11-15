@@ -7,8 +7,20 @@ const journalSchema = z.object({
   completed: z.record(z.string(), z.boolean()).default({}),
   difficulty: z.string().max(2000).default(""),
   question: z.string().max(2000).default(""),
+  observation: z
+    .object({
+      text: z.string().max(2000),
+      evaluationId: z.string(),
+      recordedAt: z.iso.datetime(),
+    })
+    .nullable()
+    .default(null),
   prepared: z
-    .object({ text: z.string(), savedAt: z.string() })
+    .object({
+      text: z.string(),
+      savedAt: z.iso.datetime(),
+      scope: z.string().optional(),
+    })
     .nullable()
     .default(null),
 });
@@ -18,6 +30,7 @@ const emptyJournal: DemoJournal = {
   difficulty: "",
   question: "",
   prepared: null,
+  observation: null,
 };
 const eventName = "orbita-journal-change";
 

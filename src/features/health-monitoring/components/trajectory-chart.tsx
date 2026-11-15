@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useId, useRef, useState } from "react";
 import type { Evaluation } from "../mission";
 import { formatDate, numberFormat } from "../mission";
@@ -6,99 +7,125 @@ export function TrajectoryChart({
   evaluations,
   selected,
   reference,
+  domain,
+  methodOrder,
   onSelect,
 }: {
   evaluations: Evaluation[];
   selected: string;
   reference?: Evaluation;
+  domain: { min: number; max: number } | null;
+  methodOrder: string[];
   onSelect: (id: string) => void;
 }) {
   const id = useId();
   const container = useRef<HTMLDivElement>(null);
-  const [width, setWidth] = useState(800);
+  const [size, setSize] = useState({ width: 800, height: 304, font: 16 });
+  const valid = evaluations.filter((item) => item.value !== null);
+  const unit = valid[0]?.unit;
+  const mixedUnits = new Set(valid.map((item) => item.unit)).size > 1;
   useEffect(() => {
     const element = container.current;
     if (!element) return;
-    const observer = new ResizeObserver(([entry]) =>
-      setWidth(Math.max(240, entry.contentRect.width)),
-    );
+    const observer = new ResizeObserver(([entry]) => {
+      const font = parseFloat(getComputedStyle(element).fontSize) || 16;
+      setSize({
+        width: Math.max(1, entry.contentRect.width),
+        height: Math.max(1, entry.contentRect.height),
+        font,
+      });
+    });
     observer.observe(element);
     return () => observer.disconnect();
-  }, [evaluations]);
-  const valid = evaluations.filter((item) => item.value !== null);
-  if (!valid.length)
+  }, [mixedUnits, valid.length]);
+  if (!valid.length || !domain)
     return (
-      <p className="empty-state">
-        No hay resultados para representar en este período.
-      </p>
+      <div className="chart-empty">
+        <h3>Sin resultados para representar</h3>
+        <p>
+          Las visitas sin resultado se conservan en el registro de evaluaciones.
+        </p>
+      </div>
     );
-  if (new Set(valid.map((item) => item.unit)).size > 1)
+  if (mixedUnits)
     return (
-      <p className="empty-state">
-        El período contiene unidades diferentes. Explorá los resultados en el
-        historial; no se representan en una escala común.
-      </p>
+      <div className="chart-empty">
+        <h3>Unidades no comparables</h3>
+        <p>
+          Consultá los resultados por evaluación. No se representan unidades
+          diferentes en una escala común.
+        </p>
+      </div>
     );
-  const values = valid.map((item) => item.value!);
-  const min = Math.floor(
-    Math.min(
-      ...values,
-      (reference?.unit === valid[0].unit ? reference.value : null) ?? Infinity,
-    ) - 1,
-  );
-  const max = Math.ceil(
-    Math.max(
-      ...values,
-      (reference?.unit === valid[0].unit ? reference.value : null) ?? -Infinity,
-    ) + 1,
-  );
+  const { width, height, font } = size;
+  const left = font * 3.1,
+    right = font * 1.9,
+    top = font * 2.3,
+    bottom = font * 3.2;
+  const plotWidth = Math.max(1, width - left - right);
+  const plotHeight = Math.max(1, height - top - bottom);
   const start = Date.parse(evaluations[0].recordedAt);
   const span = Date.parse(evaluations.at(-1)!.recordedAt) - start || 1;
   const x = (item: Evaluation) =>
-    58 + ((Date.parse(item.recordedAt) - start) / span) * (width - 96);
-  const y = (value: number) => 238 - ((value - min) / (max - min)) * 190;
-  const selectedPoint = evaluations.find((item) => item.id === selected);
+    left + ((Date.parse(item.recordedAt) - start) / span) * plotWidth;
+  const y = (value: number) =>
+    top +
+    plotHeight -
+    ((value - domain.min) / (domain.max - domain.min)) * plotHeight;
+  const tickCount = height / font < 15 ? 3 : 5;
   const ticks = Array.from(
-    { length: 5 },
-    (_, index) => min + ((max - min) * index) / 4,
+    { length: tickCount },
+    (_, index) =>
+      domain.min + ((domain.max - domain.min) * index) / (tickCount - 1),
   );
-  const labelCount = Math.min(evaluations.length, width < 450 ? 3 : 5);
+  const count = Math.min(
+    evaluations.length,
+    width / font < 25 ? 2 : width / font < 40 ? 3 : 5,
+  );
   const labelIndices = new Set(
-    Array.from({ length: labelCount }, (_, index) =>
-      Math.round(
-        (index * (evaluations.length - 1)) / Math.max(1, labelCount - 1),
-      ),
+    Array.from({ length: count }, (_, index) =>
+      Math.round((index * (evaluations.length - 1)) / Math.max(1, count - 1)),
     ),
   );
-  const labels = evaluations.filter((_, index) => labelIndices.has(index));
+  const methods = [...new Set(valid.map((item) => item.method))];
+  const primaryMethod = methodOrder[0] ?? methods[0];
+  const selectedPoint = evaluations.find((item) => item.id === selected);
+  const canTarget = evaluations.every(
+    (item, index) =>
+      index === 0 ||
+      Math.hypot(
+        x(item) - x(evaluations[index - 1]),
+        y(item.value ?? domain.min) -
+          y(evaluations[index - 1].value ?? domain.min),
+      ) >= 30,
+  );
+
   return (
     <figure className="trajectory-figure">
       <div className="trajectory-canvas" ref={container}>
         <svg
-          viewBox={`0 0 ${width} 300`}
+          viewBox={`0 0 ${width} ${height}`}
           role="img"
           aria-labelledby={`${id}-title ${id}-description`}
         >
-          <title id={`${id}-title`}>
-            Evolución de las evaluaciones aeróbicas
-          </title>
+          <title id={`${id}-title`}>Evolución de VO₂pico por fecha</title>
           <desc id={`${id}-description`}>
-            Resultados puntuales por fecha. Los trazos unen únicamente visitas
-            consecutivas del mismo método y unidad. El historial debajo contiene
-            todos los valores.
+            Valores en {unit}. Mediciones puntuales, separadas por método y con
+            huecos conservados. La tabla de evaluaciones contiene los valores y
+            el panel de detalle permite seleccionar cada visita.
           </desc>
           {ticks.map((tick) => (
             <g key={tick}>
               <line
-                x1="58"
-                x2={width - 38}
+                x1={left}
+                x2={width - right}
                 y1={y(tick)}
                 y2={y(tick)}
                 className="trajectory-grid"
               />
               <text
-                x="43"
-                y={y(tick) + 4}
+                x={left - font * 0.6}
+                y={y(tick) + font * 0.28}
                 textAnchor="end"
                 className="trajectory-label"
               >
@@ -106,12 +133,12 @@ export function TrajectoryChart({
               </text>
             </g>
           ))}
-          {reference?.value != null && reference.unit === valid[0].unit
+          {reference?.value != null && reference.unit === unit
             ? evaluations.map((item, index) =>
                 item.method === reference.method &&
                 item.unit === reference.unit ? (
                   <line
-                    key={`reference-${item.id}`}
+                    key={`ref-${item.id}`}
                     x1={x(item)}
                     x2={
                       evaluations[index + 1]?.method === reference.method
@@ -133,7 +160,7 @@ export function TrajectoryChart({
               item.value !== null &&
               previous.method === item.method &&
               previous.unit === item.unit;
-            const alternate = item.method !== valid[0].method;
+            const alternate = item.method !== primaryMethod;
             return (
               <g key={item.id}>
                 {item.value === null ? (
@@ -141,15 +168,15 @@ export function TrajectoryChart({
                     <line
                       x1={x(item)}
                       x2={x(item)}
-                      y1="40"
-                      y2="238"
+                      y1={top}
+                      y2={top + plotHeight}
                       className="trajectory-missing"
                     />
                     <text
                       x={x(item)}
-                      y="28"
+                      y={font * 1.1}
                       textAnchor="middle"
-                      className="trajectory-label"
+                      className="trajectory-label missing-label"
                     >
                       Sin dato
                     </text>
@@ -161,7 +188,7 @@ export function TrajectoryChart({
                     x2={x(item)}
                     y1={y(previous.value!)}
                     y2={y(item.value!)}
-                    className={`trajectory-line ${alternate ? "alternate" : ""}`}
+                    className={`trajectory-line${alternate ? " alternate" : ""}`}
                   />
                 ) : null}
                 {item.value !== null ? (
@@ -190,77 +217,110 @@ export function TrajectoryChart({
               <line
                 x1={x(selectedPoint)}
                 x2={x(selectedPoint)}
-                y1="38"
-                y2="248"
+                y1={top}
+                y2={top + plotHeight}
                 className="trajectory-selection"
               />
-              <circle
-                cx={x(selectedPoint)}
-                cy={y(selectedPoint.value)}
-                r="10"
-                className="trajectory-halo"
-              />
-              <circle
-                cx={x(selectedPoint)}
-                cy={y(selectedPoint.value)}
-                r="5"
-                className="trajectory-selected"
-              />
+              {selectedPoint.method !== primaryMethod ? (
+                <>
+                  <rect
+                    x={x(selectedPoint) - 10}
+                    y={y(selectedPoint.value) - 10}
+                    width="20"
+                    height="20"
+                    className="trajectory-selection-ring alternate"
+                  />
+                  <rect
+                    x={x(selectedPoint) - 5}
+                    y={y(selectedPoint.value) - 5}
+                    width="10"
+                    height="10"
+                    className="trajectory-selected alternate"
+                  />
+                </>
+              ) : (
+                <>
+                  <circle
+                    cx={x(selectedPoint)}
+                    cy={y(selectedPoint.value)}
+                    r="10"
+                    className="trajectory-selection-ring"
+                  />
+                  <circle
+                    cx={x(selectedPoint)}
+                    cy={y(selectedPoint.value)}
+                    r="5"
+                    className="trajectory-selected"
+                  />
+                </>
+              )}
             </g>
           ) : null}
-          {labels.map((item) => (
-            <text
-              key={item.id}
-              x={x(item)}
-              y="279"
-              textAnchor="middle"
-              className="trajectory-label"
-            >
-              {new Intl.DateTimeFormat("es", {
-                month: "short",
-                year: "2-digit",
-                timeZone: "UTC",
-              }).format(new Date(item.recordedAt))}
-            </text>
-          ))}
+          {evaluations
+            .filter((_, index) => labelIndices.has(index))
+            .map((item) => (
+              <text
+                key={item.id}
+                x={x(item)}
+                y={height - font * 0.9}
+                textAnchor="middle"
+                className="trajectory-label"
+              >
+                {new Intl.DateTimeFormat("es", {
+                  month: "short",
+                  year: "2-digit",
+                  timeZone: "UTC",
+                }).format(new Date(item.recordedAt))}
+              </text>
+            ))}
         </svg>
-        <div
-          className="plot-targets"
-          role="group"
-          aria-label="Seleccionar una evaluación"
-        >
-          {evaluations.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              style={{
-                left: `${(x(item) / width) * 100}%`,
-                top: `${(item.value === null ? 140 : y(item.value)) / 3}%`,
-              }}
-              onClick={() => onSelect(item.id)}
-              aria-pressed={item.id === selected}
-              aria-label={`${formatDate(item.recordedAt)}: ${item.value === null ? "sin dato" : `${numberFormat.format(item.value)} ${item.unit}`}`}
-              title={formatDate(item.recordedAt)}
-            />
-          ))}
-        </div>
+        {canTarget ? (
+          <div
+            className="plot-targets"
+            role="group"
+            aria-label="Puntos del gráfico"
+          >
+            {evaluations.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                style={{
+                  left: `${(x(item) / width) * 100}%`,
+                  top: `${(y(item.value ?? (domain.min + domain.max) / 2) / height) * 100}%`,
+                }}
+                aria-pressed={selected === item.id}
+                aria-label={`Punto del ${formatDate(item.recordedAt)}: ${item.value === null ? "sin resultado" : `${numberFormat.format(item.value)} ${item.unit}`}`}
+                onClick={() => onSelect(item.id)}
+              />
+            ))}
+          </div>
+        ) : null}
       </div>
       <figcaption>
-        <span>
-          <i className="legend-line" />
-          Resultados puntuales
-        </span>
-        <span>
-          <i className="legend-line reference" />
-          Referencia seleccionada
-        </span>
-        {valid.some((item) => item.method !== valid[0].method) ? (
-          <span>
-            <i className="legend-line alternate" />
-            Otro método · puntos cuadrados
-          </span>
-        ) : null}
-        <span>Seleccioná una visita para explorarla</span>
+        <ul className="chart-legend" role="list">
+          {methods.map((method) => (
+            <li key={method}>
+              <i
+                className={
+                  method === primaryMethod
+                    ? "legend-marker"
+                    : "legend-marker alternate"
+                }
+                aria-hidden="true"
+              />
+              {method}
+            </li>
+          ))}
+          <li>
+            <i className="legend-reference" aria-hidden="true" />
+            Referencia seleccionada
+          </li>
+        </ul>
+        <p>
+          {canTarget
+            ? "Seleccioná un punto o utilizá el panel de detalle."
+            : "Utilizá el selector de fecha o las flechas del panel de detalle."}
+        </p>
       </figcaption>
     </figure>
   );

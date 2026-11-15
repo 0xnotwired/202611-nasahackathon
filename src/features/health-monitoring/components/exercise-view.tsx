@@ -17,11 +17,9 @@ export function ExerciseView({
       <div className="page-heading">
         <div>
           <h1 id="contenido" tabIndex={-1}>
-            Ejercicio
+            Actividad
           </h1>
-          <p>
-            Registrá las sesiones realizadas y el contexto que quieras revisar.
-          </p>
+          <p>Registro de sesiones y observaciones de actividad.</p>
         </div>
         <span className="badge">Programa de demostración</span>
       </div>
@@ -36,8 +34,10 @@ export function ExerciseView({
         <section className="panel">
           <div className="panel-heading">
             <div>
-              <h2>Sesiones del programa</h2>
-              <p>Marcá una sesión para dejar constancia de su realización.</p>
+              <h2>Registro de sesiones</h2>
+              <p>
+                Registro independiente del período seleccionado en evaluaciones.
+              </p>
             </div>
           </div>
           <div className="session-list">
@@ -54,7 +54,6 @@ export function ExerciseView({
                           ...journal.completed,
                           [session.id]: event.target.checked,
                         },
-                        prepared: null,
                       })
                     }
                   />
@@ -86,7 +85,7 @@ export function ExerciseView({
         <section className="panel">
           <div className="panel-heading">
             <div>
-              <h2>Cómo fue tu actividad</h2>
+              <h2>Observación de actividad</h2>
               <p>
                 Una dificultad o una observación pueden aportar contexto al
                 seguimiento.
@@ -97,13 +96,12 @@ export function ExerciseView({
             Observación del astronauta
             <textarea
               id="difficulty"
+              name="difficulty"
               rows={6}
               maxLength={2000}
-              placeholder="Por ejemplo: tuve que interrumpir una sesión del escenario demo."
+              placeholder="Por ejemplo: interrupción de una sesión y condiciones observadas…"
               value={journal.difficulty}
-              onChange={(event) =>
-                update({ difficulty: event.target.value, prepared: null })
-              }
+              onChange={(event) => update({ difficulty: event.target.value })}
             />
           </label>
           <p className="field-help">

@@ -1,17 +1,31 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getDataConfig } from "@/lib/env";
+import {
+  resolveHistoryContext,
+  viewNames,
+  type DashboardView,
+} from "@/features/health-monitoring/dashboard-state";
 import { isScenario } from "@/features/health-monitoring/aerobic";
 import {
   getMeasurements,
   getMission,
   listAstronauts,
 } from "@/features/health-monitoring/data/service";
-import {
-  Dashboard,
-  type DashboardView,
-} from "@/features/health-monitoring/components/dashboard";
+import { Dashboard } from "@/features/health-monitoring/components/dashboard";
 
-const views = new Set(["resumen", "evolucion", "ejercicio", "seguimiento"]);
+const views = new Set(Object.keys(viewNames));
+
+export async function generateMetadata({
+  searchParams,
+}: PageProps<"/">): Promise<Metadata> {
+  const params = await searchParams;
+  const view =
+    typeof params.view === "string" && views.has(params.view)
+      ? (params.view as DashboardView)
+      : "resumen";
+  return { title: `${viewNames[view]} | Órbita` };
+}
 
 export default async function Home({ searchParams }: PageProps<"/">) {
   const [params, astronauts] = await Promise.all([
@@ -43,11 +57,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
     getMission(selected.id, scenario),
   ]);
   if (!measurements || !mission) notFound();
-  const reference =
-    typeof params.reference === "string" &&
-    mission.evaluations.some((evaluation) => evaluation.id === params.reference)
-      ? params.reference
-      : (mission.evaluations[0]?.id ?? "");
+  const context = resolveHistoryContext(params, mission.evaluations);
   return (
     <Dashboard
       key={selected.id}
@@ -56,7 +66,8 @@ export default async function Home({ searchParams }: PageProps<"/">) {
       measurements={measurements}
       mission={mission}
       view={view as DashboardView}
-      reference={reference}
+      context={context}
+      asOf={new Date().toISOString()}
       scenario={scenario}
       demoControls={demoControls}
     />

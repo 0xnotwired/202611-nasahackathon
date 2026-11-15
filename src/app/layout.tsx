@@ -13,6 +13,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="es" className="h-full antialiased">
       <head>
+        <meta name="text-scale" content="scale" />
         <meta
           name="color-scheme"
           content="light dark"

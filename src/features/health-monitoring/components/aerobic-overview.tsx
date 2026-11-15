@@ -1,34 +1,28 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import {
-  Activity,
-  ArrowDownRight,
-  ArrowUpRight,
-  ArrowRight,
-  CalendarDays,
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  Database,
-  Download,
-  FlaskConical,
-  Info,
-  Layers,
-  ScanLine,
-} from "lucide-react";
+import { Download, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Astronaut, MeasurementsResponse } from "../schemas";
 import type { DemoMission } from "../mission";
-import { formatDate, numberFormat } from "../mission";
+import { formatDate, formatTimestamp, numberFormat } from "../mission";
 import {
   comparisonTo,
   describePeriod,
   historyCsv,
   periodEvaluations,
 } from "../aerobic";
+import {
+  ageLabel,
+  latestValid,
+  scaleDomain,
+  type HistoryContext,
+  type HistoryPeriod,
+  type ScaleMode,
+} from "../dashboard-state";
 import type { DemoJournal } from "./use-demo-journal";
 import { TrajectoryChart } from "./trajectory-chart";
+import { EvaluationHistory } from "./evaluation-history";
+import { ObservationPanel } from "./observation-panel";
 import { MeasurementsPanel } from "./measurements-panel";
 
 const signed = (value: number) =>
@@ -38,41 +32,54 @@ export function AerobicOverview({
   astronaut,
   mission,
   journal,
+  update,
   measurements,
-  reference,
-  onReference,
+  context,
+  onContext,
   href,
   expanded = false,
+  asOf,
+  memoryOnly = false,
 }: {
   astronaut: Astronaut;
   mission: DemoMission;
   journal: DemoJournal;
+  update: (patch: Partial<DemoJournal>) => void;
   measurements: MeasurementsResponse;
-  reference: string;
-  onReference: (id: string) => void;
+  context: HistoryContext;
+  onContext: (patch: Partial<HistoryContext>) => void;
   href: (view: string) => string;
   expanded?: boolean;
+  asOf: string;
+  memoryOnly?: boolean;
 }) {
-  const [months, setMonths] = useState(12);
-  const [selection, setSelection] = useState("");
-  const [historyOpen, setHistoryOpen] = useState(expanded);
-  const evaluations = periodEvaluations(mission.evaluations, months);
-  const current = evaluations.at(-1);
-  const baseline = mission.evaluations.find((item) => item.id === reference);
-  const selected = evaluations.find((item) => item.id === selection) ?? current;
+  const evaluations = periodEvaluations(mission.evaluations, context.period);
+  const latestVisit = evaluations.at(-1);
+  const latestResult = latestValid(evaluations);
+  const baseline = mission.evaluations.find(
+    (item) => item.id === context.reference,
+  );
+  const selected =
+    evaluations.find((item) => item.id === context.evaluation) ?? latestVisit;
   const selectedIndex = evaluations.findIndex(
     (item) => item.id === selected?.id,
   );
-  const result = comparisonTo(baseline, current);
+  const comparison = comparisonTo(baseline, latestVisit);
+  const selectedComparison = comparisonTo(baseline, selected);
   const trend = describePeriod(evaluations);
+  const endpointComparison = comparisonTo(
+    evaluations.find((item) => item.value !== null),
+    latestResult,
+  );
   const valid = evaluations.filter((item) => item.value !== null);
-  const completed = mission.sessions.filter(
-    (item) => journal.completed[item.id] ?? item.completed,
+  const unit = valid[0]?.unit ?? baseline?.unit ?? "";
+  const domain = scaleDomain(
+    context.scale === "history"
+      ? mission.evaluations
+      : [...evaluations, ...(baseline ? [baseline] : [])],
+    unit,
   );
-  const minutes = completed.reduce(
-    (total, item) => total + item.durationMinutes,
-    0,
-  );
+  const select = (id: string) => onContext({ evaluation: id });
   const exportHistory = () => {
     const url = URL.createObjectURL(
       new Blob(["\uFEFF", historyCsv(evaluations)], {
@@ -81,237 +88,221 @@ export function AerobicOverview({
     );
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = `orbita-${astronaut.callsign}-${months || "todo"}m.csv`;
+    anchor.download = `orbita-${astronaut.callsign}-${context.period || "todo"}m.csv`;
     anchor.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
   return (
-    <div className="aerobic-overview">
-      <div className="overview-heading">
+    <div className="aerobic-workspace">
+      <div className="page-heading">
         <div>
-          <p className="welcome-line">
-            Tu espacio de seguimiento, {astronaut.callsign}
-          </p>
           <h1 id="contenido" tabIndex={-1}>
-            {expanded
-              ? "Cada evaluación, en contexto."
-              : "Tu capacidad, en perspectiva."}
+            {expanded ? "Evaluaciones aeróbicas" : "Seguimiento aeróbico"}
           </h1>
-          <p>Una historia personal de tu evolución aeróbica a bordo.</p>
-        </div>
-        <button
-          className="button secondary export-button"
-          onClick={exportHistory}
-          disabled={!evaluations.length}
-        >
-          <Download size={16} aria-hidden="true" />
-          Exportar período
-        </button>
-      </div>
-
-      <section className="mission-ribbon">
-        <div className="mission-ribbon-copy">
-          <span className="ribbon-label">
-            <ScanLine size={15} aria-hidden="true" />
-            Seguimiento aeróbico personal
-          </span>
-          <h2>
-            Tu recorrido importa
-            <br />
-            tanto como el último dato.
-          </h2>
           <p>
-            Volvé a cada evaluación. Observá los cambios.
-            <br className="desktop-break" /> Llegá a tu próxima revisión con más
-            contexto.
+            {expanded
+              ? "Registro del período y detalle de cada evaluación."
+              : "Evaluaciones periódicas de VO₂pico · resultados simulados"}
           </p>
-          <Link href={href("seguimiento")}>
-            Preparar mi revisión <ArrowUpRight size={17} aria-hidden="true" />
+        </div>
+        <div className="page-actions">
+          <Link className="button primary" href={href("seguimiento")}>
+            Preparar revisión
           </Link>
+          <button
+            className="button secondary"
+            onClick={exportHistory}
+            disabled={!evaluations.length}
+          >
+            <Download size={16} aria-hidden="true" />
+            Exportar período
+          </button>
         </div>
-        <div className="orbital-illustration" aria-hidden="true">
-          <svg viewBox="0 0 400 210">
-            <defs>
-              <radialGradient id="planet-glow">
-                <stop stopColor="#3e8091" />
-                <stop offset="1" stopColor="#1b3d57" />
-              </radialGradient>
-              <linearGradient id="orbit-trail">
-                <stop stopColor="#54718a" stopOpacity="0" />
-                <stop offset="1" stopColor="#a8e8d9" />
-              </linearGradient>
-            </defs>
-            <circle cx="215" cy="105" r="70" fill="url(#planet-glow)" />
-            <ellipse
-              cx="215"
-              cy="105"
-              rx="146"
-              ry="54"
-              transform="rotate(-26 215 105)"
-              fill="none"
-              stroke="#728da1"
-              strokeOpacity=".35"
-            />
-            <ellipse
-              cx="215"
-              cy="105"
-              rx="107"
-              ry="93"
-              transform="rotate(-26 215 105)"
-              fill="none"
-              stroke="#728da1"
-              strokeOpacity=".2"
-            />
-            <path
-              d="M88 162 Q164 178 295 68"
-              fill="none"
-              stroke="url(#orbit-trail)"
-              strokeWidth="2"
-            />
-            <circle cx="294" cy="68" r="6" fill="#b6eee0" />
-            <circle
-              cx="294"
-              cy="68"
-              r="13"
-              fill="none"
-              stroke="#b6eee0"
-              strokeOpacity=".3"
-            />
-            <circle cx="97" cy="43" r="2" fill="#9aacbf" />
-            <circle cx="344" cy="158" r="2" fill="#9aacbf" />
-            <path
-              d="M202 52 Q171 103 226 161 M165 78 Q219 61 268 98 M156 116 Q216 95 278 133"
-              fill="none"
-              stroke="#78a5ac"
-              strokeOpacity=".25"
-            />
-          </svg>
-          <span>Observación → contexto → seguimiento</span>
-        </div>
-        <div className="ribbon-meta">
-          <span className="signal-pill">
-            <span />
-            Datos simulados
-          </span>
-          <p>{astronaut.mission}</p>
-          <small>Sin interpretación diagnóstica</small>
-        </div>
-      </section>
-
-      <div className="observation-toolbar">
-        <div
-          className="period-buttons"
-          role="group"
-          aria-label="Período del historial"
-        >
-          {[
-            [3, "3 meses"],
-            [6, "6 meses"],
-            [12, "12 meses"],
-            [0, "Todo"],
-          ].map(([value, label]) => (
-            <button
-              type="button"
-              key={value}
-              aria-pressed={months === value}
-              onClick={() => {
-                setMonths(Number(value));
-                setSelection("");
-              }}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-        <span className="period-dates">
-          <CalendarDays size={15} aria-hidden="true" />
-          {evaluations.length
-            ? `${formatDate(evaluations[0].recordedAt)} — ${formatDate(current!.recordedAt)}`
-            : "Sin evaluaciones"}
-        </span>
       </div>
-
-      <dl className="aerobic-stats">
+      <section
+        className="history-controls"
+        aria-label="Filtros de evaluaciones"
+      >
+        <div className="period-control">
+          <span id="period-label">Período del historial</span>
+          <div
+            className="period-buttons"
+            role="group"
+            aria-labelledby="period-label"
+          >
+            {([3, 6, 12, 0] as HistoryPeriod[]).map((period) => (
+              <button
+                key={period}
+                type="button"
+                aria-pressed={period === context.period}
+                onClick={() => onContext({ period, evaluation: "" })}
+              >
+                {period ? `${period} meses` : "Todo"}
+              </button>
+            ))}
+          </div>
+        </div>
+        <label htmlFor="aerobic-reference">
+          Referencia
+          <select
+            id="aerobic-reference"
+            value={context.reference}
+            onChange={(event) => onContext({ reference: event.target.value })}
+            disabled={!mission.evaluations.length}
+          >
+            {mission.evaluations.map((item) => (
+              <option key={item.id} value={item.id}>
+                {formatDate(item.recordedAt)}
+                {item.value === null ? " · sin resultado" : ""}
+              </option>
+            ))}
+          </select>
+        </label>
+        <p className="effective-period">
+          {evaluations.length ? (
+            <>
+              <span>Fechas efectivas</span>
+              <strong>
+                {formatDate(evaluations[0].recordedAt)} —{" "}
+                {formatDate(latestVisit!.recordedAt)}
+              </strong>
+            </>
+          ) : (
+            "Sin fechas disponibles"
+          )}
+          <small>Ventana anclada en la última visita registrada</small>
+        </p>
+      </section>
+      <dl className="measurement-summary">
         <div>
-          <dt>
-            <Activity size={16} aria-hidden="true" />
-            Última visita del período
-          </dt>
-          <dd>
-            {current?.value == null
-              ? "Sin dato"
-              : numberFormat.format(current.value)}
-            <small>{current?.value != null ? current.unit : ""}</small>
+          <dt>Último resultado disponible</dt>
+          <dd className="summary-value">
+            {latestResult
+              ? numberFormat.format(latestResult.value!)
+              : "Sin resultado"}
+            {latestResult ? (
+              <span className="unit">{latestResult.unit}</span>
+            ) : null}
           </dd>
-          <span>
-            {current
-              ? formatDate(current.recordedAt)
-              : "Sin visitas disponibles"}
-          </span>
+          <dd className="summary-detail">
+            {latestResult
+              ? `${formatTimestamp(latestResult.recordedAt)} · ${ageLabel(latestResult.recordedAt, asOf)}`
+              : "Sin resultados en el período"}
+          </dd>
+          {latestVisit?.value === null ? (
+            <dd className="summary-detail">
+              Última visita: {formatDate(latestVisit.recordedAt)} · sin
+              resultado
+            </dd>
+          ) : null}
         </div>
         <div>
-          <dt>
-            <ArrowUpRight size={16} aria-hidden="true" />
-            Cambio vs. referencia
-          </dt>
-          <dd>
-            {result.difference === null
+          <dt>Cambio vs. referencia</dt>
+          <dd
+            className={`summary-value ${comparison.difference === null ? "summary-text" : ""}`}
+          >
+            {comparison.difference === null
               ? "No comparable"
-              : signed(result.difference)}
-            <small>{result.difference !== null ? current?.unit : ""}</small>
+              : signed(comparison.difference)}
+            {comparison.difference !== null ? (
+              <span className="unit">{latestVisit?.unit}</span>
+            ) : null}
           </dd>
-          <span>
+          <dd className="summary-detail">
             {baseline
               ? `Referencia: ${formatDate(baseline.recordedAt)}`
-              : "Elegí una referencia"}
-          </span>
-        </div>
-        <div>
-          <dt>
-            <ScanLine size={16} aria-hidden="true" />
-            Lectura del período
-          </dt>
-          <dd className="stat-direction">{trend.label}</dd>
-          <span>{trend.count} resultados · dirección descriptiva</span>
-        </div>
-        <div>
-          <dt>
-            <Layers size={16} aria-hidden="true" />
-            Disponibilidad de resultados
-          </dt>
-          <dd>
-            {valid.length}
-            <small>/ {evaluations.length} visitas</small>
+              : "Sin referencia"}
           </dd>
-          <span>
-            {evaluations.length - valid.length
-              ? `${evaluations.length - valid.length} visitas sin resultado`
-              : "Todas las visitas tienen resultado"}
-          </span>
+          {comparison.difference === null ? (
+            <dd className="summary-detail">{comparison.reason}</dd>
+          ) : null}
+        </div>
+        <div>
+          <dt>Resultados disponibles</dt>
+          <dd className="summary-value">
+            {valid.length}
+            <span className="summary-denominator">
+              / {evaluations.length} visitas
+            </span>
+          </dd>
+          <dd className="summary-detail">
+            {evaluations.length - valid.length} visitas sin resultado
+          </dd>
+          <dd className="summary-detail">
+            Métodos y unidades identificados por visita
+          </dd>
         </div>
       </dl>
 
       <div className="trajectory-layout">
         <section className="trajectory-panel">
-          <div className="trajectory-heading">
+          <div className="panel-heading chart-heading">
             <div>
-              <h2>Tu trayectoria aeróbica</h2>
-              <p>
-                VO₂pico simulado <span>·</span>{" "}
-                {current?.unit ?? "Sin unidad disponible"}
-              </p>
+              <h2>Evolución de VO₂pico</h2>
+              <p>{unit || "Sin unidad disponible"} · mediciones puntuales</p>
             </div>
-            <span className="soft-tag">Evaluaciones periódicas</span>
+            <label className="scale-control" htmlFor="scale-selector">
+              Escala vertical
+              <select
+                id="scale-selector"
+                value={context.scale}
+                onChange={(event) =>
+                  onContext({ scale: event.target.value as ScaleMode })
+                }
+              >
+                <option value="history">Historial completo</option>
+                <option value="auto">Ajustar al período</option>
+              </select>
+            </label>
           </div>
-          <label className="reference-control" htmlFor="aerobic-reference">
-            Comparar con
+          <TrajectoryChart
+            evaluations={evaluations}
+            selected={selected?.id ?? ""}
+            reference={baseline}
+            domain={domain}
+            methodOrder={[
+              ...new Set(mission.evaluations.map((item) => item.method)),
+            ]}
+            onSelect={select}
+          />
+          <p className="scale-note">
+            {domain ? (
+              <>
+                Escala{" "}
+                {context.scale === "history"
+                  ? "del historial"
+                  : "del período y referencia"}
+                :{" "}
+                <span data-testid="scale-domain">
+                  {numberFormat.format(domain.min)}–
+                  {numberFormat.format(domain.max)} {unit}
+                </span>
+                .{" "}
+              </>
+            ) : null}
+            Los trazos se interrumpen ante faltantes o cambios de método.
+          </p>
+        </section>
+        <section
+          className="evaluation-inspector"
+          aria-labelledby="selected-evaluation-heading"
+        >
+          <div className="inspector-heading">
+            <h2 id="selected-evaluation-heading">Evaluación seleccionada</h2>
+            <span>
+              {selectedIndex < 0 ? "0" : selectedIndex + 1} /{" "}
+              {evaluations.length}
+            </span>
+          </div>
+          <label className="evaluation-select" htmlFor="evaluation-selector">
+            Fecha de evaluación
             <select
-              id="aerobic-reference"
-              value={reference}
-              onChange={(event) => onReference(event.target.value)}
-              disabled={!mission.evaluations.length}
+              id="evaluation-selector"
+              value={selected?.id ?? ""}
+              onChange={(event) => select(event.target.value)}
+              disabled={!evaluations.length}
             >
-              {mission.evaluations.map((item) => (
+              {evaluations.map((item) => (
                 <option key={item.id} value={item.id}>
                   {formatDate(item.recordedAt)}
                   {item.value === null ? " · sin resultado" : ""}
@@ -319,321 +310,152 @@ export function AerobicOverview({
               ))}
             </select>
           </label>
-          <TrajectoryChart
-            evaluations={evaluations}
-            selected={selected?.id ?? ""}
-            reference={baseline}
-            onSelect={setSelection}
-          />
-          <div className="visit-inspector" aria-live="polite">
-            <div className="visit-icon">
-              <ScanLine size={21} aria-hidden="true" />
+          <div className="selected-result" aria-live="polite">
+            <strong>
+              {selected?.value == null
+                ? "Sin resultado"
+                : numberFormat.format(selected.value)}
+            </strong>
+            {selected?.value != null ? (
+              <span className="unit">{selected.unit}</span>
+            ) : null}
+            <p>
+              {selected
+                ? formatTimestamp(selected.recordedAt)
+                : "Sin evaluación disponible"}
+            </p>
+          </div>
+          <dl className="evaluation-facts">
+            <div>
+              <dt>Método</dt>
+              <dd>{selected?.method ?? "No disponible"}</dd>
             </div>
             <div>
-              <span>Evaluación seleccionada</span>
-              <strong>
-                {selected ? formatDate(selected.recordedAt) : "Sin evaluación"}
-              </strong>
-              <small>
-                {selected?.method ?? "No hay registros para explorar"}
-              </small>
-            </div>
-            <div className="visit-value">
-              <strong>
+              <dt>Disponibilidad</dt>
+              <dd>
                 {selected?.value == null
-                  ? "Sin dato"
-                  : numberFormat.format(selected.value)}
-              </strong>
-              <small>
-                {selected?.value != null
-                  ? selected.unit
-                  : "Resultado no registrado"}
-              </small>
+                  ? "Resultado no registrado"
+                  : "Resultado disponible"}
+              </dd>
             </div>
-            <div className="visit-arrows">
-              <button
-                type="button"
-                aria-label="Evaluación anterior"
-                disabled={selectedIndex <= 0}
-                onClick={() => setSelection(evaluations[selectedIndex - 1].id)}
-              >
-                <ChevronLeft size={18} />
-              </button>
-              <button
-                type="button"
-                aria-label="Evaluación siguiente"
-                disabled={
-                  selectedIndex < 0 || selectedIndex >= evaluations.length - 1
-                }
-                onClick={() => setSelection(evaluations[selectedIndex + 1].id)}
-              >
-                <ChevronRight size={18} />
-              </button>
+            <div>
+              <dt>Cambio vs. referencia</dt>
+              <dd>
+                {selectedComparison.difference === null
+                  ? selectedComparison.reason
+                  : `${signed(selectedComparison.difference)} ${selected?.unit}`}
+              </dd>
             </div>
+            {selected ? (
+              <div>
+                <dt>Identificador</dt>
+                <dd>
+                  <code>{selected.id}</code>
+                </dd>
+              </div>
+            ) : null}
+          </dl>
+          <div className="visit-arrows">
+            <button
+              type="button"
+              className="button secondary"
+              aria-label="Evaluación anterior"
+              disabled={selectedIndex <= 0}
+              onClick={() => select(evaluations[selectedIndex - 1].id)}
+            >
+              <ChevronLeft size={16} aria-hidden="true" />
+              Anterior
+            </button>
+            <button
+              type="button"
+              className="button secondary"
+              aria-label="Evaluación siguiente"
+              disabled={
+                selectedIndex < 0 || selectedIndex >= evaluations.length - 1
+              }
+              onClick={() => select(evaluations[selectedIndex + 1].id)}
+            >
+              Siguiente
+              <ChevronRight size={16} aria-hidden="true" />
+            </button>
           </div>
         </section>
-        <aside className="trajectory-insight">
-          <div className="insight-heading">
-            <span className="insight-symbol">
-              <Activity size={21} aria-hidden="true" />
-            </span>
-            <span>La lectura de tus datos</span>
-          </div>
-          <h2>{trend.label}</h2>
-          <p>{trend.reason}</p>
-          <div className="insight-evidence">
-            <span>En este período</span>
-            <strong>{trend.count} resultados disponibles</strong>
-            <small>
-              {evaluations.length - trend.count} visitas sin resultado · sin
-              completar valores
-            </small>
-          </div>
-          <div className="insight-reference">
-            <span>Respecto de tu referencia</span>
-            <p>
-              {result.difference === null
-                ? result.reason
-                : `${signed(result.difference)} ${current?.unit}. ${result.reason}`}
-            </p>
-          </div>
-          <details>
-            <summary>Cómo se obtiene esta lectura</summary>
-            <p>
-              Se ajusta una recta a las fechas reales de los resultados del
-              período. Solo se calcula si hay al menos tres resultados con la
-              misma unidad y método. No determina estabilidad clínica ni explica
-              la causa de los cambios.
-            </p>
-          </details>
-          <Link href={href("seguimiento")}>
-            Llevar a mi revisión <ArrowRight size={16} aria-hidden="true" />
-          </Link>
-        </aside>
       </div>
 
-      <div className="context-grid">
-        <section className="activity-context">
-          <div>
-            <span className="context-symbol">
-              <Activity size={20} aria-hidden="true" />
-            </span>
-            <h2>Actividad que acompaña tu recorrido</h2>
-            <p>
-              Registro disponible de sesiones. Independiente del período de
-              evaluaciones.
-            </p>
-          </div>
-          <div className="activity-totals">
+      <section className="period-reading">
+        <div>
+          <h2>Resumen del período</h2>
+          <p>
             <strong>
-              {minutes}
-              <small>min registrados</small>
+              {trend.slope === null
+                ? trend.label
+                : `Dirección matemática ${trend.slope > 1e-10 ? "ascendente" : trend.slope < -1e-10 ? "descendente" : "sin cambio neto"}`}
             </strong>
-            <strong>
-              {completed.length}
-              <small>sesiones completadas</small>
-            </strong>
-            <Link
-              href={href("ejercicio")}
-              aria-label="Ver registro de actividad"
-            >
-              <ArrowUpRight size={22} aria-hidden="true" />
-            </Link>
-          </div>
-          <p className="context-footnote">
-            La actividad aporta contexto; no demuestra que haya causado un
-            cambio en la capacidad aeróbica.
+            {endpointComparison.difference !== null && valid.length >= 2
+              ? ` · cambio entre extremos disponibles: ${signed(endpointComparison.difference)} ${unit}`
+              : ""}{" "}
+            · {trend.count} resultados.
           </p>
-        </section>
-        <section className="review-context">
-          <span className="context-symbol">
-            <CalendarDays size={20} aria-hidden="true" />
-          </span>
-          <div>
-            <h2>Una revisión con perspectiva</h2>
-            <p>
-              {journal.prepared
-                ? "Tu resumen está preparado en este navegador."
-                : "Reuní tu historial y las preguntas que querés revisar."}
-            </p>
-            <Link href={href("seguimiento")}>
-              {journal.prepared ? "Ver mi resumen" : "Preparar seguimiento"}
-              <ArrowRight size={15} aria-hidden="true" />
-            </Link>
-          </div>
-        </section>
-      </div>
-
-      <section className="history-panel">
-        <div className="history-heading">
-          <div>
-            <h2 id="history-title">El registro detrás de la trayectoria</h2>
-            <p>
-              {evaluations.length} visitas en el período seleccionado. Cada
-              resultado conserva su contexto.
-            </p>
-          </div>
-          <button
-            className="button secondary"
-            onClick={() => setHistoryOpen(!historyOpen)}
-            aria-expanded={historyOpen}
-            aria-controls="aerobic-history"
-          >
-            {historyOpen ? "Ocultar historial" : "Explorar historial"}
-            <Layers size={16} aria-hidden="true" />
-          </button>
+          <p>
+            {trend.slope === null
+              ? trend.reason
+              : "La relevancia del cambio no está evaluada. La dirección matemática no determina mejoría, estabilidad ni empeoramiento clínico."}
+          </p>
         </div>
-        <div id="aerobic-history" hidden={!historyOpen}>
-          {evaluations.length ? (
-            <div
-              className="aerobic-table-scroll"
-              role="region"
-              aria-labelledby="history-title"
-              tabIndex={0}
-            >
-              <table className="aerobic-table">
-                <caption className="sr-only">
-                  Evaluaciones aeróbicas simuladas del período seleccionado
-                </caption>
-                <thead>
-                  <tr>
-                    <th scope="col">Evaluación</th>
-                    <th scope="col">VO₂pico simulado</th>
-                    <th scope="col">Método</th>
-                    <th scope="col">Vs. referencia</th>
-                    <th scope="col">Explorar</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {evaluations.toReversed().map((item) => {
-                    const delta = comparisonTo(baseline, item);
-                    return (
-                      <tr
-                        key={item.id}
-                        className={
-                          item.id === selected?.id ? "selected-row" : ""
-                        }
-                      >
-                        <th scope="row">
-                          {formatDate(item.recordedAt)}
-                          {item.id === reference ? (
-                            <span className="table-reference">Referencia</span>
-                          ) : null}
-                        </th>
-                        <td>
-                          {item.value == null ? (
-                            <span className="missing-tag">Sin resultado</span>
-                          ) : (
-                            <>
-                              <strong>{numberFormat.format(item.value)}</strong>{" "}
-                              <small>{item.unit}</small>
-                            </>
-                          )}
-                        </td>
-                        <td>{item.method}</td>
-                        <td>
-                          {delta.difference === null ? (
-                            <details className="comparison-reason">
-                              <summary>No comparable</summary>
-                              <p>{delta.reason}</p>
-                            </details>
-                          ) : (
-                            <span className="delta-value">
-                              {delta.difference > 0 ? (
-                                <ArrowUpRight size={14} aria-hidden="true" />
-                              ) : delta.difference < 0 ? (
-                                <ArrowDownRight size={14} aria-hidden="true" />
-                              ) : (
-                                <Check size={14} aria-hidden="true" />
-                              )}
-                              {signed(delta.difference)}
-                            </span>
-                          )}
-                        </td>
-                        <td>
-                          <button
-                            className="table-visit-button"
-                            aria-label={`Ver visita del ${formatDate(item.recordedAt)}`}
-                            onClick={() => setSelection(item.id)}
-                            aria-pressed={item.id === selected?.id}
-                          >
-                            Ver visita
-                            <ArrowUpRight size={14} aria-hidden="true" />
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <p className="empty-state">
-              Todavía no hay evaluaciones para este tripulante.
-            </p>
-          )}
-        </div>
+        <details>
+          <summary>Detalle del cálculo</summary>
+          <p>
+            {trend.reason} Los faltantes se excluyen sin completar valores. La
+            diferencia entre extremos y el cambio contra la referencia son
+            comparaciones distintas.
+          </p>
+        </details>
       </section>
 
-      <details className="dataset-disclosure">
-        <summary>
-          <span>
-            <Database size={18} aria-hidden="true" />
-            Del dataset a tu historia
-          </span>
-          <span className="dataset-summary-hint">
-            Origen y límites de la demostración
-          </span>
-        </summary>
-        <div className="dataset-content">
-          <div>
-            <FlaskConical size={22} aria-hidden="true" />
-            <h3>Investigación como estructura</h3>
-            <p>
-              Research aporta el modelo de visitas, métodos y comparaciones
-              PRE/POST. MR080G reúne 111 pruebas programadas y 34 de selección;
-              no es un historial mensual individual.
-            </p>
-            <a
-              href="https://ntrs.nasa.gov/citations/20140003748"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Consultar investigación de NASA{" "}
-              <ArrowUpRight size={14} aria-hidden="true" />
-            </a>
+      <div className="records-layout">
+        <section className="records-panel panel">
+          <div className="panel-heading inline-heading">
+            <div>
+              <h2>
+                {expanded
+                  ? "Registro de evaluaciones"
+                  : "Evaluaciones recientes"}
+              </h2>
+              <p>
+                La tabla y el gráfico comparten período, referencia y selección.
+              </p>
+            </div>
+            {!expanded ? (
+              <Link className="text-link" href={href("evolucion")}>
+                Ver todas las evaluaciones
+              </Link>
+            ) : (
+              <span className="count-label">{evaluations.length} visitas</span>
+            )}
           </div>
-          <div>
-            <Layers size={22} aria-hidden="true" />
-            <h3>Una historia enteramente ficticia</h3>
-            <p>
-              Los escenarios de demostración usan trece visitas mensuales
-              nominales. Valores y protocolos son ilustrativos: no son registros
-              de NASA ni una simulación fisiológica validada.
-            </p>
-          </div>
-          <div>
-            <Info size={22} aria-hidden="true" />
-            <h3>Inferencias con límites visibles</h3>
-            <p>
-              La dirección describe valores comparables. La unidad del demo no
-              resuelve las unidades pendientes del dataset original. La
-              relevancia del cambio requiere revisión médica.
-            </p>
-          </div>
-        </div>
-      </details>
+          <EvaluationHistory
+            evaluations={evaluations}
+            reference={baseline}
+            selected={selected?.id ?? ""}
+            onSelect={select}
+            full={expanded}
+          />
+        </section>
+        <ObservationPanel
+          key={`${astronaut.id}-${mission.evaluations[0]?.id ?? "empty"}`}
+          evaluation={selected}
+          evaluations={mission.evaluations}
+          journal={journal}
+          update={update}
+          memoryOnly={memoryOnly}
+        />
+      </div>
       {expanded ? (
         <details className="additional-measurements">
-          <summary>Otros registros simulados disponibles</summary>
+          <summary>Otros registros disponibles</summary>
           <MeasurementsPanel astronaut={astronaut} response={measurements} />
         </details>
       ) : null}
-      <p className="aerobic-disclaimer">
-        <Info size={14} aria-hidden="true" />
-        Resultados ficticios y validación médica pendiente. Este panel describe
-        observaciones; no realiza diagnósticos.
-      </p>
     </div>
   );
 }

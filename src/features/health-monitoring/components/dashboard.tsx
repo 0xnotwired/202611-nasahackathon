@@ -2,40 +2,24 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
-import {
-  ArrowUpRight,
-  ChartNoAxesCombined,
-  ChevronRight,
-  ClipboardList,
-  Dumbbell,
-  Info,
-  LayoutDashboard,
-  Orbit,
-  ShieldCheck,
-} from "lucide-react";
+import { useEffect, useRef, useTransition } from "react";
+import { Orbit, FlaskConical } from "lucide-react";
 import type { Astronaut, MeasurementsResponse } from "../schemas";
 import type { DemoMission } from "../mission";
+import { formatTimestamp } from "../mission";
+import { scenarios, type Scenario } from "../aerobic";
+import {
+  historyQuery,
+  viewNames,
+  type DashboardView,
+  ageLabel,
+  type HistoryContext,
+} from "../dashboard-state";
 import { ThemeControl } from "./theme-control";
 import { useDemoJournal } from "./use-demo-journal";
 import { AerobicOverview } from "./aerobic-overview";
-import { scenarios, type Scenario } from "../aerobic";
 import { ExerciseView } from "./exercise-view";
 import { FollowupView } from "./followup-view";
-
-export const viewNames = {
-  resumen: "Mi perspectiva",
-  evolucion: "Historial aeróbico",
-  ejercicio: "Ejercicio",
-  seguimiento: "Seguimiento",
-} as const;
-export type DashboardView = keyof typeof viewNames;
-const navigation = [
-  { id: "resumen", label: "Mi perspectiva", icon: LayoutDashboard },
-  { id: "evolucion", label: "Historial aeróbico", icon: ChartNoAxesCombined },
-  { id: "ejercicio", label: "Ejercicio", icon: Dumbbell },
-  { id: "seguimiento", label: "Seguimiento", icon: ClipboardList },
-] as const;
 
 export function Dashboard({
   astronauts,
@@ -43,193 +27,225 @@ export function Dashboard({
   measurements,
   mission,
   view,
-  reference,
+  context,
   scenario,
   demoControls,
+  asOf,
 }: {
   astronauts: Astronaut[];
   astronaut: Astronaut;
   measurements: MeasurementsResponse;
   mission: DemoMission;
   view: DashboardView;
-  reference: string;
+  context: HistoryContext;
   scenario: Scenario;
   demoControls: boolean;
+  asOf: string;
 }) {
   const router = useRouter();
+  const [pending, startTransition] = useTransition();
   const { journal, update, memoryOnly } = useDemoJournal(astronaut.id);
-  const initial = useRef(true);
+  const previousView = useRef(view);
   useEffect(() => {
-    document.title = `${viewNames[view]} | Órbita`;
-    if (initial.current) {
-      initial.current = false;
-      return;
+    if (previousView.current !== view) {
+      previousView.current = view;
+      document.getElementById("contenido")?.focus();
     }
-    document.getElementById("contenido")?.focus();
   }, [view]);
-
-  const href = (target: string, id = astronaut.id, evaluation = reference) => {
-    const params = new URLSearchParams({
-      view: target,
-      astronaut: id,
-      ...(demoControls ? { scenario } : {}),
-    });
-    if (evaluation) params.set("reference", evaluation);
+  const href = (target: string, nextContext = context) => {
+    const params = historyQuery(nextContext);
+    params.set("view", target);
+    params.set("astronaut", astronaut.id);
+    if (demoControls) params.set("scenario", scenario);
     return `/?${params}`;
   };
+  const change = (patch: Partial<HistoryContext>) =>
+    startTransition(() =>
+      router.replace(href(view, { ...context, ...patch }), { scroll: false }),
+    );
+  const latest = mission.evaluations
+    .toSorted((a, b) => Date.parse(a.recordedAt) - Date.parse(b.recordedAt))
+    .at(-1);
 
   return (
-    <div className="app-shell mission-shell">
-      <aside className="app-sidebar">
-        <Link
-          className="brand"
-          href={href("resumen")}
-          aria-label="Órbita, resumen"
-        >
-          <span className="brand-mark">
-            <Orbit size={29} aria-hidden="true" />
+    <div className="mission-app">
+      <header className="mission-header">
+        <div className="header-identity">
+          <Link
+            className="mission-brand"
+            href={href("resumen")}
+            aria-label="Órbita, seguimiento"
+          >
+            <Orbit size={25} aria-hidden="true" />
+            <span>Órbita</span>
+          </Link>
+          <span className="application-name">
+            Seguimiento de capacidad aeróbica
           </span>
-          <span>
-            Órbita<small>Salud humana en el espacio</small>
+        </div>
+        <div className="header-controls">
+          <span className="mode-label">
+            <FlaskConical size={15} aria-hidden="true" />
+            Simulación
           </span>
-        </Link>
-        <p className="workspace-label">Mi espacio de misión</p>
-        <nav aria-label="Principal">
-          {navigation.map((item) => (
+          <ThemeControl />
+        </div>
+      </header>
+      <div className="mission-contextbar">
+        <label className="crew-control" htmlFor="astronaut-selector">
+          <span>Tripulante</span>
+          <select
+            id="astronaut-selector"
+            value={astronaut.id}
+            onChange={(event) => {
+              const params = historyQuery({
+                ...context,
+                reference: "",
+                evaluation: "",
+              });
+              params.set("view", view);
+              params.set("astronaut", event.target.value);
+              if (demoControls) params.set("scenario", scenario);
+              startTransition(() =>
+                router.push(`/?${params}`, { scroll: false }),
+              );
+            }}
+          >
+            {astronauts.map((person) => (
+              <option key={person.id} value={person.id}>
+                {person.callsign} · {person.role}
+              </option>
+            ))}
+          </select>
+        </label>
+        <div className="mission-context-item">
+          <span>Misión</span>
+          <strong>{astronaut.mission}</strong>
+        </div>
+        <div className="mission-context-item data-cutoff">
+          <span>Evaluaciones hasta</span>
+          <strong>
+            {latest ? formatTimestamp(latest.recordedAt) : "Sin registros"}
+          </strong>
+          <small>
+            {latest
+              ? ageLabel(latest.recordedAt, asOf)
+              : "Sin fecha de corte disponible"}
+          </small>
+        </div>
+      </div>
+      <div className="navigation-row">
+        <nav className="mission-navigation" aria-label="Principal">
+          {Object.entries(viewNames).map(([id, label]) => (
             <Link
-              href={href(item.id)}
-              key={item.id}
-              aria-current={view === item.id ? "page" : undefined}
+              key={id}
+              href={href(id)}
+              aria-current={view === id ? "page" : undefined}
             >
-              <item.icon size={19} aria-hidden="true" />
-              <span>{item.label}</span>
-              <ChevronRight
-                size={15}
-                className="nav-chevron"
-                aria-hidden="true"
-              />
+              {label}
             </Link>
           ))}
         </nav>
-        <div className="sidebar-bottom">
-          <div>
-            <ShieldCheck size={20} aria-hidden="true" />
-            <strong>Tu historia, conectada</strong>
-          </div>
-          <p>Cada medición es un punto. Tu seguimiento les da perspectiva.</p>
-          <span className="sidebar-demo">Prototipo con datos simulados</span>
-        </div>
-      </aside>
-      <div className="workspace">
-        <header className="topbar">
-          <div className="breadcrumb">
-            <Orbit size={17} aria-hidden="true" />
-            <span>
-              Mi misión <span aria-hidden="true">/</span>{" "}
-              <strong>{viewNames[view]}</strong>
-            </span>
-          </div>
-          <div className="header-actions">
-            <span className="demo-status">
-              <span className="status-dot" />
-              Demostración
-            </span>
-            <ThemeControl />
-          </div>
-        </header>
-        <div className="crew-toolbar">
-          <span className="crew-avatar" aria-hidden="true">
-            {astronaut.callsign.slice(0, 1)}
-          </span>
-          <label htmlFor="astronaut-selector">
-            Tripulante
-            <select
-              id="astronaut-selector"
-              value={astronaut.id}
-              onChange={(event) => router.push(href(view, event.target.value))}
-            >
-              {astronauts.map((person) => (
-                <option key={person.id} value={person.id}>
-                  {person.callsign} · {person.role}
-                </option>
-              ))}
-            </select>
-          </label>
-          <span className="mission-label">{astronaut.mission}</span>
-          {demoControls ? (
-            <label className="scenario-control" htmlFor="scenario-selector">
-              Escenario simulado
-              <select
-                id="scenario-selector"
-                value={scenario}
-                onChange={(event) => {
-                  const params = new URLSearchParams({
-                    view,
-                    astronaut: astronaut.id,
-                    scenario: event.target.value,
-                  });
-                  router.push(`/?${params}`, { scroll: false });
-                }}
-              >
-                {Object.entries(scenarios).map(([id, label]) => (
-                  <option key={id} value={id}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </label>
-          ) : (
-            <span className="soft-tag">Datos de la API · simulación</span>
-          )}
-        </div>
-        <main className="dashboard-main">
-          <div className="demo-banner">
-            <Info size={17} aria-hidden="true" />
-            <p>
-              Datos y actividades ficticios. Prototipo pendiente de validación
-              médica.
-            </p>
-            <span className="badge">Modo demo</span>
-          </div>
-          {memoryOnly ? (
-            <p className="storage-notice" role="status">
-              El navegador bloqueó el guardado. Tus cambios se conservan durante
-              esta visita; descargá el resumen antes de salir.
-            </p>
-          ) : null}
-          {view === "resumen" || view === "evolucion" ? (
-            <AerobicOverview
-              key={`${scenario}-${view}`}
-              astronaut={astronaut}
-              mission={mission}
-              journal={journal}
-              measurements={measurements}
-              reference={reference}
-              onReference={(id) =>
-                router.push(href(view, astronaut.id, id), { scroll: false })
-              }
-              href={href}
-              expanded={view === "evolucion"}
-            />
-          ) : view === "ejercicio" ? (
-            <ExerciseView mission={mission} journal={journal} update={update} />
-          ) : (
-            <FollowupView
-              astronaut={astronaut}
-              mission={mission}
-              journal={journal}
-              update={update}
-            />
-          )}
-        </main>
-        <footer className="app-footer">
-          <span>Órbita · NASA Space Apps 2026</span>
-          <span>
-            Observación, actividad y seguimiento{" "}
-            <ArrowUpRight size={14} aria-hidden="true" />
-          </span>
-        </footer>
+        <span className="navigation-status" role="status">
+          {pending ? "Actualizando vista…" : ""}
+        </span>
       </div>
+      <main className="mission-main" aria-busy={pending}>
+        {memoryOnly ? (
+          <p className="storage-notice" role="status">
+            Guardado temporal: el navegador bloqueó el almacenamiento. Exportá
+            la revisión antes de salir.
+          </p>
+        ) : null}
+        {view === "resumen" || view === "evolucion" ? (
+          <AerobicOverview
+            astronaut={astronaut}
+            mission={mission}
+            journal={journal}
+            update={update}
+            measurements={measurements}
+            context={context}
+            onContext={change}
+            href={href}
+            expanded={view === "evolucion"}
+            asOf={asOf}
+            memoryOnly={memoryOnly}
+          />
+        ) : view === "ejercicio" ? (
+          <ExerciseView mission={mission} journal={journal} update={update} />
+        ) : (
+          <FollowupView
+            astronaut={astronaut}
+            mission={mission}
+            journal={journal}
+            update={update}
+            context={context}
+          />
+        )}
+      </main>
+      <footer className="mission-footer">
+        <p>
+          Datos ficticios · validación médica pendiente · seguimiento sin
+          diagnóstico
+        </p>
+        <div className="footer-tools">
+          {demoControls ? (
+            <details className="demo-configuration">
+              <summary>Configuración de demostración</summary>
+              <label htmlFor="scenario-selector">
+                Escenario de datos
+                <select
+                  id="scenario-selector"
+                  value={scenario}
+                  onChange={(event) => {
+                    const params = historyQuery({
+                      ...context,
+                      reference: "",
+                      evaluation: "",
+                    });
+                    params.set("view", view);
+                    params.set("astronaut", astronaut.id);
+                    params.set("scenario", event.target.value);
+                    startTransition(() =>
+                      router.push(`/?${params}`, { scroll: false }),
+                    );
+                  }}
+                >
+                  {Object.entries(scenarios).map(([id, label]) => (
+                    <option key={id} value={id}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <p>
+                Perfiles ilustrativos para revisar el comportamiento del panel.
+                No son modelos de respuesta fisiológica.
+              </p>
+            </details>
+          ) : null}
+          <details className="about-system">
+            <summary>Procedencia y alcance</summary>
+            <p>
+              Órbita es un prototipo de NASA Space Apps 2026. Los valores y
+              protocolos del historial son ficticios. Research aporta la
+              estructura de visitas y comparabilidad; los registros PRE/POST de
+              MR080G no forman un historial mensual individual.
+            </p>
+            <p>
+              Los resúmenes y observaciones se conservan en este navegador. No
+              se confirma sincronización ni envío a un especialista.
+            </p>
+            <a
+              href="https://ntrs.nasa.gov/citations/20140003748"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Referencia de investigación de NASA
+            </a>
+          </details>
+        </div>
+      </footer>
     </div>
   );
 }
