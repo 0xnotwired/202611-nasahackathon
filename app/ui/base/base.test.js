@@ -1,0 +1,252 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {stateLabel,originLabel,valueWithContext,accessibleTable,lineChart,dataStateBadge,attentionBadge} from './index.js';
+import {PLANNED_VIEWS,buildShell,assembleServices,storageNotice,configSelector} from './shell-model.js';
+import {ORIGINS} from '../../core/index.js'; // tests may cross-check against core; the module itself does not import it
+
+// Expected values are written by hand from the work order, never computed by the code under test.
+const FORBIDDEN=/\b(normal|fine|ok|good|healthy)\b/i;
+const NOW='2026-03-12T12:00:00.000Z';
+const clock=()=>NOW;
+const base={id:'r1',schema_version:2,type:'measurement',state:'recorded',variable:'pulse',value:72,unit:'bpm',method:'demo-device',
+  time:'2026-03-10T12:00:00.000Z',origin:'synthetic',source:'user_entered',mission_phase:'mission',subject:'s'};
+const absent=state=>{const r={...base,state};delete r.value;delete r.unit;return r;};
+
+test('M07-P1: the three record states read differently by text alone (R1)',()=>{
+  assert.equal(stateLabel({...base,state:'recorded'}),'recorded');
+  assert.equal(stateLabel({...base,state:'confirmed_none'}),'confirmed nothing new');
+  assert.equal(stateLabel({...base,state:'not_recorded'}),'not recorded');
+  assert.equal(stateLabel('not_recorded'),'not recorded');
+  for(const unknown of [undefined,null,{},{state:'banana'},'banana',7]) assert.equal(stateLabel(unknown),'state unknown');
+});
+
+const day=n=>`2026-03-${String(n).padStart(2,'0')}`;
+const point=(n,value)=>({id:`p${n}`,day:day(n),time:`${day(n)}T12:00:00.000Z`,value,unit:'bpm',method:'demo-device',origin:'synthetic'});
+const walk=(node,found=[])=>{found.push(node);for(const child of node.children??[])walk(child,found);return found;};
+const klass=(node,name)=>String(node.attrs?.class??'').split(' ').includes(name);
+
+test('M07-P2: a missing day splits the line into two segments and the table reads "not recorded" (R2)',()=>{
+  const model=lineChart({points:[point(1,60),point(3,62)],gaps:[{day:day(2),reason:'no_record'}],n:2,non_comparable_groups:[]},{unit:'bpm',label:'Pulse'});
+  assert.equal(model.segments.length,2);
+  assert.deepEqual(model.segments.map(s=>s.points.map(p=>p.value)),[[60],[62]]);
+  assert.equal(model.table.rows.length,3);
+  assert.deepEqual(model.table.rows.map(r=>r.day),[day(1),day(2),day(3)]);
+  assert.match(model.table.rows[1].value,/not recorded/);
+  assert.equal(model.table.rows[0].value,'60 bpm');
+});
+
+test('M07-P2b: drawing — two lines, a marker per value, and a visible mark on the gap',()=>{
+  const model=lineChart({points:[point(1,60),point(2,61),point(4,64),point(5,63)],gaps:[{day:day(3),reason:'not_recorded'}],n:4,non_comparable_groups:[]},{unit:'bpm',label:'Pulse'});
+  const nodes=walk(model.svg);
+  assert.equal(nodes.filter(n=>n.tag==='path'&&klass(n,'line')).length,2);
+  assert.equal(nodes.filter(n=>n.tag==='circle'&&klass(n,'point')).length,4);
+  assert.equal(nodes.filter(n=>klass(n,'gap')).length,1);
+  assert.equal(model.svg.tag,'svg');assert.equal(model.svg.attrs.role,'img');
+  assert.ok(String(model.svg.attrs['aria-label']).includes('Pulse'));
+  assert.deepEqual(model.table.rows.map(r=>r.day),[day(1),day(2),day(3),day(4),day(5)]);
+});
+
+test('M07-X4: an unlisted missing day still splits; a lone point is drawn; every gap reason has its own wording',()=>{
+  const split=lineChart({points:[point(1,60),point(3,62)],gaps:[],n:2,non_comparable_groups:[]},{unit:'bpm',label:'Pulse'});
+  assert.equal(split.segments.length,2,'distance between points is read, not only the gap list');
+  assert.equal(walk(split.svg).filter(n=>klass(n,'point')).length,2);
+  const reasons=['no_record','not_recorded','confirmed_none','no_value','other_group','superseded'];
+  const model=lineChart({points:[],gaps:reasons.map((reason,i)=>({day:day(i+1),reason})),n:0,non_comparable_groups:[]},{unit:'bpm',label:'Pulse'});
+  assert.equal(new Set(model.table.rows.map(r=>`${r.value}|${r.note}`)).size,6);
+  assert.match(model.table.rows[2].value,/confirmed nothing new/);
+  assert.doesNotMatch(model.table.rows[1].value,/nothing new/,'not recorded never reads as nothing new');
+  assert.doesNotMatch(model.table.rows.map(r=>`${r.value} ${r.note}`).join(' '),/\b0\b/,'a gap is never worded as zero');
+  const unknownReason=lineChart({points:[],gaps:[{day:day(1),reason:'made_up'}],n:0,non_comparable_groups:[]},{unit:'bpm',label:'Pulse'});
+  assert.match(unknownReason.table.rows[0].note,/not recognised/);
+});
+
+test('M07-X4b: empty and degenerate series draw no fake line and no NaN; other-method groups are named',()=>{
+  const bad=/NaN|Infinity|undefined/;
+  const same=lineChart({points:[point(1,60),point(2,60)],gaps:[],n:2,non_comparable_groups:[]},{unit:'bpm',label:'Pulse'});
+  const empty=lineChart({points:[],gaps:[{day:day(1),reason:'no_record'}],n:0,non_comparable_groups:[]},{unit:'bpm',label:'Pulse'});
+  const grouped=lineChart({points:[point(1,60),point(2,61)],gaps:[],n:2,non_comparable_groups:[{reason:'Different method',key:{method:'b',unit:'bpm'},n:3,points:[]}]},{unit:'bpm',label:'Pulse'});
+  for(const model of [same,empty,grouped]) for(const node of walk(model.svg)) for(const value of Object.values(node.attrs??{})) assert.doesNotMatch(String(value),bad,JSON.stringify(node.attrs));
+  assert.equal(empty.empty,true);assert.match(empty.empty_text,/no values/i);
+  assert.equal(walk(empty.svg).filter(n=>klass(n,'line')||klass(n,'point')).length,0);
+  assert.equal(grouped.not_drawn.n,3);assert.match(grouped.not_drawn.text,/3/);assert.match(grouped.not_drawn.text,/method/i);
+  assert.equal(same.empty,false);
+});
+
+test('M07-X4c: hostile chart input returns an implemented error Result and never throws',()=>{
+  for(const input of [null,undefined,'x',7,[],{},{points:'x',gaps:[]},{points:[],gaps:null},{points:[{day:'yesterday',value:1}],gaps:[]},{points:[{day:day(1),value:NaN}],gaps:[]},{points:[{day:day(1),value:'5'}],gaps:[]}]) {
+    const out=lineChart(input,{unit:'bpm',label:'x'});
+    assert.equal(out.ok,false,JSON.stringify(input));assert.notEqual(out.error.code,'not_implemented');assert.equal(typeof out.error.message,'string');
+  }
+});
+
+test('M07-P3: every origin has its own label; an unknown origin says so and never defaults to synthetic (R4)',()=>{
+  const labels=ORIGINS.map(origin=>originLabel(origin));
+  assert.equal(new Set(labels).size,ORIGINS.length);
+  for(const label of labels) assert.ok(typeof label==='string'&&label.length>0);
+  assert.match(originLabel('synthetic'),/synthetic/i);assert.match(originLabel('flight'),/flight/i);
+  for(const unknown of ['banana','',undefined,null,{},7]) {
+    assert.match(originLabel(unknown),/unknown/i);assert.doesNotMatch(originLabel(unknown),/synthetic/i);
+  }
+});
+
+const view=(id,model)=>({id,label:id,folder:`app/ui/${id}/`,load:async()=>({model,mount(){}})});
+const services=(status={kind:'indexeddb',persistent:true})=>({store:{status:()=>status},configs:[{id:'a',name:'Station demo',communication:'real_time',environment:'station',available_equipment:[]}],
+  config:{id:'a',name:'Station demo',communication:'real_time',environment:'station',available_equipment:[]},clock,newId:()=>'1'});
+const allViews=(overrides={})=>PLANNED_VIEWS.map(v=>({...v,...(overrides[v.id]?view(v.id,overrides[v.id]):{load:async()=>({model:async()=>({ok:false,error:{code:'not_implemented',message:'x'}}),mount(){}})})}));
+const placeholder=async()=>({ok:false,error:{code:'not_implemented',message:'not yet'}});
+
+test('M07-P4: a not-implemented view says "not available yet" and navigation still lists every planned view',async()=>{
+  assert.deepEqual(PLANNED_VIEWS.map(v=>v.id),['my-health','adaptation','habitat','my-progress','my-day','my-plan','on-board','i-feel-different','nasa-cases','ground']);
+  for(const v of PLANNED_VIEWS) assert.equal(v.folder,`app/ui/${v.id}/`);
+  const shell=await buildShell({views:allViews({'my-health':placeholder}),currentId:'my-health',services:services()});
+  assert.equal(shell.current.state,'not_available');assert.match(shell.current.text,/not available yet/i);
+  assert.deepEqual(shell.nav.map(n=>n.id),PLANNED_VIEWS.map(v=>v.id));
+  assert.equal(shell.nav.filter(n=>n.current).length,1);assert.equal(shell.nav.find(n=>n.current).id,'my-health');
+  assert.equal(shell.nav[0].href,'#/my-health');
+});
+
+test('M07-X5: a view that cannot load or whose model throws fails alone; unexplained empty is an error',async()=>{
+  const nav=PLANNED_VIEWS.map(v=>v.id);
+  const broken=allViews();broken[0]={...broken[0],load:async()=>{throw new Error('module transport failed');}};
+  const loadFail=await buildShell({views:broken,currentId:'my-health',services:services()});
+  assert.equal(loadFail.current.state,'error');assert.match(loadFail.current.text,/could not be loaded/i);assert.deepEqual(loadFail.nav.map(n=>n.id),nav);
+  const thrown=await buildShell({views:allViews({'my-health':async()=>{throw new Error('boom');}}),currentId:'my-health',services:services()});
+  assert.equal(thrown.current.state,'error');assert.deepEqual(thrown.nav.map(n=>n.id),nav);
+  const cases=[[{state:'empty',reason:'No records yet for this subject.'},'empty',/No records yet/],[{state:'empty'},'error',/without saying why/i],
+    [{state:'loading'},'loading',/loading/i],[{state:'error',message:'Store closed'},'error',/Store closed/],[{state:'ready',x:1},'ready',/./],
+    [{state:'banana'},'error',/unrecognised/i],[null,'error',/did not return/i],[{ok:false,error:{code:'invalid_query',message:'bad range'}},'error',/bad range/]];
+  for(const [vm,state,text] of cases) {
+    const shell=await buildShell({views:allViews({'my-health':async()=>vm}),currentId:'my-health',services:services()});
+    assert.equal(shell.current.state,state,JSON.stringify(vm));assert.match(shell.current.text,text);
+  }
+  const unknownRoute=await buildShell({views:allViews(),currentId:'nope',services:services()});
+  assert.equal(unknownRoute.current.state,'unknown_view');assert.deepEqual(unknownRoute.nav.map(n=>n.id),nav);
+});
+
+test('M07-P5: a memory store always produces a visible storage notice',async()=>{
+  const memory=await buildShell({views:allViews(),currentId:'my-health',services:services({kind:'memory',persistent:false,reason:'chosen for this session'})});
+  assert.equal(memory.storage.kind,'warning');assert.ok(memory.storage.text.length>0);assert.match(memory.storage.text,/not saved/i);assert.match(memory.storage.text,/chosen for this session/);
+  const saved=await buildShell({views:allViews(),currentId:'my-health',services:services()});
+  assert.equal(saved.storage.kind,'info');assert.match(saved.storage.text,/not encrypted/i);
+});
+
+test('M07-X6: storage notice never goes silent and never claims protection',()=>{
+  for(const status of [undefined,null,{},{kind:'memory'},{persistent:'yes'},'x',{kind:'indexeddb',persistent:1}]) {
+    const notice=storageNotice(status);assert.equal(notice.kind,'warning',JSON.stringify(status));assert.match(notice.text,/unknown/i);
+  }
+  assert.match(storageNotice({kind:'indexeddb',persistent:true}).text,/this browser/i);
+  assert.doesNotMatch(JSON.stringify([storageNotice({kind:'indexeddb',persistent:true}),storageNotice({kind:'memory',persistent:false})]),/\b(secure|protected|safe|encrypted by)\b/i);
+});
+
+test('M07-X7: services assembly refuses missing parts and never picks a configuration silently',()=>{
+  const configs=[{id:'a',name:'Station demo',communication:'real_time',environment:'station',available_equipment:[]},{id:'b',name:'Rover demo',communication:'delayed',environment:'rover',available_equipment:[]}];
+  const store={status:()=>({kind:'memory',persistent:false})};const newId=()=>'1';
+  const ok=assembleServices({store,clock,newId,configs,selected_config_id:'b',collaborators:{readings:{series(){}}}});
+  assert.equal(ok.ok,true);assert.equal(ok.value.config.id,'b');assert.equal(typeof ok.value.readings.series,'function');assert.ok(Object.isFrozen(ok.value));
+  assert.equal(assembleServices({store,clock,newId,configs}).value.config,null,'no selection stays no selection');
+  for(const bad of [{clock,newId,configs},{store,newId,configs},{store,clock:'x',newId,configs},{store,clock,newId,configs,selected_config_id:'zzz'},
+    {store,clock,newId,configs:'x'},{store,clock,newId,configs,collaborators:{store:{}}},{store,clock,newId,configs,collaborators:{clock(){}}},null,undefined,'x']) {
+    const out=assembleServices(bad);assert.equal(out.ok,false,JSON.stringify(bad)?.slice(0,60));assert.notEqual(out.error.code,'not_implemented');
+  }
+  assert.equal(assembleServices({store,clock,newId,configs,selected_config_id:'zzz'}).error.code,'unknown_config');
+  const selector=configSelector(configs,'b');
+  assert.deepEqual(selector.options.map(o=>o.id),['a','b']);assert.equal(selector.selected_id,'b');
+  assert.match(selector.options[1].detail,/delayed/i);assert.match(selector.options[1].detail,/rover/i);assert.match(selector.options[0].detail,/station/i);
+  assert.equal(configSelector(configs,null).selected_id,null);
+});
+
+test('M07-X1: value with context never invents a unit, a zero or an age',()=>{
+  const full=valueWithContext(base,{clock});
+  assert.ok(full.text.includes('72 bpm'));assert.ok(full.text.includes('demo-device'));assert.ok(full.text.includes('2026-03-10T12:00:00.000Z'));
+  assert.match(full.text,/2 days ago/);assert.match(full.text,/synthetic/i);assert.equal(full.parts.age_days,2);
+  const unitless=valueWithContext({...base,unit:null,unit_status:'unknown',value:5},{clock});
+  assert.match(unitless.text,/5/);assert.match(unitless.text,/unit unknown/);assert.equal(unitless.parts.unit,null);assert.doesNotMatch(unitless.text,/bpm/);
+  const none=valueWithContext(absent('not_recorded'),{clock});
+  assert.match(none.text,/not recorded/);assert.equal(none.parts.value,null);assert.doesNotMatch(none.text,/\b0\b/);
+  const nothingNew=valueWithContext(absent('confirmed_none'),{clock});
+  assert.match(nothingNew.text,/confirmed nothing new/);assert.equal(nothingNew.parts.value,null);
+  const source=valueWithContext({...base,time:null,unit:null,unit_status:'unknown',value:5,origin:'ground_analog',
+    source_time:{value:'2026-03-02',raw:'03/02/2026',precision:'date',timezone:null,calendar:'original',scope:'demo-source'}},{clock});
+  assert.ok(source.text.includes('03/02/2026'));assert.match(source.text,/age not computed/);assert.equal(source.parts.age_days,null);assert.match(source.text,/time zone/i);
+  assert.match(valueWithContext(base,{}).text,/age not computed/);assert.equal(valueWithContext(base,undefined).parts.age_days,null);
+  assert.match(valueWithContext(base,{clock:()=>'2026-03-01T00:00:00.000Z'}).text,/after the clock|age not computed/);
+  for(const bad of [null,undefined,'x',{},{...base,state:'banana'}]) assert.match(valueWithContext(bad,{clock}).text,/unknown|invalid/i);
+});
+
+test('M07-P7: the data states read differently, none says "normal"; attention names its criterion and its source',()=>{
+  const rule={clock,old_after_days:7};
+  const current=dataStateBadge(base,rule);
+  const old=dataStateBadge({...base,time:'2026-02-01T12:00:00.000Z'},rule);
+  const missing=dataStateBadge(absent('not_recorded'),rule);
+  const nothingNew=dataStateBadge(absent('confirmed_none'),rule);
+  const incomparable=dataStateBadge(base,{...rule,comparable:false,reason:'Different method'});
+  const texts=[current,old,missing,nothingNew,incomparable].map(b=>b.text);
+  assert.equal(new Set(texts).size,5);
+  assert.deepEqual([current,old,missing,nothingNew,incomparable].map(b=>b.kind),['current','old','not_recorded','confirmed_none','not_comparable']);
+  for(const b of [current,old,missing,nothingNew,incomparable]) {assert.doesNotMatch(b.text,FORBIDDEN);assert.ok(b.symbol.length>0);assert.ok(b.tone.length>0);}
+  assert.match(incomparable.text,/Different method/);
+  assert.match(current.text,/current/);assert.match(old.text,/old/);assert.match(old.text,/39 days/);
+  assert.match(missing.text,/not recorded/);assert.match(nothingNew.text,/confirmed nothing new/);
+
+  const none=attentionBadge({status:'no_criterion'});
+  assert.match(none.text,/no attention criterion defined for this mission/i);assert.doesNotMatch(JSON.stringify(none),FORBIDDEN);
+  const demo=attentionBadge({status:'outside',reason:'the value is above the criterion high',criterion:{id:'c',variable:'pulse',unit:'bpm',high:70,defined_by:'team demo',source:'team_defined',review_status:'demo'}});
+  assert.match(demo.text,/demo/);assert.match(demo.text,/team_defined/);assert.match(demo.text,/team demo/);assert.match(demo.text,/outside/i);assert.doesNotMatch(demo.text,FORBIDDEN);
+  assert.deepEqual(demo.provenance,{defined_by:'team demo',source:'team_defined',review_status:'demo'});
+});
+
+test('M07-X2: freshness is data — without old_after_days the badge states the age and judges nothing',()=>{
+  const noRule=dataStateBadge(base,{clock});
+  assert.equal(noRule.kind,'age_only');assert.match(noRule.text,/2 days/);assert.doesNotMatch(noRule.text,/current|\bold\b/);
+  for(const rule of [{clock,old_after_days:-1},{clock,old_after_days:'7'},{clock,old_after_days:NaN}]) assert.equal(dataStateBadge(base,rule).kind,'age_only');
+  assert.equal(dataStateBadge({...base,unit:null,unit_status:'unknown',value:5},{clock,old_after_days:7}).kind,'not_comparable');
+  assert.match(dataStateBadge({...base,unit:null,unit_status:'unknown',value:5},{clock,old_after_days:7}).text,/unit/i);
+  const sourceOnly=dataStateBadge({...base,time:null,source_time:{value:'2026-03-02',raw:'03/02/2026',precision:'date',timezone:null,calendar:'original',scope:'s'}},{clock,old_after_days:7});
+  assert.equal(sourceOnly.kind,'age_unknown');assert.match(sourceOnly.text,/age not established/);
+  for(const bad of [null,undefined,'x',{},{...base,state:'banana'}]) assert.equal(dataStateBadge(bad,{clock}).kind,'unknown');
+  assert.equal(dataStateBadge(base,undefined).kind,'age_unknown');
+  assert.equal(dataStateBadge({...base,time:'2026-03-20T00:00:00.000Z'},{clock,old_after_days:7}).kind,'age_unknown','a future record gets no age and no "current"');
+});
+
+test('M07-X3: attention without provenance or with an unknown status never reads as within',()=>{
+  const full={id:'c',variable:'pulse',unit:'bpm',low:50,high:70,defined_by:'flight surgeons',source:'cited-source',review_status:'reviewed'};
+  const within=attentionBadge({status:'within',criterion:full});
+  assert.match(within.text,/flight surgeons/);assert.match(within.text,/cited-source/);assert.match(within.text,/reviewed/);assert.equal(within.kind,'within');assert.doesNotMatch(within.text,FORBIDDEN);
+  for(const incomplete of [undefined,null,{},{...full,defined_by:''},{...full,source:undefined},{...full,review_status:'draft'},'x']) {
+    for(const status of ['within','outside']) {
+      const badge=attentionBadge({status,criterion:incomplete});
+      assert.equal(badge.kind,'not_assessed',JSON.stringify(incomplete));assert.match(badge.text,/not assessed/i);assert.notEqual(badge.kind,'within');
+    }
+  }
+  for(const odd of [undefined,null,{},{status:'banana'},'within',7]) assert.equal(attentionBadge(odd).kind,'not_assessed');
+  const notAssessed=attentionBadge({status:'not_assessed',reason:'the unit of this value is unknown'});
+  assert.match(notAssessed.text,/the unit of this value is unknown/);assert.equal(notAssessed.kind,'not_assessed');
+  assert.equal(new Set([none(),notAssessed.text,within.text].map(String)).size,3);
+  function none(){return attentionBadge({status:'no_criterion'}).text;}
+});
+
+test('M07-X: accessible table keeps its caption, columns and rows, and refuses an unnamed table',()=>{
+  const table=accessibleTable({caption:'Pulse by day',columns:[{key:'day',label:'Day'},{key:'value',label:'Value'}],rows:[{day:'2026-03-01',value:'60 bpm'},{day:'2026-03-02',value:'not recorded'}]});
+  assert.equal(table.caption,'Pulse by day');assert.deepEqual(table.columns.map(c=>c.key),['day','value']);assert.equal(table.rows.length,2);assert.equal(table.rows[1].value,'not recorded');
+  const one=[{key:'a',label:'A'}];
+  for(const noCaption of [{caption:'',columns:one,rows:[]},{columns:one,rows:[]},{caption:7,columns:one,rows:[]}]) {
+    const out=accessibleTable(noCaption);assert.equal(out.ok,false,'caption is checked on its own: '+JSON.stringify(noCaption));assert.equal(out.error.field,'caption');
+  }
+  for(const bad of [null,{},{caption:'',columns:[],rows:[]},{caption:'x',columns:[],rows:[]},{caption:'x',columns:[{key:'a',label:'A'}],rows:'x'},{caption:'x',columns:[{key:'a'}],rows:[]},
+    {caption:'x',columns:[{key:'a',label:'A'}],rows:[{a:{html:'<b>'}}]}]) {
+    const out=accessibleTable(bad);assert.equal(out.ok,false,JSON.stringify(bad));assert.notEqual(out.error.code,'not_implemented');
+  }
+  const missingCell=accessibleTable({caption:'x',columns:[{key:'a',label:'A'}],rows:[{}]});
+  assert.equal(missingCell.rows[0].a,'','an absent cell is empty text, never 0');
+});
+
+test('M07-X8: no string literal in the module says normal, fine, ok, good or healthy',async()=>{
+  const found=[];
+  for(const name of ['index.js','labels.js','chart.js','shell-model.js','dom.js']) {
+    const source=await readFile(new URL(`./${name}`,import.meta.url),'utf8');
+    const code=source.replace(/\/\*[\s\S]*?\*\//g,'').replace(/(^|[^:])\/\/.*$/gm,'$1');
+    for(const match of code.matchAll(/(['"`])((?:\\.|(?!\1).)*)\1/g)) if(FORBIDDEN.test(match[2])) found.push(`${name}: ${match[2].slice(0,60)}`);
+  }
+  assert.deepEqual(found,[]);
+});

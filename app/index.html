@@ -2,12 +2,19 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Órbita — Foundation</title>
-<h1>Órbita foundation</h1>
-<p id="status">Open this page through the local server. Application modules are not available yet.</p>
+<meta name="color-scheme" content="dark light">
+<title>Órbita</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="./ui/base/style.css">
+<!-- Plain text on purpose: it shows when the modules cannot load (for example a double click on file://)
+     and the shell removes it as soon as it starts. -->
+<p id="status">Open this page through the local server (run npm run serve, then open the address it prints). The application modules did not load, so nothing else is shown here.</p>
+<div id="app"></div>
 <script type="module">
-import { CONTRACT_VERSION } from './contracts/data.js';
-document.querySelector('#status').textContent = `Foundation modules loaded (contracts ${CONTRACT_VERSION}). Product views are not available yet.`;
-document.documentElement.dataset.modules = 'loaded';
+import { start } from './ui/base/start.js';
+start().catch(error => {
+  const status = document.querySelector('#status');
+  if (status) status.textContent = `The application could not start: ${error.message}`;
+});
 </script>
 </html>
