@@ -80,6 +80,39 @@ test('M07-X4c: hostile chart input returns an implemented error Result and never
   }
 });
 
+const CLOCK={scope:'BUT_CGM:1.0.0:101001',calendar:'shifted',precision:'second',timezone:null};
+test('M07-Y1: a series on a source clock says so; a UTC series does not',()=>{
+  const input={points:[point(1,60),point(3,62)],gaps:[{day:day(2),reason:'no_record'}],n:2,non_comparable_groups:[]};
+  const source=lineChart({...input,clock:CLOCK},{unit:'bpm',label:'Glucose'});
+  assert.equal(source.time_basis,'source');
+  for(const text of [source.summary,source.svg.attrs['aria-label']]) {assert.match(text,/source dates/);assert.match(text,/time zone not established/);}
+  assert.match(source.table.columns[0].label,/Source day/);assert.match(source.table.columns[0].label,/time zone not established/);
+  const utc=lineChart(input,{unit:'bpm',label:'Pulse'});
+  assert.equal(utc.time_basis,'utc');assert.equal(utc.table.columns[0].label,'Day');assert.doesNotMatch(utc.summary,/source/i);
+  assert.equal(lineChart({...input,clock:null},{unit:'bpm',label:'x'}).time_basis,'utc');
+});
+
+test('M07-Y2: values that are not drawn are still in the table, noted, and never in the drawing',()=>{
+  const unknownUnit={reason:'Unknown unit: these values cannot be compared with each other or with any other record',key:{method:null,unit:null,unit_status:'unknown'},n:2,
+    points:[{id:'q1',day:day(2),value:7,unit:null,method:'m',origin:'ground_analog'},{id:'q2',day:day(4),value:8.5,unit:null,method:'m',origin:'ground_analog'}]};
+  const otherMethod={reason:'Different method',key:{method:'b',unit:'bpm'},n:1,points:[{id:'b1',day:day(3),value:99,unit:'bpm',method:'b',origin:'synthetic'}]};
+  const model=lineChart({points:[point(1,60),point(2,61)],gaps:[],n:2,non_comparable_groups:[unknownUnit,otherMethod]},{unit:'bpm',label:'Pulse'});
+  const rows=model.table.rows;
+  assert.deepEqual(rows.map(r=>r.day),[day(1),day(2),day(2),day(3),day(4)]);
+  const undrawn=rows.filter(r=>/not drawn/.test(r.note));
+  assert.deepEqual(undrawn.map(r=>r.value),['7 (unit unknown)','99 bpm','8.5 (unit unknown)']);
+  assert.ok(undrawn.every(r=>/not comparable/.test(r.note)));
+  assert.match(undrawn[0].note,/Unknown unit/);assert.match(undrawn[1].note,/Different method/);
+  assert.equal(model.segments.flatMap(s=>s.points).length,2,'only the primary values are drawn');
+  assert.equal(walk(model.svg).filter(n=>klass(n,'point')).length,2);
+  assert.doesNotMatch(JSON.stringify(walk(model.svg).map(n=>n.attrs)),/99|8\.5/);
+  const onlyUndrawn=lineChart({points:[],gaps:[],n:0,non_comparable_groups:[unknownUnit]},{unit:'',label:'Pulse'});
+  assert.equal(onlyUndrawn.empty,true);assert.equal(onlyUndrawn.table.rows.length,2);
+  for(const bad of [{...unknownUnit,points:'x'},{...unknownUnit,points:[{day:'yesterday',value:1}]},{...unknownUnit,points:[{day:day(1),value:'5'}]}]) {
+    const out=lineChart({points:[],gaps:[],n:0,non_comparable_groups:[bad]},{unit:'',label:'x'});assert.equal(out.ok,false);assert.notEqual(out.error.code,'not_implemented');
+  }
+});
+
 test('M07-P3: every origin has its own label; an unknown origin says so and never defaults to synthetic (R4)',()=>{
   const labels=ORIGINS.map(origin=>originLabel(origin));
   assert.equal(new Set(labels).size,ORIGINS.length);

@@ -89,6 +89,22 @@ export function lineChart(input, options) {
     const reason = ownValue(gap, 'reason');
     cleanGaps.push({day, reason, n: dayNumber(day), ...gapText(reason)});
   }
+  // Values the query set aside (another method, an unknown unit) are never drawn, but each one stays readable in the table.
+  const undrawn = [];
+  for (const group of groups) {
+    const groupPoints = ownValue(group, 'points') ?? [];
+    if (!Array.isArray(groupPoints)) return fail('invalid_chart', 'non_comparable_groups', 'Group points must be a list');
+    const reason = isText(ownValue(group, 'reason')) ? ownValue(group, 'reason') : 'not comparable';
+    const unitUnknown = ownValue(ownValue(group, 'key'), 'unit_status') === 'unknown';
+    for (const point of groupPoints) {
+      const day = ownValue(point, 'day');
+      const value = ownValue(point, 'value');
+      if (Number.isNaN(dayNumber(day))) return fail('invalid_chart', 'non_comparable_groups', 'Every undrawn point needs a valid day');
+      if (typeof value !== 'number' || !Number.isFinite(value)) return fail('invalid_chart', 'non_comparable_groups', 'Every undrawn point needs a finite numeric value');
+      const pointUnit = ownValue(point, 'unit');
+      undrawn.push({n: dayNumber(day), day, value: isText(pointUnit) && !unitUnknown ? `${value} ${pointUnit}` : `${value} (unit unknown)`, note: `not drawn: not comparable (${reason})`});
+    }
+  }
   cleanPoints.sort((a, b) => a.n - b.n);
   cleanGaps.sort((a, b) => a.n - b.n);
 
@@ -99,11 +115,14 @@ export function lineChart(input, options) {
     if (last && point.n - last.points[last.points.length - 1].n <= 1) last.points.push(point); else segments.push({points: [point]});
   }
 
+  const clock = ownValue(input, 'clock');
+  const timeBasis = clock !== null && typeof clock === 'object' && !Array.isArray(clock) ? 'source' : 'utc';
   const rows = [
     ...cleanPoints.map(p => ({n: p.n, day: p.day, value: unit ? `${p.value} ${unit}` : String(p.value), note: ''})),
-    ...cleanGaps.map(g => ({n: g.n, day: g.day, value: g.value, note: g.note}))
+    ...cleanGaps.map(g => ({n: g.n, day: g.day, value: g.value, note: g.note})),
+    ...undrawn
   ].sort((a, b) => a.n - b.n);
-  const table = accessibleTable({caption: `${label} by day`, columns: [{key: 'day', label: 'Day'}, {key: 'value', label: unit ? `Value (${unit})` : 'Value'}, {key: 'note', label: 'Note'}], rows});
+  const table = accessibleTable({caption: `${label} by day`, columns: [{key: 'day', label: timeBasis === 'source' ? 'Source day (time zone not established)' : 'Day'}, {key: 'value', label: unit ? `Value (${unit})` : 'Value'}, {key: 'note', label: 'Note'}], rows});
 
   const droppedCount = groups.reduce((sum, group) => sum + (Number.isInteger(ownValue(group, 'n')) ? ownValue(group, 'n') : 0), 0);
   const reasons = [...new Set(groups.map(group => ownValue(group, 'reason')).filter(isText))];
@@ -111,7 +130,7 @@ export function lineChart(input, options) {
     text: droppedCount ? `${droppedCount} ${droppedCount === 1 ? 'value' : 'values'} taken with another method or unit are not drawn (${reasons.join('; ') || 'not comparable'}).` : ''};
 
   const empty = cleanPoints.length === 0;
-  const summary = `${label}: ${cleanPoints.length} ${cleanPoints.length === 1 ? 'value' : 'values'}, ${cleanGaps.length} ${cleanGaps.length === 1 ? 'day' : 'days'} without a value. The same information is in the table.`;
+  const summary = `${label}${timeBasis === 'source' ? ' (source dates, time zone not established)' : ''}: ${cleanPoints.length} ${cleanPoints.length === 1 ? 'value' : 'values'}, ${cleanGaps.length} ${cleanGaps.length === 1 ? 'day' : 'days'} without a value. The same information is in the table.`;
   const allDays = [...cleanPoints, ...cleanGaps].map(item => item.n);
   const minDay = Math.min(...allDays);
   const maxDay = Math.max(...allDays);
@@ -147,7 +166,7 @@ export function lineChart(input, options) {
   const svg = node('svg', {viewBox: `0 0 ${WIDTH} ${HEIGHT}`, role: 'img', 'aria-label': summary, class: 'chart'}, children);
 
   return {
-    kind: 'line_chart', label, unit,
+    kind: 'line_chart', label, unit, time_basis: timeBasis,
     segments: segments.map(segment => ({points: segment.points.map(({day, value, id}) => ({day, value, id}))})),
     gaps: cleanGaps.map(({day, reason, value, note}) => ({day, reason, text: note ? `${value} (${note})` : value})),
     y: empty ? null : {min: lo, max: hi},

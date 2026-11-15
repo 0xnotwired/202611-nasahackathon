@@ -103,13 +103,24 @@ try:
             const model = chart.lineChart({points: [pt(1, 60), pt(2, 61), pt(4, 64), pt(5, 63)], gaps: [{day: day(3), reason: 'no_record'}], n: 4, non_comparable_groups: [{reason: 'Different method', key: {}, n: 2, points: []}]}, {unit: 'bpm', label: 'Pulse'});
             host.append(dom.renderChart(document, model));
             host.querySelector('details').open = true;
-            return {xss: window.__xss ?? null, img: host.querySelector('td img, th img') !== null, cell: host.querySelector('td, tbody th').textContent,
+            const src = chart.lineChart({points: [pt(1, 5.5), pt(2, 5.6)], gaps: [], n: 2, clock: {scope: 's', calendar: 'shifted', precision: 'second', timezone: null},
+                non_comparable_groups: [{reason: 'Unknown unit: not comparable', key: {method: null, unit: null, unit_status: 'unknown'}, n: 1, points: [{id: 'q', day: day(2), value: 7, unit: null, method: 'm', origin: 'ground_analog'}]}]}, {unit: 'mmol/L', label: 'Glucose'});
+            const host2 = document.createElement('div'); host2.id = 'probe2'; document.body.append(host2);
+            host2.append(dom.renderChart(document, src)); host2.querySelector('details').open = true;
+            const sourceView = {caption: host2.querySelector('figcaption').textContent, head: host2.querySelector('thead th').textContent,
+                                rows: [...host2.querySelectorAll('tbody tr')].map(r => r.textContent), circles: host2.querySelectorAll('svg circle.point').length};
+            return {sourceView, xss: window.__xss ?? null, img: host.querySelector('td img, th img') !== null, cell: host.querySelector('td, tbody th').textContent,
                     lines: host.querySelectorAll('svg path.line').length, points: host.querySelectorAll('svg circle.point').length, gaps: host.querySelectorAll('svg line.gap').length,
                     rows: [...host.querySelectorAll('.chart-block tbody tr')].map(r => r.textContent), note: host.querySelector('.notice-warning').textContent};
         }''')
         check(results, 'X10: markup in a cell is shown as text, never parsed', outcome['xss'] is None and not outcome['img'] and '<img' in outcome['cell'], str(outcome['cell']))
         check(results, 'X11: two separate drawn lines, four markers, one visible gap mark', (outcome['lines'], outcome['points'], outcome['gaps']) == (2, 4, 1), str(outcome))
         check(results, 'X11: the table beside the chart has five rows and day 3 reads "not recorded"', len(outcome['rows']) == 5 and 'not recorded' in outcome['rows'][2], str(outcome['rows']))
+        sv = outcome['sourceView']
+        check(results, 'Y3: a source-clock chart says source days and time zone not established, in caption and table head',
+              'time zone not established' in sv['caption'] and 'Source day' in sv['head'], str(sv))
+        check(results, 'Y3: the unknown-unit value is in the table as not drawn and has no marker',
+              any('7 (unit unknown)' in r and 'not drawn' in r for r in sv['rows']) and sv['circles'] == 2, str(sv))
         check(results, 'X11: the gap mark has a visible legend', 'Dashed vertical mark' in page.locator('.legend').inner_text())
         check(results, 'X4 browser: values with another method are named, not drawn', '2 values' in outcome['note'] and 'method' in outcome['note'], outcome['note'])
         if SHOTS:
