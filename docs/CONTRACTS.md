@@ -207,7 +207,7 @@ Store
   close()                           → Promise<void>
 ```
 
-Collections: `records`, `executions`, `tasks`, `episodes`, `shared`, `deliveries`, `config`, `procedures` (added 0.14). `procedures` is immutable like `records`: `updateState` is refused. The IndexedDB schema is version 2 since 0.14: opening a version 1 database upgrades it by creating the missing collection and keeps its data (BROWSER-checked in `tests/walkthrough/g4-browser.py`). `records` and `shared` do not allow `updateState` (R7). If IndexedDB is missing, `openStore` with `"indexeddb"` returns an error; the caller decides to use `"memory"` and shows it.
+Collections: `records`, `executions`, `tasks`, `episodes`, `shared`, `deliveries`, `config`, `procedures` (added 0.14). `procedures` is immutable like `records`: `updateState` is refused. The IndexedDB schema is version 2 since 0.14: opening a version 1 database upgrades it by creating the missing collection and keeps its data (BROWSER-checked in `tests/walkthrough/g3-extras-browser.py`). `records` and `shared` do not allow `updateState` (R7). If IndexedDB is missing, `openStore` with `"indexeddb"` returns an error; the caller decides to use `"memory"` and shows it.
 
 ### scenario (M05)
 

@@ -33,8 +33,8 @@ them. Parallel work should use distinct working branches.
   privacy (M19), simulated sync and ground panel (M24); contract 0.14 and IndexedDB
   schema v2 (an existing profile is upgraded on its next open and keeps its data).
   Minimal F4 added on request: episode (M16), copilot (M17, no clinical rule shipped), summary
-  (M18) and the "I feel different" view (M20); contract 0.15. 334 Node tests; g4-browser.py and
-  g5-browser.py. Not built: packaging (M23). The summary text is not transmitted (only records).
+  (M18) and the "I feel different" view (M20); contract 0.15. 338 Node tests; g3-extras-browser.py and
+  g4-browser.py. G5 (NASA cases) checked on top of all views: `g5.test.js` and `g5-browser.py` (real BUT CGM file when present). Not built: packaging (M23). The summary text is not transmitted (only records).
 - Contract version 0.15; current record schema2, with unchanged legacy1 readers.
 
 ## What actually runs
