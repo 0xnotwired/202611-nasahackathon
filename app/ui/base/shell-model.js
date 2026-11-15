@@ -26,6 +26,14 @@ export function storageNotice(status, fallbackReason) {
 
 const COMMUNICATION = Object.freeze({real_time: 'real-time link', delayed: 'delayed link', no_link: 'no link'});
 
+/** The data sources a person can look at. Nothing is selected unless the caller says which. */
+export function sourceSelector(sources, selectedId) {
+  const list = Array.isArray(sources) ? sources.filter(source => plain(source) && isText(ownValue(source, 'id'))) : [];
+  const options = list.map(source => ({id: ownValue(source, 'id'), label: isText(ownValue(source, 'label')) ? ownValue(source, 'label') : ownValue(source, 'id'),
+    detail: ownValue(source, 'synthetic') === true ? 'fictional data kept in memory for this page' : 'records saved in this browser'}));
+  return {options, selected_id: options.some(option => option.id === selectedId) ? selectedId : null};
+}
+
 export function configSelector(configs, selectedId) {
   const list = Array.isArray(configs) ? configs.filter(config => plain(config) && isText(ownValue(config, 'id'))) : [];
   const options = list.map(config => {
@@ -38,7 +46,7 @@ export function configSelector(configs, selectedId) {
   return {options, selected_id: selected, prompt: selected === null ? 'No mission configuration selected' : null};
 }
 
-const RESERVED = ['store', 'clock', 'newId', 'configs', 'config', 'storage_fallback_reason'];
+const RESERVED = ['store', 'clock', 'newId', 'configs', 'config', 'storage_fallback_reason', 'subject', 'data_source', 'writable', 'record_origin', 'flags'];
 
 /** Gather what views receive. Nothing is defaulted: a missing part or an unknown selection is an error. */
 export function assembleServices(parts) {
@@ -61,7 +69,18 @@ export function assembleServices(parts) {
     if (!config) return fail('unknown_config', 'selected_config_id', `No configuration has the id ${String(selected).slice(0, 60)}`);
   }
   const fallback = ownValue(parts, 'storage_fallback_reason');
-  return {ok: true, value: Object.freeze({...collaborators, store, clock, newId, configs: Object.freeze([...configs]), config, storage_fallback_reason: isText(fallback) ? fallback : null})};
+  const subject = ownValue(parts, 'subject');
+  if (subject !== undefined && subject !== null && !isText(subject)) return fail('invalid_services', 'subject', 'subject must be non-empty text when given');
+  const source = ownValue(parts, 'data_source');
+  if (source !== undefined && source !== null && (!plain(source) || !isText(ownValue(source, 'id')) || !isText(ownValue(source, 'label')))) return fail('invalid_services', 'data_source', 'data_source needs an id and a label');
+  const writable = ownValue(parts, 'writable');
+  if (writable !== undefined && typeof writable !== 'boolean') return fail('invalid_services', 'writable', 'writable must be true or false');
+  const origin = ownValue(parts, 'record_origin');
+  if (origin !== undefined && origin !== null && !isText(origin)) return fail('invalid_services', 'record_origin', 'record_origin must be text when given');
+  const flags = ownValue(parts, 'flags');
+  if (flags !== undefined && !plain(flags)) return fail('invalid_services', 'flags', 'flags must be an object');
+  return {ok: true, value: Object.freeze({...collaborators, store, clock, newId, configs: Object.freeze([...configs]), config, storage_fallback_reason: isText(fallback) ? fallback : null,
+    subject: isText(subject) ? subject : null, data_source: source ? Object.freeze({...source}) : null, writable: writable === true, record_origin: isText(origin) ? origin : null, flags: Object.freeze({...(flags ?? {})})})};
 }
 
 function interpret(label, result) {
@@ -102,7 +121,7 @@ async function resolveCurrent(planned, loader, services, params) {
  * buildShell({ views, currentId, services, params }) → { nav, current, storage, config }
  * The navigation always lists every planned view. One view failing never stops the shell.
  */
-export async function buildShell({views = [], currentId, services, params} = {}) {
+export async function buildShell({views = [], currentId, services, params, sources = []} = {}) {
   const loaders = new Map((Array.isArray(views) ? views : []).filter(view => plain(view) && isText(view.id)).map(view => [view.id, view]));
   const nav = PLANNED_VIEWS.map(view => ({id: view.id, label: view.label, folder: view.folder, href: `#/${view.id}`, current: view.id === currentId}));
   const planned = PLANNED_VIEWS.find(view => view.id === currentId);
@@ -112,6 +131,6 @@ export async function buildShell({views = [], currentId, services, params} = {})
   const store = ownValue(services, 'store');
   let status;
   try { status = typeof ownValue(store, 'status') === 'function' ? store.status() : undefined; } catch { status = undefined; }
-  return {nav, current, storage: storageNotice(status, ownValue(services, 'storage_fallback_reason')),
+  return {nav, current, storage: storageNotice(status, ownValue(services, 'storage_fallback_reason')), source: sourceSelector(sources, ownValue(ownValue(services, 'data_source'), 'id')),
     config: configSelector(ownValue(services, 'configs'), ownValue(ownValue(services, 'config'), 'id'))};
 }

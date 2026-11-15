@@ -59,6 +59,9 @@ try:
         check(results, 'P4 browser: ten navigation links, in order', page.eval_on_selector_all('nav a', 'els => els.map(e => e.getAttribute("href"))') == [f'#/{n}' for n in NAV])
         main_text = page.locator('#view').inner_text()
         check(results, 'P4 browser: unbuilt view says "not available yet"', 'not available yet' in main_text.lower(), main_text)
+        check(results, 'F6 browser: the default data source is the synthetic demo and the shell says so', 'Synthetic demo' in page.locator('#source-select option:checked').inner_text(), '')
+        page.select_option('#source-select', 'mine')
+        page.wait_for_function('document.querySelector("#announce").textContent.includes("Data source changed")')
         storage = page.locator('#storage-notice').inner_text()
         check(results, 'P5 browser: persistent store shows its line, not a promise of protection', 'not encrypted' in storage, storage)
 
@@ -154,6 +157,8 @@ try:
         nodb.add_init_script('Object.defineProperty(window, "indexedDB", {value: undefined})')
         nodb.goto(url)
         nodb.wait_for_selector('html[data-modules="loaded"]', timeout=15000)
+        nodb.select_option('#source-select', 'mine')
+        nodb.wait_for_function('document.querySelector("#announce").textContent.includes("Data source changed")')
         warning = nodb.locator('#storage-notice').inner_text()
         check(results, 'P5 browser: without IndexedDB the shell says data is not saved and why', 'Not saved' in warning and 'IndexedDB could not be used' in warning, warning)
 

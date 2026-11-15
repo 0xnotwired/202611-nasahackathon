@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {stateLabel,originLabel,valueWithContext,accessibleTable,lineChart,dataStateBadge,attentionBadge} from './index.js';
-import {PLANNED_VIEWS,buildShell,assembleServices,storageNotice,configSelector} from './shell-model.js';
+import {stateLabel,originLabel,valueWithContext,accessibleTable,lineChart,dataStateBadge,attentionBadge,viewKit} from './index.js';
+import {PLANNED_VIEWS,buildShell,assembleServices,storageNotice,configSelector,sourceSelector} from './shell-model.js';
 import {ORIGINS} from '../../core/index.js'; // tests may cross-check against core; the module itself does not import it
 
 // Expected values are written by hand from the work order, never computed by the code under test.
@@ -175,6 +175,67 @@ test('M07-Y8: bad time options are refused, and a date-only point never gets an 
   assert.equal(walk(dated.svg).filter(n=>klass(n,'point')).length,1);
   const row=dated.table.rows.find(r=>/no time of day/.test(r.note));
   assert.ok(row,'the date-only value is in the table');assert.match(row.note,/no time of day in the source/);assert.equal(row.time,'');
+});
+
+const clockCtx={clock};
+test('M07-F1: one record becomes one entry, with the same value text as valueWithContext and nothing invented',()=>{
+  const e=viewKit.recordEntry(base,clockCtx);
+  assert.equal(e.has_record,true);assert.equal(e.id,'r1');assert.equal(e.variable,'pulse');assert.equal(e.state,'recorded');assert.equal(e.state_text,'recorded');
+  assert.equal(e.value,72);assert.equal(e.unit,'bpm');assert.equal(e.value_text,'72 bpm');assert.equal(e.method,'demo-device');assert.equal(e.time,'2026-03-10T12:00:00.000Z');
+  assert.equal(e.origin,'synthetic');assert.match(e.origin_text,/synthetic/);assert.equal(e.text,valueWithContext(base,clockCtx).text);assert.equal(valueWithContext(base,clockCtx).text.startsWith(e.value_text),true);
+  assert.equal(e.badge.kind,'age_only');
+  const missing=viewKit.recordEntry(absent('not_recorded'),clockCtx);
+  assert.equal(missing.value,null);assert.equal(missing.value_text,'not recorded');assert.equal(missing.state,'not_recorded');assert.equal(missing.badge.kind,'not_recorded');assert.doesNotMatch(JSON.stringify(missing),/"value":0|\b0 bpm/);
+  const none=viewKit.recordEntry(absent('confirmed_none'),clockCtx);assert.equal(none.value_text,'confirmed nothing new');assert.equal(none.state,'confirmed_none');
+  const unitless=viewKit.recordEntry({...base,unit:null,unit_status:'unknown',value:5},clockCtx);assert.equal(unitless.value_text,'5 (unit unknown)');assert.equal(unitless.unit,null);
+  const source=viewKit.recordEntry({...base,time:null,unit:null,unit_status:'unknown',value:5,source_time:{value:'2026-03-02',raw:'03/02/2026',precision:'date',timezone:null,calendar:'original',scope:'s'}},clockCtx);
+  assert.equal(source.time,null);assert.equal(source.source_time_raw,'03/02/2026');assert.equal(source.age_days,null);
+  for(const bad of [{...base,state:'banana'},'x',7,[],{}]) {const out=viewKit.recordEntry(bad,clockCtx);assert.equal(out.has_record,false,JSON.stringify(bad));assert.equal(out.state,'not_recorded');}
+});
+
+test('M07-F2: an absent entry is "not recorded", never "nothing new"',()=>{
+  const e=viewKit.recordEntry(null,{...clockCtx,variable:'sleep_hours',label:'Self-reported rest duration'});
+  assert.equal(e.has_record,false);assert.equal(e.id,null);assert.equal(e.variable,'sleep_hours');assert.equal(e.label,'Self-reported rest duration');
+  assert.equal(e.value,null);assert.equal(e.value_text,'not recorded');assert.equal(e.state,'not_recorded');assert.equal(e.text,'Self-reported rest duration: not recorded');
+  assert.equal(e.method,null);assert.equal(e.time,null);assert.doesNotMatch(JSON.stringify(e),/nothing new|confirmed_none/);
+  assert.equal(viewKit.recordEntry(undefined,{}).variable,null);
+});
+
+const goodServices=()=>({store:{list:async()=>({ok:true,value:[]}),status:()=>({kind:'memory',persistent:false})},readings:{series(){},latest(){},baseline(){},environment(){},cumulative(){},attention(){}},
+  catalogs:{variables:()=>[{id:'pulse',label:'Pulse',unit:'bpm',type:'measurement'}]},subject:'subject-a',clock:()=>'2026-03-12T18:00:00.000Z',config:null});
+test('M07-F3: the view context names what is missing, never throws and never defaults a subject',()=>{
+  const ok=viewKit.contextOf(goodServices());
+  assert.equal(ok.ok,true);assert.equal(ok.value.subject,'subject-a');assert.equal(ok.value.now_iso,'2026-03-12T18:00:00.000Z');
+  assert.deepEqual(ok.value.today,{from:'2026-03-12T00:00:00.000Z',to:'2026-03-13T00:00:00.000Z'});assert.equal(ok.value.config,null);
+  for(const [part,patch] of [['store',{store:undefined}],['readings',{readings:{series(){}}}],['catalogs',{catalogs:{}}],['subject',{subject:''}],['subject',{subject:undefined}],['clock',{clock:'x'}],['clock',{clock:()=>'not a date'}]]) {
+    const out=viewKit.contextOf({...goodServices(),...patch});assert.equal(out.ok,false,part);assert.match(out.error.message,new RegExp(part),part);assert.notEqual(out.error.code,'not_implemented');
+  }
+  const trap={};Object.defineProperty(trap,'subject',{enumerable:true,get(){throw new Error('accessor ran');}});
+  for(const input of [undefined,null,'x',7,[],trap]) assert.equal(viewKit.contextOf(input).ok,false);
+  assert.equal(viewKit.contextOf({...goodServices(),clock:()=>{throw new Error('x');}}).ok,false);
+});
+
+test('M07-F4: textsOf and keysOf see every string and key, nested or not',()=>{
+  const m={title:'T',sections:[{id:'a',entries:[{text:'deep',tags:['x',['y']]}]}],n:3,flag:true,nothing:null};
+  assert.deepEqual(viewKit.textsOf(m).sort(),['T','a','deep','x','y']);
+  assert.deepEqual(viewKit.keysOf(m).sort(),['entries','flag','id','n','nothing','sections','tags','text','title']);
+  const loop={a:'x'};loop.self=loop;assert.deepEqual(viewKit.textsOf(loop),['x']);
+  assert.deepEqual(viewKit.textsOf(()=>1),[]);
+});
+
+test('M07-F5: services accept the F2 fields and the source selector never invents a selection',()=>{
+  const configs=[{id:'a',name:'A',communication:'real_time',environment:'station',available_equipment:[]}];
+  const parts={store:{status:()=>({kind:'memory',persistent:false})},clock,newId:()=>'1',configs,subject:'s-1',data_source:{id:'demo',label:'Synthetic demo',synthetic:true},writable:true,record_origin:'synthetic',flags:{career_limit:false}};
+  const out=assembleServices(parts);
+  assert.equal(out.ok,true);assert.equal(out.value.subject,'s-1');assert.equal(out.value.data_source.id,'demo');assert.equal(out.value.writable,true);assert.equal(out.value.record_origin,'synthetic');assert.deepEqual(out.value.flags,{career_limit:false});
+  const mine=assembleServices({...parts,subject:undefined,data_source:{id:'mine',label:'My records',synthetic:false},writable:false,record_origin:undefined,flags:undefined});
+  assert.equal(mine.ok,true);assert.equal(mine.value.subject,null);assert.equal(mine.value.writable,false);assert.deepEqual(mine.value.flags,{});
+  for(const key of ['subject','data_source','writable','record_origin','flags']) assert.equal(assembleServices({...parts,collaborators:{[key]:1}}).ok,false,key);
+  assert.equal(assembleServices({...parts,writable:'yes'}).ok,false);assert.equal(assembleServices({...parts,data_source:{id:'',label:'x'}}).ok,false);assert.equal(assembleServices({...parts,flags:[]}).ok,false);
+  const sources=[{id:'demo',label:'Synthetic demo (fictional)',synthetic:true},{id:'mine',label:'My records',synthetic:false}];
+  const picked=sourceSelector(sources,'mine');
+  assert.deepEqual(picked.options.map(o=>o.id),['demo','mine']);assert.equal(picked.selected_id,'mine');assert.match(picked.options[0].detail,/fictional/i);assert.match(picked.options[1].detail,/this browser/i);
+  assert.equal(sourceSelector(sources,null).selected_id,null);assert.equal(sourceSelector(sources,'zzz').selected_id,null);assert.deepEqual(sourceSelector('x',null).options,[]);
 });
 
 test('M07-P3: every origin has its own label; an unknown origin says so and never defaults to synthetic (R4)',()=>{

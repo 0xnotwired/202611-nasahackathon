@@ -1,6 +1,6 @@
 # Órbita: contracts between modules
 
-Version 0.11 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
+Version 0.12 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
 
 Plan and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). Rationale for the rules: [PROPOSAL_IMPROVEMENTS.md](PROPOSAL_IMPROVEMENTS.md) and [AGENTS.md](../AGENTS.md).
 
@@ -473,7 +473,10 @@ M07 delivers the components every view uses, so the same data looks the same eve
 - Change from the personal baseline is shown as text with how many measurements support it, never as a color judgment.
 - `renderChart(doc, chartModel)`, `renderTable(doc, tableModel)` and `renderBadge(doc, badge)`: DOM renderers for the models above, exported so that a view never imports a file inside this module. They build elements with `textContent` and `setAttribute` only; record text is never parsed as markup. `renderTable` returns the table inside a keyboard-reachable, named region (`role="region"`, `tabindex="0"`, `aria-label` equal to the caption) so that a wide table scrolls inside itself instead of widening the page.
 
-`services` also carries `readings`, `importers` (M21) and `openMemoryStore()`, which opens a private memory store. A view that handles imported real data (M22) keeps it in that private store and never writes it to `services.store`.
+- `renderEntry(doc, entry)` and `renderSection(doc, section)`: DOM renderers for one record as a list item and for one view section (`{ id, title, state?, text?, note?, entries?, charts?, tables? }`); a section that is not available, empty or in error says so in words.
+- `viewKit`: pure model helpers shared by every view. `recordEntry(record, { clock, label?, variable? })` turns one record into the one entry every view shows (value text equal to `valueWithContext`; an absent or invalid record is the absent entry, "not recorded", never "nothing new"); `contextOf(services)` checks what a view needs and names what is missing; `textsOf(model)` and `keysOf(model)` list every string and key of a model, for tests that scan whole screens.
+
+`services` also carries `readings`, `importers` (M21), `catalogs`, `core`, `plan`, `subject`, `data_source`, `writable`, `record_origin`, `flags` and `openMemoryStore()`, which opens a private memory store. The shell offers two data sources: a synthetic demo (fictional scenario records in a memory store, with a clock fixed at the scenario's "now") and "My records" (the persistent store, where recording is not available in F2). Every view names its source. A view that handles imported real data (M22) keeps it in that private store and never writes it to `services.store`.
 
 Everything works with the keyboard. No state is conveyed by color alone. Views receive `services` as a parameter and do not import `store`.
 
@@ -497,3 +500,4 @@ Everything works with the keyboard. No state is conveyed by color alone. Views r
 | 0.9 | 2026-11-15 | User-authorized after M06 delivery: `readings.baseline` gains `excluded_non_comparable`, `readings.environment` coverage gains `segments`; the readings failure shape (`{ ok:false, error }`), `unresolved_time` and `not_comparable` are documented. Additive: existing fields keep their meaning | M06, M07 and every future readings consumer |
 | 0.10 | 2026-11-15 | User-authorized: `readings.seriesBySourceTime` reads records that carry only a source time without inventing UTC or ages; clocks are never merged and an unknown calendar is listed unordered with its records. `lineChart` labels source days and keeps undrawn values in its table | M06, M07; every view over imported data (M08, M09, M11, M22) |
 | 0.11 | 2026-11-15 | User-authorized with the M22 advance: `ui/base` also exports the DOM renderers `renderChart`, `renderTable`, `renderBadge`; services carry `importers` and `openMemoryStore`. M22 (NASA cases) is implemented ahead of its phase; this does not close F5 | M07, M22; every view that draws charts or tables |
+| 0.12 | 2026-11-15 | User-authorized with the start of F2 (M08–M12): `ui/base` also exports `renderEntry`, `renderSection` and `viewKit`; services carry the data-source fields and the `catalogs`, `core` and `plan` collaborators; the shell offers a synthetic demo source and "My records" | M07, M08–M12 |

@@ -55,7 +55,7 @@ export const expectedExports = {
   summary: 'generate',
   importers: 'importCRF importAdaptation importGlucose',
   sync: 'createLink enqueue advance received',
-  'ui/base': 'stateLabel originLabel valueWithContext accessibleTable lineChart dataStateBadge attentionBadge renderChart renderTable renderBadge',
+  'ui/base': 'stateLabel originLabel valueWithContext accessibleTable lineChart dataStateBadge attentionBadge renderChart renderTable renderBadge renderEntry renderSection viewKit',
   'ui/my-health': 'model mount',
   'ui/adaptation': 'model mount',
   'ui/habitat': 'model mount',

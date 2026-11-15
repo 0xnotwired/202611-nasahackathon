@@ -45,10 +45,11 @@ export function ageOf(record, context) {
   return {days: Math.floor((now - then) / DAY_MS), why: null};
 }
 
-const validRecord = record => record !== null && typeof record === 'object'
+const validRecord = record => record !== null && typeof record === 'object' && !Array.isArray(record)
   && typeof ownValue(record, 'state') === 'string' && Object.hasOwn(STATE_TEXT, ownValue(record, 'state'));
+export const isRecordShape = validRecord;
 
-function valueText(record) {
+export function valueText(record) {
   const state = ownValue(record, 'state');
   if (state === 'not_recorded') return {text: 'not recorded', value: null, unit: null};
   if (state === 'confirmed_none') return {text: 'confirmed nothing new', value: null, unit: null};

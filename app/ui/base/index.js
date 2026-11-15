@@ -3,4 +3,6 @@
 export {stateLabel, originLabel, valueWithContext, dataStateBadge, attentionBadge} from './labels.js';
 export {accessibleTable, lineChart} from './chart.js';
 // DOM renderers, so a view never imports a file inside this module. Drawing only; models stay in the components above.
-export {renderChart, renderTable, renderBadge} from './dom.js';
+export {renderChart, renderTable, renderBadge, renderEntry, renderSection} from './dom.js';
+// Shared model helpers for the views, so one record becomes the same entry everywhere (contract 0.12).
+export * as viewKit from './viewkit.js';

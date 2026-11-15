@@ -53,6 +53,29 @@ export function renderChart(doc, model) {
   return create(doc, 'div', {class: 'chart-block'}, ...parts);
 }
 
+/** One record as a list item. Every view draws entries through this, so the same record always looks the same. */
+export function renderEntry(doc, entry) {
+  const where = [entry.place ? `place ${entry.place}` : null, entry.sensor ? `sensor ${entry.sensor}` : null].filter(Boolean);
+  const when = entry.time ?? (entry.source_time_raw ? `date as written in the source: ${entry.source_time_raw} (time zone not established)` : 'time not established');
+  const meta = entry.has_record ? [`method ${entry.method}`, when, entry.origin_text, ...where].join(' · ') : 'no record';
+  return create(doc, 'li', {class: 'entry', 'data-state': entry.state}, create(doc, 'strong', {class: 'entry-label'}, entry.label ?? entry.variable ?? 'Value'), ': ',
+    create(doc, 'span', {class: 'entry-value'}, entry.value_text), ' ', renderBadge(doc, entry.badge), create(doc, 'div', {class: 'entry-meta legend'}, meta));
+}
+
+/**
+ * One section of a view: { id, title, state?, text?, note?, entries?, charts?, tables? }. A section that is not
+ * available, empty or in error says so in words; it never shows a blank or a zero in place of the reason.
+ */
+export function renderSection(doc, section) {
+  const parts = [create(doc, 'h3', {id: `sec-${section.id}`}, section.title)];
+  if (section.note) parts.push(create(doc, 'p', {class: 'legend'}, section.note));
+  if (section.state && section.state !== 'ready') parts.push(create(doc, 'p', {class: `notice notice-${section.state === 'error' ? 'error' : 'info'}`, role: section.state === 'error' ? 'alert' : 'status'}, section.text ?? ''));
+  if (section.entries && section.entries.length) parts.push(create(doc, 'ul', {class: 'entries'}, ...section.entries.map(entry => renderEntry(doc, entry))));
+  for (const chart of section.charts ?? []) parts.push(renderChart(doc, chart));
+  for (const table of section.tables ?? []) parts.push(renderTable(doc, table));
+  return create(doc, 'section', {class: 'card', 'aria-labelledby': `sec-${section.id}`}, ...parts);
+}
+
 function renderBody(doc, body, current, actions) {
   body.replaceChildren();
   if (current.state === 'ready' && typeof current.mount === 'function') {
@@ -85,9 +108,19 @@ export function renderShell(doc, root, shell, handlers = {}) {
   const main = create(doc, 'main', {id: 'view', tabindex: '-1', 'aria-labelledby': 'view-title'}, create(doc, 'h2', {id: 'view-title'}, title), body);
   const announce = create(doc, 'div', {id: 'announce', class: 'visually-hidden', role: 'status', 'aria-live': 'polite'});
 
+  const sourceSelect = create(doc, 'select', {id: 'source-select'});
+  if (shell.source.selected_id === null) sourceSelect.append(create(doc, 'option', {value: '', selected: 'selected'}, 'No data source selected'));
+  for (const option of shell.source.options) {
+    const element = create(doc, 'option', {value: option.id}, `${option.label} — ${option.detail}`);
+    if (option.id === shell.source.selected_id) element.setAttribute('selected', 'selected');
+    sourceSelect.append(element);
+  }
+  sourceSelect.addEventListener('change', () => { if (sourceSelect.value && handlers.onSource) handlers.onSource(sourceSelect.value); });
+
   root.append(
     create(doc, 'a', {class: 'skip', href: '#view'}, 'Skip to content'),
     create(doc, 'header', {class: 'topbar'}, create(doc, 'h1', {}, 'Órbita'),
+      create(doc, 'div', {class: 'config'}, create(doc, 'label', {for: 'source-select'}, 'Data source'), sourceSelect),
       create(doc, 'div', {class: 'config'}, create(doc, 'label', {for: 'config-select'}, 'Mission configuration'), select)),
     create(doc, 'p', {class: `notice notice-${shell.storage.kind}`, id: 'storage-notice'}, shell.storage.text),
     nav, main, announce);
