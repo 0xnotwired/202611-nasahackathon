@@ -1,6 +1,6 @@
 # Órbita — Tu salud, a bordo
 
-[Propuesta final](docs/PROPUESTA_FINAL.md) · [Diseño técnico](docs/TECNICO.md) · [Base académica](docs/BASE_ACADEMICA.md) · [Demo](demo/orbita.html)
+[Propuesta final](docs/PROPUESTA_FINAL.md) · [Plan de construcción](docs/PLAN_ORQUESTACION.md) · [Diseño técnico](docs/TECNICO.md) · [Base académica](docs/BASE_ACADEMICA.md) · [Demo](demo/orbita.html)
 
 Durante una misión espacial, el astronauta necesita comprender cómo está, qué cambió y qué acciones de cuidado puede realizar con los recursos disponibles.
 
@@ -73,6 +73,7 @@ No requiere instalación, servidor ni cuenta. La interfaz es autocontenida y el 
 | Maqueta HTML con datos sintéticos, cuerpo interactivo y gráficos. | Integración de salud, adaptación física, hábitat y plan compartido. |
 | Chequeo guiado, guardado local de demostración y resumen TXT. | Procedimientos adaptados a recursos de misión y seguimiento integrado de resultados. |
 | Definición del producto, roadmap y revisión académica dirigida. | Conectores de sensores, sincronización y arquitectura definitiva de persistencia. |
+| Plan de construcción en 24 módulos, con contratos y órdenes de trabajo. | Todo el código del producto: la carpeta `app/` todavía no existe. |
 
 La maqueta muestra principalmente el chequeo inicial. No tiene integración de sensores, datos NASA cargados, comunicación médica, modelo de IA ni protocolos clínicos validados. Usar únicamente información ficticia en la demo. La selección de fuentes NASA no implica certificación o aprobación de la herramienta.
 
@@ -113,6 +114,17 @@ Los estudios, participantes, misiones, métodos y frecuencias se conservan por s
 
 [Revisión de datasets](docs/DATASETS.md) · [Matriz de evidencia](docs/MATRIZ_EVIDENCIA.csv) · [Referencias BibTeX](docs/REFERENCIAS.bib)
 
+## Cómo se construye
+
+El producto todavía no está construido. Lo que existe es el plan para construirlo con varios agentes de IA en paralelo, bajo revisión de personas.
+
+- **24 módulos en 7 fases.** Cada fase entrega algo que el astronauta puede usar: guardar registros sin perder su origen, ver su situación, completar un procedimiento, cerrar un episodio.
+- **Un módulo, un agente, una carpeta.** Los módulos se comunican por [contratos](docs/CONTRATOS.md) fijados de antemano, y cada agente recibe una [orden de trabajo](docs/ordenes/) con sus criterios de aceptación.
+- **Quien construye no se aprueba a sí mismo.** Otro agente revisa ejecutando, y una persona aprueba cada fase.
+- **Sin MVP.** Si el tiempo no alcanza, se entrega la última fase completa y se dice cuál es.
+
+El detalle está en el [plan de orquestación](docs/PLAN_ORQUESTACION.md) y el estado de cada módulo en [docs/modulos.csv](docs/modulos.csv). El stack propuesto (HTML, CSS y JavaScript sin dependencias) espera confirmación del equipo.
+
 ## Implementación propia
 
 **Toda funcionalidad del producto debe ser escrita por el equipo. Los repositorios externos se consultan únicamente como inspiración, comparación e investigación.**
@@ -125,7 +137,8 @@ Las reglas de trabajo y procedencia están en [AGENTS.md](AGENTS.md). El uso de 
 
 - [Propuesta final, demostración y criterios de aceptación](docs/PROPUESTA_FINAL.md).
 - [Qué mejorar de la propuesta original](docs/MEJORAS_PROPUESTA.md) y [tercera ampliación académica, serie B](docs/INVESTIGACION_AMPLIADA_B.md) con su [matriz](docs/MATRIZ_INVESTIGACION_B.csv).
-- [Roadmap de construcción para agentes](docs/ROADMAP_AGENTES.md) y [guía de sesión para agentes](CLAUDE.md).
+- [Plan de orquestación](docs/PLAN_ORQUESTACION.md), [contratos entre módulos](docs/CONTRATOS.md), [órdenes de trabajo](docs/ordenes/) y [tablero de módulos](docs/modulos.csv).
+- [Niveles y criterios de cada nivel](docs/ROADMAP_AGENTES.md) y [guía de sesión para agentes](CLAUDE.md).
 - [Producto y decisiones de alcance](docs/PRODUCTO.md).
 - [Objetivos del desafío y criterios del proyecto](docs/REQUIREMENTS.md).
 - [Roadmap y criterios de cierre](docs/ROADMAP.md).
@@ -134,4 +147,4 @@ Las reglas de trabajo y procedencia están en [AGENTS.md](AGENTS.md). El uso de 
 
 Los siguientes resultados son comprender la situación integrada de misión, completar tareas del plan y revisar cambios con procedimientos aplicables y seguimiento. Su verificación debe cubrir datos ausentes, procedencia, consistencia entre vistas, recuperación de tareas, accesibilidad y comprensión del siguiente paso.
 
-El repositorio contiene documentación y una maqueta. No hay un stack definitivo del producto ni comandos de build, pruebas clínicas o despliegue que puedan presentarse como disponibles. Para colaborar, seguir AGENTS.md y proponer cambios mediante ramas y pull requests.
+El repositorio contiene documentación, un plan de construcción y una maqueta. El stack está propuesto y sin confirmar. El único comando disponible es `python3 scripts/check_docs.py`, que comprueba la consistencia de la documentación y del tablero de módulos; no hay build, pruebas de producto, pruebas clínicas ni despliegue. Para colaborar, seguir [AGENTS.md](AGENTS.md) y proponer cambios mediante ramas y pull requests.

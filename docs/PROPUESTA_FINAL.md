@@ -113,4 +113,4 @@ Existe una maqueta HTML con datos sintéticos, chequeo guiado, almacenamiento lo
 
 La siguiente entrega recomendada es **un episodio completo que integre los tres dominios, dos configuraciones de recursos y seguimiento del resultado**, acompañado por casos NASA verificables. Antes de implementarlo deben concretarse el procedimiento, sus fuentes, el equipo y los criterios de apoyo médico. Diagnóstico generativo, puntuación global y predicción clínica desde ómicas quedan fuera de esa entrega propuesta.
 
-Consultar [PRODUCTO.md](PRODUCTO.md) para decisiones históricas, [REQUIREMENTS.md](REQUIREMENTS.md) para el encargo y [ROADMAP.md](ROADMAP.md) para la secuencia previa. Este documento consolida la propuesta vigente sin convertir opciones técnicas en decisiones ya aprobadas.
+Consultar [PRODUCTO.md](PRODUCTO.md) para decisiones históricas, [REQUIREMENTS.md](REQUIREMENTS.md) para el encargo y [ROADMAP.md](ROADMAP.md) para la secuencia previa. Este documento consolida la propuesta vigente sin convertir opciones técnicas en decisiones ya aprobadas. El plan para construirla por fases y módulos está en [PLAN_ORQUESTACION.md](PLAN_ORQUESTACION.md).

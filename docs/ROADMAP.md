@@ -2,6 +2,8 @@
 
 Estado: dirección de producto elegida por el usuario; la secuencia de implementación es una propuesta del asistente. El recorrido confirmado y el diseño funcional se registran en PRODUCTO.md. Existe una maqueta HTML con datos sintéticos para presentar el concepto (LEEME_DEMO.md); no implica integración NASA ni cierre de los niveles clínicos descritos aquí. No hay stack definitivo. La carga inicial de documentación y demo al repositorio fue solicitada por el usuario; no autoriza desplegar la aplicación. Se organiza por resultados del producto, siguiendo destination-driven-construction.
 
+Cómo se reparte este roadmap entre agentes, en fases y módulos: [PLAN_ORQUESTACION.md](PLAN_ORQUESTACION.md).
+
 ## Destino
 
 Una herramienta visual personal que permita al astronauta comprender su salud, adaptación física y entorno; seguir su plan de cuidado; medir, entender cambios y consultar orientación fundamentada. El mapa organiza el estado conocido, la línea temporal conserva el contexto, el plan conecta resultados con acciones y A bordo guía los procedimientos. Una misma medición y una misma regla deben tener el mismo significado en todas las pantallas. Los tres dominios son alcance central por decisión del usuario, no extensiones futuras (PRODUCTO.md, DEC-002).

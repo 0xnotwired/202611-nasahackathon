@@ -2,8 +2,8 @@
 
 ## Qué es este archivo y quién gana
 
-- **[AGENTS.md](AGENTS.md)** es el manual del producto: alcance, reglas de evidencia, invariantes del recorrido. **Si este archivo lo contradice, gana AGENTS.md.**
-- **`docs/`** es la fuente de verdad del producto. Si AGENTS.md o este archivo resumen mal un documento, gana el documento.
+- **[AGENTS.md](AGENTS.md)** es el manual del producto: alcance, reglas de evidencia, cómo se construye por módulos, invariantes del recorrido. **Si este archivo lo contradice, gana AGENTS.md.**
+- El orden completo de autoridad entre archivos está al principio de AGENTS.md. Este archivo va último: no define producto.
 - **CLAUDE.md** (este archivo) cubre lo que AGENTS.md no: cómo trabajar una sesión sin repetir errores que ya ocurrieron acá, y por dónde seguir.
 
 No repite el README ni AGENTS.md. Leelos.
@@ -13,8 +13,12 @@ No repite el README ni AGENTS.md. Leelos.
 1. [AGENTS.md](AGENTS.md)
 2. [docs/PROPUESTA_FINAL.md](docs/PROPUESTA_FINAL.md) — qué es el producto
 3. [docs/MEJORAS_PROPUESTA.md](docs/MEJORAS_PROPUESTA.md) — qué cambió y por qué
-4. [docs/ROADMAP_AGENTES.md](docs/ROADMAP_AGENTES.md) — qué construir, en qué orden, y el registro de relevos
-5. [docs/DATASETS.md](docs/DATASETS.md) antes de tocar datos
+4. [docs/PLAN_ORQUESTACION.md](docs/PLAN_ORQUESTACION.md) — fases, módulos, roles y compuertas
+5. [docs/CONTRATOS.md](docs/CONTRATOS.md) y tu orden en [docs/ordenes/](docs/ordenes/), si vas a construir o revisar un módulo
+6. [docs/ROADMAP_AGENTES.md](docs/ROADMAP_AGENTES.md) — cuándo está terminado cada nivel, y el registro de relevos
+7. [docs/DATASETS.md](docs/DATASETS.md) antes de tocar datos
+
+Si sos constructor o revisor, tu rol y el formato de tu informe están en el plan. Si nadie te asignó un módulo, no empieces uno: preguntá.
 
 ## Mapa del repositorio
 
@@ -26,14 +30,18 @@ demo/orbita.html          maqueta de un archivo, datos ficticios; NO se modifica
 docs/PROPUESTA_FINAL.md   propuesta vigente y criterios de aceptación
 docs/MEJORAS_PROPUESTA.md mejoras M1–M9 derivadas de la serie B
 docs/ROADMAP.md           niveles desde el producto
-docs/ROADMAP_AGENTES.md   niveles como trabajo ejecutable + relevos
+docs/PLAN_ORQUESTACION.md fases, olas, módulos, roles, compuertas
+docs/CONTRATOS.md         interfaces entre módulos y reglas R1–R9; solo el orquestador lo edita
+docs/modulos.csv          tablero: rutas propias, dependencias y estado de cada módulo
+docs/ordenes/             una orden de trabajo por módulo (M00–M23)
+docs/ROADMAP_AGENTES.md   casillas de cada nivel + registro de relevos
 docs/BASE_ACADEMICA.md    fuentes S01–S18 (y copia de A01–A06)
 docs/INVESTIGACION_APLICADA.md    fuentes A01–A06
 docs/INVESTIGACION_AMPLIADA_B.md  fuentes B01–B18, con nivel de lectura
 docs/MATRIZ_*.csv         una fila por fuente o afirmación
 docs/DATASETS.md          qué hay en NLSP/OSDR y sus límites de integración
-scripts/check_docs.py     consistencia matrices ↔ documentos y enlaces
-app/                      aún no existe; ahí va el producto (ver roadmap)
+scripts/check_docs.py     consistencia de matrices, tablero de módulos y enlaces
+app/                      aún no existe; ahí va el producto, una carpeta por módulo
 ```
 
 ## La regla central
@@ -105,9 +113,11 @@ Ejecutados el 14/11/2026 en la rama `claude`:
 python3 scripts/check_docs.py
 ```
 
-Un resultado `OK` prueba tres cosas y solo esas: las matrices A y B se leen como CSV con columnas completas, sus ids coinciden con los de sus documentos, y los enlaces relativos entre `.md` apuntan a archivos que existen. **No prueba** que las cifras sean correctas ni que las fuentes digan lo que se afirma. El script se vio fallar por un enlace roto real antes de pasar.
+Un resultado `OK` prueba esto y solo esto: las matrices A y B se leen como CSV y sus ids coinciden con los de sus documentos; cada módulo de `docs/modulos.csv` tiene su orden; las rutas propias no se solapan; cada dependencia está en una fase u ola anterior; el plan nombra los mismos módulos; y los enlaces relativos entre `.md` resuelven. **No prueba** que las cifras sean correctas, que las fuentes digan lo que se afirma, ni que un agente haya respetado sus rutas al escribir código. El script se vio fallar por un enlace roto real y por seis roturas deliberadas del tablero (solape de rutas, dependencia posterior, dependencia en la misma ola, orden huérfana, estado desconocido, dependencia inexistente).
 
 No hay build, lint ni pruebas de producto: no existe código de producto todavía. La maqueta se abre en un navegador. No inventar otros comandos.
+
+`node --test` será el comando de pruebas cuando M00 cree `package.json`. Se comprobó el 14/11 que corre un módulo ES con su prueba en Node 22 sin instalar nada. Nada se comprobó en un navegador.
 
 ## Git
 
@@ -115,7 +125,8 @@ Aplica la disciplina de `git-discipline`: etiqueta de restauración antes de cad
 
 - **Nadie hace commit directo a la rama por defecto**: ni el dueño, ni el equipo, ni un agente. AGENTS.md lo exige porque es un repo de equipo. Se trabaja en ramas y se propone por PR.
 - **Tener acceso de escritura no es permiso para `git commit` ni `git push`.** Cada commit y cada push necesita una instrucción del usuario para esa tarea. Una autorización vale para esa acción, no para el resto de la sesión.
-- La rama `claude` se creó y se subió el 14/11/2026 por instrucción explícita del usuario.
+- La rama `claude` se creó y se subió el 14/11/2026 por instrucción explícita del usuario. Es la rama de integración.
+- Las ramas de módulo se llaman `mod/mNN-nombre`. **No `claude/...`**: Git responde `cannot lock ref` mientras exista la rama `claude`. Comprobado el 14/11.
 - Los commits de un agente llevan el prefijo `docs(agent):`, `feat(agent):` o `fix(agent):` para poder filtrarlos, y la línea de coautoría que indique la sesión.
 - Todo archivo desechable de prueba entra a `.gitignore` en la misma acción que lo crea.
 
@@ -148,4 +159,5 @@ El usuario pide aplicar siempre las skills de `github.com/annatchijova/SKILLS`. 
 - [ ] `python3 scripts/check_docs.py` da `OK`, y el informe dice qué prueba eso y qué no. *(Comandos verificados)*
 - [ ] `git status` y `git log` consultados antes de informar el estado. *(Git)*
 - [ ] Commit y push solo con autorización para esta tarea, en una rama. *(Git)*
+- [ ] Si construiste un módulo: `git diff --stat` solo muestra tus rutas propias y no tocaste `docs/CONTRATOS.md`. *(AGENTS.md, Construcción por módulos)*
 - [ ] El registro de relevos de `docs/ROADMAP_AGENTES.md` refleja lo verificado, no lo intentado.

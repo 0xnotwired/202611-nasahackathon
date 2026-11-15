@@ -2,6 +2,20 @@
 
 Estado: propuesta, sin integración de los repositorios consultados. La implementación debe ser propia según ../AGENTS.md.
 
+## Arquitectura modular propuesta
+
+La construcción se organiza en 24 módulos por capas; un módulo solo importa de capas inferiores y solo por el `index.js` del otro. El detalle está en [PLAN_ORQUESTACION.md](PLAN_ORQUESTACION.md) y las interfaces en [CONTRATOS.md](CONTRATOS.md).
+
+| Capa | Módulos | Qué garantiza |
+|---|---|---|
+| Base | nucleo, mision, catalogos | Qué es un registro válido; equipo y comunicación de la misión; datos de referencia con fuente |
+| Persistencia | almacen | Única puerta a los datos; no edita ni borra registros; dice cuándo no es persistente |
+| Dominio | lecturas, procedimientos, plan, privacidad, importadores | Consultas sin juicio clínico; ejecuciones que respetan el equipo; lo indicado separado de lo hecho |
+| Episodio | episodio, copiloto, resumen | Las seis partes del episodio; datos antes que sugerencia; exportación fiel al historial |
+| Interfaz | ui/base y una carpeta por vista | El mismo dato se ve igual en todas las vistas; todo con teclado |
+
+Decisiones propuestas y sin confirmar: JavaScript sin transpilar ni dependencias, IndexedDB detrás de una interfaz propia, `node --test` para el dominio, servidor estático local propio, sin cifrado. Los módulos ES no cargan desde `file://`, así que la entrega en un solo archivo es un módulo aparte al final. Nada de esto se ejecutó todavía en un navegador.
+
 ## Funcionalidades propias a construir
 
 Un motor de procedimientos con pasos, condiciones, recursos requeridos, estado conservado y fuentes versionadas; un formato común de medición con unidad, tiempo, método y procedencia; conectores independientes para importar fuentes; un historial que preserve observaciones y resultados; y un plan de tareas vinculado a los procedimientos.

@@ -1,6 +1,6 @@
 # Roadmap de construcción para agentes
 
-Fecha: 14 de noviembre de 2026. Para cualquier agente de IA (o persona) que continúe Órbita. Complementa [ROADMAP.md](ROADMAP.md), que define los niveles desde el producto; este documento los baja a trabajo ejecutable.
+Fecha: 14 de noviembre de 2026. Para cualquier agente de IA (o persona) que continúe Órbita. [ROADMAP.md](ROADMAP.md) define los niveles desde el producto; este documento dice cuándo está terminado cada uno; [PLAN_ORQUESTACION.md](PLAN_ORQUESTACION.md) reparte el trabajo en fases y módulos.
 
 **Antes de tocar nada:** leer [../CLAUDE.md](../CLAUDE.md) y [../AGENTS.md](../AGENTS.md). Si este documento contradice a AGENTS.md o a PROPUESTA_FINAL.md, ganan ellos.
 
@@ -12,7 +12,7 @@ Fecha: 14 de noviembre de 2026. Para cualquier agente de IA (o persona) que cont
 | Documentación de producto, evidencia (S, A, B) y datasets | Modelo de datos implementado |
 | `scripts/check_docs.py`: consistencia entre matrices y documentos | Pruebas del producto |
 | | Datos NASA cargados; los originales no están en el repo |
-| | Procedimiento clínico elegido y revisado |
+| Plan de orquestación, contratos y 24 órdenes de trabajo, en estado de propuesta | Procedimiento clínico elegido y revisado |
 
 ## Destino
 
@@ -20,52 +20,15 @@ Una aplicación local que permita a un astronauta completar un **episodio de cui
 
 Se construye por niveles. **No se propone un MVP.** Si el tiempo se acaba, se entrega el nivel más alto que esté completo y se dice cuál es. No se reemplazan niveles sin terminar por aproximaciones.
 
-## Decisiones técnicas propuestas
+## Decisiones técnicas y modelo de datos
 
-Pendientes de confirmación del usuario. Un agente no las da por aprobadas: si necesita apartarse, lo consulta.
+Ya no viven en este documento, para que no haya dos copias que diverjan:
 
-| Decisión | Propuesta | Motivo |
-|---|---|---|
-| Lenguaje | HTML, CSS y JavaScript sin transpilar, módulos ES | Regla de código propio; sin build que mantener |
-| Dependencias de producto | Ninguna | AGENTS.md prohíbe incorporar paquetes funcionales |
-| Persistencia | IndexedDB detrás de una interfaz propia; memoria como respaldo declarado | localStorage no resuelve transacciones ni volumen |
-| Pruebas | `node --test`, incluido en Node; sin instalar nada | Sin dependencias de terceros |
-| Estructura | `app/` nuevo; `demo/orbita.html` queda intacto | La maqueta es referencia y respaldo de presentación |
+- **Decisiones D1–D8** (lenguaje, dependencias, persistencia, pruebas, estructura, forma de abrir, protección de datos, historial sin edición): [PLAN_ORQUESTACION.md](PLAN_ORQUESTACION.md). Siguen pendientes de confirmación del usuario.
+- **Modelo de datos, reglas R1–R9 e interfaces:** [CONTRATOS.md](CONTRATOS.md).
+- **Quién construye qué:** [modulos.csv](modulos.csv) y [ordenes/](ordenes/).
 
-## Modelo de datos (invariantes desde el nivel 1)
-
-Todo registro lleva estos campos. Faltar uno es un error de validación, no un valor por defecto.
-
-```
-Registro
-  id            texto; nunca numérico (se conservan ceros iniciales)
-  tipo          observacion | medicion | accion | ambiente | examen
-  estado        registrado | confirmado_sin_novedad | sin_registro
-  valor, unidad obligatorios si tipo = medicion y estado = registrado
-  metodo        instrumento o «autoinforme»
-  momento       fecha y hora; para ambiente, además intervalo
-  origen        sintetico | analogo_terrestre | vuelo | cultivo_celular
-  fuente        dataset o «ingresado por el usuario»
-  fase_mision   texto de la configuración
-  sujeto        identificador; nunca se mezclan sujetos
-  lugar, sensor obligatorios si tipo = ambiente
-
-Episodio        agrupa registros: qué registraste, qué sabemos, qué falta,
-                qué podés hacer, qué ocurrió, qué sigue
-Procedimiento   id, version, proposito, equipo_requerido[], preparacion[],
-                pasos[], fuente, estado_revision
-Ejecucion       procedimiento_id + version usada, estado
-                (completada | interrumpida | no_pude | bloqueada), dificultades
-ConfigMision    equipo_disponible[], comunicacion (tiempo_real | diferida | sin_enlace)
-```
-
-Reglas que no se negocian:
-
-1. `sin_registro` nunca se convierte en `confirmado_sin_novedad`, ni al mostrar ni al exportar.
-2. NA no es cero. Un valor ausente no entra en promedios ni gráficos como 0.
-3. Dos registros solo se comparan si coinciden sujeto, unidad y método. Si no, la pantalla dice «no comparable» y por qué.
-4. `origen` se muestra en toda pantalla y en toda exportación.
-5. Una `Ejecucion` guarda la versión del procedimiento que usó.
+Este documento conserva lo que define cada **nivel** y el registro de relevos. Las compuertas del plan remiten a estas casillas.
 
 ## Niveles
 
@@ -73,18 +36,20 @@ Cada nivel termina con: revisión adversarial propia (¿rompí un invariante de 
 
 ### Nivel 0 — Núcleo de datos
 
-**Construir:** `app/nucleo/` con validación de `Registro`, almacén con interfaz propia, y exportación a texto.
+**Fase F1, compuerta G1.** Módulos M01 núcleo, M02 misión, M03 catálogos, M04 almacén y M05 escenario sintético. Antes, la fase F0 (M00) deja los contratos en código.
 
 **Terminado cuando:**
 - [ ] Un registro sin `origen`, `metodo` o `momento` es rechazado con un mensaje que nombra el campo.
 - [ ] Un identificador `007` se guarda y se recupera como `007`.
 - [ ] Un valor ausente no aparece como 0 en ninguna salida.
+- [ ] Un registro guardado no se puede editar ni borrar; una corrección es un registro nuevo.
+- [ ] El escenario sintético se genera igual con la misma semilla y todo en él dice `sintetico`.
 - [ ] Guardar, cerrar y reabrir recupera lo mismo; si el almacenamiento falla, la interfaz lo dice.
 - [ ] Cada prueba se vio fallar con el código roto antes de pasar.
 
 ### Nivel 1 — Comprender mi situación
 
-**Construir:** Mi día, Mi salud, Adaptación, Hábitat y Mi evolución leyendo del mismo almacén. Escenario sintético rotulado. Tres estados de registro visibles (M2).
+**Fase F2, compuerta G2.** Módulos M06 lecturas, M07 interfaz base y las vistas M08–M12: Mi salud, Adaptación, Hábitat, Mi evolución y Mi día, leyendo del mismo almacén. Escenario sintético rotulado. Tres estados de registro visibles (mejora M2).
 
 **Terminado cuando:**
 - [ ] El mismo registro muestra el mismo valor, unidad y origen en todas las vistas.
@@ -96,7 +61,7 @@ Cada nivel termina con: revisión adversarial propia (¿rompí un invariante de 
 
 ### Nivel 2 — Completar mi plan
 
-**Construir:** Mi plan, motor de procedimientos propio, `ConfigMision` con sus dos ejes (M3).
+**Fase F3, compuerta G3.** Módulos M13 procedimientos, M14 plan y M15 vistas Mi plan y A bordo. Usa la `ConfigMision` de dos ejes (mejora M3).
 
 **Bloqueante humano:** elegir el procedimiento de la demo y su fuente (M6). Un agente no inventa pasos médicos. Sin esa decisión, se construye el motor con un procedimiento **de demostración rotulado como tal** y sin contenido clínico.
 
@@ -109,7 +74,7 @@ Cada nivel termina con: revisión adversarial propia (¿rompí un invariante de 
 
 ### Nivel 3 — Revisar un cambio
 
-**Construir:** «Me siento distinto» con el catálogo (M1), tarjeta del copiloto con las reglas M4, resumen para apoyo médico según el modo de comunicación.
+**Fase F4, compuerta G4.** Módulos M16 episodio, M17 copiloto, M18 resumen, M19 privacidad y M20 vista Me siento distinto, con el catálogo (mejora M1), las reglas del copiloto (M4) y el resumen según el modo de comunicación.
 
 **Terminado cuando:**
 - [ ] El episodio se completa de observación a seguimiento y se recupera tras cerrar.
@@ -124,7 +89,7 @@ Cada nivel termina con: revisión adversarial propia (¿rompí un invariante de 
 
 ### Nivel 4 — Casos NASA reales, separados
 
-**Construir:** importadores propios para un caso CRF y uno de adaptación (MR079G, MR080G o MR035G), en un visor separado del escenario sintético.
+**Fase F5, compuerta G5.** Módulos M21 importadores y M22 vista Casos NASA: un caso CRF y uno de adaptación (MR079G, MR080G o MR035G), en un visor separado del escenario sintético. Es un carril independiente de F3 y F4.
 
 **Bloqueante:** los archivos originales no están en el repo. Se descargan desde las fichas de [DATASETS.md](DATASETS.md), se guardan sin modificar en `datos/originales/` y esa carpeta va a `.gitignore` hasta resolver permisos de redistribución.
 
@@ -136,13 +101,13 @@ Cada nivel termina con: revisión adversarial propia (¿rompí un invariante de 
 
 ### Cierre
 
-Revisión adversarial integrada de los niveles alcanzados, y recién entonces la batería completa. Prueba formativa con voluntarios según M7. Actualizar README, LEEME_DEMO y este documento con lo que **realmente** se ejecutó.
+**Fase F6, compuerta G6.** Módulo M23 empaquetado, si hay tiempo. Revisión adversarial integrada de los niveles alcanzados, y recién entonces la batería completa. Prueba formativa con voluntarios según M7. Actualizar README, LEEME_DEMO y este documento con lo que **realmente** se ejecutó.
 
 ## Bloqueantes que solo resuelve una persona
 
 | Bloqueante | Quién | Afecta a |
 |---|---|---|
-| Confirmar las decisiones técnicas propuestas | Usuario | Nivel 0 |
+| Confirmar las decisiones técnicas D1–D8 (compuerta G0) | Usuario | Todo el código |
 | Elegir procedimiento de la demo y su fuente clínica | Usuario, con revisión competente | Nivel 2 |
 | Confirmar [V1 4030] en NASA-STD-3001 vol. 1 rev. C | Cualquiera, abriendo el PDF de S03 | Nivel 1, radiación |
 | Texto oficial del desafío 2026 y guía de evaluación | Usuario, desde el navegador | Presentación |
@@ -153,7 +118,7 @@ Revisión adversarial integrada de los niveles alcanzados, y recién entonces la
 
 Al terminar una sesión, el agente deja en este archivo:
 
-1. La tabla de estado actualizada con lo verificado, no con lo intentado.
+1. La tabla de estado actualizada con lo verificado, no con lo intentado, y el `estado` de su módulo en [modulos.csv](modulos.csv) si el orquestador se lo pidió.
 2. Qué casilla de qué nivel quedó a medias y por qué.
 3. Qué supuso sin confirmar.
 
@@ -165,3 +130,4 @@ Cada agente verifica el estado real con `git status`, `git log` y las pruebas an
 |---|---|---|---|
 | 2026-11-14 | Claude (sesión web) | Serie B de investigación, mejoras M1–M8, este roadmap, CLAUDE.md, `scripts/check_docs.py` ejecutado en verde | Nivel 0 sin empezar; ningún código de producto escrito |
 | 2026-11-15 | Claude (sesión web) | B01, B03 y B06 leídos completos desde PDF del usuario; corregida la comparación de B03; mejora M9 de privacidad; `check_docs.py` en verde | Nivel 0 sin empezar; ningún código de producto escrito |
+| 2026-11-14 | Claude (orquestador, sesión web) | Plan de orquestación, contratos v0.1, tablero y 24 órdenes; AGENTS.md, README, TECNICO y CLAUDE.md actualizados; `check_docs.py` ampliado y visto fallar de seis maneras; comprobado que `node --test` corre un módulo ES en Node 22 | Compuerta G0 sin aprobar: D1–D8 sin confirmar. Ningún módulo empezado. Nada comprobado en navegador |
