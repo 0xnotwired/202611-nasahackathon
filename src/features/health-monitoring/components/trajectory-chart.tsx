@@ -2,6 +2,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import type { Evaluation } from "../mission";
 import { formatDate, numberFormat } from "../mission";
+import { evidenceReason } from "../evidence";
 
 export function TrajectoryChart({
   evaluations,
@@ -136,7 +137,8 @@ export function TrajectoryChart({
           {reference?.value != null && reference.unit === unit
             ? evaluations.map((item, index) =>
                 item.method === reference.method &&
-                item.unit === reference.unit ? (
+                item.unit === reference.unit &&
+                !evidenceReason(item.evidence, reference.evidence) ? (
                   <line
                     key={`ref-${item.id}`}
                     x1={x(item)}
@@ -159,7 +161,10 @@ export function TrajectoryChart({
               previous.value !== null &&
               item.value !== null &&
               previous.method === item.method &&
-              previous.unit === item.unit;
+              previous.unit === item.unit &&
+              !evidenceReason(previous.evidence, item.evidence) &&
+              (previous.evidence?.assessmentId ?? previous.id) !==
+                (item.evidence?.assessmentId ?? item.id);
             const alternate = item.method !== primaryMethod;
             return (
               <g key={item.id}>

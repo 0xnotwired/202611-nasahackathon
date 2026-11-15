@@ -8,6 +8,7 @@ export type HistoryContext = {
   reference: string;
   evaluation: string;
   scale: ScaleMode;
+  group?: string;
 };
 
 export function resolveHistoryContext(
@@ -36,6 +37,10 @@ export function resolveHistoryContext(
         ? params.evaluation
         : (visible.at(-1)?.id ?? ""),
     scale: params.scale === "auto" ? "auto" : "history",
+    ...(typeof params.group === "string" &&
+    evaluations.some((item) => item.method === params.group)
+      ? { group: params.group }
+      : {}),
   };
 }
 
@@ -46,6 +51,7 @@ export function historyQuery(context: HistoryContext) {
   });
   if (context.reference) params.set("reference", context.reference);
   if (context.evaluation) params.set("evaluation", context.evaluation);
+  if (context.group) params.set("group", context.group);
   return params;
 }
 

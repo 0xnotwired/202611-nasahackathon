@@ -20,6 +20,7 @@ import { useDemoJournal } from "./use-demo-journal";
 import { AerobicOverview } from "./aerobic-overview";
 import { ExerciseView } from "./exercise-view";
 import { FollowupView } from "./followup-view";
+import { originLabels } from "../evidence";
 
 export function Dashboard({
   astronauts,
@@ -86,7 +87,11 @@ export function Dashboard({
         <div className="header-controls">
           <span className="mode-label">
             <FlaskConical size={15} aria-hidden="true" />
-            Simulación
+            {
+              originLabels[
+                mission.evaluations[0]?.evidence?.origin ?? "synthetic"
+              ]
+            }
           </span>
           <ThemeControl />
         </div>
@@ -145,6 +150,7 @@ export function Dashboard({
               {label}
             </Link>
           ))}
+          <Link href="/investigacion">Investigación</Link>
         </nav>
         <span className="navigation-status" role="status">
           {pending ? "Actualizando vista…" : ""}
@@ -185,8 +191,12 @@ export function Dashboard({
       </main>
       <footer className="mission-footer">
         <p>
-          Datos ficticios · validación médica pendiente · seguimiento sin
-          diagnóstico
+          {
+            originLabels[
+              mission.evaluations[0]?.evidence?.origin ?? "synthetic"
+            ]
+          }{" "}
+          · validación médica pendiente · seguimiento sin diagnóstico
         </p>
         <div className="footer-tools">
           {demoControls ? (

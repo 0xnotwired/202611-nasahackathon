@@ -1,5 +1,6 @@
 import type { Evaluation } from "./mission.ts";
 import { compareEvaluations } from "./mission.ts";
+import { evidenceReason, projectionVersion } from "./evidence.ts";
 
 export const scenarios = {
   recovery: "Descenso y recuperación",
@@ -41,17 +42,27 @@ export function describePeriod(evaluations: Evaluation[]) {
   const first = valid[0];
   const last = valid.at(-1);
   const incompatible = valid.some(
-    (item) => item.method !== first?.method || item.unit !== first?.unit,
+    (item) =>
+      item.method !== first?.method ||
+      item.unit !== first?.unit ||
+      !!evidenceReason(first?.evidence, item.evidence),
   );
+  const contextReason = valid
+    .map((item) => evidenceReason(first?.evidence, item.evidence))
+    .find(Boolean);
   if (incompatible)
     return {
       label: "No comparable",
       slope: null,
       count: valid.length,
       reason:
+        contextReason ??
         "El período contiene métodos o unidades diferentes. Revisá cada segmento por separado.",
     };
-  if (valid.length < 3 || !first || !last)
+  const distinct = new Set(
+    valid.map((item) => item.evidence?.assessmentId ?? item.id),
+  ).size;
+  if (distinct < 3 || !first || !last)
     return {
       label: "Datos insuficientes",
       slope: null,
@@ -102,9 +113,17 @@ export function comparisonTo(
   return compareEvaluations(reference, current);
 }
 
+export function csvCell(value: unknown) {
+  const raw = String(value ?? "");
+  // Quoting alone does not prevent spreadsheet formulas in source labels.
+  const safe =
+    typeof value === "string" && /^[\s]*[=+@\-\t\r\n]/.test(raw)
+      ? `'${raw}`
+      : raw;
+  return `"${safe.replaceAll('"', '""')}"`;
+}
+
 export function historyCsv(evaluations: Evaluation[]) {
-  const cell = (value: unknown) =>
-    `"${String(value ?? "").replaceAll('"', '""')}"`;
   return [
     [
       "id",
@@ -114,6 +133,20 @@ export function historyCsv(evaluations: Evaluation[]) {
       "metodo",
       "origen",
       "validacion_clinica",
+      "estado",
+      "cantidad",
+      "papel",
+      "sujeto_contextual",
+      "prueba_id",
+      "calendario",
+      "precision",
+      "zona",
+      "dataset",
+      "fuente",
+      "registros_fuente",
+      "verificacion_tecnica",
+      "version_derivacion",
+      "evidencia_json",
     ],
     ...evaluations.map((item) => [
       item.id,
@@ -121,10 +154,24 @@ export function historyCsv(evaluations: Evaluation[]) {
       item.value,
       item.unit,
       item.method,
-      "synthetic",
-      "pending",
+      item.evidence?.origin ?? "synthetic",
+      item.evidence?.clinicalReview ?? "pending",
+      item.value === null ? "not_recorded" : "recorded",
+      item.evidence?.metric ?? "legacy_demo_unspecified",
+      item.evidence?.role ?? "unknown",
+      item.evidence?.subject,
+      item.evidence?.assessmentId,
+      item.evidence?.calendar ?? "unknown",
+      "second",
+      "UTC",
+      item.evidence?.dataset,
+      item.evidence?.source,
+      JSON.stringify(item.evidence?.sourceRecordIds ?? []),
+      item.evidence?.verification ?? "unverified",
+      item.evidence?.derivationVersion ?? projectionVersion,
+      JSON.stringify(item.evidence ?? null),
     ]),
   ]
-    .map((row) => row.map(cell).join(","))
+    .map((row) => row.map(csvCell).join(","))
     .join("\r\n");
 }

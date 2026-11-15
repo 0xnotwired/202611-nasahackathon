@@ -1,9 +1,19 @@
-import type { Evaluation } from "../../../contracts/models.ts";
-export type {
-  Evaluation,
-  ExerciseSession,
-  MissionData as DemoMission,
+import type {
+  Evaluation as TransportEvaluation,
+  MissionData,
+  ResponseMeta,
 } from "../../../contracts/models.ts";
+import { evidenceReason, type Evidence } from "./evidence.ts";
+export type Evaluation = TransportEvaluation & { evidence?: Evidence };
+export type DemoMission = Omit<MissionData, "evaluations"> & {
+  evaluations: Evaluation[];
+  presentation?: {
+    transport: "mock" | "api";
+    meta: ResponseMeta;
+    version: string;
+  };
+};
+export type { ExerciseSession } from "../../../contracts/models.ts";
 
 export function compareEvaluations(
   previous?: Evaluation,
@@ -21,6 +31,17 @@ export function compareEvaluations(
     };
   if (!Number.isFinite(previous.value) || !Number.isFinite(current.value))
     return { difference: null, reason: "Uno de los resultados no es válido." };
+  const reason = evidenceReason(previous.evidence, current.evidence);
+  if (reason) return { difference: null, reason };
+  if (
+    previous.id === current.id ||
+    (previous.evidence &&
+      previous.evidence.assessmentId === current.evidence?.assessmentId)
+  )
+    return {
+      difference: null,
+      reason: "Es la misma prueba; no representa un cambio longitudinal.",
+    };
   if (previous.unit !== current.unit)
     return {
       difference: null,

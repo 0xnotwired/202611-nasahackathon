@@ -8,12 +8,14 @@ export function EvaluationHistory({
   selected,
   onSelect,
   full = false,
+  group,
 }: {
   evaluations: Evaluation[];
   reference?: Evaluation;
   selected: string;
   onSelect: (id: string) => void;
   full?: boolean;
+  group?: string;
 }) {
   const rows = evaluations.toReversed().slice(0, full ? undefined : 3);
   return (
@@ -33,7 +35,7 @@ export function EvaluationHistory({
         <thead>
           <tr>
             <th scope="col">Fecha</th>
-            <th scope="col">VO₂pico simulado</th>
+            <th scope="col">VO₂pico relativo</th>
             <th scope="col">Método</th>
             <th scope="col">Cambio vs. referencia</th>
             <th scope="col">Selección</th>
@@ -65,7 +67,14 @@ export function EvaluationHistory({
                     </>
                   )}
                 </td>
-                <td>{item.method}</td>
+                <td>
+                  {item.method}
+                  {group && group !== item.method ? (
+                    <span className="row-reference">
+                      Fuera del grupo de cálculo
+                    </span>
+                  ) : null}
+                </td>
                 <td>
                   {comparison.difference === null ? (
                     <details className="comparison-reason">

@@ -1,4 +1,83 @@
 /* Mission follow-up: compact context, stable instruments, explicit provenance. */
+.eligibility-note {
+  padding: 0.75rem 1rem;
+  border-inline-start: 3px solid var(--control-border);
+  background: var(--soft);
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+.evidence-details {
+  border-block-start: 1px solid var(--border);
+  margin-block-start: 1rem;
+  padding-block-start: 0.75rem;
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+}
+.evidence-details summary {
+  cursor: pointer;
+  color: var(--accent);
+}
+.evidence-details p {
+  margin-block-start: 0.75rem;
+}
+.research-workspace {
+  display: grid;
+  gap: 1.25rem;
+}
+.research-workspace > * {
+  min-inline-size: 0;
+}
+.research-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+}
+.research-switch a {
+  padding-block: 0.5rem;
+}
+.research-switch a[aria-current="page"] {
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 0.35rem;
+}
+.source-availability {
+  display: grid;
+  gap: 1rem;
+}
+.source-availability > p,
+.source-availability li {
+  max-inline-size: 80ch;
+}
+.research-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 21rem), 1fr));
+  gap: 1rem 2rem;
+}
+.research-facts dt {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+.research-facts dd {
+  overflow-wrap: anywhere;
+}
+.research-stages {
+  overflow: hidden;
+}
+.research-stages .evaluation-table {
+  min-inline-size: 62rem;
+}
+.research-stages .evaluation-table-region {
+  max-block-size: 32rem;
+}
+.research-stages .scale-note {
+  padding: 1rem;
+}
+.research-context .inline-heading {
+  flex-wrap: wrap;
+}
+.history-controls select {
+  max-inline-size: 100%;
+}
 .mission-app {
   min-inline-size: 0;
 }

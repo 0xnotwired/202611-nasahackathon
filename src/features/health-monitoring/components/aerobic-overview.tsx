@@ -24,6 +24,7 @@ import { TrajectoryChart } from "./trajectory-chart";
 import { EvaluationHistory } from "./evaluation-history";
 import { ObservationPanel } from "./observation-panel";
 import { MeasurementsPanel } from "./measurements-panel";
+import { EvaluationEvidence } from "./evaluation-evidence";
 
 const signed = (value: number) =>
   `${value > 0 ? "+" : ""}${numberFormat.format(value)}`;
@@ -54,29 +55,42 @@ export function AerobicOverview({
   memoryOnly?: boolean;
 }) {
   const evaluations = periodEvaluations(mission.evaluations, context.period);
-  const latestVisit = evaluations.at(-1);
-  const latestResult = latestValid(evaluations);
+  const groups = [...new Set(mission.evaluations.map((item) => item.method))];
+  const included = evaluations.filter(
+    (item) => !context.group || item.method === context.group,
+  );
+  const excluded = evaluations.length - included.length;
+  const latestVisit = included.at(-1);
+  const latestResult = latestValid(included);
   const baseline = mission.evaluations.find(
     (item) => item.id === context.reference,
   );
   const selected =
-    evaluations.find((item) => item.id === context.evaluation) ?? latestVisit;
+    evaluations.find((item) => item.id === context.evaluation) ??
+    evaluations.at(-1);
   const selectedIndex = evaluations.findIndex(
     (item) => item.id === selected?.id,
   );
   const comparison = comparisonTo(baseline, latestVisit);
   const selectedComparison = comparisonTo(baseline, selected);
-  const trend = describePeriod(evaluations);
+  const trend = describePeriod(included);
   const endpointComparison = comparisonTo(
-    evaluations.find((item) => item.value !== null),
+    included.find((item) => item.value !== null),
     latestResult,
   );
-  const valid = evaluations.filter((item) => item.value !== null);
+  const valid = included.filter((item) => item.value !== null);
   const unit = valid[0]?.unit ?? baseline?.unit ?? "";
   const domain = scaleDomain(
     context.scale === "history"
-      ? mission.evaluations
-      : [...evaluations, ...(baseline ? [baseline] : [])],
+      ? mission.evaluations.filter(
+          (item) => !context.group || item.method === context.group,
+        )
+      : [
+          ...included,
+          ...(baseline && (!context.group || baseline.method === context.group)
+            ? [baseline]
+            : []),
+        ],
     unit,
   );
   const select = (id: string) => onContext({ evaluation: id });
@@ -102,7 +116,7 @@ export function AerobicOverview({
           <p>
             {expanded
               ? "Registro del período y detalle de cada evaluación."
-              : "Evaluaciones periódicas de VO₂pico · resultados simulados"}
+              : "VO₂pico relativo · pruebas periódicas, sin criterio de desempeño configurado"}
           </p>
         </div>
         <div className="page-actions">
@@ -158,13 +172,30 @@ export function AerobicOverview({
             ))}
           </select>
         </label>
+        <label htmlFor="protocol-group">
+          Grupo de cálculo
+          <select
+            id="protocol-group"
+            value={context.group ?? ""}
+            onChange={(event) =>
+              onContext({ group: event.target.value || undefined })
+            }
+          >
+            <option value="">Todos los protocolos</option>
+            {groups.map((method) => (
+              <option key={method} value={method}>
+                {method}
+              </option>
+            ))}
+          </select>
+        </label>
         <p className="effective-period">
           {evaluations.length ? (
             <>
               <span>Fechas efectivas</span>
               <strong>
                 {formatDate(evaluations[0].recordedAt)} —{" "}
-                {formatDate(latestVisit!.recordedAt)}
+                {formatDate(evaluations.at(-1)!.recordedAt)}
               </strong>
             </>
           ) : (
@@ -173,6 +204,13 @@ export function AerobicOverview({
           <small>Ventana anclada en la última visita registrada</small>
         </p>
       </section>
+      <p className="eligibility-note" role="status">
+        {included.length} pruebas en el grupo de cálculo · {excluded} fuera del
+        grupo, conservadas en el registro.{" "}
+        {groups.length > 1 && !context.group
+          ? "Hay protocolos distintos: seleccioná un grupo para describir su evolución."
+          : "Solo se comparan resultados con contexto compatible."}
+      </p>
       <dl className="measurement-summary">
         <div>
           <dt>Último resultado disponible</dt>
@@ -222,11 +260,11 @@ export function AerobicOverview({
           <dd className="summary-value">
             {valid.length}
             <span className="summary-denominator">
-              / {evaluations.length} visitas
+              / {included.length} pruebas
             </span>
           </dd>
           <dd className="summary-detail">
-            {evaluations.length - valid.length} visitas sin resultado
+            {included.length - valid.length} pruebas sin resultado
           </dd>
           <dd className="summary-detail">
             Métodos y unidades identificados por visita
@@ -256,7 +294,7 @@ export function AerobicOverview({
             </label>
           </div>
           <TrajectoryChart
-            evaluations={evaluations}
+            evaluations={included}
             selected={selected?.id ?? ""}
             reference={baseline}
             domain={domain}
@@ -355,6 +393,7 @@ export function AerobicOverview({
               </div>
             ) : null}
           </dl>
+          {selected ? <EvaluationEvidence evaluation={selected} /> : null}
           <div className="visit-arrows">
             <button
               type="button"
@@ -401,6 +440,10 @@ export function AerobicOverview({
               ? trend.reason
               : "La relevancia del cambio no está evaluada. La dirección matemática no determina mejoría, estabilidad ni empeoramiento clínico."}
           </p>
+          <p>
+            Criterio de desempeño: no configurado. Un descenso numérico no
+            determina falta de aptitud ni mal desempeño.
+          </p>
         </div>
         <details>
           <summary>Detalle del cálculo</summary>
@@ -439,6 +482,7 @@ export function AerobicOverview({
             selected={selected?.id ?? ""}
             onSelect={select}
             full={expanded}
+            group={context.group}
           />
         </section>
         <ObservationPanel
