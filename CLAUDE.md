@@ -51,7 +51,7 @@ docs/RESOURCES.md              reading list and concept references (not the deli
 docs/REQUIREMENTS.md           challenge text and its goals; gaps closed by D10–D14
 LICENSE                        Apache-2.0
 scripts/check_docs.py          consistency of matrices, module board and links
-app/                           does not exist yet; the product goes there, one folder per module
+app/                           M00 foundation and implemented M01–M05; later modules remain placeholders
 ```
 
 ## Where to pick up (after F1 implementation, November 15, 2026)

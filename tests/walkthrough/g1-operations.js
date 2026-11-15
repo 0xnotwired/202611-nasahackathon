@@ -9,8 +9,8 @@ export async function runG1Operations(api, options = {}) {
     ?Object.fromEntries(Object.keys(value).sort().map(key=>[key,normalize(value[key])])):value;
   const equal=(a,b,message)=>expect(JSON.stringify(normalize(a))===JSON.stringify(normalize(b)),message);
   const good=result=>{expect(result?.ok===true,`Expected success: ${JSON.stringify(result)}`);return result.value;};
-  const bad=result=>{
-    expect(result?.ok===false&&typeof result.error?.code==='string'&&result.error.code!=='not_implemented','Expected implemented error Result');
+  const bad=(result,context='Store operation')=>{
+    expect(result?.ok===false&&typeof result.error?.code==='string'&&result.error.code!=='not_implemented',`${context}: expected implemented error Result`);
     expect(typeof result.error.message==='string'&&result.error.message.length>0,'Error must explain failure');
     return result.error;
   };
@@ -38,11 +38,11 @@ export async function runG1Operations(api, options = {}) {
     const absent=expected.find(r=>r.state==='not_recorded');
     const gap=good(await store.get('records',absent.id));
     expect(gap.state==='not_recorded'&&!Object.hasOwn(gap,'value'),'Missing measurement became a value or reassurance');
-    bad(await store.save('records',{...first,source:'gate-overwrite'}));
+    bad(await store.save('records',{...first,source:'gate-overwrite'}),'Duplicate save');
     bad(await store.saveBatch('records',[{...first,id:'gate-atomic-before'},first,{...first,id:'gate-atomic-after'}]));
     bad(await store.get('records','gate-atomic-before'));
     bad(await store.get('records','gate-atomic-after'));
-    bad(await store.updateState('records',first.id,{state:'confirmed_none'}));
+    bad(await store.updateState('records',first.id,{state:'confirmed_none'}),'Record updateState');
     equal(good(await store.get('records',first.id)),first,'Immutable record was changed');
     const shared={id:'gate-shared',schema_version:1,subject:first.subject,time:first.time,what:[first.id],with:'team demo',channel:'simulated'};
     good(await store.save('shared',shared));
@@ -50,7 +50,7 @@ export async function runG1Operations(api, options = {}) {
     equal(good(await store.get('shared',shared.id)),shared,'Shared audit entry changed');
     const invalid={...first,id:'gate-invalid'};delete invalid.origin;
     bad(await store.save('records',invalid));
-    bad(await store.saveBatch('records',[{...first,id:'gate-valid-before-invalid'},invalid]));
+    bad(await store.saveBatch('records',[{...first,id:'gate-valid-before-invalid'},invalid]),'Invalid batch');
     bad(await store.get('records','gate-valid-before-invalid'));
     const futureError=bad(await store.save('records',{...first,id:'gate-future',schema_version:api.SCHEMA_VERSION+1}));
     expect(/version/i.test(futureError.message+futureError.field),'Unknown schema version needs a named explanation');

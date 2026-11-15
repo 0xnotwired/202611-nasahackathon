@@ -55,6 +55,8 @@ Status on 15/11/2026: D9 was chosen by the user. D1, D2, D3, D4 and D6 match the
 
 ## F1 — Data core (level 0)
 
+Current evidence: M01–M05 are implemented and independently reviewed; all 83 tests and actual browser persistence checks pass. See [G1](experiments/G1.md). Human gate acceptance remains pending; no F2 work is started. The parallel real-data acquisition task remains network-blocked.
+
 **Claim.** A record that enters the store comes out with the same id, state, origin and subject, and a malformed record cannot enter at all.
 
 **Modules.** Wave 1: M01, M02, M03. Wave 2: M04, M05. **Rules that start here:** R1, R3, R4, R7, R9.

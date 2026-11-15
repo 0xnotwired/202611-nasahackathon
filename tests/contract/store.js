@@ -25,6 +25,8 @@ export async function checkStore(m, options = {}) {
     equal(success(await store.list('records',{subject:'other'})),[],'Subject filter leaked another subject');
     failure(await store.saveBatch('records',[{...record,id:'batch'},record]));
     equal(success(await store.list('records',{})),[record],'Failed batch was partially saved');
+    failure(await store.saveBatch('records',[{...record,id:'fresh-duplicate'},{...record,id:'fresh-duplicate'}]));
+    failure(await store.get('records','fresh-duplicate'));
     failure(await store.save('records',{...record,id:'bad',schema_version:999}));
     failure(await store.save('records',null));
     const read=success(await store.get('records',record.id));read.value=999;

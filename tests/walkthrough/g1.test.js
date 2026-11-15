@@ -44,6 +44,6 @@ for(const mutation of ['collapse_state','zero_gap','drop_subject','overwrite','a
     };
     return {ok:true,value:changed};
   }};
-  const reason=mutation==='drop_subject'?/Subject isolation filter failed/:['overwrite','allow_update','skip_batch_validation'].includes(mutation)?/Expected implemented error Result/:/changed on save/;
+  const reason={drop_subject:/Subject isolation filter failed/,overwrite:/Duplicate save: expected implemented error Result/,allow_update:/Record updateState: expected implemented error Result/,skip_batch_validation:/Invalid batch: expected implemented error Result/}[mutation]??/changed on save/;
   await assert.rejects(()=>runG1Operations(broken),reason);
 });

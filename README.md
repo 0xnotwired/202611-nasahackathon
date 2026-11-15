@@ -75,7 +75,7 @@ No installation, server or account is needed. The interface is self-contained an
 | HTML mockup with synthetic data, interactive body and charts. | Integration of health, physical adaptation, habitat and a shared plan. |
 | Guided check-in, local demo storage and TXT summary. | Procedures adapted to mission resources and integrated follow-up of results. |
 | Product definition, roadmap and targeted academic review. | Sensor connectors, sync and a final persistence architecture. |
-| Build plan in 25 modules, with contracts and work orders. | Domain-module implementations: `app/` currently contains the M00 foundation and placeholders. |
+| Build plan in 25 modules, with contracts and work orders. | Later domain modules and product views: `app/` contains M00 plus M01–M05; the rest are placeholders. |
 
 The mockup mainly shows the initial check-in. It has no sensor integration, loaded NASA data, medical communication, AI model or validated clinical protocols. Use only fictional information in the demo. Choosing NASA sources does not imply certification or endorsement of the tool.
 
@@ -119,7 +119,7 @@ Studies, participants, missions, methods and frequencies are kept separate unles
 
 ## How it is built
 
-The M00 foundation is implemented and independently reviewed; domain modules remain placeholders. Further modules are built with AI agents under human review.
+M00 and the F1 data core (M01–M05) are implemented and independently reviewed; later modules remain placeholders. Further modules are built with AI agents under human review.
 
 - **25 modules in 7 phases.** Each phase delivers something the astronaut can use: save records without losing their origin, see their situation, complete a procedure, close an episode.
 - **One module, one agent, one folder.** Modules communicate through [contracts](docs/CONTRACTS.md) fixed in advance, and each agent receives a [work order](docs/work-orders/) with its acceptance criteria.
@@ -134,7 +134,7 @@ The details are in the [orchestration plan](docs/ORCHESTRATION_PLAN.md) and each
 
 By the user's instruction, in line with the reported rules, do not copy, adapt, port or incorporate code from those repositories, including packages used to implement Órbita features. Earlier integration recommendations are superseded by this rule, even if licenses allow reuse. Do not use AI to reproduce or transform that code either.
 
-Working and provenance rules are in [AGENTS.md](AGENTS.md). AI use must be recorded according to the event's applicable rules. The license for our own code is still pending a team decision.
+Working and provenance rules are in [AGENTS.md](AGENTS.md). AI use must be recorded according to the event's applicable rules. Our own code is licensed under Apache-2.0; see [LICENSE](LICENSE).
 
 ## Documentation and next results
 
@@ -151,7 +151,7 @@ Working and provenance rules are in [AGENTS.md](AGENTS.md). AI use must be recor
 
 The next results are understanding the integrated mission situation, completing plan tasks and reviewing changes with applicable procedures and follow-up. Their verification must cover missing data, provenance, consistency across views, task recovery, accessibility and understanding of the next step.
 
-The repository contains documentation, two mockups and the M00 foundation. The stack decisions are recorded in [IMPLEMENTATION_LAYERS.md](docs/IMPLEMENTATION_LAYERS.md). Run `node --test` for the foundation and G0 checks, `python3 scripts/check_docs.py` for documentation consistency, and `npm run serve` for the minimal modular shell. No dependencies need installation. The [G0 record](docs/experiments/G0.md) documents user-authorized local integration, 37 passing tests, the HTTP browser check and the unverified file-origin CORS control. There are no implemented domain modules, clinical tests or deployment. To contribute, follow [AGENTS.md](AGENTS.md) and propose changes through branches and pull requests. The integration branch is `english`.
+The repository contains documentation, two mockups, M00 foundation and the implemented M01–M05 data core. The stack decisions are recorded in [IMPLEMENTATION_LAYERS.md](docs/IMPLEMENTATION_LAYERS.md). Run `node --test` for foundation, domain and G0/G1 checks, `python3 scripts/check_docs.py` for documentation consistency, and `npm run serve` for the minimal modular shell. No dependencies need installation. The [G0 record](docs/experiments/G0.md) documents user-authorized local integration, 37 passing tests, the HTTP browser check and the unverified file-origin CORS control. The [G1 record](docs/experiments/G1.md) adds 83 passing tests and actual IndexedDB persistence/restart checks. Human G1 acceptance is pending. Real dataset acquisition remains network-blocked; no real-file importers, product views, clinical validation or deployment are included. To contribute, follow [AGENTS.md](AGENTS.md) and propose changes through branches and pull requests. The integration branch is `english`.
 
 ## License
 

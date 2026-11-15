@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
 import {existsSync} from 'node:fs';
-import {cp,mkdtemp,rm,readFile,writeFile} from 'node:fs/promises';
+import {cp,mkdtemp,mkdir,rm,readFile,writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
-import {join} from 'node:path';
+import {join,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {contracts} from '../contract/registry.js';
 
@@ -33,6 +33,12 @@ test('G0-W3: documentation checks pass and missing experiment is detected',async
     await cp(join(root,'demo'),join(temp,'demo'),{recursive:true});
     await cp(join(root,'scripts'),join(temp,'scripts'),{recursive:true});
     for(const name of ['README.md','AGENTS.md','CLAUDE.md','LICENSE']) await cp(join(root,name),join(temp,name));
+    // AGENTS now links to the user-authorized local skill snapshot. Copy only
+    // linked documentation inputs; never include private agent configuration.
+    for(const name of ['.agents/SKILLS_SOURCE.json','.agents/skills/README.md','.agents/skills/red-team/README.md']) {
+      await mkdir(dirname(join(temp,name)),{recursive:true});
+      await cp(join(root,name),join(temp,name));
+    }
     // Establish parity before the mutation so missing copied files cannot fake red.
     const control=run('python3',['scripts/check_docs.py'],temp);
     assert.equal(control.status,0,control.stdout+control.stderr);

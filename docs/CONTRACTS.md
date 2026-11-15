@@ -289,6 +289,9 @@ clinical rules or data sources:
   Equipment availability means explicit membership in available_equipment;
   unknown identifiers are never assumed present. Cross-catalog content
   references are checked by integration tests, not by an undeclared dependency.
+- Synthetic nonclinical demo procedures may use `source: "team_defined"`
+  as explicit team-authored provenance; research citations are not assigned
+  as sources of invented procedures. This is not reviewed clinical content.
 - The glucose catalog uses `unit: "as_recorded"` as unresolved metadata,
   never as a Record.unit. Actual measurements retain the verified input unit;
   the catalog does not select or convert the unknown BUT CGM file unit.
