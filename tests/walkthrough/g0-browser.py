@@ -29,7 +29,8 @@ try:
         response = page.goto(url)
         assert response.status == 200
         assert page.locator('html').get_attribute('data-modules') == 'loaded'
-        assert 'contracts 0.5' in page.locator('#status').inner_text()
+        expected_version = re.search(r'^Version ([0-9.]+)', (ROOT / 'docs/CONTRACTS.md').read_text(), re.M).group(1)
+        assert f'contracts {expected_version}' in page.locator('#status').inner_text()
         assert not errors, errors
         # A distinct control: module transport failure must keep the fallback.
         broken = browser.new_page()

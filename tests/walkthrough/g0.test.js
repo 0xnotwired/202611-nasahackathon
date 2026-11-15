@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
+import {existsSync} from 'node:fs';
 import {cp,mkdtemp,rm,readFile,writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
@@ -37,11 +38,14 @@ test('G0-W3: documentation checks pass and missing experiment is detected',async
     assert.equal(control.status,0,control.stdout+control.stderr);
     const boardPath=join(temp,'docs/modules.csv');
     const board=await readFile(boardPath,'utf8');
-    const mutated=board.replace(/^(M01,.*,)pending$/m,'$1in_review');
+    const chosen=board.split('\n').find(line=>/^M\d\d,/.test(line)&&line.endsWith(',pending')&&!existsSync(join(temp,'docs/experiments',line.split(',')[0]+'.md')));
+    assert.ok(chosen,'control needs an unimplemented module with no experiment record');
+    const id=chosen.split(',')[0];
+    const mutated=board.replace(chosen,chosen.replace(/,pending$/,',in_review'));
     assert.notEqual(mutated,board);
     await writeFile(boardPath,mutated);
     const red=run('python3',['scripts/check_docs.py'],temp);
     assert.equal(red.error,undefined); assert.equal(red.status,1);
-    assert.match(red.stdout,/M01 is in_review but docs\/experiments\/M01\.md does not exist/);
+    assert.ok(red.stdout.includes(`${id} is in_review but docs/experiments/${id}.md does not exist`),red.stdout);
   } finally {await rm(temp,{recursive:true,force:true});}
 });

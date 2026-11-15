@@ -1,5 +1,5 @@
 /**
- * Interfaces mirror docs/CONTRACTS.md 0.5. All store consumers return promises.
+ * Interfaces mirror docs/CONTRACTS.md 0.6. All store consumers return promises.
  * Unspecified return shapes use unknown rather than invented fields.
  * @typedef {import('./data.js').Record} Record
  * @typedef {import('./data.js').MissionConfig} MissionConfig
@@ -38,7 +38,7 @@
  * get:(collection:Collection,id:string)=>Promise<Result<object>>,
  * list:(collection:Collection,filter:object)=>Promise<Result<object[]>>,
  * saveBatch:(collection:Collection,objects:object[])=>Promise<Result<number>>,
- * updateState:(collection:Collection,id:string,changes:object)=>Promise<unknown>,
+ * updateState:(collection:Collection,id:string,changes:object)=>Promise<Result<object>>,
  * close:()=>Promise<void>
  * }} Store */
 /** @typedef {{openStore:(options:{kind:'indexeddb'|'memory',name:string})=>Promise<Result<Store>>}} StoreModule */
