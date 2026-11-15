@@ -54,6 +54,14 @@ main { padding: 8px 0; }
 .chart .gap { stroke: var(--gap); stroke-width: 2; }
 .chart .tick { fill: var(--muted); font-size: 11px; }
 .legend { color: var(--muted); font-size: 0.9rem; margin: 4px 0; }
+.field { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; margin: 10px 0; }
+.field input[type="text"], .field select { min-height: 36px; padding: 4px 8px; background: var(--panel); color: var(--text); border: 1px solid var(--border); border-radius: 6px; max-width: 100%; }
+button[type="submit"] { min-height: 44px; padding: 8px 18px; background: var(--panel); color: var(--text); border: 2px solid var(--border); border-radius: 8px; font: inherit; cursor: pointer; }
+fieldset { border: 1px solid var(--border); border-radius: 8px; margin: 12px 0; }
+.card { border: 1px solid var(--border); border-radius: 8px; padding: 4px 16px 12px; margin: 14px 0; background: var(--panel); }
+.card dl { display: grid; grid-template-columns: max-content 1fr; gap: 2px 14px; }
+.card dt { font-weight: 700; } .card dd { margin: 0; }
+.citation { max-width: 80ch; font-size: 0.92rem; }
 figure { margin: 0 0 8px; }
 figcaption { color: var(--muted); font-size: 0.9rem; }
 .table-toggle summary { cursor: pointer; min-height: 24px; padding: 6px 0; }

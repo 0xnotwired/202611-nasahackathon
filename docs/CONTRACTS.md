@@ -1,6 +1,6 @@
 # Órbita: contracts between modules
 
-Version 0.10 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
+Version 0.11 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
 
 Plan and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). Rationale for the rules: [PROPOSAL_IMPROVEMENTS.md](PROPOSAL_IMPROVEMENTS.md) and [AGENTS.md](../AGENTS.md).
 
@@ -471,6 +471,9 @@ M07 delivers the components every view uses, so the same data looks the same eve
 - `dataStateBadge(record, { clock })`: color plus text for the state of the data — current, old, not recorded, confirmed nothing new, not comparable. Color never means "normal".
 - `attentionBadge(result)`: shows the output of `readings.attention` with the criterion's `defined_by`, source and review status; `no_criterion` and `not_assessed` read as such. "demo" reads as such.
 - Change from the personal baseline is shown as text with how many measurements support it, never as a color judgment.
+- `renderChart(doc, chartModel)`, `renderTable(doc, tableModel)` and `renderBadge(doc, badge)`: DOM renderers for the models above, exported so that a view never imports a file inside this module. They build elements with `textContent` and `setAttribute` only; record text is never parsed as markup.
+
+`services` also carries `readings`, `importers` (M21) and `openMemoryStore()`, which opens a private memory store. A view that handles imported real data (M22) keeps it in that private store and never writes it to `services.store`.
 
 Everything works with the keyboard. No state is conveyed by color alone. Views receive `services` as a parameter and do not import `store`.
 
@@ -493,3 +496,4 @@ Everything works with the keyboard. No state is conveyed by color alone. Views r
 | 0.8 | 2026-11-15 | User-authorized M21 advance: deterministic source CSV adapters, bounded reports/rows, source-time and unknown-unit policy; selected adaptation profiles; no implicit persistence | M21, store/import consumers |
 | 0.9 | 2026-11-15 | User-authorized after M06 delivery: `readings.baseline` gains `excluded_non_comparable`, `readings.environment` coverage gains `segments`; the readings failure shape (`{ ok:false, error }`), `unresolved_time` and `not_comparable` are documented. Additive: existing fields keep their meaning | M06, M07 and every future readings consumer |
 | 0.10 | 2026-11-15 | User-authorized: `readings.seriesBySourceTime` reads records that carry only a source time without inventing UTC or ages; clocks are never merged and an unknown calendar is listed unordered with its records. `lineChart` labels source days and keeps undrawn values in its table | M06, M07; every view over imported data (M08, M09, M11, M22) |
+| 0.11 | 2026-11-15 | User-authorized with the M22 advance: `ui/base` also exports the DOM renderers `renderChart`, `renderTable`, `renderBadge`; services carry `importers` and `openMemoryStore`. M22 (NASA cases) is implemented ahead of its phase; this does not close F5 | M07, M22; every view that draws charts or tables |

@@ -4,6 +4,7 @@ import {CONTRACT_VERSION} from '../../contracts/data.js';
 import {openStore} from '../../store/index.js';
 import {generateScenario} from '../../scenario/index.js';
 import * as readings from '../../readings/index.js';
+import * as importers from '../../importers/index.js';
 import {assembleServices, buildShell, PLANNED_VIEWS} from './shell-model.js';
 import {renderShell, create} from './dom.js';
 
@@ -28,7 +29,7 @@ export async function start(doc = document, win = window) {
 
   async function draw(moveFocus) {
     const services = assembleServices({store: opened.store, clock: () => new Date().toISOString(), newId: () => win.crypto.randomUUID(), configs,
-      selected_config_id: selected, collaborators: {readings}, storage_fallback_reason: opened.reason ?? undefined});
+      selected_config_id: selected, collaborators: {readings, importers, openMemoryStore: () => openStore({kind: 'memory', name: 'nasa-cases'})}, storage_fallback_reason: opened.reason ?? undefined});
     if (!services.ok) { root.replaceChildren(create(doc, 'p', {class: 'notice notice-error', role: 'alert'}, `The application could not start: ${services.error.message}`)); return; }
     const shell = await buildShell({views: loaders, currentId, services: services.value, params: {}});
     const parts = renderShell(doc, root, shell, {onConfig: id => { selected = id; draw(false).then(() => {

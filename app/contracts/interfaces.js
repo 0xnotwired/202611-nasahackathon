@@ -103,6 +103,7 @@
  * stateLabel:(record:Record)=>unknown, originLabel:(origin:string)=>unknown,
  * valueWithContext:(record:Record)=>unknown, accessibleTable:Function, lineChart:Function,
  * dataStateBadge:(record:Record,context:{clock:()=>string})=>unknown,
- * attentionBadge:(result:Attention)=>unknown
+ * attentionBadge:(result:Attention)=>unknown,
+ * renderChart:(doc:Document,model:object)=>Element, renderTable:(doc:Document,model:object)=>Element, renderBadge:(doc:Document,badge:object)=>Element
  * }} BaseUI */
 export {};

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {contracts,implementedContracts,expectedExports} from './registry.js';
+import {contracts,implementedContracts,implementedViews,expectedExports} from './registry.js';
 import {checkCore} from './core.js';
 import * as reference from './fakes/core.js';
 import * as store from './fakes/storage.js';
@@ -32,6 +32,15 @@ for(const entry of implementedContracts) test(`${entry.name}: reviewed implement
   const checker=(await import(new URL(entry.suite,import.meta.url)))[entry.check];
   const actualStore=await import('../../app/store/index.js');
   await checker(m,{store:actualStore});
+});
+
+for(const entry of implementedViews) test(`${entry.name}: implemented view exports model and mount and its model answers a ViewModel without a DOM`,async()=>{
+  const m=await import(new URL(entry.path,import.meta.url));
+  assert.deepEqual(Object.keys(m).sort(),expectedExports[entry.name].split(' ').sort());
+  const vm=await m.model({},{});
+  assert.ok(['loading','empty','error','ready'].includes(vm.state),'view must return a ViewModel');
+  if(vm.state==='empty') assert.equal(typeof vm.reason,'string');
+  assert.equal(typeof m.mount,'function');
 });
 
 test('core: reference fake passes the reusable suite',()=>checkCore(reference));

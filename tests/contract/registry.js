@@ -30,8 +30,12 @@ export const allContracts = [
 // The orchestrator promotes entries as reviewed module implementations land.
 // Keep definitions and explicit export surfaces; retire only placeholder checks.
 export const implementedNames = ['core','mission','catalogs','store','scenario','importers','readings','ui/base'];
-export const contracts = allContracts.filter(entry => !implementedNames.includes(entry.name));
+// A view cannot satisfy checkView without a DOM, so implemented views are checked separately (export surface and an
+// answering model); their drawing is checked in a browser by the module's own script.
+export const implementedViewNames = ['ui/nasa-cases'];
+export const contracts = allContracts.filter(entry => !implementedNames.includes(entry.name) && !implementedViewNames.includes(entry.name));
 export const implementedContracts = allContracts.filter(entry => implementedNames.includes(entry.name));
+export const implementedViews = allContracts.filter(entry => implementedViewNames.includes(entry.name));
 
 // Explicit contract surface. Do not derive this from Object.keys(implementation):
 // that would silently accept a removed export. Undefined component output shapes
@@ -51,7 +55,7 @@ export const expectedExports = {
   summary: 'generate',
   importers: 'importCRF importAdaptation importGlucose',
   sync: 'createLink enqueue advance received',
-  'ui/base': 'stateLabel originLabel valueWithContext accessibleTable lineChart dataStateBadge attentionBadge',
+  'ui/base': 'stateLabel originLabel valueWithContext accessibleTable lineChart dataStateBadge attentionBadge renderChart renderTable renderBadge',
   'ui/my-health': 'model mount',
   'ui/adaptation': 'model mount',
   'ui/habitat': 'model mount',
