@@ -1,6 +1,6 @@
 # Órbita: contracts between modules
 
-Version 0.4 · November 15, 2026 · **proposal**, pending gate G0. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
+Version 0.5 · November 15, 2026 · **proposal**, pending gate G0. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
 
 Plan and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). Rationale for the rules: [PROPOSAL_IMPROVEMENTS.md](PROPOSAL_IMPROVEMENTS.md) and [AGENTS.md](../AGENTS.md).
 
@@ -288,6 +288,23 @@ model.js    model(services, params) → Promise<ViewModel>   no DOM; tested in N
 view.js     mount(element, viewModel, actions)             DOM only
 ```
 
+M00 scope clarification (user authorized November 15, 2026): each view's
+`index.js` re-exports `model` and `mount`. Before implementation, `model` is
+async and resolves to `Result` with `not_implemented`; `mount` returns that
+error synchronously. Once implemented, they follow the signatures above.
+M07's base `index.js` exports the seven components named below; unspecified
+component argument lists remain M07's responsibility. M00 creates only a
+minimal `app/index.html` loading a module to demonstrate HTTP module loading,
+with no product UI. Ownership of that shell passes to M07.
+
+This clarification does not standardize unspecified domain error codes or
+unspecified result fields. Placeholder functions always return a fresh
+`not_implemented` Result, including normally non-Result functions; callers
+must handle that temporary unavailable state explicitly. Core constants
+are the documented enums and schema version 1, not functions. All functions
+that accept `store`, plus `openStore` and view `model`, are asynchronous;
+other functions are synchronous.
+
 `ViewModel.state` is one of `loading`, `empty`, `error`, `ready`. `empty` says why it is empty; `error` names the failure. A view that is not implemented shows "not available yet".
 
 M07 delivers the components every view uses, so the same data looks the same everywhere:
@@ -314,3 +331,4 @@ Everything works with the keyboard. No state is conveyed by color alone. Views r
 | 0.2 | 2026-11-15 | `Delivery` shape and `sync` interface (D9, simulated option C) | M24; M19 and M18 only as providers |
 | 0.3 | 2026-11-15 | Translated to English, including identifiers, data fields and folder names; `deliveries` collection added to the store | All |
 | 0.4 | 2026-11-15 | User decisions D10–D14: R6 reworded (criteria only as configuration data); `terrestrial` origin; `environment`, `gravity_note`, `attention_criteria` in `MissionConfig`; `readings.attention`; `plan.progress`; `importGlucose`; `dataStateBadge` and `attentionBadge` | M01, M02, M03, M05, M06, M07, M14, M15, M21 |
+| 0.5 | 2026-11-15 | User-authorized M00 clarification: view index exports, minimal shell ownership, placeholder behavior and async boundary; no domain behavior added | M00, M07–M12, M15, M20, M22, M24 |

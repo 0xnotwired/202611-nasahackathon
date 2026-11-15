@@ -1,5 +1,5 @@
 id,name,phase,wave,level,paths,depends_on,work_order,status
-M00,Foundation,0,1,-,package.json;scripts/serve.mjs;app/contracts/;tests/contract/;docs/THREAT_MODEL.md,,work-orders/M00-foundation.md,pending
+M00,Foundation,0,1,-,package.json;scripts/serve.mjs;app/contracts/;tests/contract/;docs/THREAT_MODEL.md,,work-orders/M00-foundation.md,integrated
 M01,Core,1,1,0,app/core/,M00,work-orders/M01-core.md,pending
 M02,Mission,1,1,0,app/mission/,M00,work-orders/M02-mission.md,pending
 M03,Catalogs,1,1,0,app/catalogs/,M00,work-orders/M03-catalogs.md,pending

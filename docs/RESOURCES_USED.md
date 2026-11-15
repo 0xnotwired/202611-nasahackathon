@@ -48,6 +48,13 @@ XState, Open mHealth, Open MCT, AMOS, LHC-Forms, CQL Execution and Medplum were 
 
 Claude (Anthropic), used through Claude Code, wrote the documentation and scripts in this repository and is the intended author of the product modules under the work orders. It is recorded in three places: the `Co-Authored-By` line of every commit, the handoff log in [AGENT_ROADMAP.md](AGENT_ROADMAP.md), and the module's experiment record. Nothing in this list claims a human review that those records do not show. Agents are forbidden to reproduce or transform code from other projects (AGENTS.md).
 
+OpenAI Codex also authored M00 foundation and the G0 walkthroughs in the
+cloud session on November 15, 2026, with a separate Codex agent performing
+independent review. No outside project code or library was incorporated.
+AI provenance and the controls are recorded in the M00/G0 experiment records,
+the handoff log and the integration commit's Co-Authored-By line. Existing
+development tools were reused; no dependency was installed.
+
 ## 6. Other obligations in the terms that touch the delivery
 
 From the full text supplied on 2026-11-15: the participant is responsible for the Solution and its Solution Materials not containing export-controlled information (ITAR, EAR); solutions that promote commercial services or products are not accepted; no personally identifiable information, and no recognizable names, voices or likenesses of people under 18; a submitted video must be the participant's own work and must not contain third-party material that infringes rights, with written consent from anyone featured. The text says nothing about already-made projects.

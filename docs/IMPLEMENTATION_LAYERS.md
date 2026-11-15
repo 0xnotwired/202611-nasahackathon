@@ -35,7 +35,7 @@ Each decision is a bet about the future. This table says what it rests on and wh
 | D13 | Blood sugar from BUT CGM (CC BY 4.0, `terrestrial` origin); mood as a team self-report 1–5, synthetic, no score | Both named by the challenge; no open mood data; published questionnaires are not free to copy | User decision, 15/11/2026; DATASETS.md | An open flight or analog dataset for either appears |
 | D14 | Gamification limited to the day's plan progress ("n of m done"); no streaks, points or rewards for results | Streaks push measuring for its own sake; rewards for results would grade health | User decision, 15/11/2026 | First thing cut if time runs short |
 
-Status on 15/11/2026: D9 was chosen by the user. D1, D2, D3, D4 and D6 match the stack the user listed and asked to continue with on 15/11/2026. D5, D7 and D8 were confirmed by the user on 15/11/2026 by accepting the orchestrator's recommendation with its reasons; gate G0 still needs its experiments and the threat model.
+Status on 15/11/2026: D9 was chosen by the user. D1, D2, D3, D4 and D6 match the stack the user listed and asked to continue with on 15/11/2026. D5, D7 and D8 were confirmed by the user on 15/11/2026 by accepting the orchestrator's recommendation with its reasons; M00 now provides its threat model and G0 experiments; see [G0](experiments/G0.md) for local integration, user authorization and the file:// verification limit.
 
 ## F0 — Foundation
 
