@@ -106,6 +106,45 @@ Woman skeletal muscle transcriptome with bed rest and countermeasures. Estudio W
 
 Gene expression profiling of human peripheral blood lymphocytes cultured in modeled microgravity. Cultivo celular humano en biorreactor terrestre frente a control 1g. Microarray de mRNA, 10 muestras en metadatos; no implica 10 astronautas o donantes independientes. El artículo integra miRNA/mRNA y el conjunto compañero de miRNA es OSD-55. Listado: 2 archivos no restringidos, metadatos ISA y ZIP crudo de ~52.7 MB. Se verificaron metadatos y listado, no descarga del ZIP ni calidad de matrices.
 
+## Fuentes complementarias (búsqueda del 15/11/2026)
+
+Encontradas para calibrar el generador sintético (M05), alimentar Hábitat y ampliar el visor de casos (M21–M22). Solo se leyeron sus fichas públicas: **no se descargó ni se procesó ningún archivo**. Ninguna aporta datos de astronautas individuales.
+
+### Pruebas máximas en cinta, Universidad de Málaga — terrestre
+
+[Ficha PhysioNet](https://physionet.org/content/treadmill-exercise-cardioresp/) · DOI 10.13026/7ezk-j442
+
+992 pruebas máximas graduadas en cinta, con frecuencia cardíaca, VO2, VCO2, frecuencia respiratoria y ventilación respiración a respiración, más la velocidad de la cinta. Atletas amateurs y profesionales de 10 a 63 años. Dos archivos: `subject-info.csv` (una fila por prueba, con edad, talla, peso, temperatura y humedad) y la serie temporal. Faltan VO2, VCO2 y VE en 30 pruebas.
+
+Uso propuesto: dar forma realista a las curvas del generador y reproducir pruebas en el visor de casos, rotuladas como terrestres. **Atletas en tierra no son astronautas en vuelo.** Licencia no leída en la ficha: confirmarla antes de redistribuir archivos.
+
+### Prueba graduada en cicloergómetro — terrestre
+
+[Ficha PhysioNet](https://physionet.org/content/actes-cycloergometer-exercise/) · DOI 10.13026/2qs3-kh43
+
+Intervalos entre latidos, VO2 y potencia mecánica latido a latido durante pruebas graduadas en cicloergómetro, el mismo tipo de equipo que el CEVIS de la ISS. Tamaño de muestra y licencia no verificados.
+
+### Wearable en estrés y ejercicio estructurado (ITBA) — terrestre
+
+[Ficha PhysioNet](https://www.physionet.org/content/wearable-device-dataset/) · DOI 10.13026/he0v-tf17 · licencia Open Data Commons Attribution v1.0
+
+Empatica E4 en sesiones de estrés (36 voluntarios), ejercicio aeróbico (30) y anaeróbico (31) en bicicleta fija; personas de 18 a 30 años. Archivos crudos de temperatura, actividad electrodérmica, pulso, acelerómetro, intervalos y frecuencia cardíaca. Los autores documentan sesiones incompletas y artefactos de señal.
+
+Uso propuesto: ejemplo real de datos de wearable con huecos y artefactos. Una frecuencia cardíaca derivada de fotopletismografía en ejercicio no equivale a un electrocardiograma.
+
+### Environmental Data App (OSDR) — vuelo, ambiente
+
+[Aplicación](https://visualization.osdr.nasa.gov/eda)
+
+Temperatura, humedad relativa y CO₂ de la cabina de la ISS y de control en tierra, más radiación (rayos cósmicos galácticos, anomalía del Atlántico Sur, dosis total y acumulada). Misiones listadas: RR-1 a RR-28 (no todas), APEX-03-1, APEX-03-2, APEX-04 y VEG-01C. Permite descargar datos crudos y resumidos desde la sección de tablas.
+
+Uso propuesto: Hábitat con datos ambientales reales de vuelo. Límites: son misiones de biología, no de un tripulante; el dato es de la cabina, no de un módulo asignado a una persona. La página no documenta formatos, API ni términos de uso: verificarlos antes de integrar. La radiación sigue sujeta a la regla del límite de 600 mSv sin confirmar.
+
+### Descartadas por ahora
+
+- **LSDA y LSAH.** Contienen datos de investigación y clínicos de astronautas, pero se liberan por [solicitud formal](https://lsda.jsc.nasa.gov/explore/lsdahome/datarequest) y acuerdo de uso. No es viable en el plazo del hackathon.
+- **Inspiration4 (SOMA, en OSDR).** Datos procesados públicos y crudos bajo solicitud con aprobación de un comité ([NASA](https://www.nasa.gov/osdr-latest-news-i4-mission-datasets/)). Mayormente ómica de cuatro civiles en un vuelo de tres días. Que haya datos de reloj inteligente publicados no está verificado (ver B18).
+
 ## Límites de integración
 
 - Análogo terrestre, cultivo celular, ISS, Shuttle y Mir son contextos distintos: preservarlos en cada medición y visualización.
