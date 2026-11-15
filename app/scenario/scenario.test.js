@@ -61,6 +61,18 @@ export function checkReferences(output) {
     for(const id of procedure.required_equipment) assert.ok(equipmentIds.has(id),id);
     for(const step of procedure.steps) if(step.records) assert.ok(variableIds.has(step.records),step.records);
   }
+  const subjects=new Set(output.records.map(record=>record.subject));
+  assert.equal(subjects.size,1,'scenario must contain one fictional record subject');
+  const subject=[...subjects][0];
+  const procedureIds=new Set(output.procedures.map(procedure=>procedure.id));
+  const recordIds=new Set(output.records.map(record=>record.id));
+  assert.ok(output.tasks.some(task=>procedureIds.has(task.procedure_id)),'demo task must link to its procedure');
+  for(const task of output.tasks) {
+    assert.equal(task.subject,subject,'task subject must match the fictional record subject');
+    if(task.procedure_id!==undefined) assert.ok(procedureIds.has(task.procedure_id),'unknown task procedure');
+    assert.ok(Array.isArray(task.result_ids),'task result_ids must be an array');
+    for(const id of task.result_ids) assert.ok(recordIds.has(id),'unknown task result record');
+  }
   for(const item of [...output.records,...output.config,...output.tasks,...output.procedures]) assert.equal(item.schema_version,SCHEMA_VERSION);
 }
 
