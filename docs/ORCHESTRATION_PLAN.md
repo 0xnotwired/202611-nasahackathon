@@ -214,6 +214,16 @@ Reviewer:
 
 > You are the reviewer of module M__ of Órbita. You did not build it. Read `CLAUDE.md`, `AGENTS.md`, `docs/CONTRACTS.md`, `docs/METHOD.md`, the work order `docs/work-orders/M__-….md` and the record `docs/experiments/M__.md`. Treat the record as unverified: rerun every experiment, reapply two of its breakages, design two of your own and check every criterion. Write your findings in the record's Replication section. Do not fix anything. Deliver the review report from `docs/ORCHESTRATION_PLAN.md`.
 
+### First launch: M00
+
+Builder:
+
+> You are the builder of module M00 (Foundation) of Órbita. Read `CLAUDE.md`, `AGENTS.md` (including "First task: module M00"), `docs/CONTRACTS.md`, `docs/METHOD.md` and `docs/work-orders/M00-foundation.md`, in that order. Create branch `mod/m00-foundation` from the tip of `english`. Follow the fixed order of work in AGENTS.md: first copy the five predictions into `docs/experiments/M00.md`, then write `docs/THREAT_MODEL.md`, and only then code. See each test fail, then pass, then fail under its negative control. Write only in the owned paths of the work order and the placeholders it allows. Use no dependencies and copy nothing from other projects. Do not edit `docs/CONTRACTS.md`; report what does not fit. Do not commit or push. When done, deliver the delivery report from this file.
+
+Reviewer:
+
+> You are the reviewer of module M00 (Foundation) of Órbita. You did not build it. Read `CLAUDE.md`, `AGENTS.md` (including "First task: module M00"), `docs/CONTRACTS.md`, `docs/METHOD.md`, `docs/work-orders/M00-foundation.md`, `docs/THREAT_MODEL.md` and `docs/experiments/M00.md`. Treat the record as unverified. Rerun every experiment and reapply two of its breakages. Design two of your own, one of them against `scripts/serve.mjs`: encoded traversal, a sibling folder with the same prefix as `app`, a backslash, a null byte, a request for a directory, a method other than GET. Check that the server binds to `127.0.0.1` only, that `package.json` has no dependencies, that the contract field names match `docs/CONTRACTS.md` version 0.4 and that the threat model says what is not protected. Write your findings in the record's Replication section. Do not fix anything. Deliver the review report from this file.
+
 ## Known traps
 
 - **ES modules do not load from `file://`.** Observed in Chrome 153 (E00-P3), with a CORS error, while the current mockup does open with a double click. That is why D6 uses a local server and leaves the single file for M23. M07 leaves a plain-text notice for whoever opens the page with a double click.

@@ -17,7 +17,7 @@ Phase F0 · wave 1 · level - · contracts version 0.4
 - `scripts/serve.mjs`: our own static server using `node:` modules; it serves only `app/`, only on `127.0.0.1`.
 - `app/contracts/`: JSDoc definitions of every type and interface in CONTRACTS.md.
 - `tests/contract/`: one test suite per interface, which receives an implementation and checks it; plus valid and invalid sample data.
-- `app/<module>/index.js` for each module M01–M22 and M24: a placeholder that answers `{ ok: false, error: { code: "not_implemented" } }` in the shape of the contract.
+- `app/<module>/index.js` for each module M01–M22 and M24: a placeholder that answers `{ ok: false, error: { code: "not_implemented" } }` in the shape of the contract, including the contracts 0.4 additions (`readings.attention`, `plan.progress`, `importers.importGlucose`, `dataStateBadge`, `attentionBadge`).
 - `.gitignore` with `data/originals/` and `dist/`.
 - `tests/contract/fakes/core.js`: a small reference implementation of `core`, for the tests only, so that the `core` suite can be seen green as well as red.
 
@@ -52,4 +52,4 @@ Copy these predictions into `docs/experiments/M00.md` **before** writing the imp
 
 **Skills.** secure-by-construction, validate-at-the-boundary, falsifiable-testing.
 
-Method and record format: [METHOD.md](../METHOD.md). Method and record format: [METHOD.md](../METHOD.md). Delivery report and review cycle: [ORCHESTRATION_PLAN.md](../ORCHESTRATION_PLAN.md). Interfaces: [CONTRACTS.md](../CONTRACTS.md).
+Method and record format: [METHOD.md](../METHOD.md). Delivery report and review cycle: [ORCHESTRATION_PLAN.md](../ORCHESTRATION_PLAN.md). Interfaces: [CONTRACTS.md](../CONTRACTS.md).

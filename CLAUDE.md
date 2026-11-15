@@ -58,7 +58,7 @@ app/                           does not exist yet; the product goes there, one f
 
 Nothing of the product exists. The plan, contracts 0.4, 25 work orders with their experiments, decisions D1–D14 and the delivery lists exist. In order:
 
-1. **Gate G0** (orchestrator plus a person). Write `docs/THREAT_MODEL.md` before any code: local health data with no encryption (D7), mood as a sensitive self-report, the simulated link (D9), imported files as untrusted input. Then launch M00 with one builder and one reviewer (prompts in ORCHESTRATION_PLAN.md, "How to launch an agent"); M00 records G0-W1 to G0-W3. A person approves G0.
+1. **Gate G0** (orchestrator plus a person). Launch M00 with one builder and one reviewer: the prompts are in ORCHESTRATION_PLAN.md ("First launch: M00") and the rules for them in AGENTS.md ("First task: module M00"). M00's builder writes `docs/THREAT_MODEL.md` before any code (it is in M00's owned paths); the reviewer reads it against the code. The orchestrator runs G0-W1 to G0-W3 and a person approves G0.
 2. **F1, wave 1**: M01, M02 and M03 in parallel once G0 is approved; then the rest of the waves as the plan orders them.
 3. **Inputs that only a person can bring**, and what they unblock:
    - one `*_CGM.csv` file from BUT CGM: its columns and unit are unknown, and M21's `importGlucose` must be corrected against it;

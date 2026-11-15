@@ -50,4 +50,4 @@ Copy these predictions into `docs/experiments/M04.md` **before** writing the imp
 
 **Skills.** honest-degradation, atomic-state-mutation, versioned-schema-evolution, falsifiable-testing.
 
-Method and record format: [METHOD.md](../METHOD.md). Method and record format: [METHOD.md](../METHOD.md). Delivery report and review cycle: [ORCHESTRATION_PLAN.md](../ORCHESTRATION_PLAN.md). Interfaces: [CONTRACTS.md](../CONTRACTS.md).
+Method and record format: [METHOD.md](../METHOD.md). Delivery report and review cycle: [ORCHESTRATION_PLAN.md](../ORCHESTRATION_PLAN.md). Interfaces: [CONTRACTS.md](../CONTRACTS.md).
