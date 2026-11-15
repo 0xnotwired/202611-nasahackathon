@@ -86,9 +86,9 @@ app/                           M00 foundation and implemented M01–M05; later m
 ## Where to pick up — current handoff
 
 Read [docs/CURRENT_STATUS.md](docs/CURRENT_STATUS.md), inspect git status/HEAD,
-and work on a separate branch such as mod/f2-claude. F2 views M06–M12 and M22 are
-built with records and a G2 walkthrough, but not independently reviewed or
-accepted; statuses stay `pending`. 230 Node tests pass. Run node --test and
+and work on a separate branch such as mod/f2-claude. F2 (M06–M12, M22) and F3 (M13–M15) are
+built with records and G2/G3 walkthroughs, but not independently reviewed or
+accepted; statuses stay `pending`. 271 Node tests pass. Run node --test and
 python3 scripts/check_docs.py; browser scripts need ORBITA_CHROMIUM.
 Original datasets, local IndexedDB profile and source-data reports are not
 restored by Git. Use [docs/LOCAL_DATA_RESTORE.md](docs/LOCAL_DATA_RESTORE.md),

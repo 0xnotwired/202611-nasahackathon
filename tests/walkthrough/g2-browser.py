@@ -148,6 +148,7 @@ try:
         check('my-day: the link to "I feel different" is reachable and works', focus_until(page, "document.activeElement.getAttribute('href') === '#/i-feel-different' && document.querySelector('#view').contains(document.activeElement)", 'Tab'))
         page.keyboard.press('Enter')
         page.wait_for_function("location.hash === '#/i-feel-different'", timeout=10000)
+        page.wait_for_function("document.querySelector('#view-title').textContent === 'I feel different' && !document.querySelector('#view-body').textContent.includes('Loading')", timeout=10000)
         check('my-day: that view is not built, and says so', 'not available yet' in page.locator('#view').inner_text().lower())
 
         # Reflow: no sideways page scroll at 320 px in any of the five views.

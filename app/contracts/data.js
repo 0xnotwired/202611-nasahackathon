@@ -1,5 +1,5 @@
 /**
- * Contract version 0.12. Authority: docs/CONTRACTS.md.
+ * Contract version 0.13. Authority: docs/CONTRACTS.md.
  * Documentation only: no runtime validation or module logic lives here.
  * Every persisted object additionally carries schema_version (section 3),
  * represented by Persisted<T>; nested criteria are not separately persisted.
@@ -83,10 +83,13 @@
  * @property {string} subject
  * @property {'blocked'|'in_progress'|'interrupted'|'completed'|'could_not'} state
  * @property {number} current_step
+ * @property {number} step_count
  * @property {string} started
  * @property {string} updated
  * @property {string[]} difficulties
  * @property {string[]} records
+ * @property {{reason:string,step:number,at:string|null}[]} interruptions
+ * @property {string[]} [missing]
  */
 
 /**
@@ -100,6 +103,7 @@
  * @property {'pending'|'done'|'not_done'} completion
  * @property {string} [execution_id]
  * @property {string[]} result_ids
+ * @property {{reason:string}} [not_done_note]
  */
 
 /**
@@ -137,4 +141,4 @@
  * @property {'queued'|'in_transit'|'received'} state
  */
 
-export const CONTRACT_VERSION = "0.12";
+export const CONTRACT_VERSION = "0.13";

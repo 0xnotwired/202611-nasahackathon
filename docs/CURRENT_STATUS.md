@@ -25,8 +25,11 @@ them. Parallel work should use distinct working branches.
   Records M06–M12 and G2 are in docs/experiments/. Statuses in modules.csv are
   still `pending`: independent review of M08–M12 and acceptance of G2 are for a
   person. G2 evidence: 230 Node tests; g2.test.js; g2-browser.py (Chromium only).
-  Next: independent review of M08–M12, then F3 (needs explicit authorization).
-- Contract version 0.12; current record schema2, with unchanged legacy1 readers.
+  F3 built on the same branch (user-authorized): M13 procedures, M14 plan and the
+  My plan and On board views (M15), records M13–M15 and G3, contract 0.13.
+  271 Node tests; g3.test.js; g3-browser.py (Chromium only). Statuses still
+  `pending`. Next: independent review of M08–M15, then person acceptance of G2/G3.
+- Contract version 0.13; current record schema2, with unchanged legacy1 readers.
 
 ## What actually runs
 

@@ -62,7 +62,8 @@ export function contextOf(services) {
     today: {from: new Date(start).toISOString(), to: new Date(start + DAY_MS).toISOString()},
     config: ownValue(services, 'config') ?? null, data_source: ownValue(services, 'data_source') ?? null, writable: ownValue(services, 'writable') === true,
     record_origin: ownValue(services, 'record_origin') ?? null, flags: ownValue(services, 'flags') ?? {}, core: ownValue(services, 'core') ?? null,
-    plan: ownValue(services, 'plan') ?? null, newId: ownValue(services, 'newId') ?? null}};
+    plan: ownValue(services, 'plan') ?? null, newId: ownValue(services, 'newId') ?? null,
+    procedures: ownValue(services, 'procedures') ?? null, procedure_list: Array.isArray(ownValue(services, 'procedure_list')) ? ownValue(services, 'procedure_list') : []}};
 }
 
 function walk(value, visit, seen) {

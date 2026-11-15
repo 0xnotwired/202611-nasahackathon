@@ -1,6 +1,6 @@
 # Órbita: contracts between modules
 
-Version 0.12 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
+Version 0.13 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
 
 Plan and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). Rationale for the rules: [PROPOSAL_IMPROVEMENTS.md](PROPOSAL_IMPROVEMENTS.md) and [AGENTS.md](../AGENTS.md).
 
@@ -87,6 +87,9 @@ Execution
   current_step, started, updated
   difficulties    list of structured texts
   records         ids of the Records produced
+  step_count      number of steps of the version it started with (added 0.13)
+  interruptions   list of { reason, step, at|null } (added 0.13)
+  missing?        equipment ids, only on a blocked execution (added 0.13)
 
 Task
   id, subject, day, procedure_id?, description
@@ -94,6 +97,7 @@ Task
   completion      pending | done | not_done
   execution_id?   link to what was done
   result_ids      links to what was observed afterwards
+  not_done_note?  { reason } only on a not_done task (added 0.13)
 
 Episode
   id, subject, opened, closed?
@@ -264,6 +268,8 @@ finish(store, executionId, { state: "completed" | "could_not", difficulties })
 
 With missing equipment, `start` returns a `blocked` execution with its `missing` list. `alternative_id` only appears if the procedure declares it.
 
+Since 0.13: `advance`, `interrupt`, `resume` and `finish` accept an optional `clock` in their options; `updated` changes only when one is given, so no time is invented. `advance` stops at the last step (`no_more_steps`); `finish` as `completed` needs every step done (`steps_remaining`) and is allowed only from `in_progress`; `could_not` from `in_progress` or `interrupted`. A `blocked` execution is stored and allows no transition. `advance({ record })` links a record id only if it exists and belongs to the execution's subject. Each execution is changed by one caller at a time.
+
 ### plan (M14)
 
 ```
@@ -272,6 +278,8 @@ progress(store, { subject, day })      → Result<{ total, done, not_done, pendi
 mark(store, taskId, { completion, execution_id?, note? })      → Result<Task>
 linkResult(store, taskId, recordId)                            → Result<Task>
 ```
+
+Since 0.13: `mark` accepts `done` or `not_done` only and only on a `pending` task (`already_marked` otherwise); `note` is `{ reason }` and belongs to `not_done`; `execution_id` must exist, belong to the task's subject and procedure, and for `done` be `completed`. `linkResult` accepts only a `recorded` Record of the same subject, never changes `completion`, and ignores a repeated link. `tasksFor` returns stored tasks of that day only and reports a corrupt task instead of dropping it. Each task is changed by one caller at a time.
 
 ### privacy (M19)
 
@@ -503,3 +511,4 @@ Everything works with the keyboard. No state is conveyed by color alone. Views r
 | 0.10 | 2026-11-15 | User-authorized: `readings.seriesBySourceTime` reads records that carry only a source time without inventing UTC or ages; clocks are never merged and an unknown calendar is listed unordered with its records. `lineChart` labels source days and keeps undrawn values in its table | M06, M07; every view over imported data (M08, M09, M11, M22) |
 | 0.11 | 2026-11-15 | User-authorized with the M22 advance: `ui/base` also exports the DOM renderers `renderChart`, `renderTable`, `renderBadge`; services carry `importers` and `openMemoryStore`. M22 (NASA cases) is implemented ahead of its phase; this does not close F5 | M07, M22; every view that draws charts or tables |
 | 0.12 | 2026-11-15 | User-authorized with the start of F2 (M08–M12): `ui/base` also exports `renderEntry`, `renderSection` and `viewKit`; services carry the data-source fields and the `catalogs`, `core` and `plan` collaborators; the shell offers a synthetic demo source and "My records" | M07, M08–M12 |
+| 0.13 | 2026-11-15 | User-authorized with the start of F3 (M13–M15): optional `clock` in the procedure transitions; Execution gains `step_count`, `interruptions` and `missing`; Task gains `not_done_note`; the rules of `mark`, `linkResult` and `finish` above; services may carry `procedures` and `procedure_list`; `ui/my-plan` and `ui/on-board` are implemented. Consistency review only, no approval. |

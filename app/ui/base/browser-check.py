@@ -57,7 +57,7 @@ try:
         status = page.locator('#status').inner_text()
         check(results, 'P6 server: static notice replaced by the shell status line', 'Modules loaded (contracts' in status and 'Open this page through' not in page.content(), status)
         check(results, 'P4 browser: ten navigation links, in order', page.eval_on_selector_all('nav a', 'els => els.map(e => e.getAttribute("href"))') == [f'#/{n}' for n in NAV])
-        page.evaluate("location.hash = '#/my-plan'"); page.wait_for_function("document.querySelector('#view-title').textContent === 'My plan'")
+        page.evaluate("location.hash = '#/i-feel-different'"); page.wait_for_function("document.querySelector('#view-title').textContent === 'I feel different'")
         main_text = page.locator('#view').inner_text()
         check(results, 'P4 browser: unbuilt view says "not available yet"', 'not available yet' in main_text.lower(), main_text)
         check(results, 'F6 browser: the default data source is the synthetic demo and the shell says so', 'Synthetic demo' in page.locator('#source-select option:checked').inner_text(), '')

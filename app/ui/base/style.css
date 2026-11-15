@@ -58,7 +58,8 @@ main { padding: 8px 0; }
 .field { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; margin: 10px 0; }
 .field input[type="text"], .field select { min-height: 36px; padding: 4px 8px; background: var(--panel); color: var(--text); border: 1px solid var(--control-border); border-radius: 6px; max-width: 100%; }
 .field input[type="file"] { min-height: 36px; max-width: 100%; }
-button[type="submit"] { min-height: 44px; padding: 8px 18px; background: var(--panel); color: var(--text); border: 2px solid var(--control-border); border-radius: 8px; font: inherit; cursor: pointer; }
+button[type="submit"], button[type="button"] { min-height: 44px; padding: 8px 18px; background: var(--panel); color: var(--text); border: 2px solid var(--control-border); border-radius: 8px; font: inherit; cursor: pointer; }
+button:disabled { opacity: 0.6; cursor: not-allowed; }
 fieldset { border: 1px solid var(--border); border-radius: 8px; margin: 12px 0; }
 .card { border: 1px solid var(--border); border-radius: 8px; padding: 4px 16px 12px; margin: 14px 0; background: var(--panel); }
 .card dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 2px 14px; }
@@ -75,3 +76,4 @@ figcaption { color: var(--muted); font-size: 0.9rem; }
 .data-table th, .data-table td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--border); }
 .data-table thead th { border-bottom: 2px solid var(--border); }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }
+.links a { display: inline-block; padding: 4px 0; min-height: 24px; }

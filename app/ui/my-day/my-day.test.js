@@ -9,7 +9,8 @@ const task=(id,completion='pending')=>({id,schema_version:2,subject:SUBJECT,day:
 const episode=(extra={})=>({id:'ep-1',schema_version:2,subject:SUBJECT,opened:`${DAY(15)}T10:00:00.000Z`,observation_id:'o1',execution_ids:[],record_ids:[],task_ids:['t1','t2','t3'],alert_issued:false,...extra});
 
 test('M12-P1: while plan answers not_implemented the tasks section says "not available yet" and the rest is ready',async()=>{
-  const vm=await model(await makeServices(),{});
+  const notYet={tasksFor:async()=>({ok:false,error:{code:'not_implemented',message:'plan is not implemented'}})};
+  const vm=await model(await makeServices({plan:notYet}),{});
   assert.equal(vm.state,'ready');assert.equal(section(vm,'tasks').state,'not_available');assert.match(section(vm,'tasks').text,/not available yet/i);
   for(const id of ['known_today','not_recorded_today','access']) assert.equal(section(vm,id).state,'ready',id);
   const listed=await model(await makeServices({plan:{tasksFor:async()=>({ok:true,value:[task('t1')]})}}),{});assert.equal(section(listed,'tasks').state,'ready');assert.match(section(listed,'tasks').items[0].text,/Pending item t1/);
