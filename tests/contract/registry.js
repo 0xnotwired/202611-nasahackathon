@@ -1,5 +1,5 @@
 // Reusable checkers reject placeholders on assertions, not import errors.
-export const contracts = [
+export const allContracts = [
   {name:'core', path:"../../app/core/index.js", suite:"./core.js", check:"checkCore"},
   {name:'mission', path:"../../app/mission/index.js", suite:"./mission.js", check:"checkMission"},
   {name:'catalogs', path:"../../app/catalogs/index.js", suite:"./catalogs.js", check:"checkCatalogs"},
@@ -26,6 +26,12 @@ export const contracts = [
   {name:'ui/nasa-cases', path:"../../app/ui/nasa-cases/index.js", suite:"./ui.js", check:"checkView"},
   {name:'ui/ground', path:"../../app/ui/ground/index.js", suite:"./ui.js", check:"checkView"},
 ];
+
+// The orchestrator promotes entries as reviewed module implementations land.
+// Keep definitions and explicit export surfaces; retire only placeholder checks.
+export const implementedNames = ['core'];
+export const contracts = allContracts.filter(entry => !implementedNames.includes(entry.name));
+export const implementedContracts = allContracts.filter(entry => implementedNames.includes(entry.name));
 
 // Explicit contract surface. Do not derive this from Object.keys(implementation):
 // that would silently accept a removed export. Undefined component output shapes

@@ -1,6 +1,6 @@
 # Órbita: contracts between modules
 
-Version 0.5 · November 15, 2026 · **proposal**, pending gate G0. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
+Version 0.6 · November 15, 2026 · G0 accepted; F1 implementation policies under gate G1. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
 
 Plan and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). Rationale for the rules: [PROPOSAL_IMPROVEMENTS.md](PROPOSAL_IMPROVEMENTS.md) and [AGENTS.md](../AGENTS.md).
 
@@ -279,6 +279,44 @@ received(store, { subject? })                  → Result<Delivery[]>   what the
 
 Simulated: there is no network and no server. Only what already went through `privacy.logShared` can be enqueued; nothing leaves without that action. A delivery handed over twice is received once (by `id`). `received` does not include anyone who sent nothing, and the ground view shows "nothing sent" instead of an invented status. The user interface is labeled "simulated sync". A real server will implement these same functions.
 
+## F1 implementation policies
+
+These policies resolve representation details for M01–M05 without adding
+clinical rules or data sources:
+
+- Mission phase intervals and store time-range filters use UTC `[from,to)`;
+  touching mission phases are allowed, overlapping phases are rejected.
+  Equipment availability means explicit membership in available_equipment;
+  unknown identifiers are never assumed present. Cross-catalog content
+  references are checked by integration tests, not by an undeclared dependency.
+- The glucose catalog uses `unit: "as_recorded"` as unresolved metadata,
+  never as a Record.unit. Actual measurements retain the verified input unit;
+  the catalog does not select or convert the unknown BUT CGM file unit.
+  Mood is the team's non-validated self-report scale, not a clinical score.
+- Store `list` combines equality filters with optional `from` / `to` bounds
+  on the object's `time`. Invalid UTC bounds or reversed ranges fail; no
+  filter is silently discarded. An object without a time does not match a
+  requested time range. `get` of an absent id returns a named error Result.
+- Saved records must pass core validation with an explicit current schema
+  version. For other collections the store stamps the current schema version
+  if absent, rejects unknown versions, and preserves detached plain JSON
+  data. Collection-specific business rules remain the owning module's job.
+- `updateState` returns Promise<Result<object>> for executions, tasks,
+  episodes and deliveries only. It cannot change id, subject or schema_version.
+  Closed stores return named errors for data operations; close is idempotent.
+- Within the records collection a known subject cannot cross between
+  synthetic and non-synthetic provenance, including in a batch. Other real
+  origins remain distinct on each record. This prevents attaching imported
+  data to the already-established synthetic subject; it is not identity
+  authentication or a claim about unknown subjects in external files.
+- Both backends provide atomic batch insertion, reject duplicate ids and
+  return detached values. IndexedDB failures are explicit; openStore never
+  silently falls back to memory. Missing name defaults to `orbita`.
+- Validation may reject bounded-size, cyclic, accessor-bearing or non-JSON
+  structures at input boundaries. Such technical bounds are not medical
+  ranges. UTC validation rejects nonexistent calendar dates. Neither missing
+  states nor missing measurements are defaulted to a reassuring value.
+
 ## 5. User interface
 
 Each view is a folder with two pieces:
@@ -332,3 +370,4 @@ Everything works with the keyboard. No state is conveyed by color alone. Views r
 | 0.3 | 2026-11-15 | Translated to English, including identifiers, data fields and folder names; `deliveries` collection added to the store | All |
 | 0.4 | 2026-11-15 | User decisions D10–D14: R6 reworded (criteria only as configuration data); `terrestrial` origin; `environment`, `gravity_note`, `attention_criteria` in `MissionConfig`; `readings.attention`; `plan.progress`; `importGlucose`; `dataStateBadge` and `attentionBadge` | M01, M02, M03, M05, M06, M07, M14, M15, M21 |
 | 0.5 | 2026-11-15 | User-authorized M00 clarification: view index exports, minimal shell ownership, placeholder behavior and async boundary; no domain behavior added | M00, M07–M12, M15, M20, M22, M24 |
+| 0.6 | 2026-11-15 | F1 implementation policies: mission/time boundaries, source-unit metadata, explicit store errors/schema stamping/provenance isolation, atomic writes and detached plain data | M01–M05; future store consumers |

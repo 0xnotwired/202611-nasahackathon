@@ -21,14 +21,14 @@ node tests/contract/run.mjs core
 ```
 
 Both intentionally exit 1 while the selected modules remain placeholders.
-The direct runner catches each interface failure separately and prints it;
+The direct runner catches each interface failure separately and prints it; `all` selects remaining placeholders, while a named interface can run after implementation;
 import errors and assertion failures are not interchangeable evidence.
 
 Every checker exports a `check<Name>(implementation, dependencies)` function.
 Future builders import that checker and pass their implementation in their
 own `*.test.js` file. A builder replacing a placeholder must also retire that
-interface's placeholder entry in `registry.js` through the orchestrator;
-the permanent foundation meta-test intentionally rejects implemented modules.
+interface's placeholder expectation by adding it to `implementedNames` in `registry.js` through the orchestrator;
+the foundation harness then runs its reusable suite as a real implementation check.
 The checker files are the reusable API; `registry.js` describes M00's initial
 placeholder state, not a permanent list of unimplemented modules.
 
