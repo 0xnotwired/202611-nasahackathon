@@ -126,3 +126,7 @@ Current M21 does not import genomic arrays into the health-record store.
 
 All source licenses/citations remain applicable. Do not git-add ignored
 originals or browser state merely to make another machine look restored.
+
+## IndexedDB schema version
+
+Since contract 0.14 the store opens IndexedDB at schema version 2 (it adds the `procedures` collection). A profile created at version 1, such as one restored by `scripts/import-real-samples.py`, is upgraded the first time it is opened and keeps its records; an older build cannot open a version 2 profile (it reports a version error rather than reading it).

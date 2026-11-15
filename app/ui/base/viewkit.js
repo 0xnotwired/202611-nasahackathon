@@ -63,7 +63,7 @@ export function contextOf(services) {
     config: ownValue(services, 'config') ?? null, data_source: ownValue(services, 'data_source') ?? null, writable: ownValue(services, 'writable') === true,
     record_origin: ownValue(services, 'record_origin') ?? null, flags: ownValue(services, 'flags') ?? {}, core: ownValue(services, 'core') ?? null,
     plan: ownValue(services, 'plan') ?? null, newId: ownValue(services, 'newId') ?? null,
-    procedures: ownValue(services, 'procedures') ?? null, procedure_list: Array.isArray(ownValue(services, 'procedure_list')) ? ownValue(services, 'procedure_list') : []}};
+    procedures: ownValue(services, 'procedures') ?? null, sync: ownValue(services, 'sync') ?? null, privacy: ownValue(services, 'privacy') ?? null, link: ownValue(services, 'link') ?? null, session: ownValue(services, 'session') ?? null}};
 }
 
 function walk(value, visit, seen) {
@@ -130,4 +130,15 @@ export async function latestEntry(ctx, info) {
     entry.attention = attentionBadge(judged);
   } else entry.attention = null;
   return entry;
+}
+
+/** The procedures of the data source from the registry: { latest, all, problem }. A failed or missing registry is a visible problem, not an empty list. */
+export async function loadProcedures(ctx) {
+  const door = ctx.procedures;
+  if (!door || typeof door.listProcedures !== 'function') return {latest: [], all: [], problem: 'Procedures are not available yet.'};
+  let latest; let all;
+  try { [latest, all] = [await door.listProcedures(ctx.store), await door.listProcedures(ctx.store, {all: true})]; } catch { return {latest: [], all: [], problem: 'Procedures could not be read.'}; }
+  if (!latest || latest.ok === false) return {latest: [], all: [], problem: `Procedures could not be read: ${latest && latest.error ? latest.error.message : 'unknown problem'}`};
+  if (!all || all.ok === false) return {latest: [], all: [], problem: 'Procedures could not be read.'};
+  return {latest: latest.value, all: all.value, problem: null};
 }

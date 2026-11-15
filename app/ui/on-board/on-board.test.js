@@ -58,11 +58,47 @@ test('M15-X3: a read-only source offers nothing that writes, and writes nothing'
   const out = await vm.interactions.start(proc.id); assert.equal(out.message.kind, 'error'); assert.equal((await services.store.list('executions', {})).value.length, 0);
 });
 
-test('M15-X4: an execution shows the version it started with, even after a newer one is listed', async () => {
+test('M15-X4: after a newer version is published, an execution is still read against the version it started with', async () => {
   const services = await makeServices(); const vm = await (await model(services, {})).interactions.start(proc.id);
   const v2 = {...proc, version: '2', steps: [{id: 's1', text: 'A different first step'}, ...proc.steps]};
-  const later = await model({...services, procedure_list: [v2]}, {}); const ex = executionsOf(later)[0];
-  assert.equal(ex.procedure_version, '1'); assert.match(ex.step_text, /version 1/); assert.doesNotMatch(ex.step_text, /A different first step/); assert.ok(executionsOf(vm)[0].step_text.includes(proc.steps[0].text));
+  assert.equal((await services.procedures.publishProcedure(services.store, v2, {clock: () => '2026-11-15T19:00:00.000Z'})).ok, true);
+  const later = await model(services, {}); const ex = executionsOf(later)[0];
+  assert.equal(ex.procedure_version, '1'); assert.match(ex.step_text, /Version 1/); assert.ok(ex.step_text.includes(proc.steps[0].text)); assert.doesNotMatch(ex.step_text, /A different first step/);
+  assert.equal(procOf(later).version, '2', 'the list offers the newest version'); assert.equal(executionsOf(vm)[0].procedure_version, '1');
+});
+
+const form = (extra = {}) => ({title: 'Hydration check', purpose: 'Write down the amount drunk', equipment: 'demo-device, demo-device', preparation: 'Wash hands\n\n', steps: 'Fill the cup\nDrink\nNote the amount', ...extra});
+
+test('M15-E1: a procedure written here is published as a draft with source user_entered, and can be started when the equipment is there', async () => {
+  const services = await makeServices(); const vm = await (await model(services, {})).interactions.publish(form());
+  assert.equal(vm.message.kind, 'info'); const mine = section(vm, 'procedures').entries.find(p => p.title === 'Hydration check');
+  assert.equal(mine.version, '1'); assert.equal(mine.source, 'user_entered'); assert.match(mine.review_text, /draft/); assert.match(mine.review_text, /not reviewed guidance/);
+  assert.deepEqual(mine.required_equipment, ['demo-device']); assert.deepEqual(mine.preparation, ['Wash hands']); assert.deepEqual(mine.steps, ['Fill the cup', 'Drink', 'Note the amount']);
+  assert.equal(action(mine, 'start').enabled, true);
+  const craft = await model(await makeServices({config: spacecraft}), {}); assert.ok(craft);
+});
+
+test('M15-E2: changing an existing procedure publishes its next version and leaves the old one and its executions alone', async () => {
+  const services = await makeServices(); let vm = await (await model(services, {})).interactions.start(proc.id); const id = executionsOf(vm)[0].id;
+  vm = await vm.interactions.publish(form({based_on: proc.id, title: 'Recording walkthrough, edited'}));
+  assert.equal(vm.message.kind, 'info'); assert.equal(procOf(vm).version, '2'); assert.equal(procOf(vm).title, 'Recording walkthrough, edited');
+  assert.equal((await services.procedures.getProcedure(services.store, proc.id, '1')).value.title, proc.title);
+  assert.equal(executionsOf(vm)[0].id, id); assert.equal(executionsOf(vm)[0].procedure_version, '1');
+  vm = await vm.interactions.publish(form({based_on: proc.id})); assert.equal(procOf(vm).version, '3');
+});
+
+test('M15-E3: an invalid form is refused in words and stores nothing', async () => {
+  const services = await makeServices(); const vm = await model(services, {}); const before = (await services.procedures.listProcedures(services.store, {all: true})).value.length;
+  for (const bad of [form({title: ''}), form({steps: ''}), form({purpose: '  '}), form({based_on: 'nope'}), form({steps: 'x'.repeat(600)}), null, 'x']) {
+    const out = await vm.interactions.publish(bad); assert.equal(out.message.kind, 'error', JSON.stringify(bad)?.slice(0, 40));
+  }
+  assert.equal((await services.procedures.listProcedures(services.store, {all: true})).value.length, before);
+});
+
+test('M15-E4: a read-only source cannot publish, and says so', async () => {
+  const services = await makeServices({writable: false}); const vm = await model(services, {});
+  const editor = section(vm, 'editor'); assert.equal(editor.actions.publish.enabled, false); assert.match(editor.actions.publish.reason, /not available/);
+  const out = await vm.interactions.publish(form()); assert.equal(out.message.kind, 'error'); assert.equal((await services.procedures.listProcedures(services.store, {all: true})).value.length, 1);
 });
 
 test('M15-X5: a blocked execution is shown as blocked; no score key, no reassuring word; hostile services give an error', async () => {

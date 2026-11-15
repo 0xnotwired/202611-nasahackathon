@@ -1,6 +1,6 @@
 # Órbita: contracts between modules
 
-Version 0.13 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
+Version 0.14 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
 
 Plan and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). Rationale for the rules: [PROPOSAL_IMPROVEMENTS.md](PROPOSAL_IMPROVEMENTS.md) and [AGENTS.md](../AGENTS.md).
 
@@ -113,7 +113,7 @@ Delivery
   shared_id           the Shared entry that originated it
   subject, what
   created             when the content was generated
-  sent                when it left the queue
+  sent?               when it left the queue; absent while queued (0.14)
   received?           when the ground received it; absent if it did not arrive
   state               queued | in_transit | received
 ```
@@ -207,7 +207,7 @@ Store
   close()                           → Promise<void>
 ```
 
-Collections: `records`, `executions`, `tasks`, `episodes`, `shared`, `deliveries`, `config`. `records` and `shared` do not allow `updateState` (R7). If IndexedDB is missing, `openStore` with `"indexeddb"` returns an error; the caller decides to use `"memory"` and shows it.
+Collections: `records`, `executions`, `tasks`, `episodes`, `shared`, `deliveries`, `config`, `procedures` (added 0.14). `procedures` is immutable like `records`: `updateState` is refused. The IndexedDB schema is version 2 since 0.14: opening a version 1 database upgrades it by creating the missing collection and keeps its data (BROWSER-checked in `tests/walkthrough/g4-browser.py`). `records` and `shared` do not allow `updateState` (R7). If IndexedDB is missing, `openStore` with `"indexeddb"` returns an error; the caller decides to use `"memory"` and shows it.
 
 ### scenario (M05)
 
@@ -270,6 +270,8 @@ With missing equipment, `start` returns a `blocked` execution with its `missing`
 
 Since 0.13: `advance`, `interrupt`, `resume` and `finish` accept an optional `clock` in their options; `updated` changes only when one is given, so no time is invented. `advance` stops at the last step (`no_more_steps`); `finish` as `completed` needs every step done (`steps_remaining`) and is allowed only from `in_progress`; `could_not` from `in_progress` or `interrupted`. A `blocked` execution is stored and allows no transition. `advance({ record })` links a record id only if it exists and belongs to the execution's subject. Each execution is changed by one caller at a time.
 
+Registry (added 0.14): `publishProcedure(store, procedure, { clock }) → Result<Procedure>` stores one immutable entry per `id@version` (neither may contain `@`) and refuses a second publication of the same version (`version_exists`); `listProcedures(store, { all? }) → Result<Procedure[]>` gives the latest published version of each procedure, or every version with `all`; `getProcedure(store, id, version) → Result<Procedure>` gives that exact version. A stored entry that cannot be read is an error (`corrupt_procedure`), never skipped. Executions are read against `getProcedure(store, procedure_id, procedure_version)`.
+
 ### plan (M14)
 
 ```
@@ -289,6 +291,8 @@ Session.unlock(), .active(), .close()
 logShared(store, { subject, what, with, channel }, { clock, newId }) → Result<Shared>
 sharedLog(store, { subject })      → Result<Shared[]>
 ```
+
+`logShared` takes an optional `session` in its context: when given, it must be active (`session_locked` otherwise). The `Shared` entry it writes has `schema_version: 1`, and the log has no edit and no delete.
 
 An active session does not ask to unlock again. This module does not encrypt and must not claim to protect data on disk.
 
@@ -399,6 +403,8 @@ enqueue(store, sharedId, { clock, newId })     → Result<Delivery>
 advance(store, link, { clock })                → Result<Delivery[]>   delivers what is due according to the mode
 received(store, { subject? })                  → Result<Delivery[]>   what the ground panel sees
 ```
+
+Since 0.14: `createLink` throws a `TypeError` on invalid options (it is called once, where the application is assembled) and a `delayed` link needs `delay_ms`; `Link.mode()`, `Link.delay_ms()` and `Link.setMode(mode, delay_ms?) → Result` (a bad mode or a missing delay changes nothing). `enqueue` returns the existing delivery when the same `Shared` entry is enqueued again. `deliveries(store, { subject? }) → Result<Delivery[]>` lists every delivery in any state (what a sender still has queued or in transit); `received` lists only the received ones. A queued delivery has no `sent` yet. With `real_time`, `advance` receives what is queued; with `delayed`, a queued delivery becomes `in_transit` (with `sent`) and is received when the injected clock reaches `sent + delay_ms` (`>=`); with `no_link` nothing moves and nothing is lost.
 
 Simulated: there is no network and no server. Only what already went through `privacy.logShared` can be enqueued; nothing leaves without that action. A delivery handed over twice is received once (by `id`). `received` does not include anyone who sent nothing, and the ground view shows "nothing sent" instead of an invented status. The user interface is labeled "simulated sync". A real server will implement these same functions.
 
@@ -512,3 +518,4 @@ Everything works with the keyboard. No state is conveyed by color alone. Views r
 | 0.11 | 2026-11-15 | User-authorized with the M22 advance: `ui/base` also exports the DOM renderers `renderChart`, `renderTable`, `renderBadge`; services carry `importers` and `openMemoryStore`. M22 (NASA cases) is implemented ahead of its phase; this does not close F5 | M07, M22; every view that draws charts or tables |
 | 0.12 | 2026-11-15 | User-authorized with the start of F2 (M08–M12): `ui/base` also exports `renderEntry`, `renderSection` and `viewKit`; services carry the data-source fields and the `catalogs`, `core` and `plan` collaborators; the shell offers a synthetic demo source and "My records" | M07, M08–M12 |
 | 0.13 | 2026-11-15 | User-authorized with the start of F3 (M13–M15): optional `clock` in the procedure transitions; Execution gains `step_count`, `interruptions` and `missing`; Task gains `not_done_note`; the rules of `mark`, `linkResult` and `finish` above; services may carry `procedures` and `procedure_list`; `ui/my-plan` and `ui/on-board` are implemented. Consistency review only, no approval. |
+| 0.14 | 2026-11-15 | User-authorized ("agrega versiones mínimas"): `procedures` collection and IndexedDB schema v2 with an upgrade; the procedure registry (`publishProcedure`, `listProcedures`, `getProcedure`); `privacy` (`createSession`, `logShared`, `sharedLog`) and `sync` (`createLink`, `enqueue`, `advance`, `received`, `deliveries`) implemented as above; `Delivery.sent` optional; `ui/ground` implemented; the On board editor. Consistency review only, no approval. |

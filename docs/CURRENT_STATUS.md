@@ -29,7 +29,12 @@ them. Parallel work should use distinct working branches.
   My plan and On board views (M15), records M13–M15 and G3, contract 0.13.
   271 Node tests; g3.test.js; g3-browser.py (Chromium only). Statuses still
   `pending`. Next: independent review of M08–M15, then person acceptance of G2/G3.
-- Contract version 0.13; current record schema2, with unchanged legacy1 readers.
+  Minimal versions added on the user's request: procedure registry and editor (M13/M15),
+  privacy (M19), simulated sync and ground panel (M24); contract 0.14 and IndexedDB
+  schema v2 (an existing profile is upgraded on its next open and keeps its data).
+  305 Node tests; g4-browser.py. Not built: the episode, copilot and summary (M16–M18),
+  the "I feel different" view (M20), packaging (M23).
+- Contract version 0.14; current record schema2, with unchanged legacy1 readers.
 
 ## What actually runs
 

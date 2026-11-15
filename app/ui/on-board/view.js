@@ -6,6 +6,8 @@ export function mount(element, viewModel) {
   const doc = element.ownerDocument;
   let current = viewModel;
   const typed = new Map();
+  let editorOpen = false;
+  const draft = {based_on: '', title: '', purpose: '', equipment: '', preparation: '', steps: ''};
   const el = (tag, attrs = {}, ...children) => {
     const node = doc.createElement(tag);
     for (const [name, value] of Object.entries(attrs)) node.setAttribute(name, String(value));
@@ -50,12 +52,38 @@ export function mount(element, viewModel) {
       needsText ? el('div', {class: 'field'}, el('label', {for: `board-text-${e.id}`}, 'Reason or difficulty (needed to interrupt, or to say you could not complete it)'), text) : null, ...buttons);
   }
 
+  function editorCard(section) {
+    const procedures = current.sections.find(item => item.id === 'procedures').entries;
+    const choose = el('select', {id: 'editor-based-on'}, el('option', {value: ''}, 'A new procedure'), ...section.existing.map(item => el('option', {value: item.id}, `Change: ${item.title} (version ${item.version})`)));
+    choose.value = draft.based_on;
+    const input = (id, label, tag, rows) => { const control = tag === 'textarea' ? el('textarea', {id, rows, maxlength: '4000'}) : el('input', {id, type: 'text', maxlength: '500', autocomplete: 'off'}); return {control, field: el('div', {class: 'field'}, el('label', {for: id}, label), control)}; };
+    const title = input('editor-title', 'Title', 'input'), purpose = input('editor-purpose', 'Purpose', 'input'), equipment = input('editor-equipment', 'Equipment needed (separated by commas)', 'input');
+    const preparation = input('editor-preparation', 'Preparation (one check per line)', 'textarea', 3), steps = input('editor-steps', 'Steps (one per line)', 'textarea', 5);
+    const fields = {title, purpose, equipment, preparation, steps};
+    for (const [name, item] of Object.entries(fields)) { item.control.value = draft[name]; item.control.addEventListener('input', () => { draft[name] = item.control.value; }); }
+    choose.addEventListener('change', () => {
+      draft.based_on = choose.value;
+      const found = procedures.find(item => item.id === choose.value);
+      if (found) Object.assign(draft, {title: found.title, purpose: found.purpose, equipment: found.required_equipment.join(', '), preparation: found.preparation.join('\n'), steps: found.steps.join('\n')});
+      for (const [name, item] of Object.entries(fields)) item.control.value = draft[name];
+    });
+    const save = el('button', {type: 'submit', id: 'editor-publish'}, 'Publish as a draft'); if (!section.actions.publish.enabled) save.setAttribute('disabled', 'disabled');
+    const form = el('form', {id: 'editor-form'}, el('div', {class: 'field'}, el('label', {for: 'editor-based-on'}, 'What to write'), choose), title.field, purpose.field, equipment.field, preparation.field, steps.field, save);
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      apply(current.interactions.publish({...draft}).then(next => { if (next.message && next.message.kind === 'info') Object.assign(draft, {based_on: '', title: '', purpose: '', equipment: '', preparation: '', steps: ''}); return next; }), 'editor-publish');
+    });
+    return el('section', {class: 'card', 'aria-labelledby': 'sec-editor'}, el('h3', {id: 'sec-editor'}, section.title), el('p', {class: 'legend'}, section.note),
+      (() => { const box = el('details', {class: 'table-toggle', id: 'editor-details'}, el('summary', {}, 'Write or change a procedure'), form); if (editorOpen) box.setAttribute('open', ''); box.addEventListener('toggle', () => { editorOpen = box.open; }); return box; })(), section.actions.publish.enabled ? null : el('p', {class: 'notice notice-info'}, section.actions.publish.reason));
+  }
+
   function draw() {
     const parts = [];
     if (current.message) parts.push(el('p', {id: 'board-message', class: `notice notice-${current.message.kind === 'error' ? 'error' : 'info'}`, role: current.message.kind === 'error' ? 'alert' : 'status'}, current.message.text));
     for (const section of current.sections) {
       if (section.id === 'procedures' && section.state === 'ready') parts.push(el('section', {class: 'card', 'aria-labelledby': 'sec-procedures'}, el('h3', {id: 'sec-procedures'}, section.title), el('p', {class: 'legend'}, section.note), el('ul', {class: 'entries'}, ...section.entries.map(procedureCard))));
       else if (section.id === 'executions' && section.state === 'ready') parts.push(el('section', {class: 'card', 'aria-labelledby': 'sec-executions'}, el('h3', {id: 'sec-executions'}, section.title), el('p', {class: 'legend'}, section.note), el('ul', {class: 'entries'}, ...section.entries.map(executionCard))));
+      else if (section.id === 'editor') parts.push(editorCard(section));
       else parts.push(renderSection(doc, section));
     }
     element.replaceChildren(...parts);

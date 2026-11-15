@@ -164,3 +164,40 @@ export function finish(store, executionId, input) {
     return write(store, executionId, {state: target, difficulties: [...difficulties], ...time.value});
   });
 }
+
+// ---- Registry: every published version is kept, so an execution can always be read against the version it started with (R5). ----
+const keyOf = (id, version) => `${id}@${version}`;
+const wrapperOk = w => isPlain(w) && isText(w.id) && isText(w.procedure_id) && isText(w.version) && isText(w.published) && validateProcedure(w.procedure).ok && w.id === keyOf(w.procedure_id, w.version) && w.procedure.id === w.procedure_id && w.procedure.version === w.version;
+
+/** publishProcedure(store, procedure, { clock }) → Result<Procedure>. A published version is never replaced; publish a new version instead. */
+export async function publishProcedure(store, procedure, options) {
+  if (!storeOk(store, ['save'])) return fail('invalid_store', 'store', 'A store with save() is required');
+  const checked = validateProcedure(procedure); if (!checked.ok) return checked;
+  if (checked.value.id.includes('@') || checked.value.version.includes('@')) return fail('invalid_procedure', 'id', 'id and version must not contain "@"');
+  if (!isPlain(options) || typeof options.clock !== 'function') return fail('invalid_clock', 'clock', 'A clock is required to date a publication');
+  let now; try { now = options.clock(); } catch { return fail('invalid_clock', 'clock', 'The clock failed'); }
+  if (!isInstant(now)) return fail('invalid_clock', 'clock', 'The clock did not return an ISO8601 UTC instant');
+  const saved = await store.save('procedures', {id: keyOf(checked.value.id, checked.value.version), schema_version: 2, procedure_id: checked.value.id, version: checked.value.version, published: now, procedure: checked.value});
+  if (!saved.ok) return saved.error && saved.error.code === 'duplicate' ? fail('version_exists', 'version', `Version ${checked.value.version} of ${checked.value.id} is already published; publish a new version`) : saved;
+  return ok(checked.value);
+}
+
+/** listProcedures(store, { all? }) → Result<Procedure[]>: the latest version of each procedure, or every version with `all`. */
+export async function listProcedures(store, options) {
+  if (!storeOk(store, ['list'])) return fail('invalid_store', 'store', 'A store with list() is required');
+  const listed = await store.list('procedures', {}); if (!listed.ok) return listed;
+  for (const w of listed.value) if (!wrapperOk(w)) return fail('corrupt_procedure', 'procedures', `Stored procedure ${isPlain(w) && typeof w.id === 'string' ? w.id.slice(0, 60) : '(no id)'} is not readable`);
+  const ordered = [...listed.value].sort((a, b) => (a.published < b.published ? -1 : a.published > b.published ? 1 : a.version.localeCompare(b.version, 'en', {numeric: true})));
+  if (isPlain(options) && options.all === true) return ok(ordered.map(w => w.procedure));
+  const latest = new Map(); for (const w of ordered) latest.set(w.procedure_id, w.procedure);
+  return ok([...latest.values()].sort((a, b) => (a.id < b.id ? -1 : 1)));
+}
+
+/** getProcedure(store, id, version) → Result<Procedure>: that exact published version. */
+export async function getProcedure(store, id, version) {
+  if (!storeOk(store, ['get'])) return fail('invalid_store', 'store', 'A store with get() is required');
+  if (!isText(id) || !isText(version)) return fail('invalid_id', 'id', 'An id and a version are required');
+  const found = await store.get('procedures', keyOf(id, version));
+  if (!found.ok) return found.error && found.error.code === 'not_found' ? fail('not_found', 'version', `Version ${version} of ${id.slice(0, 60)} is not published`) : found;
+  return wrapperOk(found.value) ? ok(found.value.procedure) : fail('corrupt_procedure', 'procedures', 'The stored procedure is not readable');
+}

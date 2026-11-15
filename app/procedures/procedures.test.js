@@ -110,3 +110,42 @@ test('M13-X6: hostile inputs give an error, not an exception', async () => {
   assert.equal((await m.interrupt(store, 'missing', {reason: 'x'})).error.code, 'not_found');
   const {store: s2, ex} = await fresh1(); assert.equal((await m.interrupt(s2, ex.id, {})).ok, false); assert.equal((await m.interrupt(s2, ex.id, {reason: ''})).ok, false); assert.equal((await get(s2, ex.id)).state, 'in_progress');
 });
+
+// ---- Registry: published versions are kept, never replaced (R5) ----
+const publish = (store, p, at = NOW) => m.publishProcedure(store, p, {clock: () => at});
+const v = (n, extra = {}) => ({...procedure, version: String(n), ...extra});
+
+test('M13-R1: every published version is kept and the latest is the one most recently published', async () => {
+  const store = await fresh();
+  assert.equal((await publish(store, v(1), '2026-11-15T10:00:00.000Z')).ok, true); assert.equal((await publish(store, v(2, {title: 'Second'}), '2026-11-15T11:00:00.000Z')).ok, true);
+  const latest = (await m.listProcedures(store)).value; assert.equal(latest.length, 1); assert.equal(latest[0].version, '2'); assert.equal(latest[0].title, 'Second');
+  const all = (await m.listProcedures(store, {all: true})).value; assert.deepEqual(all.map(p => p.version), ['1', '2']);
+  assert.equal((await m.getProcedure(store, procedure.id, '1')).value.title, procedure.title); assert.equal((await m.getProcedure(store, procedure.id, '2')).value.title, 'Second');
+  assert.equal((await m.getProcedure(store, procedure.id, '9')).error.code, 'not_found');
+});
+
+test('M13-R2: a published version cannot be replaced or published twice', async () => {
+  const store = await fresh(); await publish(store, v(1));
+  const again = await publish(store, v(1, {title: 'Changed'})); assert.equal(again.ok, false); assert.equal(again.error.code, 'version_exists');
+  assert.equal((await m.getProcedure(store, procedure.id, '1')).value.title, procedure.title);
+});
+
+test('M13-R3: an invalid procedure, a bad clock or an id with "@" is refused and nothing is stored', async () => {
+  const store = await fresh();
+  for (const [p, o] of [[{...procedure, steps: []}, {clock: () => NOW}], [procedure, {}], [procedure, {clock: () => 'yesterday'}], [{...procedure, id: 'a@b'}, {clock: () => NOW}], [{...procedure, version: '1@x'}, {clock: () => NOW}], [null, {clock: () => NOW}]])
+    assert.equal((await m.publishProcedure(store, p, o)).ok, false);
+  assert.deepEqual((await m.listProcedures(store, {all: true})).value, []);
+  assert.equal((await m.listProcedures(undefined)).ok, false); assert.equal((await m.getProcedure(store, '', '1')).ok, false);
+});
+
+test('M13-R4: an execution started from a registry version keeps that version after a newer one is published', async () => {
+  const store = await fresh(); await publish(store, v(1), '2026-11-15T10:00:00.000Z');
+  const ex = (await m.start(store, (await m.getProcedure(store, procedure.id, '1')).value, withDevice, ctx())).value;
+  await publish(store, v(2, {steps: [{id: 'new', text: 'New first step'}]}), '2026-11-15T12:00:00.000Z');
+  assert.equal((await get(store, ex.id)).procedure_version, '1'); assert.equal((await m.getProcedure(store, procedure.id, ex.procedure_version)).value.steps.length, 3);
+});
+
+test('M13-R5: a corrupt stored version is reported, not skipped', async () => {
+  const store = await fresh(); await store.save('procedures', {id: 'x@1', schema_version: 2, procedure_id: 'x', version: '1', published: NOW, procedure: {id: 'x'}});
+  const out = await m.listProcedures(store); assert.equal(out.ok, false); assert.equal(out.error.code, 'corrupt_procedure');
+});

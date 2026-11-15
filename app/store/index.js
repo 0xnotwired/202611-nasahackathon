@@ -1,6 +1,6 @@
 import {validateRecord,SCHEMA_VERSION} from '../core/index.js';
 
-const COLLECTIONS=['records','executions','tasks','episodes','shared','deliveries','config'];
+const COLLECTIONS=['records','executions','tasks','episodes','shared','deliveries','config','procedures'];
 const MUTABLE=new Set(['executions','tasks','episodes','deliveries']);
 const CAPACITY=10000; // Technical resource bound, never a clinical limit.
 const own=(value,key)=>Object.hasOwn(value,key);
@@ -230,7 +230,8 @@ export async function openStore(input) {
   return new Promise(resolve=>{
     let request;let settled=false;
     const finish=result=>{if(!settled){settled=true;resolve(result);}else if(result.ok)result.value.close();};
-    try {request=factory.open(name,1);}catch{finish(fail('unavailable','indexeddb','IndexedDB could not be opened'));return;}
+    // Schema v2 (contract 0.14) adds the immutable `procedures` collection; the upgrade only creates missing stores and keeps existing data.
+    try {request=factory.open(name,2);}catch{finish(fail('unavailable','indexeddb','IndexedDB could not be opened'));return;}
     request.onupgradeneeded=()=>{
       const db=request.result;
       for(const collection of COLLECTIONS)if(!db.objectStoreNames.contains(collection))db.createObjectStore(collection,{keyPath:'id'});

@@ -48,8 +48,9 @@ test('G3-W2: with the equipment the journey completes once, the task is done and
 
 test('G3-W3: publishing version 2 afterwards leaves the execution on version 1', async () => {
   const {services, id} = await fullJourney(); const v2 = {...proc, version: '2', steps: [{id: 'new-first', text: 'A different first step'}, ...proc.steps]};
-  const later = await board({...services, procedure_list: [v2]}, {}); const ex = entry(later, 'executions', id);
-  assert.equal(ex.procedure_version, '1'); assert.equal((await services.store.get('executions', id)).value.procedure_version, '1');
+  assert.equal((await services.procedures.publishProcedure(services.store, v2, {clock: () => '2026-11-15T19:00:00.000Z'})).ok, true);
+  const later = await board(services, {}); const ex = entry(later, 'executions', id);
+  assert.equal(ex.procedure_version, '1'); assert.equal((await services.store.get('executions', id)).value.procedure_version, '1'); assert.doesNotMatch(ex.step_text ?? '', /A different first step/);
   const started = await later.interactions.start(proc.id); assert.equal(started.sections.find(s => s.id === 'executions').entries.length, 2);
   assert.equal((await services.store.get('executions', id)).value.procedure_version, '1');
   assert.equal((await services.store.list('executions', {})).value.filter(e => e.procedure_version === '2').length, 1);
