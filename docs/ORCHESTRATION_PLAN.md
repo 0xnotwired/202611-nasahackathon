@@ -224,7 +224,7 @@ Reviewer:
 
 | Blocker | Stops |
 |---|---|
-| List of resources used: first version in [RESOURCES_USED.md](RESOURCES_USED.md); dataset citations and the browser question are open | Delivery |
+| List of resources used: first version in [RESOURCES_USED.md](RESOURCES_USED.md); dataset citations are open | Delivery |
 | Choose the demo procedure and its clinical source | F3 content; not the engine |
 | Confirm [V1 4030] in NASA-STD-3001 vol. 1 | Showing the radiation limit in M10 |
 | Download the NASA files | F5 |

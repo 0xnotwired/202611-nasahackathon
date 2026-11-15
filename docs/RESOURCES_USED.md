@@ -20,8 +20,8 @@ None (decision D2). The product is the team's own code, licensed under Apache-2.
 | Python | 3.13.18 | `scripts/check_docs.py` | Python Software Foundation License | Copyright notice printed by the interpreter; the license text was not opened | |
 | Git | 2.43.0 | version control | GPL-2 (some files BSD-3-Clause) | The installed copy's Debian `copyright` file | |
 | Playwright (npm and Python packages) | 1.63.0 | browser probes, screenshots, video capture | Apache-2.0 | The installed package's `LICENSE`; it states the code derives partly from Puppeteer (Apache-2.0) | Older Debian packaging lists BSD-3-Clause, MPL-2.0 and OFL-1.1 parts; bundled parts of 1.63.0 not reviewed |
-| Google Chrome for Testing | 153.0.8010.12 | the browser Playwright drove for experiment E00, screenshots and video | **Not open source.** Google Chrome terms of service apply | The installed `ABOUT` file says "See the Terms of Service at chrome://terms"; the bundled Widevine module's `LICENSE` says it is not open source software | Used only to test and record. Not part of the Solution Materials. The tooling repository for Chrome for Testing is Apache-2.0 (secondary page), which is not the binary's license. Open question below |
-| FFmpeg | 6.1.1 (Ubuntu build) | encoding the demonstration video | LGPL-2.1+ with optional GPL-2+ parts | The installed copy's Debian `copyright` file; https://www.ffmpeg.org/legal.html says that if the GPL parts are used the GPL applies to all of FFmpeg | The installed build reports `--enable-gpl`, so the GPL applies to that binary. The video does not contain FFmpeg code |
+| Google Chrome for Testing | 153.0.8010.12 | the browser Playwright drove for experiment E00, screenshots and video | **Not open source.** Google Chrome terms of service apply | The installed `ABOUT` file says "See the Terms of Service at chrome://terms"; the bundled Widevine module's `LICENSE` says it is not open source software | Used only to test and record; not part of the Solution Materials. User decision of 2026-11-15: kept as a development tool, no further action. The tooling repository for Chrome for Testing is Apache-2.0 (secondary page), which is not the binary's license |
+| FFmpeg | 6.1.1 (Ubuntu build) | encoding the demonstration video | LGPL-2.1+ with optional GPL-2+ parts | The installed copy's Debian `copyright` file; https://www.ffmpeg.org/legal.html says that if the GPL parts are used the GPL applies to all of FFmpeg | The installed build reports `--enable-gpl`, so the GPL applies to that binary. Decision of 2026-11-15: used only as a command-line tool to produce the video. The binary is not redistributed and not linked into anything of ours, and the video is data, not FFmpeg code. If it is ever distributed or linked, rebuild without `--enable-gpl` and follow its LGPL checklist |
 | GitHub | n/a | hosting the repository | Service terms, no code used | n/a | |
 
 ## 3. Data
@@ -47,7 +47,6 @@ Claude (Anthropic), used through Claude Code, wrote the documentation and script
 
 ## 6. Open items
 
-- **Browser:** the browser used for every test so far is Google Chrome for Testing, which is not open source. Decide whether to keep citing it as a development tool or to rerun E00 on Chromium. Not decided.
 - **Other browsers:** Firefox and WebKit could not be downloaded in the session (the network allowlist answered 403 for the Playwright download hosts), so nothing is verified on them.
 - **Dataset citations:** the per-study citation strings are not written.
 - **Meeting rule:** the statement that already-made projects cannot be used is not in the written terms and its source is not verified.
