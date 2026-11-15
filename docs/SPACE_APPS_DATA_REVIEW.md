@@ -1,5 +1,8 @@
 # Dataset review against Space Apps 2026 participant terms
 
+Current implementation: [CURRENT_STATUS.md](CURRENT_STATUS.md). Source-specific
+evidence and dated investigation history below retain their original scope.
+
 Reviewed November15,2026. Basis: the full participant terms supplied by the
 user in this chat, marked updated August7,2026. A live request to the legal
 page was denied by the environment proxy; this review does not claim an

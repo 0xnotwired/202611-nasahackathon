@@ -1,5 +1,8 @@
 # Space Apps 2026 — criteria for choosing and building the solution
 
+Implementation and verified handoff state: [CURRENT_STATUS.md](CURRENT_STATUS.md).
+This document defines scope/design; planned capabilities are not completion claims.
+
 Source: challenge goals and considerations provided by the user in this session.
 Challenge: https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/
 

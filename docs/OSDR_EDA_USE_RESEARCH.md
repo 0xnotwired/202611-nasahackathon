@@ -1,5 +1,8 @@
 # OSD-51, OSD-56 and EDA reuse investigation
 
+Current implementation: [CURRENT_STATUS.md](CURRENT_STATUS.md). Source-specific
+evidence and dated investigation history below retain their original scope.
+
 Reviewed November15,2026. Applies to public OSD-51/56 version2 records and the
 previously acquired EDA RR-1 API responses. Complements the
 [event-specific review](SPACE_APPS_DATA_REVIEW.md). No original scientific

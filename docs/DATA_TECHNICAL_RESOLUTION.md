@@ -1,5 +1,8 @@
 # Technical source resolution
 
+Current implementation: [CURRENT_STATUS.md](CURRENT_STATUS.md). Source-specific
+evidence and dated investigation history below retain their original scope.
+
 Source-specific evidence is required before physical conversion or scientific
 interpretation. This report does not implement an importer or confirm units
 from plausible ranges. See the [complete evidence record](data/technical-resolution-2026-11-15.json).

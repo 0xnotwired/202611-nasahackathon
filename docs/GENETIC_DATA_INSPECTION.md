@@ -1,5 +1,8 @@
 # Genetic measurement acquisition and inspection — completed
 
+Current implementation: [CURRENT_STATUS.md](CURRENT_STATUS.md). Source-specific
+evidence and dated investigation history below retain their original scope.
+
 All three published raw quantitative ZIPs were downloaded from NASA's
 original file routes after the raw-host network grant became active.
 Advertised sizes match actual bytes; SHA256 custody hashes and ZIP CRC

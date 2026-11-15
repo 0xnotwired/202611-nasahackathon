@@ -1,5 +1,8 @@
 # Data source attributions for delivery
 
+Current implementation: [CURRENT_STATUS.md](CURRENT_STATUS.md). Source-specific
+evidence and dated investigation history below retain their original scope.
+
 The distributed application uses clearly labeled synthetic examples. Real
 source files are obtained separately through the links below. This notice
 does not claim that original dataset rows are bundled with the application.

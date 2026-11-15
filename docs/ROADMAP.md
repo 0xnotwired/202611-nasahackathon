@@ -1,5 +1,8 @@
 # Órbita roadmap: health, physical adaptation and habitat
 
+Implementation and verified handoff state: [CURRENT_STATUS.md](CURRENT_STATUS.md).
+This document defines scope/design; planned capabilities are not completion claims.
+
 Status: product direction chosen by the user; the implementation sequence is the assistant's proposal. The confirmed journey and the functional design are recorded in PRODUCT.md. There is an HTML mockup with synthetic data to present the concept (DEMO_README.md); it does not imply NASA integration or completion of the clinical levels described here. There is no final stack. The initial upload of documentation and demo to the repository was requested by the user; it does not authorize deploying the application. It is organized by product outcomes, following destination-driven-construction.
 
 How this roadmap is split among agents, into phases and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md).

@@ -151,7 +151,24 @@ Working and provenance rules are in [AGENTS.md](AGENTS.md). AI use must be recor
 
 The next results are understanding the integrated mission situation, completing plan tasks and reviewing changes with applicable procedures and follow-up. Their verification must cover missing data, provenance, consistency across views, task recovery, accessibility and understanding of the next step.
 
-The repository contains documentation, two mockups, M00 foundation and the implemented M01–M05 data core. The stack decisions are recorded in [IMPLEMENTATION_LAYERS.md](docs/IMPLEMENTATION_LAYERS.md). Run `node --test` for foundation, domain and G0/G1 checks, `python3 scripts/check_docs.py` for documentation consistency, and `npm run serve` for the minimal modular shell. No dependencies need installation. The [G0 record](docs/experiments/G0.md) documents user-authorized local integration, 37 passing tests, the HTTP browser check and the unverified file-origin CORS control. The [G1 record](docs/experiments/G1.md) adds 83 passing tests and actual IndexedDB persistence/restart checks. The user accepted and closed G1/F1 on November15; the [source-uncertainty follow-up](docs/experiments/SOURCE_UNCERTAINTY.md) brings the suite to87 passing tests. Branch `f2` is the starting point for the next phase; M06–M12 remain pending. Small real samples from twelve dataset sources are now acquired ([additional manifest](docs/data/additional-acquisition-2026-11-15.json)); [schema2 preserves source dates without a known zone and explicit unknown units](docs/experiments/SOURCE_UNCERTAINTY.md); CRF units remain source-unconfirmed; selected M21 CSV importers are now implemented and independently reviewed, with100 passing tests and3861 records persisted in an isolated local profile. Product views, clinical validation and deployment remain pending. To contribute, follow [AGENTS.md](AGENTS.md) and propose changes through branches and pull requests. The integration branch is `english`.
+Current implementation and next steps: [CURRENT_STATUS.md](docs/CURRENT_STATUS.md).
+M00/M01–M05 and the user-advanced M21 CSV importers are implemented/reviewed;
+100 tests pass. G0/G1 accepted; F2 views remain pending. The real-data workflow
+verified3861 records in an isolated local IndexedDB profile, while the synthetic
+scenario remains separate. No product import screen or clinical validation is
+claimed. See [import evidence](docs/experiments/REAL_IMPORT.md).
+
+```bash
+node --test
+python3 scripts/check_docs.py
+npm run serve
+```
+
+To continue elsewhere, clone branch f2 and read AGENTS.md/CLAUDE.md.
+[Restore originals and rebuild IndexedDB](docs/LOCAL_DATA_RESTORE.md): neither
+raw datasets nor browser state is in Git. Source profiles, unresolved units,
+licenses and provisional PhysioNet use are recorded in the current-state index.
+Do not assume local import/browser verification happened on a new machine.
 
 ## License
 

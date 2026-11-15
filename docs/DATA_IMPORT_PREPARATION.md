@@ -1,5 +1,8 @@
 # Source-specific import preparation
 
+Current implementation: [CURRENT_STATUS.md](CURRENT_STATUS.md). Source-specific
+evidence and dated investigation history below retain their original scope.
+
 ## Implementation follow-up
 
 The user explicitly advanced M21 after preparation: five CSV profiles now

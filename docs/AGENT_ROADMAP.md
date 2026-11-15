@@ -14,27 +14,21 @@ Date: November 14, 2026. For any AI agent (or person) continuing Órbita. [ROADM
 | | Loaded NASA data; the originals are not in the repo |
 | Orchestration plan, contracts and 25 work orders, as proposals | Chosen and reviewed clinical procedure |
 
-## Current integration status — November 15, 2026
+## Current integration status — November15,2026
 
-M00 and M01–M05 are implemented and independently reviewed. G0 and G1 are
-accepted. On November15 the user explicitly closed G1/F1 and authorized a
-new `f2` branch and GitHub push of all current project changes. The closure
-baseline is87 passing Node tests, documentation consistency and actual
-Chromium memory/IndexedDB persistence, restart and profile-isolation checks.
-See [G1](experiments/G1.md) and [source uncertainty](experiments/SOURCE_UNCERTAINTY.md).
-F2 is ready to begin with M06/M07, then M08–M12; those modules remain pending.
+[CURRENT_STATUS.md](CURRENT_STATUS.md) consolidates the present state and
+links reproducible evidence. M00/M01–M05 and user-advanced M21 are reviewed
+and integrated locally on f2; G0/G1 accepted.100 Node tests pass; real-source
+CSV import/persistence verified3861 records with exact restart readback and
+idempotent repeats. This is an isolated local profile, not a product UI.
 
-Three original CRF/MR079G/BUT CGM samples are acquired under ignored
-`data/originals/`. NASA CC0 and BUT CGM CC BY4.0 citations/conditions are
-verified. Schema2 preserves unknown-zone dates and unknown units without
-fabricating metadata; CRF units and MR079G slash-date ordering still need
-source evidence before interpretation/canonical import. This does not block
-G1 closure or authorize clinical claims. See [readiness](data/import-readiness-2026-11-15.json).
-
-The user also requested a local skills copy. All 199 SKILL.md definitions and
-companion files are preserved under `.agents/skills/`; source commit and
-hashes are recorded in `.agents/SKILLS_SOURCE.json`. AGENTS.md routes agents
-to relevant local instructions and keeps project authority explicit.
+Next: F2 M06/M07, then M08–M12. Original files/browser state are excluded from
+Git; [LOCAL_DATA_RESTORE.md](LOCAL_DATA_RESTORE.md) explains reconstruction.
+All180 genomic raw files were acquired and inspected, but no omics adapter
+exists. CRF/BMD units and immune denominator/export binding remain unresolved;
+MR079G date ordering is now corroborated. PhysioNet use is provisional by user
+instruction. Earlier handoff entries below are dated history, not competing
+current-state summaries. They must not be silently rewritten as later facts.
 
 ## Destination
 
@@ -190,3 +184,5 @@ Each agent checks the real status with `git status`, `git log` and the tests bef
 | 2026-11-15 | User, OpenAI Codex M21 builder, source-paper investigator and independent reviewer | USER: explicitly advances M21, confirms provisional PhysioNet use pending organizer response. RUN/BROWSER: CSV APIs implemented;100 Node tests pass, real source values checked,3861records persisted/restarted exactly; independent rerun inserts0. Four boundary/identity/profile findings corrected and mutations detected. PrimaryNASA papers read but no new CRF/BMD/immune export units claimed | M21 only, no F2/F5 gate or views. Unknown units preserved; aggregate/relative/omics adapters pending. Local originals/profile ignored; no external messages, commit, push or publication |
 
 | 2026-11-15 | User and OpenAI Codex | USER: explicitly authorizes committing and pushing all current code/tests/dataset documentation to f2. Pre-push Node suite100/100 and documentation/diff checks pass; earlier independent M21/source/browser verification retained | Original datasets, local IndexedDB/browser profiles and trial state excluded by Git. No deployment or environment publication; git-discipline applied |
+
+| 2026-11-15 | User and OpenAI Codex | USER: requests current-state AGENTS/documentation refresh and push to f2. Added consolidated CURRENT_STATUS and LOCAL_DATA_RESTORE; corrected active handoff summaries while preserving historical evidence.100 Node tests, documentation links and diff checks pass; documented restoration recipe verified against five existing local sample hashes | No product behavior change or fresh-machine/browser claim. Originals/local profiles remain ignored. writing-agents-md and git-discipline applied; Git publication authorized, environment publication/deployment not requested |

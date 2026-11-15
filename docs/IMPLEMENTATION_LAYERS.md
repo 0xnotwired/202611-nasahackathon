@@ -1,5 +1,8 @@
 # Órbita: implementation layers
 
+Implementation and verified handoff state: [CURRENT_STATUS.md](CURRENT_STATUS.md).
+This document defines scope/design; planned capabilities are not completion claims.
+
 Date: November 15, 2026. Maintained by the orchestrator. This document says, layer by layer, **what the product claims once that layer is built and which experiment could prove the claim false**. Who builds what, in which order and on which branch is in [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md); how to run an experiment and record it is in [METHOD.md](METHOD.md); each module's own experiments are in its [work order](work-orders/).
 
 An implementation layer is a phase of the plan (F0–F6). It is not the same thing as the import layers of the architecture (core, store, readings…), which say who may import whom.

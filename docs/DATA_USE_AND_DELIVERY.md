@@ -1,5 +1,8 @@
 # Dataset use conditions and delivery
 
+Current implementation: [CURRENT_STATUS.md](CURRENT_STATUS.md). Source-specific
+evidence and dated investigation history below retain their original scope.
+
 Reviewed November15,2026. The original sections cover CRF, MR079G and BUT CGM.
 The current all-source [event terms review](SPACE_APPS_DATA_REVIEW.md) governs
 submission eligibility and supersedes any inference that a verified data

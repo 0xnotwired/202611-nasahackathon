@@ -54,35 +54,31 @@ scripts/check_docs.py          consistency of matrices, module board and links
 app/                           M00 foundation and implemented M01–M05; later modules remain placeholders
 ```
 
-## Where to pick up (after F1 implementation, November 15, 2026)
+## Where to pick up — current handoff
 
-M00 and M01–M05 are implemented, independently reviewed and locally integrated.
-G0 and G1 are accepted. The user explicitly closed F1 on November15 and
-authorized creating `f2`, committing all current project changes and pushing
-that branch to GitHub. Closure evidence:87 Node tests, real Chromium
-IndexedDB restart/isolation and independent source-uncertainty review.
-Read `docs/experiments/G1.md` and `docs/experiments/SOURCE_UNCERTAINTY.md`.
+Read [docs/CURRENT_STATUS.md](docs/CURRENT_STATUS.md), inspect git status/HEAD,
+and continue the user-selected f2 branch. M00/M01–M05 and advanced M21 are
+implemented/reviewed; G0/G1 accepted. Next is F2 M06 readings/M07 base UI,
+then M08–M12. M21's advance does not accept later phases or provide views.
 
-1. F2 is ready on `f2`: start M06 readings and M07 base interface,
-   then M08–M12 views, each with its own work order and independent review.
-2. The orchestrator promotes each completed module into implementedNames in
-   tests/contract/registry.js. Keep all contract definitions and export
-   manifests; placeholder checks apply only to pending modules.
-3. Three small CRF/MR079G/BUT CGM original CSVs are now acquired under ignored
-   data/originals/ after environment publication. Read docs/DATASETS.md and
-   docs/data/import-readiness-2026-11-15.json: CRF units remain unconfirmed; schema2 now preserves unknown-zone source dates and explicit unknown units without inventing UTC. BUT CGM mmol/L is
-   supported by the pinned, linked author companion source. Do not invent those or clinical content.
-   Additional samples from six remaining NLSP studies plus ACTES and ITBA
-   are inspected in docs/data/additional-acquisition-2026-11-15.json; eleven
-   studies have local samples in total. OSD-51/56 metadata and EDA RR-1 data are now acquired; OSDR file/policy redirects to NASA S3/science.nasa.gov remain pending. Read docs/SPACE_APPS_DATA_REVIEW.md before adding real data to a submission.
-   Do not treat aggregate tables or relative protocol times as individual UTC records.
-4. User-requested skills are available locally in `.agents/skills/` and must
-   be selected/read according to AGENTS.md rather than fetched ad hoc.
+100 Node tests pass. Run node --test and python3 scripts/check_docs.py;
+Chromium G0/G1 commands remain in CURRENT_STATUS with verification scope.
+Original datasets, local IndexedDB profile and source-data reports are not
+restored by Git. Use [docs/LOCAL_DATA_RESTORE.md](docs/LOCAL_DATA_RESTORE.md),
+verify hashes and rerun scripts/import-real-samples.py before claiming real
+records exist on another machine. The previous local run persisted3861
+records with exact restart readback and duplicate-free repeat.
 
-Commands: `node --test`, `npm run serve`, `python3 scripts/check_docs.py`,
-`python3 tests/walkthrough/g1-browser.py`. No package installation is needed.
-The shell is still minimal; storage warnings rendered by browser gate code
-are test-harness output, not M07's future product UI.
+Contract0.8/schema2 preserve unknown units and unknown-zone source dates;
+MR079G ordering is corroborated but its zone remains unknown. CRF/MR035G
+unit and immune denominator/export questions remain unconfirmed despite
+primary-paper research. Omics files are acquired/inspected but not supported
+by current M21 adapters. PhysioNet use is provisional under the user's
+explicit decision, not an organizer response. Keep licenses/citations.
+
+Select relevant local skills. Preserve source ownership and independent
+review; add no dependencies without named approval. Code/docs remain English.
+Do not publish, commit, push or approve gates based on this handoff alone.
 
 ## The central rule
 
@@ -213,14 +209,3 @@ The user explicitly requested a local copy of `github.com/annatchijova/SKILLS`. 
 - [ ] Commit and push only with authorization for this task, on a branch. *(Git)*
 - [ ] If you built a module: `git diff --stat` shows only your owned paths and you did not touch `docs/CONTRACTS.md`. *(AGENTS.md, Building by modules)*
 - [ ] The handoff log in `docs/AGENT_ROADMAP.md` reflects what was verified, not what was attempted.
-
-## Real import follow-up
-
-User-authorized M21 was advanced independently of the F2 view phase. Selected
-CSV adapters are implemented/reviewed; all100 tests pass. With acquired local
-originals, `python3 scripts/import-real-samples.py` verifies source hashes and
-loads/reopens the dedicated ignored local real-data profile/database.3861
-records are exact and reruns insert0. See docs/experiments/REAL_IMPORT.md.
-This is not an implemented product import screen. CRF/BMD units and immune
-denominator/export binding are still unconfirmed after primary-paper work;
-no clinical interpretation or conversion is permitted by this import.

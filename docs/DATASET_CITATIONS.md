@@ -1,5 +1,8 @@
 # Dataset citations
 
+Current implementation: [CURRENT_STATUS.md](CURRENT_STATUS.md). Source-specific
+evidence and dated investigation history below retain their original scope.
+
 Status as of November 15, 2026. One entry per dataset named in [DATASETS.md](DATASETS.md) and [RESOURCES_USED.md](RESOURCES_USED.md). The 2026 terms require every source to be cited, NASA's included.
 
 **Current evidence.** Original PhysioNet cards/licenses, NLSP DOI records and OSDR metadata/DOI records have now been read directly and hashed. The later verification sections supersede earlier extraction-only and missing-field notes. Reuse conditions and event eligibility are distinguished in [SPACE_APPS_DATA_REVIEW.md](SPACE_APPS_DATA_REVIEW.md).

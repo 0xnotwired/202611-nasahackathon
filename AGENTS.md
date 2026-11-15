@@ -81,13 +81,45 @@ In practice, for now: `package.json` declares no dependencies, and no `import` p
 
 ## Product and verified status
 
-Health, physical adaptation and habitat are part of the core scope; the copilot connects information with On board and the plan. Do not present them as optional extensions or reopen that choice.
+Start with [docs/CURRENT_STATUS.md](docs/CURRENT_STATUS.md) for the current
+module/data handoff, then verify actual checkout state. Current work is on
+user-selected `f2`; do not switch/reset/merge to main or english automatically.
+AGENTS remains the instruction authority and CONTRACTS the interface authority.
 
-demo/orbita.html mainly shows the check-in, with fictional data and local demo storage. There is no NASA integration, sensors, sync, generative AI or clinical validation. Do not attribute those capabilities to the HTML. Offline operation with later sync is an architectural recommendation, not a finished implementation.
+M00/M01–M05 and user-advanced M21 are implemented and independently reviewed.
+G0/G1 are accepted; F1 closed. M21's advance is not closure of later gates.
+Next work is F2 M06/M07, then M08–M12 under their work orders. Contract0.8,
+record schema2 with legacy1 reading. Latest Node suite100/100, plus actual
+Chromium persistence checks; these results are not clinical validation.
 
-As of November 15, 2026, M00 and M01–M05 are implemented and independently reviewed. F1 provides strict record validation, mission configuration, source-linked catalogs, memory/IndexedDB storage and a deterministic synthetic scenario. Contracts0.7 adds schema2 source-time/unknown-unit preservation while retaining legacy1 records. The original F1 baseline had83 Node tests; the follow-up experiment records current checks; the shared store/integration checks, restart recovery and profile isolation passed in Chromium 156. See docs/experiments/G1.md for precise scope and controls. G0 and G1 are accepted; the user explicitly closed F1 on November15 and authorized branch f2 plus commit/push of current changes. F2 implementation remains pending. After environment publication, three original CRF/MR079G/BUT CGM CSV samples are now acquired under ignored data/originals/; the earlier network block is resolved. CRF physical units remain unconfirmed; unknown-zone dates and unknown units now have explicit model/storage representation. NASA CC0 and BUT CGM CC BY4.0 rights/citations are verified. See docs/data/import-readiness-2026-11-15.json and docs/experiments/SOURCE_UNCERTAINTY.md. No clinical rules, importers or product views are implemented by F1. Additional acquisition now covers six remaining NLSP studies, ACTES and ITBA: eleven studies have local samples, with exact scope in docs/data/additional-acquisition-2026-11-15.json. OSD-51/56 metadata and EDA RR-1 API data are now acquired; OSDR file/policy redirects to NASA S3/science.nasa.gov remain blocked pending the saved additive draft. OSD51/56 now have affirmative repository-level unrestricted-use evidence for the public NASA-managed AWS distribution (docs/OSDR_EDA_USE_RESEARCH.md); selected download/file notices and EDA policy applicability remain unconfirmed. See docs/SPACE_APPS_DATA_REVIEW.md: eight NLSP CC0 rights are verified, but PhysioNet reuse licenses do not automatically establish event eligibility; preserve the synthetic delivery scope until real-data clearance. Relative protocol axes, aggregate/graph-only data and shifted UTC need explicit importer handling; no importer was added. The file-origin CORS control remains unverified under managed policy. The user authorized GitHub publication on f2; deployment is not included. Each module's actual status is in docs/modules.csv.
+Source-data handling invariants for the next agent:
 
-No MVP, quick version or throwaway prototype is proposed. The product is built in complete levels; if time runs out, the highest level that passed its gate is delivered and named as such.
+- Read [restoration instructions](docs/LOCAL_DATA_RESTORE.md). Raw originals
+  and local browser state are ignored and absent from a fresh Git clone.
+  `scripts/import-real-samples.py` verifies source SHA before DB access,
+  writes only its dedicated local profile and checks exact restart readback.
+  A fresh machine must rerun this before claiming3861 imported records exist.
+- Import APIs are pure; five selected CSV profiles work, not every prepared
+  source. Preserve declared source clocks/units, dataset identities and
+  numeric absence. Never turn unknown units into catalog defaults or UTC.
+  Tests in app/importers/ and tests/contract/importers.js cover these boundaries.
+- All180 genetic raw files were inspected locally and mapped to ISA, but
+  omics/aggregate/relative-axis product adapters remain unsupported. Context
+  and inspection evidence do not authorize forcing those into patient Records.
+- CRF/BMD units and immune denominator/export binding remain unconfirmed
+  after primary-paper research. The importers preserve uncertainty, not a
+  clinical interpretation. See docs/SOURCE_PAPER_UNITS.md.
+- PhysioNet is provisionally enabled by the user's explicit decision, with
+  licenses/citations and withdrawal if declined. Never claim an official
+  organizer acceptance. Original app code stays independent of source apps.
+- A minimal HTTP shell and separate mockups are not product views, actual
+  sync, clinical rules, encryption or deployment. M23 final packaging/media
+  inspection remains pending; .gitignore alone does not certify a package.
+
+Historical experiments/manifests keep their original outcomes. Read their
+follow-ups and CURRENT_STATUS before carrying an old blocked/pending claim
+into a new report. Human gate acceptance and per-task Git/publication
+permissions remain distinct from test success.
 
 ## Building by modules and agents
 
@@ -243,27 +275,3 @@ Check these invariants by reviewing content and, when implementing features, thr
 - [ ] Checks actually run are documented, with anything not verified in a browser stated as such.
 - [ ] Review done as a replication by an agent or person who did not build the module, with two breakages of their own; clinical review kept separate from usability and software review.
 - [ ] Working branch and task authorization respected, with no implicit deployments.
-
-## Dataset preparation follow-up
-
-Read docs/DATA_IMPORT_PREPARATION.md and docs/GENETIC_DATA_INSPECTION.md for
-the latest source status. All3 quantitative microarray archives/180 members
-are now downloaded and inspected; older blocked-download notes are historical.
-Fourteen preparation profiles define source fields/time/quality/bounded
-windows, including per-file GPR channel variants and optional Agilent gene
-annotations. Do not silently override unknown units, shift/calendar provenance
-or relative protocol axes. Preparation has now advanced to the user-authorized M21 CSV adapters and isolated local import verification. Omics product adapters remain unimplemented. See docs/experiments/M21.md and docs/experiments/REAL_IMPORT.md.
-
-## User-authorized M21 advance
-
-The user explicitly requested implementing importers while F2 is open. M21
-now passes independent review and100 Node tests, with pure CSV adapters for
-CRF/MR079G/MR035G/selectedMR080G/BUTCGM. This does not accept later gates or
-implement M22/product views. `scripts/import-real-samples.py` writes3861 real
-records only to its dedicated ignored local browser profile/IndexedDB, with
-custody checks, exact readback/restart and idempotence. APIs alone never write
-the database. Unknown units/source clocks stay explicit; relative/aggregate/
-omics studies are unsupported. Real files/browser state must remain ignored.
-PhysioNet use is provisionally authorized by the user with licenses/citations
-and withdrawal if the organizer declines, not claimed officially confirmed.
-Read docs/SOURCE_PAPER_UNITS.md for primary-paper limitations.

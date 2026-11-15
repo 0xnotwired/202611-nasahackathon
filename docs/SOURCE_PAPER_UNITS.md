@@ -1,5 +1,8 @@
 # Original-source unit investigation
 
+Current implementation: [CURRENT_STATUS.md](CURRENT_STATUS.md). Source-specific
+evidence and dated investigation history below retain their original scope.
+
 Reviewed November15,2026. Scope: selected CRF DailyVitals, MR035G Heel
 NET_AVG_BMD, and BRSMImmune CD8+CD69+ samples. This is research, not a product
 importer change. Existing selected units remain unknown unless evidence binds

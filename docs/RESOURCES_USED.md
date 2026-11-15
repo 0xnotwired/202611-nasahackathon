@@ -1,5 +1,8 @@
 # Resources used (delivery list)
 
+Current implementation: [CURRENT_STATUS.md](CURRENT_STATUS.md). Source-specific
+evidence and dated investigation history below retain their original scope.
+
 Status as of November 15, 2026. This is the list the event terms require at delivery: every resource used, open source ones included, with its license and a citation. It is **not** the reading list; that is [RESOURCES.md](RESOURCES.md), which records what was consulted for ideas.
 
 Rules it answers to: the 2026 participant terms (https://www.spaceappschallenge.org/legal/, updated August 7, 2026; read on November 15, 2026, and the full text was supplied by the user the same day) require non-NASA material to be freely available without restriction or open source under an OSI license, each license to be identified in the documentation, and every source to be cited, open source ones included. The user's decision of November 15, 2026 adds: no already-made project from other people, except dependencies approved by name (see [../AGENTS.md](../AGENTS.md)).

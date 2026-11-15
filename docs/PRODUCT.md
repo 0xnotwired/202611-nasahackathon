@@ -1,5 +1,8 @@
 # Órbita: health, physical adaptation and habitat in one product
 
+Implementation and verified handoff state: [CURRENT_STATUS.md](CURRENT_STATUS.md).
+This document defines scope/design; planned capabilities are not completion claims.
+
 Date: November 14, 2026. Status: product direction extended by the user to integrate personal health, physical adaptation and habitat, with a copilot and On board procedures. The HTML mockup and the session video mainly illustrate the check-in and do not yet represent this whole scope. The following functional design is a proposal; it is not a validated clinical product.
 
 ## 1. Decision and scope
