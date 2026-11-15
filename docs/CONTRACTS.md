@@ -1,6 +1,6 @@
 # Órbita: contracts between modules
 
-Version 0.9 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
+Version 0.10 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
 
 Plan and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). Rationale for the rules: [PROPOSAL_IMPROVEMENTS.md](PROPOSAL_IMPROVEMENTS.md) and [AGENTS.md](../AGENTS.md).
 
@@ -233,6 +233,9 @@ environment(store, { place, interval })
         from, to: first start and last end of the segments (null when there are none).
 cumulative(store, { subject, variable, from, to })
    → { total | null, unit, n, gaps }       total is null if there is no data at all
+seriesBySourceTime(store, { subject, variable, scope? })
+   → { points, gaps, n, non_comparable_groups, clock, other_clocks, utc_records }
+        for records that carry only a source time (time: null); see below
 attention(record, config)
    → { status: "within" | "outside" | "no_criterion" | "not_assessed", criterion?, reason? }
 ```
@@ -242,6 +245,8 @@ attention(record, config)
 `readings` does not decide what is normal. It returns data and how much supports it.
 
 A foreseen failure returns `{ ok: false, error: { code, field?, message } }` instead of the plain object, so a caller checks `ok === false` first. Records that carry only a source time (`time: null`) make `series`, `latest`, `baseline` and `cumulative` return `unresolved_time`: no UTC placement or age is invented for them. `cumulative` returns `not_comparable` rather than a partial total when the records in range differ in method or unit.
+
+`seriesBySourceTime` is the series for records with `time: null`, which the UTC queries refuse. It has the same `points`, `gaps`, `n` and `non_comparable_groups` as `series`, and takes no range. A source clock is `scope` + `calendar` + `precision`; ordering and day counting happen only inside one clock, and nothing is converted to UTC or given an age. Points carry `time: null` and `source_time`, the source's own text, and `day` is a source day, not a UTC date. `clock` is `{ scope, calendar, precision, timezone: null }` for the clock that was used, or `null` when no clock can be ordered. The primary clock has the most measured values (then the most records, then the key), unless the optional `scope` selects among clocks with that scope. `gaps` cover the days between that clock's first and last record. Every other clock is listed in `other_clocks` as `{ scope, calendar, precision, n, orderable }`; clocks are never merged. A clock with `calendar: "unknown"` is never ordered or placed on a day: it appears in `other_clocks` with `orderable: false` and `records`, the stored records themselves, sorted by id only for stable output, so no order is claimed. `utc_records` counts the records with a UTC time that were left out. Unit-unknown values are never points; they come back in `non_comparable_groups`. A source clock spanning more than 3650 days returns `range_too_large`.
 
 ### procedures (M13)
 
@@ -487,3 +492,4 @@ Everything works with the keyboard. No state is conveyed by color alone. Views r
 
 | 0.8 | 2026-11-15 | User-authorized M21 advance: deterministic source CSV adapters, bounded reports/rows, source-time and unknown-unit policy; selected adaptation profiles; no implicit persistence | M21, store/import consumers |
 | 0.9 | 2026-11-15 | User-authorized after M06 delivery: `readings.baseline` gains `excluded_non_comparable`, `readings.environment` coverage gains `segments`; the readings failure shape (`{ ok:false, error }`), `unresolved_time` and `not_comparable` are documented. Additive: existing fields keep their meaning | M06, M07 and every future readings consumer |
+| 0.10 | 2026-11-15 | User-authorized: `readings.seriesBySourceTime` reads records that carry only a source time without inventing UTC or ages; clocks are never merged and an unknown calendar is listed unordered with its records. `lineChart` labels source days and keeps undrawn values in its table | M06, M07; every view over imported data (M08, M09, M11, M22) |

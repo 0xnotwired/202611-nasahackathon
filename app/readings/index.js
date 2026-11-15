@@ -5,6 +5,7 @@ import {DAY_MS, analyzeRange, fail, groupMeasured, isText, list, loadActive, rea
 import {attention} from './attention.js';
 
 export {attention};
+export {seriesBySourceTime} from './source-time.js';
 
 export async function series(store, query) {
   const range = readRange(query); if (!range.ok) return range;

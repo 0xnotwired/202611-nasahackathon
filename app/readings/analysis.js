@@ -85,7 +85,10 @@ const dayIndex = ms => Math.floor(ms / DAY_MS);
 
 function toPoint(entry) {
   const {record} = entry;
-  return {id: record.id, day: dayKey(entry.ms), time: record.time, value: record.value, unit: record.unit, method: record.method, origin: record.origin};
+  const point = {id: record.id, day: dayKey(entry.ms), time: record.time, value: record.value, unit: record.unit, method: record.method, origin: record.origin};
+  // A source-time record keeps its own text; the day above is a source day, never a UTC date.
+  if (record.time === null) point.source_time = record.source_time.value;
+  return point;
 }
 
 function isMeasured(record) { return record.state === 'recorded' && typeof record.value === 'number'; }
@@ -147,4 +150,4 @@ export function analyzeRange(loaded, fromMs, toMs) {
   };
 }
 
-export {DAY_MS, byTimeThenId, isMeasured, list, isText, instant};
+export {DAY_MS, MAX_DAYS, byTimeThenId, isMeasured, list, isText, instant};

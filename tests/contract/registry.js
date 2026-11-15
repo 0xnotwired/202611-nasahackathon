@@ -42,7 +42,7 @@ export const expectedExports = {
   catalogs: 'observations variables equipment sources',
   store: 'openStore',
   scenario: 'generateScenario',
-  readings: 'series latest baseline environment cumulative attention',
+  readings: 'series latest baseline environment cumulative attention seriesBySourceTime',
   procedures: 'validateProcedure availability start advance interrupt resume finish',
   plan: 'tasksFor progress mark linkResult',
   privacy: 'createSession logShared sharedLog',

@@ -317,7 +317,7 @@ test('M06-X8: within happens only with a well-formed criterion, the record\'s ow
 
 test('M06-X11: the module source holds no numeric literal beyond the reviewed structural list (R6 tripwire)',async()=>{
   const allowed=new Set(['0','1','2','24','60','1000','3650','512']);
-  const files=['index.js','analysis.js','attention.js'];
+  const files=['index.js','analysis.js','attention.js','source-time.js'];
   const found=[];
   for(const name of files) {
     const source=await readFile(new URL(`./${name}`,import.meta.url),'utf8');
