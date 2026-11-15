@@ -74,6 +74,16 @@ export function lineChart(input, options) {
   if (!Array.isArray(points) || !Array.isArray(gaps) || !Array.isArray(groups)) return fail('invalid_chart', 'series', 'points, gaps and non_comparable_groups must be lists');
   const label = isText(ownValue(options, 'label')) ? ownValue(options, 'label') : 'Series';
   const unit = isText(ownValue(options, 'unit')) ? ownValue(options, 'unit') : '';
+  const resolution = ownValue(options, 'resolution') ?? 'day';
+  if (resolution !== 'day' && resolution !== 'time') return fail('invalid_chart', 'resolution', 'resolution must be "day" or "time"');
+  const chosenDay = ownValue(options, 'day');
+  if (resolution === 'time' && Number.isNaN(dayNumber(chosenDay))) return fail('invalid_chart', 'day', 'A time-of-day chart needs the day to draw, as YYYY-MM-DD');
+  const sampling = ownValue(options, 'sampling');
+  if (sampling !== undefined) {
+    const interval = ownValue(sampling, 'interval_s');
+    if (typeof interval !== 'number' || !Number.isFinite(interval) || interval <= 0 || !isText(ownValue(sampling, 'source')))
+      return fail('invalid_chart', 'sampling', 'sampling must be { interval_s: a positive number of seconds, source: where that interval is stated }');
+  }
   const cleanPoints = [];
   for (const point of points) {
     const day = ownValue(point, 'day');
@@ -107,6 +117,11 @@ export function lineChart(input, options) {
   }
   cleanPoints.sort((a, b) => a.n - b.n);
   cleanGaps.sort((a, b) => a.n - b.n);
+  if (resolution === 'time') {
+    const clockInfo = ownValue(input, 'clock');
+    const basis = clockInfo !== null && typeof clockInfo === 'object' && !Array.isArray(clockInfo) ? 'source' : 'utc';
+    return timeOfDayChart(points, groups, {label, unit, day: chosenDay, sampling: sampling === undefined ? null : {interval_s: ownValue(sampling, 'interval_s'), source: ownValue(sampling, 'source')}, basis});
+  }
 
   // A line may only join values on neighbouring days. Distance is read from the data, not only from the gap list.
   const segments = [];
@@ -173,5 +188,102 @@ export function lineChart(input, options) {
     table, not_drawn: notDrawn, empty,
     empty_text: empty ? 'No values to draw: every day in this range is without a value. The table says why.' : '',
     summary, svg
+  };
+}
+
+const DAY_SECONDS = 24 * 60 * 60;
+const JOIN_FACTOR = 1.5; // D-M07-6: midpoint between the next reading (1 interval) and one missed reading (2 intervals)
+const pad = value => String(value).padStart(2, '0');
+const clockText = seconds => `${pad(Math.floor(seconds / 3600))}:${pad(Math.floor((seconds % 3600) / 60))}:${pad(seconds % 60)}`;
+function duration(seconds) {
+  const hours = Math.floor(seconds / 3600); const minutes = Math.floor((seconds % 3600) / 60); const rest = seconds % 60;
+  return [hours ? `${hours} h` : '', minutes ? `${minutes} min` : '', rest ? `${rest} s` : ''].filter(Boolean).join(' ') || '0 s';
+}
+
+/** Date and second of the day as written by the source (source_time) or by UTC (time). Never invented. */
+function placeOf(point) {
+  const sourceTime = ownValue(point, 'source_time');
+  const utc = ownValue(point, 'time');
+  const text = typeof sourceTime === 'string' ? sourceTime : typeof utc === 'string' ? utc : null;
+  if (text === null) return {date: ownValue(point, 'day'), seconds: null};
+  const [date, clock] = text.split('T');
+  if (!clock) return {date, seconds: null};
+  const [hours, minutes, secs = '0'] = clock.replace(/Z$/, '').split(':');
+  const seconds = Number(hours) * 3600 + Number(minutes) * 60 + Math.floor(Number(secs));
+  return {date, seconds: Number.isFinite(seconds) && seconds >= 0 && seconds < DAY_SECONDS ? seconds : null};
+}
+
+function timeOfDayChart(points, groups, {label, unit, day, sampling, basis}) {
+  const valueText = (value, pointUnit) => isText(pointUnit) ? `${value} ${pointUnit}` : unit ? `${value} ${unit}` : String(value);
+  const placed = points.map(point => ({point, ...placeOf(point), value: ownValue(point, 'value')}));
+  const days = [...new Set([...placed.map(p => p.date), ...groups.flatMap(group => (ownValue(group, 'points') ?? []).map(point => placeOf(point).date))])].filter(isText).sort();
+  const onDay = placed.filter(p => p.date === day);
+  const timed = onDay.filter(p => p.seconds !== null).sort((a, b) => a.seconds - b.seconds);
+  const dateOnly = onDay.filter(p => p.seconds === null);
+
+  const segments = []; const breaks = [];
+  for (const reading of timed) {
+    const last = segments[segments.length - 1];
+    const previous = last ? last[last.length - 1] : null;
+    const gap = previous ? reading.seconds - previous.seconds : 0;
+    if (previous && sampling && gap <= JOIN_FACTOR * sampling.interval_s) last.push(reading);
+    else {
+      if (previous && sampling) breaks.push({from: clockText(previous.seconds), to: clockText(reading.seconds), text: `no reading for ${duration(gap)}`, mid: (previous.seconds + reading.seconds) / 2});
+      segments.push([reading]);
+    }
+  }
+
+  const rows = [
+    ...timed.map(p => ({k: p.seconds, time: clockText(p.seconds), value: valueText(p.value, ownValue(p.point, 'unit')), note: ''})),
+    ...breaks.map(b => ({k: b.mid, time: `${b.from}–${b.to}`, value: 'no reading', note: b.text})),
+    ...dateOnly.map(p => ({k: -1, time: '', value: valueText(p.value, ownValue(p.point, 'unit')), note: 'no time of day in the source; not drawn'}))
+  ];
+  for (const group of groups) {
+    const reason = isText(ownValue(group, 'reason')) ? ownValue(group, 'reason') : 'not comparable';
+    const unknownUnit = ownValue(ownValue(group, 'key'), 'unit_status') === 'unknown';
+    for (const point of ownValue(group, 'points') ?? []) {
+      const where = placeOf(point);
+      if (where.date !== day) continue;
+      rows.push({k: where.seconds ?? -1, time: where.seconds === null ? '' : clockText(where.seconds),
+        value: unknownUnit ? `${ownValue(point, 'value')} (unit unknown)` : valueText(ownValue(point, 'value'), ownValue(point, 'unit')), note: `not drawn: not comparable (${reason})`});
+    }
+  }
+  rows.sort((a, b) => a.k - b.k);
+  const timeLabel = basis === 'source' ? 'Source time of day (time zone not established)' : 'Time of day (UTC)';
+  const table = accessibleTable({caption: `${label} on ${day}`, columns: [{key: 'time', label: timeLabel}, {key: 'value', label: unit ? `Value (${unit})` : 'Value'}, {key: 'note', label: 'Note'}],
+    rows: rows.map(({time, value, note}) => ({time, value, note}))});
+  if (table.ok === false) return table;
+
+  const basisText = basis === 'source' ? ' (source clock, time zone not established)' : ' (UTC)';
+  const joining = sampling
+    ? `${breaks.length} ${breaks.length === 1 ? 'break' : 'breaks'} longer than one and a half sampling intervals (interval ${sampling.interval_s} s, stated by ${sampling.source})`
+    : 'points are not joined because no sampling interval was given';
+  const summary = `${label} on ${day}${basisText}: ${timed.length} ${timed.length === 1 ? 'reading' : 'readings'}; ${joining}. The same information is in the table.`;
+  const plotW = WIDTH - MARGIN.left - MARGIN.right; const plotH = HEIGHT - MARGIN.top - MARGIN.bottom;
+  const values = timed.map(p => p.value);
+  const lo = values.length ? Math.min(...values) : 0; const hi = values.length ? Math.max(...values) : 0;
+  const xFor = seconds => num(MARGIN.left + (seconds / DAY_SECONDS) * plotW);
+  const yFor = value => num(MARGIN.top + plotH - (hi === lo ? plotH / 2 : ((value - lo) / (hi - lo)) * plotH));
+  const children = [node('title', {}, [], label), node('desc', {}, [], summary),
+    node('line', {class: 'axis', x1: MARGIN.left, y1: HEIGHT - MARGIN.bottom, x2: WIDTH - MARGIN.right, y2: HEIGHT - MARGIN.bottom}),
+    node('line', {class: 'axis', x1: MARGIN.left, y1: MARGIN.top, x2: MARGIN.left, y2: HEIGHT - MARGIN.bottom})];
+  for (const hour of [0, 6, 12, 18, 24]) children.push(node('text', {class: 'tick', x: xFor(hour * 3600), y: HEIGHT - 8, 'text-anchor': hour === 0 ? 'start' : hour === 24 ? 'end' : 'middle'}, [], `${pad(hour)}:00`));
+  if (values.length) {
+    children.push(node('text', {class: 'tick', x: MARGIN.left - 6, y: MARGIN.top + 4, 'text-anchor': 'end'}, [], `${hi}`));
+    children.push(node('text', {class: 'tick', x: MARGIN.left - 6, y: HEIGHT - MARGIN.bottom, 'text-anchor': 'end'}, [], `${lo}`));
+  }
+  for (const b of breaks) children.push(node('line', {class: 'gap', x1: xFor(b.mid), y1: MARGIN.top, x2: xFor(b.mid), y2: HEIGHT - MARGIN.bottom, 'stroke-dasharray': '4 4'}, [node('title', {}, [], `${b.from}–${b.to}: ${b.text}`)]));
+  for (const segment of segments) if (segment.length > 1) children.push(node('path', {class: 'line', fill: 'none', d: segment.map((p, i) => `${i === 0 ? 'M' : 'L'} ${xFor(p.seconds)} ${yFor(p.value)}`).join(' ')}));
+  for (const p of timed) children.push(node('circle', {class: 'point', cx: xFor(p.seconds), cy: yFor(p.value), r: 2.5}, [node('title', {}, [], `${clockText(p.seconds)}: ${valueText(p.value, ownValue(p.point, 'unit'))}`)]));
+  const droppedCount = groups.reduce((sum, group) => sum + (Number.isInteger(ownValue(group, 'n')) ? ownValue(group, 'n') : 0), 0);
+  return {
+    kind: 'line_chart', resolution: 'time', label, unit, time_basis: basis, day, days, sampling,
+    breaks: breaks.map(({from, to, text}) => ({from, to, text})),
+    segments: segments.map(segment => ({points: segment.map(p => ({time: clockText(p.seconds), value: p.value, id: ownValue(p.point, 'id')}))})),
+    gaps: breaks.map(b => ({day, reason: 'no_reading', text: `${b.from}–${b.to}: ${b.text}`})),
+    y: values.length ? {min: lo, max: hi} : null, table,
+    not_drawn: {n: droppedCount, groups: [], text: droppedCount ? `${droppedCount} ${droppedCount === 1 ? 'value' : 'values'} taken with another method or unit are not drawn.` : ''},
+    empty: timed.length === 0, empty_text: timed.length === 0 ? 'No values with a time of day on this day. The table says why.' : '',
+    summary, svg: node('svg', {viewBox: `0 0 ${WIDTH} ${HEIGHT}`, role: 'img', 'aria-label': summary, class: 'chart'}, children)
   };
 }

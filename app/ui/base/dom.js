@@ -43,7 +43,9 @@ export function renderBadge(doc, badge) {
 export function renderChart(doc, model) {
   const parts = [create(doc, 'figure', {class: 'chart-figure'}, model.empty ? create(doc, 'p', {class: 'notice notice-info'}, model.empty_text) : renderSvg(doc, model.svg),
     create(doc, 'figcaption', {}, model.summary))];
-  if (model.gaps.length) parts.push(create(doc, 'p', {class: 'legend'}, 'Dashed vertical mark: a day without a value. The table says why.'));
+  if (model.gaps.length) parts.push(create(doc, 'p', {class: 'legend'}, model.resolution === 'time'
+    ? 'Dashed vertical mark: no reading for longer than one and a half sampling intervals. The table gives the length.'
+    : 'Dashed vertical mark: a day without a value. The table says why.'));
   if (model.not_drawn.text) parts.push(create(doc, 'p', {class: 'notice notice-warning'}, model.not_drawn.text));
   parts.push(create(doc, 'details', {class: 'table-toggle'}, create(doc, 'summary', {}, 'Show the same values as a table'), renderTable(doc, model.table)));
   return create(doc, 'div', {class: 'chart-block'}, ...parts);

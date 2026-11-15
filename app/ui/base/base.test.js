@@ -113,6 +113,70 @@ test('M07-Y2: values that are not drawn are still in the table, noted, and never
   }
 });
 
+const DAY='2100-01-01';
+const srcPoint=(time,value,day=DAY)=>({id:`g-${day}-${time}`,day,time:null,source_time:time?`${day}T${time}`:day,value,unit:'mmol/L',method:'m',origin:'terrestrial'});
+const SAMPLING={interval_s:300,source:'BUT CGM README: every 5th minute'};
+const TIMES=['08:00:00','08:05:00','08:10:10','08:40:00','08:45:00'];
+const timeSeries=(points,extra={})=>({points,gaps:[],n:points.length,non_comparable_groups:[],clock:CLOCK,...extra});
+const timeOpts=(extra={})=>({unit:'mmol/L',label:'Glucose',resolution:'time',day:DAY,...extra});
+
+test('M07-Y4: by time of day, readings join only within the declared sampling; a hole is a break in drawing and table',()=>{
+  const model=lineChart(timeSeries(TIMES.map((t,i)=>srcPoint(t,5+i/10))),timeOpts({sampling:SAMPLING}));
+  assert.deepEqual(model.segments.map(s=>s.points.length),[3,2]);
+  assert.deepEqual(model.breaks,[{from:'08:10:10',to:'08:40:00',text:'no reading for 29 min 50 s'}]);
+  assert.equal(model.table.rows.length,6);
+  assert.match(model.table.rows[3].note,/no reading for 29 min 50 s/);
+  assert.deepEqual(model.table.rows.filter(r=>!/no reading/.test(r.note)).map(r=>r.time),TIMES);
+  const nodes=walk(model.svg);
+  assert.equal(nodes.filter(n=>n.tag==='path'&&klass(n,'line')).length,2);
+  assert.equal(nodes.filter(n=>klass(n,'point')).length,5);
+  assert.equal(nodes.filter(n=>klass(n,'gap')).length,1);
+  assert.deepEqual(model.sampling,SAMPLING);
+  for(const node of nodes) for(const value of Object.values(node.attrs??{})) assert.doesNotMatch(String(value),/NaN|Infinity|undefined/);
+});
+
+test('M07-Y5: without a declared sampling interval nothing is joined and no break is invented',()=>{
+  const model=lineChart(timeSeries(TIMES.map((t,i)=>srcPoint(t,5+i/10))),timeOpts());
+  const nodes=walk(model.svg);
+  assert.equal(nodes.filter(n=>klass(n,'line')).length,0);assert.equal(nodes.filter(n=>klass(n,'point')).length,5);
+  assert.match(model.summary,/not joined/);assert.match(model.summary,/no sampling interval/);
+  assert.deepEqual(model.breaks,[]);assert.equal(model.sampling,null);
+  assert.equal(model.table.rows.length,5);assert.ok(model.table.rows.every(r=>!/no reading/.test(r.note)));
+});
+
+test('M07-Y6: only the chosen day is drawn and tabled; the days present are listed',()=>{
+  const model=lineChart(timeSeries([...TIMES.map((t,i)=>srcPoint(t,5+i/10)),srcPoint('09:00:00',7,'2100-01-02')]),timeOpts({sampling:SAMPLING}));
+  assert.equal(walk(model.svg).filter(n=>klass(n,'point')).length,5);
+  assert.equal(model.table.rows.filter(r=>!/no reading/.test(r.note)).length,5);
+  assert.deepEqual(model.days,['2100-01-01','2100-01-02']);
+  const other=lineChart(timeSeries([...TIMES.map((t,i)=>srcPoint(t,5+i/10)),srcPoint('09:00:00',7,'2100-01-02')]),timeOpts({day:'2100-01-02',sampling:SAMPLING}));
+  assert.equal(walk(other.svg).filter(n=>klass(n,'point')).length,1);
+});
+
+test('M07-Y7: a source clock is labelled as such; a UTC series uses its UTC time of day',()=>{
+  const source=lineChart(timeSeries(TIMES.map((t,i)=>srcPoint(t,5+i/10))),timeOpts({sampling:SAMPLING}));
+  assert.match(source.table.columns[0].label,/Source time of day/);assert.match(source.table.columns[0].label,/time zone not established/);
+  assert.match(source.summary,/source clock/);assert.match(source.svg.attrs['aria-label'],/time zone not established/);
+  const utcPts=['08:00:00','08:05:00'].map((t,i)=>({id:'u'+i,day:'2026-03-01',time:`2026-03-01T${t}.000Z`,value:60+i,unit:'bpm',method:'m',origin:'synthetic'}));
+  const utc=lineChart({points:utcPts,gaps:[],n:2,non_comparable_groups:[]},{unit:'bpm',label:'Pulse',resolution:'time',day:'2026-03-01',sampling:{interval_s:300,source:'team demo'}});
+  assert.equal(utc.table.columns[0].label,'Time of day (UTC)');assert.equal(utc.time_basis,'utc');
+  assert.deepEqual(utc.table.rows.map(r=>r.time),['08:00:00','08:05:00']);assert.equal(utc.segments.length,1);
+  assert.doesNotMatch(utc.summary,/source/i);
+});
+
+test('M07-Y8: bad time options are refused, and a date-only point never gets an invented time of day',()=>{
+  const series=timeSeries(TIMES.map((t,i)=>srcPoint(t,5+i/10)));
+  for(const bad of [{resolution:'time'},{resolution:'time',day:'yesterday'},{resolution:'time',day:'2100-02-30'},{resolution:'banana',day:DAY},
+    {resolution:'time',day:DAY,sampling:{interval_s:0,source:'x'}},{resolution:'time',day:DAY,sampling:{interval_s:-5,source:'x'}},
+    {resolution:'time',day:DAY,sampling:{interval_s:'300',source:'x'}},{resolution:'time',day:DAY,sampling:{interval_s:300}},{resolution:'time',day:DAY,sampling:'300'}]) {
+    const out=lineChart(series,{unit:'mmol/L',label:'x',...bad});assert.equal(out.ok,false,JSON.stringify(bad));assert.notEqual(out.error.code,'not_implemented');
+  }
+  const dated=lineChart(timeSeries([srcPoint('08:00:00',5),srcPoint(null,6)]),timeOpts({sampling:SAMPLING}));
+  assert.equal(walk(dated.svg).filter(n=>klass(n,'point')).length,1);
+  const row=dated.table.rows.find(r=>/no time of day/.test(r.note));
+  assert.ok(row,'the date-only value is in the table');assert.match(row.note,/no time of day in the source/);assert.equal(row.time,'');
+});
+
 test('M07-P3: every origin has its own label; an unknown origin says so and never defaults to synthetic (R4)',()=>{
   const labels=ORIGINS.map(origin=>originLabel(origin));
   assert.equal(new Set(labels).size,ORIGINS.length);

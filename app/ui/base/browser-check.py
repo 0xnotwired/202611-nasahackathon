@@ -109,7 +109,15 @@ try:
             host2.append(dom.renderChart(document, src)); host2.querySelector('details').open = true;
             const sourceView = {caption: host2.querySelector('figcaption').textContent, head: host2.querySelector('thead th').textContent,
                                 rows: [...host2.querySelectorAll('tbody tr')].map(r => r.textContent), circles: host2.querySelectorAll('svg circle.point').length};
-            return {sourceView, xss: window.__xss ?? null, img: host.querySelector('td img, th img') !== null, cell: host.querySelector('td, tbody th').textContent,
+            const times = ['08:00:00', '08:05:00', '08:10:10', '08:40:00', '08:45:00'];
+            const tod = chart.lineChart({points: times.map((t, i) => ({id: 't' + i, day: '2100-01-01', time: null, source_time: '2100-01-01T' + t, value: 5 + i / 10, unit: 'mmol/L'})),
+                gaps: [], n: 5, non_comparable_groups: [], clock: {scope: 's', calendar: 'shifted', precision: 'second', timezone: null}},
+                {unit: 'mmol/L', label: 'Glucose', resolution: 'time', day: '2100-01-01', sampling: {interval_s: 300, source: 'BUT CGM README'}});
+            const host3 = document.createElement('div'); host3.id = 'probe3'; document.body.append(host3);
+            host3.append(dom.renderChart(document, tod)); host3.querySelector('details').open = true;
+            const timeView = {lines: host3.querySelectorAll('svg path.line').length, gaps: host3.querySelectorAll('svg line.gap').length, head: host3.querySelector('thead th').textContent,
+                              legend: host3.querySelector('.legend').textContent, rows: [...host3.querySelectorAll('tbody tr')].map(r => r.textContent)};
+            return {sourceView, timeView, xss: window.__xss ?? null, img: host.querySelector('td img, th img') !== null, cell: host.querySelector('td, tbody th').textContent,
                     lines: host.querySelectorAll('svg path.line').length, points: host.querySelectorAll('svg circle.point').length, gaps: host.querySelectorAll('svg line.gap').length,
                     rows: [...host.querySelectorAll('.chart-block tbody tr')].map(r => r.textContent), note: host.querySelector('.notice-warning').textContent};
         }''')
@@ -121,9 +129,14 @@ try:
               'time zone not established' in sv['caption'] and 'Source day' in sv['head'], str(sv))
         check(results, 'Y3: the unknown-unit value is in the table as not drawn and has no marker',
               any('7 (unit unknown)' in r and 'not drawn' in r for r in sv['rows']) and sv['circles'] == 2, str(sv))
-        check(results, 'X11: the gap mark has a visible legend', 'Dashed vertical mark' in page.locator('.legend').inner_text())
+        tv = outcome['timeView']
+        check(results, 'Y10: time-of-day chart in a page: two lines, one break mark, time-of-day column, break legend, break row',
+              tv['lines'] == 2 and tv['gaps'] == 1 and 'Source time of day' in tv['head'] and 'sampling intervals' in tv['legend']
+              and any('no reading for 29 min 50 s' in r for r in tv['rows']), str(tv))
+        check(results, 'X11: the gap mark has a visible legend', 'Dashed vertical mark' in page.locator('#probe .legend').inner_text())
         check(results, 'X4 browser: values with another method are named, not drawn', '2 values' in outcome['note'] and 'method' in outcome['note'], outcome['note'])
         if SHOTS:
+            page.locator('#probe3 .chart-block').screenshot(path=f'{SHOTS}/m07-time-of-day.png')
             page.locator('#probe').scroll_into_view_if_needed()
             page.locator('#probe .chart-block').screenshot(path=f'{SHOTS}/m07-chart.png')
         check(results, 'no page error or console error on the main page', not errors, f'{errors} failed requests: {failed}')
