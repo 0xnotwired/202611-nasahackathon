@@ -10,6 +10,7 @@ const original=await readFile(new URL('./index.js',import.meta.url),'utf8');
 const source=original.replace("'../core/index.js'",JSON.stringify(new URL('../core/index.js',import.meta.url).href));
 const mutations=[
  ['M04-P1 overwrite',source.replace('if(map.has(object.id)||ids.has(object.id))','if(ids.has(object.id))')],
+ ['M04-P3 within-batch duplicate',source.replace('map.has(object.id)||ids.has(object.id)','map.has(object.id)')],
  ['M04-P2 mutable history',source.replace("new Set(['executions','tasks','episodes','deliveries'])","new Set(['records','shared','executions','tasks','episodes','deliveries'])")],
  ['M04-P4 unknown version',source.replace('if(object.schema_version!==SCHEMA_VERSION)','if(false)')],
  ['M04-P5 persistent memory',source.replace('kind,persistent:false','kind,persistent:true')],

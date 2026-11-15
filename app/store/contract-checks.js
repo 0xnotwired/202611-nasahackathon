@@ -25,6 +25,8 @@ export async function checkStoreBehavior(module, assert, {kind='memory',name='m0
     bad(await store.saveBatch('records',[{...record,id:'before'},record,{...record,id:'after'}]));
     assert.deepEqual(good(await store.list('records',{})).map(x=>x.id),['r1']);
     bad(await store.saveBatch('records',[{...record,id:'before'},{...record,id:'invalid',method:''}]));
+    bad(await store.saveBatch('records',[{...record,id:'same-batch',value:3},{...record,id:'same-batch',value:4}]));
+    bad(await store.get('records','same-batch'));
     assert.deepEqual(good(await store.list('records',{})).map(x=>x.id),['r1']);
     bad(await store.save('records',{...record,id:'future',schema_version:2}));
     bad(await store.save('tasks',{id:'future-task',schema_version:2}));
