@@ -33,6 +33,7 @@ None (decision D2). The product is the team's own code, licensed under Apache-2.
 | OSDR (OSD-51, OSD-56) | NASA | AWS Open Data registry: no restrictions on use | Title, accession and study page written; authors via the study's citation button, not yet read |
 | Environmental Data App | NASA (OSDR) | Covered by OSDR; the OSDR FAQ gives the citation text | Application and NASA report located; authors not retrieved |
 | ACTES cycle ergometer | PhysioNet | Open Data Commons Attribution v1.0 | Citation written from the page, to be checked against it |
+| BUT CGM (blood sugar) | PhysioNet | Creative Commons Attribution 4.0, open access (read on the page, 15/11/2026) | Citation checked against the page by elements; see [DATASET_CITATIONS.md](DATASET_CITATIONS.md) |
 | ITBA wearable | PhysioNet | Open Data Commons Attribution v1.0 | Citation written from the page, to be checked against it |
 
 Note on the PhysioNet datasets: their license carries an attribution condition, and the terms ask for third-party material that is free "without restriction" or OSI open source. Our reading, not confirmed by the organizers: attribution is not a restriction in that sense, because the OSI licenses the terms accept also require it and the terms require citing every source anyway. Access gating or a data use agreement would be a restriction, which is why Málaga is out. It goes to the organizers as a one-line confirmation.

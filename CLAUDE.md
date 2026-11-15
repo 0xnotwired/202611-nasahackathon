@@ -45,9 +45,28 @@ docs/APPLIED_RESEARCH.md       sources A01–A06
 docs/EXTENDED_RESEARCH_B.md    sources B01–B26, with reading level
 docs/*_MATRIX*.csv             one row per source or claim
 docs/DATASETS.md               what NLSP/OSDR and other sources contain, and their integration limits
+docs/DATASET_CITATIONS.md      citation of each dataset, with what was and was not retrieved
+docs/RESOURCES_USED.md         delivery list: tools, data and AI use, with licenses
+docs/RESOURCES.md              reading list and concept references (not the delivery list)
+docs/REQUIREMENTS.md           challenge text and its goals; gaps closed by D10–D14
+LICENSE                        Apache-2.0
 scripts/check_docs.py          consistency of matrices, module board and links
 app/                           does not exist yet; the product goes there, one folder per module
 ```
+
+## Where to pick up (state on 15/11/2026, commit after 1043795)
+
+Nothing of the product exists. The plan, contracts 0.4, 25 work orders with their experiments, decisions D1–D14 and the delivery lists exist. In order:
+
+1. **Gate G0** (orchestrator plus a person). Write `docs/THREAT_MODEL.md` before any code: local health data with no encryption (D7), mood as a sensitive self-report, the simulated link (D9), imported files as untrusted input. Then launch M00 with one builder and one reviewer (prompts in ORCHESTRATION_PLAN.md, "How to launch an agent"); M00 records G0-W1 to G0-W3. A person approves G0.
+2. **F1, wave 1**: M01, M02 and M03 in parallel once G0 is approved; then the rest of the waves as the plan orders them.
+3. **Inputs that only a person can bring**, and what they unblock:
+   - one `*_CGM.csv` file from BUT CGM: its columns and unit are unknown, and M21's `importGlucose` must be corrected against it;
+   - the text of the eight NLSP study cards: their citation fields are missing;
+   - the organizers' answer on "already-made projects", dependencies and attribution-only datasets;
+   - the demo procedure and its clinical source (F3 content), and [V1 4030] in NASA-STD-3001 (radiation limit in M10).
+
+What an agent must not do while these are open: invent the BUT CGM columns or unit, write NLSP authors or years, add a dependency, copy items from a published questionnaire, put a threshold in a function, or download original NASA or PhysioNet files into the repository.
 
 ## The central rule
 
@@ -154,7 +173,7 @@ The user asks that the skills from `github.com/annatchijova/SKILLS` always be ap
 | `falsifiable-testing` | Watch every test fail before trusting it, and fail again under a negative control |
 | `discriminating-proof` | Prediction written before the run; one evidence level per claim; refuted results kept |
 | `abductive-engineering` | A surprise gets rival explanations and the cheapest test that tells them apart |
-| `decision-record-discipline` | Decisions D1–D9 with what they rest on and what reopens them |
+| `decision-record-discipline` | Decisions D1–D14 with what they rest on and what reopens them |
 | `writing-agents-md` | Every rule in AGENTS.md with its reason and its mechanism, or the statement that it has none |
 | `secure-by-construction` | Health data: threat model before code |
 | `surgical-patcher` | Edit by anchors; do not rewrite whole files |

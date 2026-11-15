@@ -28,6 +28,7 @@ There is no MVP. If time runs out, the highest level that passed its gate is del
 | D7 | Data protection | Per-session unlock and a log of what was shared. **No encryption**: no on-disk confidentiality is promised | Adding encryption is a new module with its own threat model |
 | D8 | History | Records are never edited or deleted: a correction is a new record pointing to the previous one | M01 and M04 change |
 | D9 | Sending to the ground | **Simulated sync** (simulated option C, chosen by the user on 15/11/2026): a send queue, a simulated link and a ground panel inside the same app, labeled on screen. No server. Sync lives behind the `sync` interface in CONTRACTS.md so that a real server can replace it later without touching the rest | A real server is a later level, with its own threat model, and reopens D7 |
+| D10–D14 | Challenge gaps | Decided by the user on 15/11/2026: data-state color; attention criteria as mission configuration; environment presets; blood sugar (BUT CGM) and mood self-report; plan progress instead of gamification. Detail and evidence in [IMPLEMENTATION_LAYERS.md](IMPLEMENTATION_LAYERS.md) | Contracts 0.4 change |
 
 Observed on November 15 with predictions written beforehand ([E00](experiments/E00-foundation-probes.md)), on Node 22 and Chrome 153 only: `node --test` runs with nothing installed (D4); the same module file runs in Node and in the browser (D1); ES modules do not load from `file://` and do load through a local server (D6); IndexedDB keeps a record across a browser restart, over HTTP and from `file://` (D3). Not verified: Firefox, Safari, private windows, Windows and macOS.
 
@@ -229,7 +230,9 @@ Reviewer:
 | Confirm [V1 4030] in NASA-STD-3001 vol. 1 | Showing the radiation limit in M10 |
 | Download the NASA files | F5 |
 | Event rules on AI use (the code license is decided: Apache-2.0) | Delivery |
-| Official 2026 challenge text | Presentation |
+| One BUT CGM `*_CGM.csv` file (columns and unit unknown; download blocked in the agent's network) | M21 `importGlucose` |
+| Text of the eight NLSP study cards (citation fields) | Delivery; M22 |
+| Organizers' answer on already-made projects, dependencies and attribution-only datasets | Confirms D2 and the PhysioNet datasets |
 
 ## What the machine checks and what it does not
 

@@ -14,6 +14,12 @@ The dataset page also asks users to cite two more works. Not yet written, becaus
 
 The page also asks users to cite the original publication, *Wearable Physiological Signals under Acute Stress and Exercise Conditions* (Scientific Data, 2025), and the standard PhysioNet citation. Their authors and DOIs were not retrieved.
 
+**BUT CGM (blood sugar).** Šaclová, L., Nemcova, A., Goldschmidt, T., Kralik, M., Chlíbková, D., Smital, L., Smisek, R., & Hubálek, J. (2026). *Brno University of Technology Continuous Glycaemia, ECG, Activity and Food Intake Database (BUT CGM)* (version 1.0.0). PhysioNet. RRID:SCR_007345. https://doi.org/10.13026/hv8f-3w60
+
+Compared with the page on 15/11/2026 through the fetch tool, which returned the citation's elements (authors in order, year, title, version, publisher, RRID, DOI) but not the verbatim block, because of its quoting limit: the elements match the line above; punctuation was not compared. License on the page: Creative Commons Attribution 4.0 International Public License. Version 1.0.0, published November 2, 2026. The page lists no separate original publication to cite. It asks for the standard PhysioNet citation: Pollard, T., Moody, B. E., Lehman, L., Gow, B., Fernandes, C., Xie, C., Johnson, A., Mark, R. G., & Heldt, T. (2026). PhysioNet as a global platform for biomedical research. *Nature Health*. https://doi.org/10.1038/s44360-026-00096-z
+
+That same standard PhysioNet citation (Pollard et al., 2026, title above) is the one the ACTES and ITBA pages ask for.
+
 ## NASA OSDR
 
 **OSD-51** (accession GLDS-51). *Woman skeletal muscle transcriptome with bed rest and countermeasures.* National Aeronautics and Space Administration, Open Science Data Repository. Study page: https://genelab-data.ndc.nasa.gov/genelab/accession/GLDS-51. Catalog records give 2018-06-26 and 2021-05-21 as first issued dates, and the records disagree on the license field (one says no license information was provided, another a US public-domain label). Authors were not retrieved: use the citation button of the OSDR study card.
@@ -39,7 +45,7 @@ Study titles and accession ids as recorded in [DATASETS.md](DATASETS.md), where 
 
 ## To close
 
-- Check each PhysioNet entry against its page; add the two further works each page asks to cite.
+- Check the ACTES and ITBA entries against their pages; add the original publications they ask to cite. BUT CGM was checked by elements, not verbatim.
 - Read the OSDR citation button for OSD-51, OSD-56 and the Environmental Data App.
 - Fill the NLSP fields from each card's Metadata API when it is reachable, or ask the user for the page text.
 - Importer M21 and view M22 must show the citation of whatever they display.

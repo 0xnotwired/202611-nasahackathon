@@ -24,7 +24,7 @@ It is built in levels. **No MVP is proposed.** If time runs out, the highest com
 
 They no longer live in this document, so there are not two copies that drift apart:
 
-- **Decisions D1–D9** (language, dependencies, persistence, tests, structure, how it opens, data protection, history without editing, simulated sync): [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). D9 was chosen by the user; D1–D4 and D6 match the stack the user listed on 15/11; D5, D7 and D8 were confirmed on 15/11 by accepting the orchestrator's recommendation with its reasons. The evidence behind each one is in [IMPLEMENTATION_LAYERS.md](IMPLEMENTATION_LAYERS.md).
+- **Decisions D1–D14** (language, dependencies, persistence, tests, structure, how it opens, data protection, history without editing, simulated sync; D10–D14 close the challenge gaps): [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). D9 was chosen by the user; D1–D4 and D6 match the stack the user listed on 15/11; D5, D7 and D8 were confirmed on 15/11 by accepting the orchestrator's recommendation with its reasons. The evidence behind each one is in [IMPLEMENTATION_LAYERS.md](IMPLEMENTATION_LAYERS.md).
 - **Data model, rules R1–R9 and interfaces:** [CONTRACTS.md](CONTRACTS.md).
 - **Who builds what:** [modules.csv](modules.csv) and [work-orders/](work-orders/).
 
@@ -108,11 +108,13 @@ Each level ends with: an adversarial review against the rules of the earlier lev
 
 | Blocker | Who | Affects |
 |---|---|---|
-| Resources list: first version in [RESOURCES_USED.md](RESOURCES_USED.md); dataset citations open | Any agent, reviewed by the team | Delivery |
+| Resources list: [RESOURCES_USED.md](RESOURCES_USED.md) and [DATASET_CITATIONS.md](DATASET_CITATIONS.md); NLSP and OSDR citation fields open | Any agent, reviewed by the team | Delivery |
 | Choose the demo procedure and its clinical source | User, with competent review | Level 2 |
 | Confirm [V1 4030] in NASA-STD-3001 vol. 1 rev. C | Anyone, by opening the S03 PDF | Level 1, radiation |
-| Official 2026 challenge text and evaluation guide | User, from the browser | Presentation |
-| Code license | Team | Publication |
+| Evaluation guide for 2026 (the challenge text was supplied on 15/11) | User, from the browser | Presentation |
+| One BUT CGM `*_CGM.csv` file | User | M21 `importGlucose` |
+| Text of the eight NLSP study cards | User | Dataset citations |
+| Organizers' answer on already-made projects, dependencies and attribution-only datasets | User | D2 and PhysioNet datasets |
 | Event rules on AI use | User | Provenance record |
 
 ## Handoff protocol between agents
@@ -137,3 +139,4 @@ Each agent checks the real status with `git status`, `git log` and the tests bef
 | 2026-11-15 | Claude (orchestrator, web session) | Scientific method for the build: `METHOD.md`, `IMPLEMENTATION_LAYERS.md` (one falsifiable claim and gate experiments per layer, decisions with their evidence), 125 experiments added to the 25 work orders, `docs/experiments/` with record E00. E00 ran five foundation probes with predictions written first: all confirmed on Node 22 and Chrome 153, each with a negative control (RUN and BROWSER). `check_docs.py` now checks experiment ids and records: seen failing on five deliberate breakages and passing on two controls. AGENTS.md records the dependency rule as read in the 2026 terms and as reported by the user | Explicit confirmation of D5, D7 and D8; list of resources used; other browsers not tested; no product code written |
 | 2026-11-15 | Claude (orchestrator, web session) | Method and layers committed (c1535d2). User decisions of the day recorded: no already-made projects from others except dependencies approved by name (default none); D5, D7 and D8 confirmed by accepting the recommendation; code license Apache-2.0 (`LICENSE`). First delivery list of resources in `RESOURCES_USED.md`, licenses read in the installed copies. Tried to install Firefox and WebKit for Playwright: refused by the network allowlist (403) | Gate G0 experiments and threat model not done; no product code written; Chrome for Testing is not open source (user decided on 15/11 to keep it as a development tool); dataset citation strings not written; the event rules on AI use and the meeting rule on already-made projects are not verified |
 | 2026-11-15 | Claude (orchestrator, web session) | Challenge text supplied by the user compared with the plan; gaps closed by user decisions D10–D14 (data-state color, attention criteria as configuration, environment presets, blood sugar and mood, plan progress instead of gamification). Contracts 0.4; work orders M01, M02, M03, M05, M06, M07, M14, M15, M21 got new criteria and experiments. Dataset citations in `DATASET_CITATIONS.md`; blood sugar and mood research in DATASETS.md | Nothing built or run for these decisions; BUT CGM not downloaded or checked against its page; NLSP citation fields still missing; gate G0 open |
+| 2026-11-15 | Claude (orchestrator, web session) | BUT CGM citation compared with its page by elements (authors, year, title, version, RRID, DOI) and the standard PhysioNet citation added; license CC BY 4.0 confirmed. Handoff updated: AGENTS.md (D10–D14 rules, terrestrial origin, mood and gamification limits), CLAUDE.md ("Where to pick up"), blockers in the plan and here | BUT CGM not downloaded: physionet.org and its AWS bucket refused by the network; its columns and unit unknown. Nothing built |
