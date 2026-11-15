@@ -1,6 +1,6 @@
 # Órbita: contracts between modules
 
-Version 0.14 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
+Version 0.15 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
 
 Plan and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). Rationale for the rules: [PROPOSAL_IMPROVEMENTS.md](PROPOSAL_IMPROVEMENTS.md) and [AGENTS.md](../AGENTS.md).
 
@@ -306,6 +306,8 @@ link(store, episodeId, { execution_id?, record_id?, task_id? })
 close(store, episodeId)
 ```
 
+Since 0.15: `open` reads the observation back from the store and needs a **recorded** observation of the same subject. `situation` returns the six parts as plain lists (empty ones allowed) plus `why_empty` (a text for each empty part) and `alert_issued`; a failure is `{ ok: false, error }`. `we_know` holds the newest recorded measurement or exam of the subject, and environment readings only from the observation's own `place` (none when it states no place); `missing` lists `{ kind: "not_recorded", variable }`, `{ kind: "equipment", item, needed_by }` and `{ kind: "time_not_established", count }`; `you_can` lists the published procedures with `available`, `missing` and `alternative_id`; `happened` keeps each linked execution's own state; `next` lists linked pending tasks. `link` needs the item to exist and belong to the subject, and an open episode (`episode_closed`). `close(store, id, { clock? })` writes `closed` as the clock's instant, or `true` when no clock is given (no time is invented). `issueAlert(store, id) → Result<{ issued, episode }>` turns `alert_issued` true once; a second call returns `issued: false` and changes nothing. Each episode is changed by one caller at a time.
+
 `situation` assembles the six parts of the episode. `missing` includes whatever is `not_recorded` and the missing equipment. `you_can` lists procedures with their `availability`.
 
 ### copilot (M17)
@@ -316,6 +318,8 @@ card(situation, config, rules)
        not_assessed, alert: { text } | null }
 ```
 
+Since 0.15: `validateRules(rules) → Result<Rule[]>`. A rule is data: `{ id, when: { recorded_variable }, suggestion, source, version, review_status: demo | draft | reviewed, alert? }`; one without a source (or version, or review status) is rejected, and `card` leaves it out and says so in `not_assessed`. A rule matches only a variable the person recorded; nothing is compared with a limit. `suggestion` is `{ rule_id, text, source, version, review_status }`; `alert` is `{ text }` only when the applicable rule has an `alert` text and the situation's `alert_issued` is not true. The module ships no rule.
+
 Pure function. `data` and `gaps` come first. If no rule applies, `suggestion` is `null` and `no_guidance` is `true`. Every suggestion carries `source`, `version` and `review_status`. `alert` is `null` if the episode already issued one. The `rules` are data; the module ships no clinical rule.
 
 ### summary (M18)
@@ -324,6 +328,8 @@ Pure function. `data` and `gaps` come first. If no rule applies, `suggestion` is
 generate(store, episodeId, config, { clock })
    → Result<{ id, text, origins, pending_send: boolean }>
 ```
+
+Since 0.15 the text has four numbered parts (what happened, what was measured and how, what is missing, what is being asked), one `Origin:` block per origin present, the three record states in their own words ("not recorded", "confirmed nothing new"), values with their unit or "(unit unknown)", and no free-text notes. `pending_send` is true unless the link is `real_time`. The text is not stored and not shared by `generate`; the "I feel different" view shares the episode's records, not the text (no collection holds it).
 
 `generate` sends nothing. The text separates synthetic, analog and flight data, and distinguishes the three record states. With `communication: "delayed"` the text stands on its own: what happened, what was measured and how, what is missing, what is being asked. Sharing goes through `privacy.logShared`.
 
@@ -519,3 +525,4 @@ Everything works with the keyboard. No state is conveyed by color alone. Views r
 | 0.12 | 2026-11-15 | User-authorized with the start of F2 (M08–M12): `ui/base` also exports `renderEntry`, `renderSection` and `viewKit`; services carry the data-source fields and the `catalogs`, `core` and `plan` collaborators; the shell offers a synthetic demo source and "My records" | M07, M08–M12 |
 | 0.13 | 2026-11-15 | User-authorized with the start of F3 (M13–M15): optional `clock` in the procedure transitions; Execution gains `step_count`, `interruptions` and `missing`; Task gains `not_done_note`; the rules of `mark`, `linkResult` and `finish` above; services may carry `procedures` and `procedure_list`; `ui/my-plan` and `ui/on-board` are implemented. Consistency review only, no approval. |
 | 0.14 | 2026-11-15 | User-authorized ("agrega versiones mínimas"): `procedures` collection and IndexedDB schema v2 with an upgrade; the procedure registry (`publishProcedure`, `listProcedures`, `getProcedure`); `privacy` (`createSession`, `logShared`, `sharedLog`) and `sync` (`createLink`, `enqueue`, `advance`, `received`, `deliveries`) implemented as above; `Delivery.sent` optional; `ui/ground` implemented; the On board editor. Consistency review only, no approval. |
+| 0.15 | 2026-11-15 | User-authorized ("versiones mínimas de F4"): `episode`, `copilot` and `summary` implemented as above (`issueAlert` and `validateRules` added); services may carry `episode`, `copilot`, `summary` and `rules`; `ui/i-feel-different` implemented. Consistency review only, no approval. |

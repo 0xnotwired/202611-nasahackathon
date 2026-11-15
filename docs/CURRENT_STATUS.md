@@ -32,9 +32,10 @@ them. Parallel work should use distinct working branches.
   Minimal versions added on the user's request: procedure registry and editor (M13/M15),
   privacy (M19), simulated sync and ground panel (M24); contract 0.14 and IndexedDB
   schema v2 (an existing profile is upgraded on its next open and keeps its data).
-  305 Node tests; g4-browser.py. Not built: the episode, copilot and summary (M16–M18),
-  the "I feel different" view (M20), packaging (M23).
-- Contract version 0.14; current record schema2, with unchanged legacy1 readers.
+  Minimal F4 added on request: episode (M16), copilot (M17, no clinical rule shipped), summary
+  (M18) and the "I feel different" view (M20); contract 0.15. 334 Node tests; g4-browser.py and
+  g5-browser.py. Not built: packaging (M23). The summary text is not transmitted (only records).
+- Contract version 0.15; current record schema2, with unchanged legacy1 readers.
 
 ## What actually runs
 

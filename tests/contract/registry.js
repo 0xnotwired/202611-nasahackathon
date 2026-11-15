@@ -29,10 +29,10 @@ export const allContracts = [
 
 // The orchestrator promotes entries as reviewed module implementations land.
 // Keep definitions and explicit export surfaces; retire only placeholder checks.
-export const implementedNames = ['core','mission','catalogs','store','scenario','importers','readings','procedures','plan','privacy','sync','ui/base'];
+export const implementedNames = ['core','mission','catalogs','store','scenario','importers','readings','procedures','plan','privacy','sync','episode','copilot','summary','ui/base'];
 // A view cannot satisfy checkView without a DOM, so implemented views are checked separately (export surface and an
 // answering model); their drawing is checked in a browser by the module's own script.
-export const implementedViewNames = ['ui/my-health', 'ui/adaptation', 'ui/habitat', 'ui/my-progress', 'ui/my-day', 'ui/my-plan', 'ui/on-board', 'ui/ground', 'ui/nasa-cases'];
+export const implementedViewNames = ['ui/my-health', 'ui/adaptation', 'ui/habitat', 'ui/my-progress', 'ui/my-day', 'ui/my-plan', 'ui/on-board', 'ui/ground', 'ui/i-feel-different', 'ui/nasa-cases'];
 export const contracts = allContracts.filter(entry => !implementedNames.includes(entry.name) && !implementedViewNames.includes(entry.name));
 export const implementedContracts = allContracts.filter(entry => implementedNames.includes(entry.name));
 export const implementedViews = allContracts.filter(entry => implementedViewNames.includes(entry.name));
@@ -50,8 +50,8 @@ export const expectedExports = {
   procedures: 'validateProcedure availability start advance interrupt resume finish publishProcedure listProcedures getProcedure',
   plan: 'tasksFor progress mark linkResult',
   privacy: 'createSession logShared sharedLog',
-  episode: 'open situation link close',
-  copilot: 'card',
+  episode: 'open situation link close issueAlert',
+  copilot: 'card validateRules',
   summary: 'generate',
   importers: 'importCRF importAdaptation importGlucose',
   sync: 'createLink enqueue advance received deliveries',

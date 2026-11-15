@@ -149,7 +149,7 @@ try:
         page.keyboard.press('Enter')
         page.wait_for_function("location.hash === '#/i-feel-different'", timeout=10000)
         page.wait_for_function("document.querySelector('#view-title').textContent === 'I feel different' && !document.querySelector('#view-body').textContent.includes('Loading')", timeout=10000)
-        check('my-day: that view is not built, and says so', 'not available yet' in page.locator('#view').inner_text().lower())
+        check('my-day: that view is the real one, ready to take a report', page.locator('#feel-symptom').count() == 1)
 
         # Reflow: no sideways page scroll at 320 px in any of the five views.
         page.set_viewport_size({'width': 320, 'height': 700})
