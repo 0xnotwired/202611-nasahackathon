@@ -110,19 +110,11 @@ Gene expression profiling of human peripheral blood lymphocytes cultured in mode
 
 Found to calibrate the synthetic generator (M05), feed Habitat and extend the cases viewer (M21–M22). Only their public cards were read: **no file was downloaded or processed**. None provides individual astronaut data.
 
-### Maximal treadmill tests, University of Malaga — ground
-
-[PhysioNet card](https://physionet.org/content/treadmill-exercise-cardioresp/) · DOI 10.13026/7ezk-j442
-
-992 graded maximal treadmill tests, with heart rate, VO2, VCO2, respiratory rate and ventilation breath by breath, plus treadmill speed. Amateur and professional athletes aged 10 to 63. Two files: `subject-info.csv` (one row per test, with age, height, weight, temperature and humidity) and the time series. VO2, VCO2 and VE are missing in 30 tests.
-
-Proposed use: give realistic shapes to the generator's curves and replay tests in the cases viewer, labeled as ground data. **Athletes on the ground are not astronauts in flight.** License not read on the card: confirm it before redistributing files.
-
 ### Graded cycle ergometer test — ground
 
-[PhysioNet card](https://physionet.org/content/actes-cycloergometer-exercise/) · DOI 10.13026/2qs3-kh43
+[PhysioNet card](https://physionet.org/content/actes-cycloergometer-exercise/) · DOI 10.13026/2qs3-kh43 · Open Data Commons Attribution v1.0 license, open access
 
-Beat-to-beat intervals, VO2 and mechanical power during graded cycle ergometer tests, the same type of equipment as the ISS CEVIS. Sample size and license not verified.
+Beat-to-beat intervals, VO2 and mechanical power during graded cycle ergometer tests, the same type of equipment as the ISS CEVIS. 18 athletes (10 men, 8 women), according to the card.
 
 ### Wearable during stress and structured exercise (ITBA) — ground
 
@@ -142,8 +134,24 @@ Proposed use: Habitat with real flight environmental data. Limits: these are bio
 
 ### Ruled out for now
 
+- **Maximal treadmill tests, University of Malaga (PhysioNet, DOI 10.13026/7ezk-j442).** Ruled out on 15/11/2026: its license is the PhysioNet Contributor Review Health Data License 1.5.0, not an open data license, so it cannot be shown to be "freely and publicly available without restriction" as the 2026 Space Apps terms require for non-NASA material. The cycle ergometer set above covers the same use.
 - **LSDA and LSAH.** They contain research and clinical astronaut data, but release it through a [formal request](https://lsda.jsc.nasa.gov/explore/lsdahome/datarequest) and a data use agreement. Not feasible within the hackathon timeframe.
 - **Inspiration4 (SOMA, in OSDR).** Processed data is public and raw data is available on request with committee approval ([NASA](https://www.nasa.gov/osdr-latest-news-i4-mission-datasets/)). Mostly omics from four civilians on a three-day flight. Whether smartwatch data was published is not verified (see B18).
+
+## Licenses and terms (checked 15/11/2026)
+
+The [2026 Space Apps terms](https://www.spaceappschallenge.org/legal/) (updated August 7, 2026) require non-NASA material to be freely and publicly available without restriction, its license to be identified in the documentation, and every source to be cited, NASA's included.
+
+| Source | Origin | Terms found | Status |
+|---|---|---|---|
+| NLSP studies (MR079G, CRF, MR035G, BRSMImmune, MR080G, DTO 684, MSD007) | NASA | Each card states that all datasets are publicly available. NLSP terms of use: anyone may view or download public content. No explicit license (data.gov: "No license information was provided") | Usable; cite each study |
+| NLSP 96-E044 | NASA | Public files only; privacy-protected datasets require a data request | Usable for the public files; cite |
+| OSDR (OSD-51, OSD-56) | NASA | AWS Open Data registry: no restrictions on use. Citation through each study's citation button | Usable; cite |
+| Environmental Data App | NASA (OSDR) | Covered by OSDR; the OSDR FAQ gives its citation text | Usable; cite with the version |
+| ACTES cycle ergometer | Third party (PhysioNet) | Open Data Commons Attribution v1.0, open access | Usable; attribution and license in the delivery |
+| ITBA wearable | Third party (PhysioNet) | Open Data Commons Attribution v1.0, open access | Usable; attribution and license in the delivery |
+
+Pending: CRF free-text clinical comments stay out of any public demo (see Integration limits). The terms forbid personally identifiable information in submissions.
 
 ## Integration limits
 

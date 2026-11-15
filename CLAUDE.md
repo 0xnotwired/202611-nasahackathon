@@ -132,6 +132,7 @@ Apply the `git-discipline` skill: a restore tag before each session (`git tag -a
 - **Nobody commits directly to the default branch**: not the owner, not the team, not an agent. AGENTS.md requires it because this is a team repo. Work happens on branches and is proposed through PRs.
 - **Write access is not permission to `git commit` or `git push`.** Every commit and every push needs an instruction from the user for that task. An authorization covers that action, not the rest of the session.
 - The `english` branch was created on 15/11/2026 at the user's request, because the hackathon requires English. **It is the integration branch from now on.** The `claude` branch keeps the Spanish history up to that date.
+- **Everything that lands in the repo is in English** (AGENTS.md, Work and verification): commit messages and PR descriptions included, even when the user writes in Spanish.
 - Module branches are named `mod/mNN-name`. **Not `claude/...`**: Git answers `cannot lock ref` while the `claude` branch exists. Verified on 14/11.
 - An agent's commits carry the prefix `docs(agent):`, `feat(agent):` or `fix(agent):` so they can be filtered, plus the co-author line given by the session.
 - Every throwaway test file goes into `.gitignore` in the same action that creates it.
@@ -161,6 +162,7 @@ The user asks that the skills from `github.com/annatchijova/SKILLS` always be ap
 - [ ] Every new source has a reading level, and no author, year or figure came from memory. *(Mistakes 1 and 2)*
 - [ ] If A01–A06 was touched, the change is in both files. *(Mistake 5)*
 - [ ] `grep -rn "MVP"` found no MVP proposals. *(Mistake 4)*
+- [ ] Everything added or changed is in English, identifiers and commit message included. *(AGENTS.md, Work and verification)*
 - [ ] No clinical threshold was added and no value from the decisions table was "normalized".
 - [ ] `python3 scripts/check_docs.py` returns `OK`, and the report says what that proves and what it does not. *(Verified commands)*
 - [ ] `git status`, `git log` and `git branch --show-current` checked before reporting status. *(Git; mistake 6)*

@@ -97,6 +97,8 @@ This repository is for teamwork: use working branches and PRs; do not overwrite 
 
 Branches: nobody commits directly to `main` or to the integration branch `english`. Each module works on `mod/mNN-name`, created from the tip of `english`, and is proposed through a PR. The `claude` branch keeps the Spanish history up to November 15, 2026; new work happens on `english`. Do not name a branch `claude/...`: Git rejects it while the `claude` branch exists (verified on 14/11/2026). No `rebase`, `squash` or `push --force`.
 
+Language: **everything in this repository is written in English from November 15, 2026 on**, because the hackathon requires it. That covers documents, file and folder names, code identifiers, comments, interface text, test names, commit messages, PR descriptions and branch names. Exceptions: proper names (Órbita, people), titles of sources quoted in their original language, and the history kept on the `claude` branch. Conversation with the team can be in any language; what lands in the repo is in English.
+
 Do not invent build, test or benchmark commands or clinical results. The mockup has no build; open it in a browser. Document the checks actually run. Previous results and their limits are in docs/DEMO_README.md. Document and interface review is not medical validation.
 
 Commands that exist today:
