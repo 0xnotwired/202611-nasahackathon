@@ -71,6 +71,16 @@ try:
         check('keyboard: source, subject, file and load button are reached in order', stops == ['nc-source', 'nc-subject-id', 'nc-file', 'nc-load'], str(stops))
         check('keyboard: the focused control has a visible outline', outline[0] != 'none' and outline[1] >= 2, str(outline))
 
+        # X11: a file one byte over the limit is refused before it is read into memory (File.text() is counted).
+        page.evaluate('() => { window.__textCalls = 0; const original = File.prototype.text; File.prototype.text = function () { window.__textCalls++; return original.call(this); }; }')
+        page.select_option('#nc-source', 'BUT_CGM'); page.fill('#nc-subject-id', '1')
+        limit = 5 * 1024 * 1024
+        page.set_input_files('#nc-file', files=[{'name': 'big.csv', 'mimeType': 'text/csv', 'buffer': b'x' * (limit + 1)}])
+        page.click('#nc-load')
+        page.wait_for_function('document.body.innerText.includes("so it was not read")', timeout=15000)
+        check('X11: a file over the limit is refused with a message and File.text() is never called',
+              'larger than 5 MiB' in page.locator('#view-body').inner_text() and page.evaluate('window.__textCalls') == 0 and page.locator('.card').count() == 0, f"calls={page.evaluate('window.__textCalls')}")
+
         # An invalid file lists its bad rows by row, reason and field, never with cell text.
         bad = 'Timestamp;Glycemia\n2100-01-01 08:00:00;5.5\nnot-a-date;5.6\n2100-01-01 08:10:00;abc\n'
         page.select_option('#nc-source', 'BUT_CGM')

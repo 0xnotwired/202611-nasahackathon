@@ -40,6 +40,8 @@ export function mount(element, viewModel, actions) {
       event.preventDefault();
       const file = fileInput.files && fileInput.files[0];
       if (!file) { current = {...current, message: {kind: 'error', text: 'Choose a file first.'}}; draw(); return; }
+      // Bound first, read second: a file over the limit is never pulled into memory.
+      if (file.size > current.limits.max_file_bytes) { current = {...current, message: {kind: 'error', text: `${file.name} is larger than ${current.limits.max_file_bytes / (1024 * 1024)} MiB, so it was not read.`}}; draw(); return; }
       let text;
       try { text = await file.text(); } catch { current = {...current, message: {kind: 'error', text: 'The file could not be read.'}}; draw(); return; }
       await apply(current.interactions.loadFile({source_id: select.value, name: file.name, text, subject: subjectInput.value.trim()}));

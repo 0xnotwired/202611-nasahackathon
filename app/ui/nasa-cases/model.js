@@ -8,6 +8,7 @@ import {PROFILES, UNSUPPORTED, profileById, describeSource} from './profiles.js'
 const MAX_SUBJECTS = 4;   // technical bound on side-by-side panels, not a medical range
 const BATCH = 256;        // records per store write
 const MAX_TEXT = 512;     // bound on names and subject text
+const MAX_FILES = 50;     // bound on file cards kept in one session
 const MAX_FILE_CHARS = 5 * 1024 * 1024;
 const NOTICE = 'Real data from NASA bed-rest studies (ground analogs) and from terrestrial volunteers, kept apart from the synthetic demo. Nothing loaded here is saved, shared or shown in other views, and it is gone when the page closes.';
 
@@ -110,7 +111,7 @@ async function buildViewModel(services, session, note) {
   for (const subject of session.selection.subjects) if (summaries.has(subject)) panels.push(await buildPanel(services, session, records, summaries.get(subject), session.selection));
   return {state: 'ready', title: 'NASA cases', notice: NOTICE, loader: loaderModel(), files: session.files.map(file => ({...file})), subjects,
     selection: {subjects: [...session.selection.subjects], variables: {...session.selection.variables}, day: session.selection.day},
-    panels, empty_reason: panels.length ? null : (session.files.length ? 'No subject is selected. Choose one to see its series.' : 'No file loaded yet. Choose a verified source and a file below.'),
+    limits: {max_file_bytes: MAX_FILE_CHARS}, panels, empty_reason: panels.length ? null : (session.files.length ? 'No subject is selected. Choose one to see its series.' : 'No file loaded yet. Choose a verified source and a file below.'),
     message: note ?? null, interactions: interactions(services, session)};
 }
 
@@ -119,6 +120,7 @@ async function loadFile(services, session, input) {
   const name = own(input, 'name');
   const text = own(input, 'text');
   const subject = own(input, 'subject');
+  if (session.files.length >= MAX_FILES) return message('error', `At most ${MAX_FILES} file cards are kept in one session; reload the page to start again.`);
   const unsupported = UNSUPPORTED.find(entry => entry.id === sourceId);
   if (unsupported) return message('error', `${unsupported.label} cannot be loaded. ${unsupported.reason}`);
   const profile = typeof sourceId === 'string' ? profileById(sourceId) : null;
@@ -144,17 +146,25 @@ async function loadFile(services, session, input) {
   const already = records.filter(record => existing.has(record.id)).length;
   if (records.length && already === records.length) return message('info', 'Already loaded: these records are already in this session. Nothing was added.');
   if (already) return message('error', 'Part of this file overlaps records already loaded, so nothing was added.');
+  let kept = 0; let failure = null;
   for (let start = 0; start < records.length; start += BATCH) {
-    const saved = await session.store.saveBatch('records', records.slice(start, start + BATCH));
-    if (!saved.ok) return message('error', `The records could not be kept in this session (${saved.error.code}).`);
+    const slice = records.slice(start, start + BATCH);
+    const saved = await session.store.saveBatch('records', slice);
+    if (!saved.ok) { failure = saved.error.code; break; }
+    kept += slice.length;
   }
-  const subjects = [...new Set(records.map(record => record.subject))];
-  const source = describeSource(records.length ? records[0].source : undefined);
-  session.files.push({id, name, source_id: profile.id, study: profile.label, origin_text: originText(new Set(records.map(record => record.origin))), subjects, records: records.length,
+  if (failure && kept === 0) return message('error', `The records could not be kept in this session (${failure}); nothing was loaded.`);
+  const partial = failure !== null;
+  const keptRecords = records.slice(0, kept);
+  const subjects = [...new Set(keptRecords.map(record => record.subject))];
+  const source = describeSource(keptRecords.length ? keptRecords[0].source : undefined);
+  session.files.push({id, name, source_id: profile.id, study: profile.label, origin_text: originText(new Set(keptRecords.map(record => record.origin))), subjects, records: kept,
     rejected: rejected.map(row => ({row: row.row, code: row.code, field: row.field, text: `row ${row.row}: ${row.code} (${row.field})`})), skipped: skipped.length,
     doi: source.doi ?? profile.doi, citation: [...(source.profile ? source.citation : profile.citation)], license: source.profile ? source.license : profile.license,
-    status: rejected.length ? (records.length ? 'loaded_with_rejections' : 'all_rows_rejected') : 'loaded', error_text: null});
+    status: partial ? 'partial' : rejected.length ? (records.length ? 'loaded_with_rejections' : 'all_rows_rejected') : 'loaded',
+    error_text: partial ? `only ${kept} of ${records.length} records were kept (${failure})` : null});
   if (subjects.length) { session.selection.subjects = subjects.slice(0, MAX_SUBJECTS); session.selection.variables = {}; session.selection.day = null; }
+  if (partial) return message('error', `Only ${kept} of ${records.length} records from ${name} could be kept (${failure}). The file is only partly loaded.`);
   return message('info', `Loaded ${records.length} records from ${name}${rejected.length ? `; ${rejected.length} rows were rejected (listed on its card)` : ''}.`);
 }
 

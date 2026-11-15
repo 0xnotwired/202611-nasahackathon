@@ -195,6 +195,50 @@ test('M22-X8: hostile services and interactions give error view models or messag
   } finally {await main.close();}
 });
 
+test('M22-X11: the size limit is published so the view can refuse a file before reading it',async()=>{
+  const {main,vm}=await setup();
+  try {
+    assert.equal(vm.limits.max_file_bytes,5*1024*1024);
+    const tooBig=await load(vm,'BUT_CGM','big.csv','x'.repeat(5*1024*1024+1),'1');
+    assert.equal(tooBig.message.kind,'error');assert.deepEqual(tooBig.files,[]);
+    const empty=await load(vm,'BUT_CGM','empty.csv','','1');assert.equal(empty.message.kind,'error');
+  } finally {await main.close();}
+});
+
+test('M22-X12: a save that fails part-way is reported as partial with the real count; a first-batch failure keeps nothing',async()=>{
+  const rows=Array.from({length:300},(_,i)=>`2100-01-0${1+Math.floor(i/200)} ${String(Math.floor((i%200)/12)).padStart(2,'0')}:${String((i%12)*5).padStart(2,'0')}:00;5.${i%10}`);
+  const text=cgm(...rows);
+  const failing=(failOn)=>async()=>{
+    const opened=await openStore({kind:'memory',name:'flaky'});let calls=0;const real=opened.value;
+    return {ok:true,value:{list:(...a)=>real.list(...a),close:()=>real.close(),
+      saveBatch:async(...a)=>{calls++;return calls===failOn?{ok:false,error:{code:'storage_failed',field:'batch',message:'disk full'}}:real.saveBatch(...a);}}};
+  };
+  const {main,services}=await setup();
+  try {
+    const vm=await model({...services,openMemoryStore:failing(2)},{});
+    const after=await load(vm,'BUT_CGM','big.csv',text,'101001');
+    const card=after.files[0];
+    assert.equal(card.status,'partial');assert.equal(card.records,256);
+    assert.match(card.error_text,/only 256 of 300/i);
+    assert.equal(after.message.kind,'error');assert.match(after.message.text,/Only 256 of 300/);
+    assert.equal(after.subjects[0].variables[0].n,256,'the records that were kept stay visible');
+    const vm2=await model({...services,openMemoryStore:failing(1)},{});
+    const none=await load(vm2,'BUT_CGM','big.csv',text,'101001');
+    assert.deepEqual(none.files,[]);assert.equal(none.message.kind,'error');assert.deepEqual(none.subjects,[]);
+  } finally {await main.close();}
+});
+
+test('M22-X13: a session keeps a bounded number of file cards',async()=>{
+  const {main,vm}=await setup();
+  try {
+    let current=vm;
+    for(let i=0;i<50;i++) current=await load(current,'BUT_CGM',`bad-${i}.csv`,'Foo;Bar\n1;2','1');
+    assert.equal(current.files.length,50);
+    const over=await load(current,'BUT_CGM','one-more.csv',CGM_TEXT,'1');
+    assert.equal(over.message.kind,'error');assert.match(over.message.text,/at most 50/i);assert.equal(over.files.length,50);assert.deepEqual(over.subjects,[]);
+  } finally {await main.close();}
+});
+
 test('M22-X10: the view names no dataset, citation or figure that its profile table does not hold',async()=>{
   const docs=(await readFile(new URL('../../../docs/DATA_ATTRIBUTIONS.md',import.meta.url),'utf8'))+(await readFile(new URL('../../../docs/DATASET_CITATIONS.md',import.meta.url),'utf8'));
   const flat=docs.replace(/\s+/g,' ');
