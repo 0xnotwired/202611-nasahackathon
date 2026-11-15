@@ -3,6 +3,10 @@
 No downloads or dependency installation. Uses preinstalled development Chromium.
 Raw source/IndexedDB data stay in ignored local directories, not stdout/Git.
 Run from repo root: python3 scripts/import-real-samples.py
+
+The browser executable is read from ORBITA_CHROMIUM and defaults to
+/usr/bin/chromium. It must resolve to an executable regular file; a directory,
+a missing path or a non-executable file fails before any import starts.
 """
 from pathlib import Path
 import hashlib
@@ -16,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PROFILE = ROOT / 'data/local-import-profile'
 OUTPUT = ROOT / 'data/imported'
 DB_NAME = 'orbita-real-samples'
+DEFAULT_CHROMIUM = '/usr/bin/chromium'
 SAMPLES = [
     ('CRF', 'data/originals/CRF-daily-vitals.csv', 'importCRF', None, 791),
     ('MR079G', 'data/originals/MR079G-muscle-function.csv', 'importAdaptation', {'study': 'MR079G'}, 12),
@@ -23,6 +28,19 @@ SAMPLES = [
     ('MR080G', 'data/originals/additional/MR080G-sample-1.csv', 'importAdaptation', {'study': 'MR080G'}, 32),
     ('BUT_CGM', 'data/originals/but-cgm-1.0.0/101001_CGM.csv', 'importGlucose', {'subject': '101001'}, 3016),
 ]
+
+
+def chromium_executable():
+    """Return a validated browser path; never guess another location."""
+    configured = os.environ.get('ORBITA_CHROMIUM') or DEFAULT_CHROMIUM
+    resolved = Path(configured).resolve()  # follows symlinks; the target is what runs
+    if not resolved.exists():
+        raise RuntimeError(f'Chromium not found: {configured}. Set ORBITA_CHROMIUM to an executable file.')
+    if not resolved.is_file():
+        raise RuntimeError(f'Chromium path is not a file: {configured} (resolves to {resolved})')
+    if not os.access(resolved, os.X_OK):
+        raise RuntimeError(f'Chromium path is not executable: {configured} (resolves to {resolved})')
+    return str(resolved)
 
 
 def verified_sources():
@@ -55,6 +73,7 @@ def verified_sources():
 
 
 def load():
+    chromium = chromium_executable()  # Fail on a bad browser path before any import work.
     sources = verified_sources()  # Complete every custody check before opening DB.
     PROFILE.mkdir(parents=True, exist_ok=True)
     OUTPUT.mkdir(parents=True, exist_ok=True)
@@ -84,11 +103,11 @@ def load():
             origin_file.write_text(json.dumps({'port': port}) + '\n')
         url = f'http://127.0.0.1:{port}/index.html'
         with sync_playwright() as p:
-            context = p.chromium.launch_persistent_context(str(PROFILE), executable_path='/usr/bin/chromium', headless=True)
+            context = p.chromium.launch_persistent_context(str(PROFILE), executable_path=chromium, headless=True)
             try:
                 page = context.new_page()
                 page.goto(url)
-                summary = page.evaluate('''async ({sources,name}) => {
+                summary =page.evaluate('''async ({sources,name}) => {
                     const api=await import('/importers/index.js');
                     const {validateRecord}=await import('/core/index.js');
                     const {openStore}=await import('/store/index.js');
@@ -137,11 +156,11 @@ def load():
                 }''', {'sources': sources, 'name': DB_NAME})
             finally:
                 context.close()
-            context = p.chromium.launch_persistent_context(str(PROFILE), executable_path='/usr/bin/chromium', headless=True)
+            context = p.chromium.launch_persistent_context(str(PROFILE), executable_path=chromium, headless=True)
             try:
                 page = context.new_page()
                 page.goto(url)
-                count = page.evaluate('''async ({name,sources}) => {
+                count =page.evaluate('''async ({name,sources}) => {
                     const {openStore}=await import('/store/index.js');
                     const api=await import('/importers/index.js');
                     const opened=await openStore({kind:'indexeddb',name});
