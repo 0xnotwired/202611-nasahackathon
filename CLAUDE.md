@@ -21,6 +21,35 @@ It does not repeat the README or AGENTS.md. Read them.
 
 If you are a builder or a reviewer, your role and your report format are in the plan. If nobody assigned you a module, do not start one: ask.
 
+## Skills: select and read them before every task
+
+The skills under `.agents/skills/` are part of how work is done here, not an optional extra. AGENTS.md ("Local skills — required task workflow") sets the duty and a routing table; this section says how to carry it out and what happened when it was not.
+
+**Rule.** Before the first line of code, test, document or commit of any task, and again whenever the kind of work changes inside a session:
+
+1. Open the [skill index](.agents/skills/README.md) and select the skills whose own "activates when" matches the work. The module work order's `Skills` line is the minimum, not the ceiling.
+2. Read each selected `SKILL.md` **body**, not only its description or its first lines. Open a bundled reference file or script only when the task needs it, and say so when you do. Do not read all 199 skills: choosing is part of the discipline.
+3. Apply their rules to the task. If a skill conflicts with AGENTS.md, CONTRACTS.md or the user's instruction, the authority order in AGENTS.md decides and the conflict goes in the report.
+4. Write down which skills were used, **when they were read** (before the work or after) and what each one changed, in the module's experiment record (a `Skills` line under its decision details) or in the handoff. A skill read late is reported as read late, never as applied from the start.
+
+**Triggers that are easy to miss.** A work order may not list them; select at least these when the task touches:
+
+| The task touches | Select at least |
+|---|---|
+| A file, form, upload or any text that comes from outside (importers, M22) | `secure-by-construction`, `validate-at-the-boundary` |
+| Any test, or the claim "it works" | `falsifiable-testing`, `discriminating-proof` |
+| Missing, old, degraded or reconstructed data; a save that can fail part-way | `honest-degradation`, `atomic-state-mutation` |
+| A surprise, a test that passes when it should not, a bug | `abductive-engineering`, `diagnosing-bugs` |
+| A choice someone will ask about later | `decision-record-discipline` |
+| A source, a figure, a citation, or reading a README or paper | `claim-provenance-discipline` |
+| Editing an existing file | `surgical-patcher` |
+| Any commit, branch or push | `git-discipline` |
+| A screen, a chart or a form | `frontend-accessibility-by-construction`, `resilient-ui-states`, `non-overwhelming-ux`, `frontend-component-boundaries` |
+| An agent instruction file, this one included | `writing-agents-md` |
+
+**Reason.** On 15/11/2026 M06, M07 and M22 were built with the required skills read late or only in part (mistake 7). Reading them afterwards found real gaps that reading them first would have prevented.
+**Mechanism:** none automatic. Nothing can prove that a skill was applied; AGENTS.md says the same. The reviewer compares the record's `Skills` line with the skills the task triggers, and a missing line is a finding. `scripts/check_docs.py` does not check it.
+
 ## Repository map
 
 ```
@@ -77,7 +106,8 @@ primary-paper research. Omics files are acquired/inspected but not supported
 by current M21 adapters. PhysioNet use is provisional under the user's
 explicit decision, not an organizer response. Keep licenses/citations.
 
-Select relevant local skills. Preserve source ownership and independent
+Select and read the relevant local skills before starting (Skills section
+above). Preserve source ownership and independent
 review; add no dependencies without named approval. Code/docs remain English.
 Do not publish, commit, push or approve gates based on this handoff alone.
 
@@ -137,6 +167,13 @@ On 15/11 a local branch `integracion` appeared, checked out and identical to `cl
 
 **Rule:** run `git branch --show-current` before every commit, and do not delete branches you did not create.
 
+### 7. Reading the required skills late, or not at all
+
+On 15/11/2026 modules M06, M07 and M22 were built with the skills their work orders name read only in part (four interface skills, their first lines) or not read before building. After the user pointed it out, the skills were read and the work was audited against them. The audit found three real gaps in M22 that reading first would have prevented: a file was read into memory before its size was checked, a save that failed part-way left records with no card and no message, and a session accepted unlimited file cards. It also found decisions with no rejected alternatives or revisit triggers, and no threat model for a view that reads untrusted files. Nothing had shipped; each gap was fixed with a test seen red first.
+
+**Rule:** select and read the applicable skills before starting, as the Skills section says, and record which ones and when.
+**Mechanism:** none automatic. The reviewer checks the record's `Skills` line against the task; `check_docs.py` does not look at it.
+
 ## Values that are decisions, not oversights
 
 | Value | Where | Why not to "normalize" it |
@@ -175,7 +212,7 @@ Apply the `git-discipline` skill: a restore tag before each session (`git tag -a
 
 ## Anna's skills
 
-The user explicitly requested a local copy of `github.com/annatchijova/SKILLS`. The complete snapshot now lives under `.agents/skills/`; `.agents/SKILLS_SOURCE.json` records the pinned commit and byte hashes. Follow AGENTS.md's local-skill workflow: read and apply the relevant SKILL.md files from this checkout. The ones that matter most here:
+The user explicitly requested a local copy of `github.com/annatchijova/SKILLS`. The complete snapshot now lives under `.agents/skills/`; `.agents/SKILLS_SOURCE.json` records the pinned commit and byte hashes. Follow AGENTS.md's local-skill workflow and the Skills section above: read and apply the relevant SKILL.md files from this checkout before the work, not after. The ones that matter most here:
 
 | Skill | Where it applies |
 |---|---|
@@ -205,6 +242,7 @@ The user explicitly requested a local copy of `github.com/annatchijova/SKILLS`. 
 - [ ] Everything added or changed is in English, identifiers and commit message included. *(AGENTS.md, Work and verification)*
 - [ ] No clinical threshold was added and no value from the decisions table was "normalized".
 - [ ] Every claim in the report carries an evidence level, and predictions were written before the run. *(AGENTS.md, Method)*
+- [ ] The skills this task triggers were selected and read **before** the work, and the record says which ones and when. *(Skills section; mistake 7)*
 - [ ] `python3 scripts/check_docs.py` returns `OK`, and the report says what that proves and what it does not. *(Verified commands)*
 - [ ] `git status`, `git log` and `git branch --show-current` checked before reporting status. *(Git; mistake 6)*
 - [ ] Commit and push only with authorization for this task, on a branch. *(Git)*
