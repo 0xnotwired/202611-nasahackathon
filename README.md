@@ -1,6 +1,6 @@
 # Órbita — Tu salud, a bordo
 
-[Propuesta final](docs/PROPUESTA_FINAL.md) · [Plan de construcción](docs/PLAN_ORQUESTACION.md) · [Diseño técnico](docs/TECNICO.md) · [Base académica](docs/BASE_ACADEMICA.md) · [Demo](demo/orbita.html)
+[Propuesta final](docs/PROPUESTA_FINAL.md) · [Plan de construcción](docs/PLAN_ORQUESTACION.md) · [Diseño técnico](docs/TECNICO.md) · [Base académica](docs/BASE_ACADEMICA.md) · [Demo](demo/orbita.html) · [Visión del producto final](demo/vision-producto-final.html)
 
 Durante una misión espacial, el astronauta necesita comprender cómo está, qué cambió y qué acciones de cuidado puede realizar con los recursos disponibles.
 
@@ -61,6 +61,8 @@ La demostración integrada propuesta mostraría un mismo episodio con dos config
 2. Abrí el archivo en un navegador actual.
 3. Explorá el cuerpo y los gráficos, seleccioná **Me siento distinto** y completá el chequeo con datos ficticios.
 4. Consultá **Mi evolución** y prepará un resumen TXT.
+
+[demo/vision-producto-final.html](demo/vision-producto-final.html) muestra cómo se vería Órbita con los 24 módulos del plan construidos, incluido el seguimiento de capacidad aeróbica propuesto por Iván. Es una visualización para el equipo, con datos sintéticos de cuatro tripulantes ficticios: no es código de producto ni reemplaza a los módulos de `app/`.
 
 No requiere instalación, servidor ni cuenta. La interfaz es autocontenida y el recorrido funciona sin internet; los enlaces externos a NASA requieren conexión. El guardado y la recuperación dependen del almacenamiento permitido por el navegador. Compartir el HTML no comparte los registros de otro navegador.
 

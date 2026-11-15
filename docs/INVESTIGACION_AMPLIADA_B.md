@@ -211,6 +211,78 @@ Lee y colaboradores (2020), *SANS: a review and an update*, npj Microgravity 6:7
 - **B17 Astroskin / Bio-Monitor (CSA).** Prenda con sensores evaluada en el análogo HERA (16 participantes, sesiones de 24 horas; ficha NTRS 20190001996). Según el médico jefe de la CSA, los signos vitales en ISS **no** se registran de forma continua sino durante ejercicio y caminatas espaciales. [S] Consecuencia: el diseño de mediciones puntuales guiadas de Órbita es realista para la operación actual.
 - **B18 SOMA / Inspiration4.** Overbey y colaboradores (2024), Nature 632:1145–1154, DOI 10.1038/s41586-024-07639-y; *Molecular and physiological changes in the SpaceX Inspiration4 civilian crew* (2024), Nature 632:1155–1164, DOI 10.1038/s41586-024-07648-x. Tripulación civil de cuatro personas con relojes inteligentes, ecografía portátil y pruebas cognitivas; datos alojados en OSDR. **Candidato a investigar** como fuente de datos humanos de vuelo con wearables. No se verificaron archivos, formatos ni permisos; cuatro personas en un vuelo corto no representan una misión larga.
 
+## 6. Capacidad aeróbica: qué hacen los astronautas y qué se sabe
+
+Añadido el 15/11/2026 para responder qué ejercicios hace un astronauta para mantener su capacidad aeróbica. Se releyeron A02, A03 y S07, que ya estaban en el repositorio, y se añadieron B19–B26.
+
+**Cómo se leyó.** Los textos marcados TC se recuperaron completos, pero se leyeron mediante una herramienta de extracción automática, no página por página. Antes de decir una cifra en la presentación, abrir el PDF y comprobarla. Esta advertencia vale para toda la sección.
+
+### Qué hacen: equipos y rutinas en la ISS
+
+**Segmento estadounidense (NASA, ESA, CSA, JAXA).** El trabajo aeróbico se hace en una cinta (TVIS hasta 2009 o 2010, después T2) y en un cicloergómetro (CEVIS). La fuerza se trabaja aparte con ARED. [A03, B22]
+
+- **Tiempo asignado.** 2,5 horas diarias de entrenamiento físico, 6 días por semana, de las cuales una hora es cardiovascular. Ese tiempo incluye cambiarse, higiene y armado del equipo. La mayoría también entrenaba el séptimo día. [B22, TC]
+- **Lo que realmente hicieron 46 astronautas (2011–2017).** Unos 600 minutos semanales entre aeróbico y fuerza. Mediana de 65 sesiones en CEVIS y 84 en T2, de unos 26–27 minutos cada una. [A03, TC]
+- **Atención habitual (grupo control de Sprint).** Ejercicio continuo o por intervalos en CEVIS o T2, 6 días por semana, típicamente 30 a 45 minutos diarios. El cicloergómetro se prescribía por porcentaje de VO2pico y la cinta por porcentaje de frecuencia cardíaca máxima. Los intervalos se volvieron habituales hacia 2017. [A02, TC]
+- **Protocolo Sprint.** Intervalos 3 días por semana, alternando sesiones de 8 × 30 s, 6 × 2 min y 4 × 4 min, con frecuencia cardíaca media de pico por encima del 90 % de la máxima. Otros 3 días, 30 minutos continuos al 75 % del VO2pico. [A02, TC]
+- **Las agencias prescribían distinto.** NASA: cinta 4 días y cicloergómetro 2 días por semana (expediciones 1–20), con la cinta autoseleccionada. CSA: al menos una sesión de intervalos por semana en cada equipo. JAXA: unas 3 sesiones de cinta y 3 de cicloergómetro por semana, de 30 a 45 minutos, controladas por frecuencia cardíaca o por la escala de Borg. [B22, TC]
+- **Carga en la cinta.** El corredor va sujeto con un arnés. NASA empezaba cerca del 60 % del peso corporal con meta de 100 %. Ninguno de los astronautas de ESA llegó al 100 %, y para la mayoría las cargas altas resultaron intolerables. [B22, TC]
+
+**Segmento ruso.** La rutina se organiza en un microciclo de 4 días: 3 de carga y 1 de descanso activo. Se entrena dos veces al día, unas 2,5 horas en total, en la cinta (TVIS, después BD-2) y en un cicloergómetro. La base es el entrenamiento por intervalos, no la carrera continua. Un día combina caminata o trote con carrera rápida de 12–14 km/h, otro trabaja más con la cinta en modo pasivo y otro hace carrera estable por tramos de hasta 4–6 minutos. [B23, TC]
+
+### Qué se mide: cuatro métodos distintos
+
+| Método | Qué es | Fuente |
+|---|---|---|
+| VO2pico medido | Prueba hasta el máximo en cicloergómetro con análisis de gases | B20 (R), S07 (S) |
+| Índice de capacidad aeróbica | Estimación: se extrapola la relación entre frecuencia cardíaca y VO2 de tres etapas submáximas hasta la frecuencia máxima de antes del vuelo. **No está validado en vuelo** | B19 (TC) |
+| Pruebas rusas MO-3 | Prueba locomotora mensual de 11 minutos en cinta y prueba de cicloergómetro en tres escalones de 125, 150 y 175 W | B23 (TC) |
+| Análogo terrestre MR080G | VO2, VCO2, RER y frecuencia cardíaca por etapas, en análogo | [DATASETS.md](DATASETS.md) |
+
+**No son intercambiables.** Una serie que mezcle VO2pico medido con el índice estimado no es una tendencia. Esto es la regla R3 de [CONTRATOS.md](CONTRATOS.md) aplicada a un caso concreto.
+
+### Qué se sabe: resultados
+
+- **El ejercicio habitual no protege del todo.** En 46 astronautas, el VO2pico bajó en promedio 7,4 % ± 2,0 % entre antes y después del vuelo. No hubo grupo sin ejercicio, así que se desconoce cuánto habría bajado sin él. [A03, TC]
+- **Sprint no superó a la atención habitual en VO2pico.** Ambos grupos juntos bajaron 6,1 %, sin interacción entre grupo y tiempo. Los participantes eligieron su grupo, la muestra era chica, el control cambió durante los seis años del estudio y las pruebas posvuelo se hicieron en días distintos (R+1 frente a R+3). [A02, TC]
+- **La caída es mayor al principio.** El índice estimado baja al inicio del vuelo y sube casi linealmente durante una misión típica. Cinco días después del aterrizaje está por debajo de antes del vuelo y a los 30 días se recupera. Muestra de 37 astronautas en misiones de 48 a 219 días. [B19, TC]
+- **Medido directamente:** en 14 astronautas, el VO2pico del día 15 de vuelo fue 17 % más bajo que antes (IC 95 % −22 % a −13 %). Subió durante el vuelo y se recuperó a los 30 días del regreso. [B20, R]
+- **La variación entre personas es enorme.** En 11 astronautas, el cambio fue de +5 % a −30 %. El tiempo y la intensidad del ejercicio aeróbico se asociaron con el cambio de forma independiente. [B21, R]
+- **El informe de evidencia HRP** cita datos preliminares de 47 tripulantes según los cuales solo una minoría respondió bien a la prescripción. Esos datos no están publicados y los recoge un documento de síntesis: **no van a la presentación.** [S07, S]
+- **El programa ruso** reporta que el grupo con intervalos mantuvo su velocidad máxima de carrera en vuelo y el grupo aeróbico no. Los grupos eran chicos y la mayoría de las pruebas posvuelo del segundo grupo quedaron incompletas. [B23, TC]
+
+### Por qué los datos de ejercicio en vuelo tienen huecos
+
+Tres fuentes independientes lo dicen:
+
+- **Frecuencia cardíaca poco confiable.** Medir la frecuencia cardíaca durante el ejercicio en la ISS resultó mucho más difícil de lo previsto, por interferencia electromagnética, restricciones de ingeniería y pocos recursos para resolver fallas. [B24, TC]
+- **Datos incompletos.** No todos los cosmonautas usaron monitor cardíaco, y las cargas de la cinta no siempre llegaban a tierra. [B23, TC] Los datos de intensidad eran escasos y la frecuencia cardíaca en vuelo era a menudo poco confiable; los autores no encontraron correlación entre uso de equipos y cambio del índice. [B19, TC]
+- **Equipos que fallan y agendas que se corren.** Las reparaciones podían tardar meses o años, las sesiones se postergaban por conflictos de agenda, y la prescripción tardaba días en actualizarse por la demora de comunicación. [B22, TC]
+
+### Misiones de exploración: menos equipo
+
+- **Orion.** El dispositivo elegido para Artemis es un volante de inercia (Orion Flywheel), que permite remo como ejercicio aeróbico y sentadilla o peso muerto como fuerza. Ocupa poco volumen, no requiere energía y **su eficacia todavía no se evaluó por completo**. [B26, R]
+- **Sin cinta.** Los equipos previstos para el tránsito lunar, una estación en órbita lunar y hábitats en Marte no incluyen cinta. Que correr más y más intenso reduzca la pérdida aeróbica se sugiere pero **no se confirmó experimentalmente**. Hay un estudio en curso sobre ejercitar sin cinta. [B25, R]
+- **Lo que esto implica.** La lista de actividades aeróbicas depende de la nave. Es configuración de misión, igual que el resto del equipo.
+
+### Errores encontrados en las fuentes
+
+- **Scott 2023 (A03) se contradice.** Una oración de Resultados dice que el volumen de cinta se asoció de forma *inversa* con el VO2pico. La figura 3d muestra una asociación *positiva* para el volumen de carga en cinta, y la Discusión coincide con la figura. **No citar esa asociación.**
+- **Velocidad máxima de la T2.** Sprint (A02) da 19,3 km/h. El informe HRP (S07) da 5,5 m/s y 12,4 mph, que no coinciden con esa cifra ni del todo entre sí. **No citar la velocidad.**
+
+### B19–B26: fichas
+
+- **B19 · TC.** Moore, Lynn y Feiveson (2015), *The First 10 Years of Aerobic Exercise Responses to Long-Duration ISS Flights*, Aerosp Med Hum Perform 86(12, supl.):A78–A86, DOI 10.3357/AMHP.EC10.2015.
+- **B20 · R.** Moore y colaboradores (2014), *Peak exercise oxygen uptake during and following long-duration spaceflight*, J Appl Physiol 117(3):231–238, DOI 10.1152/japplphysiol.01251.2013. Leído el resumen de congreso en NTRS (20140003748) y el comunicado de prensa; no el artículo.
+- **B21 · R.** Downs y colaboradores, *Contributions of Astronauts Aerobic Exercise Intensity and Time on Change in VO2peak during Spaceflight*, resumen de congreso, NTRS 20140003747. Sin año verificado.
+- **B22 · TC.** Loehr y colaboradores (2015), *Physical Training for Long-Duration Spaceflight*, Aerosp Med Hum Perform 86(12, supl.):A14–A23, DOI 10.3357/AMHP.EC03.2015. Las tablas salieron desordenadas en la extracción y faltan las figuras.
+- **B23 · TC.** Kozlovskaya y colaboradores (2015), *Russian Countermeasure Systems for Adverse Effects of Microgravity on Long-Duration ISS Flights*, Aerosp Med Hum Perform 86(12, supl.):A24–A31, DOI 10.3357/AMHP.EC04.2015.
+- **B24 · TC.** Loerch (2015), *Exercise Countermeasures on ISS: Summary and Future Directions*, Aerosp Med Hum Perform 86(12, supl.):A92–A93, DOI 10.3357/AMHP.EC12.2015. Artículo breve de síntesis, sin cifras propias.
+- **B25 · R.** Varanoske, Strock, Prejean y Marshall-Goebel, *Determining the Importance of In-Flight Treadmill Running Capabilities for Maintaining Astronaut Health and Performance*, presentación en la reunión de AsMA de mayo de 2024, NTRS 20230014911.
+- **B26 · R.** *Comparison of Orion Flywheel to Commercially Available Flywheel Device*, resumen en NTRS 20250000276. Complemento: póster del HRP sobre desarrollo del volante, NTRS 20230001466 (S), que da 30 minutos diarios de ejercicio por tripulante.
+
+Relecturas: A02 (TC), A03 (TC) y S07 (S; leído cerca de un tercio del documento).
+
 ## Qué cambia en el producto
 
 | # | Cambio propuesto | Fuentes | Esfuerzo |
@@ -225,6 +297,10 @@ Lee y colaboradores (2020), *SANS: a review and an update*, npj Microgravity 6:7
 | 8 | Dosis acumulada frente al límite de carrera, rotulado como requisito de programa | B15 | Medio |
 | 9 | Revisión de visión como procedimiento de la demo de dos configuraciones | B16 | Depende de contenido clínico revisado |
 | 10 | Declarar la cobertura esperable de la prueba de usabilidad | B14 | Nulo; es redacción |
+| 11 | Registrar cada sesión aeróbica con equipo, modalidad (continua o intervalos), duración, intensidad y su medida (% FC máx, % VO2pico, Borg, velocidad, potencia) y carga del arnés | A02, B22, B23 | Medio; toca catálogos y contrato |
+| 12 | Guardar el método de cada medición aeróbica (VO2pico medido, índice estimado, prueba rusa, análogo) y no unir métodos en una misma serie | B19, B20, B23 | Bajo; es la regla R3 |
+| 13 | Equipos aeróbicos disponibles como parte de la configuración de misión (ISS frente a Orion) | B25, B26 | Bajo |
+| 14 | Comparar actividades solo dentro de la misma persona, con «asociado a» y con la frecuencia cardíaca faltante como *sin registro* | A02, A03, B19, B21, B24 | Bajo; es texto y modelo de datos |
 
 Los cambios 1, 5 y 6 son los más baratos y los que más mejoran la defensa del proyecto: responden a «¿cómo sabés que tu copiloto no empeora las cosas?» con evidencia.
 
@@ -241,10 +317,14 @@ Los cambios 1, 5 y 6 son los más baratos y los que más mejoran la defensa del 
 - Confirmar [V1 4030] en la revisión C de NASA-STD-3001 vol. 1 que ya figura como S03.
 - Comprobar posible solapamiento de cohortes: B01, B02, B07 y B09 usan tripulaciones de ISS de periodos cercanos. No sumar sus tamaños como personas independientes.
 - B18: verificar en OSDR qué archivos de wearables existen y con qué licencia.
+- Sección 6: comprobar contra el PDF toda cifra de B19, B22, B23 y A02–A03 antes de decirla; se extrajeron con una herramienta automática. Abrir el artículo de B20 (solo se leyó el resumen). No citar la asociación de la cinta en A03 ni la velocidad máxima de la T2.
+- Comprobar solapamiento de cohortes en la sección 6: A02, A03, B19, B20 y B21 son tripulaciones de la ISS de periodos superpuestos.
 
 ## Registro de uso de IA
 
 Búsqueda, lectura y redacción asistidas por Claude (Anthropic) el 14/11/2026, a pedido del usuario. Las cifras provienen de los resúmenes y textos indicados; no se generaron datos. Las matrices están en [MATRIZ_INVESTIGACION_B.csv](MATRIZ_INVESTIGACION_B.csv).
+
+La sección 6 (B19–B26) se buscó y redactó con Claude el 15/11/2026. Los textos completos se leyeron mediante extracción automática; las cifras deben verificarse contra los originales antes de presentarse.
 
 ## Lectura completa del 15/11/2026
 
