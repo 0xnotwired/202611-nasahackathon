@@ -141,6 +141,7 @@ Working and provenance rules are in [AGENTS.md](AGENTS.md). AI use must be recor
 - [Final proposal, demo and acceptance criteria](docs/FINAL_PROPOSAL.md).
 - [What to improve from the original proposal](docs/PROPOSAL_IMPROVEMENTS.md) and [third academic extension, series B](docs/EXTENDED_RESEARCH_B.md) with its [matrix](docs/RESEARCH_MATRIX_B.csv).
 - [Orchestration plan](docs/ORCHESTRATION_PLAN.md), [contracts between modules](docs/CONTRACTS.md), [work orders](docs/work-orders/) and [module board](docs/modules.csv).
+- [Implementation layers](docs/IMPLEMENTATION_LAYERS.md): what each layer must prove; [method](docs/METHOD.md): how a claim is tested; [experiment records](docs/experiments/E00-foundation-probes.md).
 - [Levels and criteria for each level](docs/AGENT_ROADMAP.md) and [session guide for agents](CLAUDE.md).
 - [Product and scope decisions](docs/PRODUCT.md).
 - [Challenge goals and project criteria](docs/REQUIREMENTS.md).

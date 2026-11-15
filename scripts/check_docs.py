@@ -11,9 +11,14 @@ It verifies this, and nothing more:
      and an earlier wave.
   5. The module table in ORCHESTRATION_PLAN.md names the same ids.
   6. Relative links in .md files point to files that exist.
+  7. Every work order lists experiment ids (MNN-P1, MNN-P2...). A module marked
+     in_review or integrated has its record docs/experiments/MNN.md with every
+     required section and every experiment id of its work order; an integrated
+     module also has a filled Replication section.
 
 It does not check that cited figures are correct, that sources say what is
-claimed, or that an agent respected their owned paths when writing code.
+claimed, that an agent respected their owned paths when writing code, that a
+prediction was written before the code, or that an evidence level is honest.
 Usage: python3 scripts/check_docs.py   (exit code 1 if anything fails)
 """
 import csv
@@ -123,6 +128,47 @@ def check_modules():
     return failures, len(by_id)
 
 
+RECORD_SECTIONS = [
+    "## Predictions", "## Runs", "## Negative controls",
+    "## Refuted and surprises", "## Not verified",
+]
+
+
+def check_experiments():
+    """Work orders carry experiment ids; reviewed modules carry their record."""
+    failures = []
+    path = DOCS / "modules.csv"
+    if not path.is_file():
+        return failures
+    with path.open(encoding="utf-8", newline="") as f:
+        rows = list(csv.DictReader(f))
+    for row in rows:
+        mid = row["id"]
+        order = DOCS / row["work_order"]
+        if not order.is_file():
+            continue
+        ids = set(re.findall(rf"\b{mid}-P\d+\b", order.read_text(encoding="utf-8")))
+        if not ids:
+            failures.append(f"{row['work_order']}: no experiment ids ({mid}-P1...)")
+        if row["status"] not in ("in_review", "integrated"):
+            continue
+        record = DOCS / "experiments" / f"{mid}.md"
+        if not record.is_file():
+            failures.append(f"{mid} is {row['status']} but docs/experiments/{mid}.md does not exist")
+            continue
+        text = record.read_text(encoding="utf-8")
+        for section in RECORD_SECTIONS:
+            if section not in text:
+                failures.append(f"experiments/{mid}.md: missing section '{section}'")
+        for missing in sorted(ids - set(re.findall(rf"\b{mid}-P\d+\b", text))):
+            failures.append(f"experiments/{mid}.md: experiment {missing} from the work order is not recorded")
+        if row["status"] == "integrated":
+            after = text.split("## Replication", 1)
+            if len(after) < 2 or not after[1].strip():
+                failures.append(f"{mid} is integrated but experiments/{mid}.md has no filled '## Replication' section")
+    return failures
+
+
 def check_links():
     failures = []
     files = sorted(DOCS.rglob("*.md")) + sorted(ROOT.glob("*.md"))
@@ -142,6 +188,7 @@ def main():
         failures += check_matrix(*pair)
     module_failures, count = check_modules()
     failures += module_failures
+    failures += check_experiments()
     failures += check_links()
     if failures:
         print("FAIL")
@@ -150,7 +197,7 @@ def main():
         return 1
     print(
         f"OK: {len(PAIRS)} consistent matrices; {count} modules with work orders, "
-        "non-overlapping paths and ordered dependencies; relative links resolved."
+        "experiment ids, non-overlapping paths and ordered dependencies; relative links resolved."
     )
     return 0
 

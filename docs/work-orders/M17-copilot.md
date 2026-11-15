@@ -4,11 +4,11 @@ Phase F4 · wave 2 · level 3 · contracts version 0.3
 
 **Goal.** Turn an episode's situation into a card that shows data before suggestions and admits not knowing.
 
-**Owned paths.** `app/copilot/`. Nothing outside them.
+**Owned paths.** `app/copilot/`, and the record `docs/experiments/M17.md`. Nothing outside them.
 
 **Depends on.** M02 Mission, M06 Readings, M16 Episode. They must be integrated before starting.
 
-**Read first.** `CLAUDE.md`, `AGENTS.md`, `docs/CONTRACTS.md`, `docs/PROPOSAL_IMPROVEMENTS.md` (M4), `docs/EXTENDED_RESEARCH_B.md` (B12, B13).
+**Read first.** `CLAUDE.md`, `AGENTS.md`, `docs/CONTRACTS.md`, `docs/METHOD.md`, `docs/PROPOSAL_IMPROVEMENTS.md` (M4), `docs/EXTENDED_RESEARCH_B.md` (B12, B13).
 
 ## Deliverables
 
@@ -27,6 +27,18 @@ Phase F4 · wave 2 · level 3 · contracts version 0.3
 - [ ] Every test was seen failing against broken code before passing, and the report says how.
 - [ ] `git diff --stat` against the integration branch shows only owned paths.
 
+## Experiments
+
+Copy these predictions into `docs/experiments/M17.md` **before** writing the implementation, see each test fail, then pass, then apply the negative control. Add your own as `M17-X1`, `M17-X2`… The standing controls for R1–R9 in METHOD.md also apply.
+
+| Id | Do this | Prediction | Negative control: break it like this and a test must go red |
+|---|---|---|---|
+| M17-P1 | `card(situation, config, [])` | `suggestion` is `null`, `no_guidance` is `true`; `data` and `gaps` equal the situation's | Return a suggestion or `no_guidance: false` when no rule applies |
+| M17-P2 | `card` with one toy rule that applies | The suggestion carries `source`, `version` and `review_status`; `not_assessed` is not empty | Drop `source` |
+| M17-P3 | Load a rule with no source | Rejected | Accept it |
+| M17-P4 | `card` for a situation whose episode already issued an alert | `alert` is `null` | Always return an alert |
+| M17-P5 | `card` twice with the same inputs; then search the module's source | Deep-equal results; no `fetch`, `XMLHttpRequest`, `Date.now` or `Math.random` in the source | Read the clock inside `card` |
+
 ## Out of scope
 
 - Clinical rules, thresholds, diagnoses.
@@ -36,4 +48,4 @@ Phase F4 · wave 2 · level 3 · contracts version 0.3
 
 **Skills.** llm-out-of-the-loop, deterministic-core, falsifiable-testing.
 
-Delivery report and review cycle: [ORCHESTRATION_PLAN.md](../ORCHESTRATION_PLAN.md). Interfaces: [CONTRACTS.md](../CONTRACTS.md).
+Method and record format: [METHOD.md](../METHOD.md). Method and record format: [METHOD.md](../METHOD.md). Delivery report and review cycle: [ORCHESTRATION_PLAN.md](../ORCHESTRATION_PLAN.md). Interfaces: [CONTRACTS.md](../CONTRACTS.md).

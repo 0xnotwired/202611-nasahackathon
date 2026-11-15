@@ -14,9 +14,10 @@ It does not repeat the README or AGENTS.md. Read them.
 2. [docs/FINAL_PROPOSAL.md](docs/FINAL_PROPOSAL.md) — what the product is
 3. [docs/PROPOSAL_IMPROVEMENTS.md](docs/PROPOSAL_IMPROVEMENTS.md) — what changed and why
 4. [docs/ORCHESTRATION_PLAN.md](docs/ORCHESTRATION_PLAN.md) — phases, modules, roles and gates
-5. [docs/CONTRACTS.md](docs/CONTRACTS.md) and your work order in [docs/work-orders/](docs/work-orders/), if you are going to build or review a module
-6. [docs/AGENT_ROADMAP.md](docs/AGENT_ROADMAP.md) — when each level is done, and the handoff log
-7. [docs/DATASETS.md](docs/DATASETS.md) before touching data
+5. [docs/IMPLEMENTATION_LAYERS.md](docs/IMPLEMENTATION_LAYERS.md) — what each layer must prove, and the evidence behind each decision
+6. [docs/CONTRACTS.md](docs/CONTRACTS.md), [docs/METHOD.md](docs/METHOD.md) and your work order in [docs/work-orders/](docs/work-orders/), if you are going to build or review a module
+7. [docs/AGENT_ROADMAP.md](docs/AGENT_ROADMAP.md) — when each level is done, and the handoff log
+8. [docs/DATASETS.md](docs/DATASETS.md) before touching data
 
 If you are a builder or a reviewer, your role and your report format are in the plan. If nobody assigned you a module, do not start one: ask.
 
@@ -32,9 +33,12 @@ docs/FINAL_PROPOSAL.md         current proposal and acceptance criteria
 docs/PROPOSAL_IMPROVEMENTS.md  improvements M1–M9 derived from series B
 docs/ROADMAP.md                levels, from the product side
 docs/ORCHESTRATION_PLAN.md     phases, waves, modules, roles, gates
+docs/IMPLEMENTATION_LAYERS.md  the claim each layer makes, its gate experiments, decisions and their evidence
+docs/METHOD.md                 how a claim is tested and recorded: prediction, red, green, break, evidence level
+docs/experiments/              one record per module (MNN.md) and per gate (Gn.md); E00 holds the foundation probes
 docs/CONTRACTS.md              interfaces between modules and rules R1–R9; only the orchestrator edits it
 docs/modules.csv               board: owned paths, dependencies and status of each module
-docs/work-orders/              one work order per module (M00–M24)
+docs/work-orders/              one work order per module (M00–M24), each with its experiments
 docs/AGENT_ROADMAP.md          checklist for each level + handoff log
 docs/ACADEMIC_BASE.md          sources S01–S18 (and a copy of A01–A06)
 docs/APPLIED_RESEARCH.md       sources A01–A06
@@ -78,7 +82,7 @@ PDFs provided by the user are read but **not uploaded to the repo**: not all of 
 
 ### 3. NASA pages that look empty
 
-`nlsp.nasa.gov` and `osdr.nasa.gov` load their content with JavaScript: a plain fetch returns only the portal title. `spaceappschallenge.org` blocks automated reading.
+`nlsp.nasa.gov` and `osdr.nasa.gov` load their content with JavaScript: a plain fetch returns only the portal title. `spaceappschallenge.org` blocked automated reading of the challenge pages; its participant terms (`/legal/`) could be read on 15/11.
 
 **Rule:** "the page has no data" is not a valid conclusion for these sites. Use the API endpoints noted in DATASETS.md, or ask the user for the file. The official 2026 challenge text is **not verified**; REQUIREMENTS.md keeps the user's version.
 
@@ -119,7 +123,7 @@ There are no clinical thresholds in this repo. If one appears in the code, it is
 python3 scripts/check_docs.py
 ```
 
-An `OK` result proves this and only this: matrices A and B parse as CSV and their ids match those in their documents; every module in `docs/modules.csv` has its work order; owned paths do not overlap; every dependency sits in an earlier phase or wave; the plan names the same modules; and relative links between `.md` files resolve. It **does not prove** that figures are correct, that sources say what is claimed, or that an agent respected their paths when writing code. The script was seen failing on a real broken link and on six deliberate breakages of the board (overlapping paths, later dependency, same-wave dependency, orphan work order, unknown status, nonexistent dependency).
+An `OK` result proves this and only this: matrices A and B parse as CSV and their ids match those in their documents; every module in `docs/modules.csv` has its work order, and the work order lists experiment ids; a module marked `in_review` or `integrated` has its experiment record with every section and id, plus a filled replication section if integrated; owned paths do not overlap; every dependency sits in an earlier phase or wave; the plan names the same modules; and relative links between `.md` files resolve. It **does not prove** that figures are correct, that sources say what is claimed, that an agent respected their paths when writing code, that a prediction was written before the code, or that an evidence level is honest. The script was seen failing on a real broken link and on six deliberate breakages of the board (overlapping paths, later dependency, same-wave dependency, orphan work order, unknown status, nonexistent dependency), and on five of the experiment checks (work order without ids, module in review without a record, record missing a section and an id, integrated without replication, empty replication).
 
 There is no build, lint or product test: no product code exists yet. The mockup is opened in a browser. Do not invent other commands.
 
@@ -147,7 +151,11 @@ The user asks that the skills from `github.com/annatchijova/SKILLS` always be ap
 | `claim-provenance-discipline` | Every scientific claim; reading levels |
 | `honest-degradation` | Three record states; storage that fails visibly |
 | `validate-at-the-boundary` | Validating `Record` on entry |
-| `falsifiable-testing` | Watch every test fail before trusting it |
+| `falsifiable-testing` | Watch every test fail before trusting it, and fail again under a negative control |
+| `discriminating-proof` | Prediction written before the run; one evidence level per claim; refuted results kept |
+| `abductive-engineering` | A surprise gets rival explanations and the cheapest test that tells them apart |
+| `decision-record-discipline` | Decisions D1–D9 with what they rest on and what reopens them |
+| `writing-agents-md` | Every rule in AGENTS.md with its reason and its mechanism, or the statement that it has none |
 | `secure-by-construction` | Health data: threat model before code |
 | `surgical-patcher` | Edit by anchors; do not rewrite whole files |
 | `llm-out-of-the-loop` | The copilot decides with explicit rules; a model, if there were one, only narrates |
@@ -164,6 +172,7 @@ The user asks that the skills from `github.com/annatchijova/SKILLS` always be ap
 - [ ] `grep -rn "MVP"` found no MVP proposals. *(Mistake 4)*
 - [ ] Everything added or changed is in English, identifiers and commit message included. *(AGENTS.md, Work and verification)*
 - [ ] No clinical threshold was added and no value from the decisions table was "normalized".
+- [ ] Every claim in the report carries an evidence level, and predictions were written before the run. *(AGENTS.md, Method)*
 - [ ] `python3 scripts/check_docs.py` returns `OK`, and the report says what that proves and what it does not. *(Verified commands)*
 - [ ] `git status`, `git log` and `git branch --show-current` checked before reporting status. *(Git; mistake 6)*
 - [ ] Commit and push only with authorization for this task, on a branch. *(Git)*

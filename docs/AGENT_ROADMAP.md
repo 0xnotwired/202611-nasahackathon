@@ -24,7 +24,7 @@ It is built in levels. **No MVP is proposed.** If time runs out, the highest com
 
 They no longer live in this document, so there are not two copies that drift apart:
 
-- **Decisions D1–D9** (language, dependencies, persistence, tests, structure, how it opens, data protection, history without editing, simulated sync): [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). D1–D8 are still pending the user's confirmation; D9 was chosen by the user.
+- **Decisions D1–D9** (language, dependencies, persistence, tests, structure, how it opens, data protection, history without editing, simulated sync): [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). D9 was chosen by the user; D1–D4 and D6 match the stack the user listed on 15/11; D5, D7 and D8 are still pending explicit confirmation. The evidence behind each one is in [IMPLEMENTATION_LAYERS.md](IMPLEMENTATION_LAYERS.md).
 - **Data model, rules R1–R9 and interfaces:** [CONTRACTS.md](CONTRACTS.md).
 - **Who builds what:** [modules.csv](modules.csv) and [work-orders/](work-orders/).
 
@@ -32,7 +32,7 @@ This document keeps what defines each **level** and the handoff log. The plan's 
 
 ## Levels
 
-Each level ends with: an adversarial self-review (did I break an invariant from an earlier level?), tests seen failing before passing, and this document's status table updated.
+Each level ends with: an adversarial review against the rules of the earlier levels, then the gate experiments of [IMPLEMENTATION_LAYERS.md](IMPLEMENTATION_LAYERS.md) recorded as [METHOD.md](METHOD.md) says, and this document's status table updated.
 
 ### Level 0 — Data core
 
@@ -108,7 +108,8 @@ Each level ends with: an adversarial self-review (did I break an invariant from 
 
 | Blocker | Who | Affects |
 |---|---|---|
-| Confirm technical decisions D1–D8 (gate G0) | User | All code |
+| Confirm technical decisions D5, D7 and D8 explicitly (gate G0) | User | All code |
+| List of resources used, with licenses | Any agent, reviewed by the team | Delivery |
 | Choose the demo procedure and its clinical source | User, with competent review | Level 2 |
 | Confirm [V1 4030] in NASA-STD-3001 vol. 1 rev. C | Anyone, by opening the S03 PDF | Level 1, radiation |
 | Official 2026 challenge text and evaluation guide | User, from the browser | Presentation |
@@ -134,3 +135,4 @@ Each agent checks the real status with `git status`, `git log` and the tests bef
 | 2026-11-14 | Claude (orchestrator, web session) | Orchestration plan, contracts v0.1, board and 24 work orders; AGENTS.md, README, TECHNICAL and CLAUDE.md updated; `check_docs.py` extended and seen failing in six ways; verified that `node --test` runs an ES module on Node 22 | Gate G0 not approved: D1–D8 not confirmed. No module started. Nothing verified in a browser |
 | 2026-11-15 | Claude (orchestrator, web session) | Decision D9: sending to the ground via simulated sync (simulated option C), chosen by the user; module M24 in F4 wave 3, contracts v0.2 with `Delivery` shape and `sync` interface. A real server stays as a later level | D1–D8 still not confirmed. No module started |
 | 2026-11-15 | Claude (orchestrator, web session) | Branch `english` created from `claude` at the user's request (the hackathon requires English); whole repo translated, including file names, folder names and contract identifiers (contracts v0.3), the three matrices (reading levels now FT/AB/S) and both demo pages. Verified: `check_docs.py` OK and seen failing on two deliberate breakages (unknown B id, link to an old Spanish file name); no Spanish text left outside proper nouns and the vision page's internal JS variable names; both demos walked through in headless Chrome with no console errors (check-in flow, summary export, all views). Not verified: wording reviewed by a native speaker | `english` is the integration branch from now on. D1–D8 still not confirmed. No module started |
+| 2026-11-15 | Claude (orchestrator, web session) | Scientific method for the build: `METHOD.md`, `IMPLEMENTATION_LAYERS.md` (one falsifiable claim and gate experiments per layer, decisions with their evidence), 125 experiments added to the 25 work orders, `docs/experiments/` with record E00. E00 ran five foundation probes with predictions written first: all confirmed on Node 22 and Chrome 153, each with a negative control (RUN and BROWSER). `check_docs.py` now checks experiment ids and records: seen failing on five deliberate breakages and passing on two controls. AGENTS.md records the dependency rule as read in the 2026 terms and as reported by the user | Explicit confirmation of D5, D7 and D8; list of resources used; other browsers not tested; no product code written |
