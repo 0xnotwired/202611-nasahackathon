@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "../features/health-monitoring/components/aerobic.css";
+import { SourceNavigation } from "../features/health-monitoring/components/source-navigation";
 
 export const metadata: Metadata = {
   title: "Monitoreo de salud | Órbita",
@@ -30,7 +31,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <a href="#contenido" className="skip-link">
           Saltar al contenido
         </a>
-        {children}
+        <SourceNavigation>{children}</SourceNavigation>
       </body>
     </html>
   );

@@ -57,17 +57,26 @@ El frontend funciona con mocks por defecto. Para integrarlo, poner en `.env.loca
 raíz y reiniciar Next.js:
 
 ```dotenv
-HEALTH_DATA_SOURCE=api
+HEALTH_DATA_SOURCE=mock
 HEALTH_API_BASE_URL=http://127.0.0.1:4000/api/v1
 ```
 
+El botón superior selecciona la fuente por petición mediante `source=mock|api`.
+`HEALTH_DATA_SOURCE` solo define el modo inicial. Elegir API no modifica variables
+de entorno ni conecta a una URL suministrada por el navegador. Sin una URL válida,
+la interfaz presenta «Backend no configurado» y permite volver a mocks.
+
 Next.js consulta la API desde el servidor. No se requiere CORS del navegador.
 El cliente tiene un timeout de 8 segundos y valida las respuestas con los esquemas
-compartidos. Si falla la integración, muestra el estado de error con reintento.
+compartidos. Si falla la integración, muestra el estado de error con reintento y regreso explícito
+a simulación. El catálogo vacío y la persona no encontrada tienen estados propios.
+La API 0.1 declara datos sintéticos; no existe todavía una respuesta de datos reales
+ni un endpoint de investigación. Sus comparaciones permanecen bloqueadas por falta
+de evidencia por prueba, como explica la documentación de integración aeróbica.
 
 En modo API, las cuatro vistas reciben mediciones, evaluaciones y sesiones del
-backend. Las modificaciones de actividad y los resúmenes del usuario siguen siendo
-borradores locales del navegador. No hay envío a profesionales ni endpoints de
+backend. Las sesiones del backend son de solo lectura. Las observaciones y los resúmenes del
+usuario son borradores locales del navegador, separados del contexto mock. No hay envío a profesionales ni endpoints de
 escritura: se acordarán como una ampliación separada cuando hagan falta.
 
 ## Verificar el contrato

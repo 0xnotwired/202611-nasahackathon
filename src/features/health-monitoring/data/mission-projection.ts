@@ -7,33 +7,45 @@ import type { DemoMission } from "../mission.ts";
 import { projectionVersion } from "../evidence.ts";
 
 // Reject undeclared evidence instead of stripping it into a synthetic v1 row.
-export const legacyMissionSchema = z.strictObject({
-  data: z.strictObject({
-    evaluations: z.array(
-      z.strictObject({
-        id: z.string().min(1),
-        recordedAt: z.iso.datetime(),
-        value: z.number().finite().nullable(),
-        unit: z.string().min(1),
-        method: z.string().min(1),
-      }),
-    ),
-    sessions: z.array(
-      z.strictObject({
-        id: z.string().min(1),
-        label: z.string().min(1),
-        scheduledAt: z.iso.datetime(),
-        durationMinutes: z.number().positive(),
-        completed: z.boolean(),
-      }),
-    ),
-  }),
-  meta: z.strictObject({
-    contractVersion: z.literal("0.1"),
-    dataKind: z.literal("synthetic"),
-    clinicalValidation: z.literal("pending"),
-  }),
-});
+export const legacyMissionSchema = z
+  .strictObject({
+    data: z.strictObject({
+      evaluations: z.array(
+        z.strictObject({
+          id: z.string().min(1),
+          recordedAt: z.iso.datetime(),
+          value: z.number().finite().nullable(),
+          unit: z.string().min(1),
+          method: z.string().min(1),
+        }),
+      ),
+      sessions: z.array(
+        z.strictObject({
+          id: z.string().min(1),
+          label: z.string().min(1),
+          scheduledAt: z.iso.datetime(),
+          durationMinutes: z.number().positive(),
+          completed: z.boolean(),
+        }),
+      ),
+    }),
+    meta: z.strictObject({
+      contractVersion: z.literal("0.1"),
+      dataKind: z.literal("synthetic"),
+      clinicalValidation: z.literal("pending"),
+    }),
+  })
+  .superRefine((response, context) => {
+    if (
+      new Set(response.data.evaluations.map((item) => item.id)).size !==
+      response.data.evaluations.length
+    )
+      context.addIssue({
+        code: "custom",
+        path: ["data", "evaluations"],
+        message: "Identificadores de evaluación duplicados.",
+      });
+  });
 
 export function projectMission(
   data: MissionData,

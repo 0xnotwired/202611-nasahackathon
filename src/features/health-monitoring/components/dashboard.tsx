@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useTransition } from "react";
-import { Orbit, FlaskConical } from "lucide-react";
+import { Orbit } from "lucide-react";
 import type { Astronaut, MeasurementsResponse } from "../schemas";
 import type { DemoMission } from "../mission";
 import { formatTimestamp } from "../mission";
@@ -20,7 +20,10 @@ import { useDemoJournal } from "./use-demo-journal";
 import { AerobicOverview } from "./aerobic-overview";
 import { ExerciseView } from "./exercise-view";
 import { FollowupView } from "./followup-view";
-import { originLabels } from "../evidence";
+import { originLabels, type Evidence } from "../evidence";
+import { sourceHref, type DataSourceMode } from "../data/source-context";
+import { DataSourceControl } from "./data-source-control";
+import { useSourceNavigation } from "./source-navigation";
 
 export function Dashboard({
   astronauts,
@@ -32,6 +35,9 @@ export function Dashboard({
   scenario,
   demoControls,
   asOf,
+  sourceMode,
+  origin,
+  switchHref,
 }: {
   astronauts: Astronaut[];
   astronaut: Astronaut;
@@ -42,10 +48,18 @@ export function Dashboard({
   scenario: Scenario;
   demoControls: boolean;
   asOf: string;
+  sourceMode: DataSourceMode;
+  origin: Evidence["origin"];
+  switchHref: string;
 }) {
   const router = useRouter();
-  const [pending, startTransition] = useTransition();
-  const { journal, update, memoryOnly } = useDemoJournal(astronaut.id);
+  const [localPending, startTransition] = useTransition();
+  const sourceNavigation = useSourceNavigation();
+  const pending = localPending || sourceNavigation.pending;
+  const { journal, update, memoryOnly } = useDemoJournal(
+    astronaut.id,
+    sourceMode,
+  );
   const previousView = useRef(view);
   useEffect(() => {
     if (previousView.current !== view) {
@@ -58,7 +72,7 @@ export function Dashboard({
     params.set("view", target);
     params.set("astronaut", astronaut.id);
     if (demoControls) params.set("scenario", scenario);
-    return `/?${params}`;
+    return sourceHref("/", sourceMode, params);
   };
   const change = (patch: Partial<HistoryContext>) =>
     startTransition(() =>
@@ -85,14 +99,11 @@ export function Dashboard({
           </span>
         </div>
         <div className="header-controls">
-          <span className="mode-label">
-            <FlaskConical size={15} aria-hidden="true" />
-            {
-              originLabels[
-                mission.evaluations[0]?.evidence?.origin ?? "synthetic"
-              ]
-            }
-          </span>
+          <DataSourceControl
+            mode={sourceMode}
+            label={originLabels[origin]}
+            targetHref={switchHref}
+          />
           <ThemeControl />
         </div>
       </header>
@@ -112,7 +123,9 @@ export function Dashboard({
               params.set("astronaut", event.target.value);
               if (demoControls) params.set("scenario", scenario);
               startTransition(() =>
-                router.push(`/?${params}`, { scroll: false }),
+                router.push(sourceHref("/", sourceMode, params), {
+                  scroll: false,
+                }),
               );
             }}
           >
@@ -139,7 +152,7 @@ export function Dashboard({
           </small>
         </div>
       </div>
-      <div className="navigation-row">
+      <div className="navigation-row" inert={sourceNavigation.pending}>
         <nav className="mission-navigation" aria-label="Principal">
           {Object.entries(viewNames).map(([id, label]) => (
             <Link
@@ -150,17 +163,20 @@ export function Dashboard({
               {label}
             </Link>
           ))}
-          <Link href="/investigacion">Investigación</Link>
+          <Link href={sourceHref("/investigacion", sourceMode)}>
+            Investigación
+          </Link>
         </nav>
         <span className="navigation-status" role="status">
-          {pending ? "Actualizando vista…" : ""}
+          {localPending ? "Actualizando vista…" : ""}
         </span>
       </div>
-      <main className="mission-main" aria-busy={pending}>
+      <main className="mission-main" aria-busy={pending} inert={pending}>
         {memoryOnly ? (
           <p className="storage-notice" role="status">
-            Guardado temporal: el navegador bloqueó el almacenamiento. Exportá
-            la revisión antes de salir.
+            Guardado temporal: el navegador bloqueó el almacenamiento. Los
+            borradores se perderán al cambiar de fuente, persona o recargar.
+            Exportá la revisión antes de salir.
           </p>
         ) : null}
         {view === "resumen" || view === "evolucion" ? (
@@ -189,14 +205,10 @@ export function Dashboard({
           />
         )}
       </main>
-      <footer className="mission-footer">
+      <footer className="mission-footer" inert={sourceNavigation.pending}>
         <p>
-          {
-            originLabels[
-              mission.evaluations[0]?.evidence?.origin ?? "synthetic"
-            ]
-          }{" "}
-          · validación médica pendiente · seguimiento sin diagnóstico
+          {originLabels[origin]} · validación médica pendiente · seguimiento sin
+          diagnóstico
         </p>
         <div className="footer-tools">
           {demoControls ? (
@@ -217,7 +229,9 @@ export function Dashboard({
                     params.set("astronaut", astronaut.id);
                     params.set("scenario", event.target.value);
                     startTransition(() =>
-                      router.push(`/?${params}`, { scroll: false }),
+                      router.push(sourceHref("/", sourceMode, params), {
+                        scroll: false,
+                      }),
                     );
                   }}
                 >

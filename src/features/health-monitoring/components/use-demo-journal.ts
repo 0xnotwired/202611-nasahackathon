@@ -2,8 +2,13 @@
 
 import { useCallback, useState, useSyncExternalStore } from "react";
 import { z } from "zod";
+import { journalKey, type DataSourceMode } from "../data/source-context";
 
 const journalSchema = z.object({
+  observationDraft: z
+    .object({ text: z.string().max(2000), evaluationId: z.string() })
+    .nullable()
+    .optional(),
   completed: z.record(z.string(), z.boolean()).default({}),
   difficulty: z.string().max(2000).default(""),
   question: z.string().max(2000).default(""),
@@ -43,8 +48,11 @@ function subscribe(callback: () => void) {
   };
 }
 
-export function useDemoJournal(astronautId: string) {
-  const key = `orbita-demo-journal-v1:${astronautId}`;
+export function useDemoJournal(
+  astronautId: string,
+  mode: DataSourceMode = "mock",
+) {
+  const key = journalKey(astronautId, mode);
   const [memory, setMemory] = useState<string | null>(null);
   const read = useCallback(() => {
     try {

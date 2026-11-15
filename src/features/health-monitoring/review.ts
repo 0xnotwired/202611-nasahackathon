@@ -23,8 +23,10 @@ export function buildReview(
   const scope = evaluations.length
     ? `${formatDate(evaluations[0].recordedAt)} — ${formatDate(evaluations.at(-1)!.recordedAt)} · ${evaluations.length} visitas`
     : "Sin evaluaciones";
-  const completed = mission.sessions.filter(
-    (item) => journal.completed[item.id] ?? item.completed,
+  const completed = mission.sessions.filter((item) =>
+    mission.presentation?.transport === "api"
+      ? item.completed
+      : (journal.completed[item.id] ?? item.completed),
   );
   const text = [
     `Órbita · Revisión de ${astronaut.callsign} · ${astronaut.mission}`,
@@ -50,6 +52,7 @@ export function buildReview(
     ),
     `Observación de actividad: ${journal.difficulty || "Sin observación registrada"}`,
     `Observación de evaluación: ${journal.observation ? `${journal.observation.text} · visita ${journal.observation.evaluationId} · guardada ${journal.observation.recordedAt}` : "Sin observación registrada"}`,
+    `Borrador de observación sin confirmar: ${journal.observationDraft ? `${journal.observationDraft.text} · visita ${journal.observationDraft.evaluationId}` : "Sin borrador"}`,
     `Pregunta para revisión: ${journal.question || "Sin pregunta registrada"}`,
     "",
     "Anexo de datos y procedencia (valores sin redondeo):",

@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 export default function ErrorPage({ retry }: { retry: () => void }) {
   return (
@@ -13,6 +14,9 @@ export default function ErrorPage({ retry }: { retry: () => void }) {
       <button type="button" onClick={retry} className="button primary">
         Volver a intentar
       </button>
+      <Link className="button secondary" href="/?source=mock">
+        Usar simulación local
+      </Link>
     </main>
   );
 }

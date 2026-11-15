@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getDataConfig } from "@/lib/env";
 import {
   resolveHistoryContext,
   viewNames,
@@ -8,10 +7,11 @@ import {
 } from "@/features/health-monitoring/dashboard-state";
 import { isScenario } from "@/features/health-monitoring/aerobic";
 import {
-  getMeasurements,
-  getMission,
-  listAstronauts,
+  getHealthDataReader,
+  loadDashboard,
 } from "@/features/health-monitoring/data/service";
+import { switchSourceHref } from "@/features/health-monitoring/data/source-context";
+import { SourceState } from "@/features/health-monitoring/components/source-state";
 import { Dashboard } from "@/features/health-monitoring/components/dashboard";
 
 const views = new Set(Object.keys(viewNames));
@@ -28,40 +28,43 @@ export async function generateMetadata({
 }
 
 export default async function Home({ searchParams }: PageProps<"/">) {
-  const [params, astronauts] = await Promise.all([
-    searchParams,
-    listAstronauts(),
-  ]);
+  const params = await searchParams;
+  const source = getHealthDataReader(params.source);
+  if (!source.ok)
+    return (
+      <SourceState
+        mode={source.error.mode}
+        code={source.error.code}
+        params={params}
+      />
+    );
+  const mode = source.reader.mode;
   const requestedId = params.astronaut;
   const view = params.view ?? "resumen";
   if (typeof view !== "string" || !views.has(view)) notFound();
   if (requestedId !== undefined && typeof requestedId !== "string") notFound();
   const scenario = isScenario(params.scenario) ? params.scenario : "recovery";
-  const demoControls = getDataConfig().HEALTH_DATA_SOURCE === "mock";
-  const selected =
-    requestedId === undefined
-      ? astronauts.data[0]
-      : astronauts.data.find((astronaut) => astronaut.id === requestedId);
-  if (requestedId !== undefined && !selected) notFound();
-  if (!selected)
-    return (
-      <main className="standalone-state">
-        <h1 id="contenido" tabIndex={-1}>
-          Sin tripulación disponible
-        </h1>
-        <p>Todavía no hay astronautas para mostrar.</p>
-      </main>
-    );
-  const [measurements, mission] = await Promise.all([
-    getMeasurements(selected.id),
-    getMission(selected.id, scenario),
-  ]);
-  if (!measurements || !mission) notFound();
+  const loaded = await loadDashboard(
+    source.reader,
+    requestedId,
+    mode === "mock" ? scenario : undefined,
+  );
+  if (loaded.status === "error")
+    return <SourceState mode={mode} code={loaded.error.code} params={params} />;
+  if (loaded.status === "empty")
+    return <SourceState mode={mode} code="empty" params={params} />;
+  const {
+    astronauts,
+    astronaut: selected,
+    measurements,
+    mission,
+    origin,
+  } = loaded;
   const context = resolveHistoryContext(params, mission.evaluations);
   return (
     <Dashboard
-      key={selected.id}
-      astronauts={astronauts.data}
+      key={`${mode}:${selected.id}`}
+      astronauts={astronauts}
       astronaut={selected}
       measurements={measurements}
       mission={mission}
@@ -69,7 +72,14 @@ export default async function Home({ searchParams }: PageProps<"/">) {
       context={context}
       asOf={new Date().toISOString()}
       scenario={scenario}
-      demoControls={demoControls}
+      demoControls={mode === "mock"}
+      sourceMode={mode}
+      origin={origin}
+      switchHref={switchSourceHref(
+        "/",
+        mode === "mock" ? "api" : "mock",
+        params,
+      )}
     />
   );
 }

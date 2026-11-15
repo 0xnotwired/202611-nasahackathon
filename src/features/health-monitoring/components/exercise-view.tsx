@@ -12,6 +12,7 @@ export function ExerciseView({
   journal: DemoJournal;
   update: (patch: Partial<DemoJournal>) => void;
 }) {
+  const readOnly = mission.presentation?.transport === "api";
   return (
     <>
       <div className="page-heading">
@@ -21,7 +22,11 @@ export function ExerciseView({
           </h1>
           <p>Registro de sesiones y observaciones de actividad.</p>
         </div>
-        <span className="badge">Programa de demostración</span>
+        <span className="badge">
+          {readOnly
+            ? "Programa sintético del backend · solo lectura"
+            : "Programa de demostración"}
+        </span>
       </div>
       <div className="notice">
         <Dumbbell size={20} aria-hidden="true" />
@@ -42,12 +47,15 @@ export function ExerciseView({
           </div>
           <div className="session-list">
             {mission.sessions.map((session) => {
-              const done = journal.completed[session.id] ?? session.completed;
+              const done = readOnly
+                ? session.completed
+                : (journal.completed[session.id] ?? session.completed);
               return (
                 <label className="session-row" key={session.id}>
                   <input
                     type="checkbox"
                     checked={done}
+                    disabled={readOnly}
                     onChange={(event) =>
                       update({
                         completed: {

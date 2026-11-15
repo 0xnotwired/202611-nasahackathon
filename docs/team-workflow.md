@@ -90,16 +90,25 @@ para instalar una dependencia visual.
 - Para consumir la API, poner en `.env.local` raíz:
 
 ```dotenv
-HEALTH_DATA_SOURCE=api
+HEALTH_DATA_SOURCE=mock
 HEALTH_API_BASE_URL=http://127.0.0.1:4000/api/v1
 ```
 
-Reiniciar Next.js al cambiar esta configuración. En modo API también se leen las
+Reiniciar Next.js al cambiar esta configuración. El botón superior alterna entre
+simulación local y backend. También se puede abrir `/?source=mock` o `/?source=api`;
+el parámetro se conserva al navegar y prevalece sobre el valor inicial de entorno.
+La API 0.1 sigue siendo sintética: el botón muestra «Datos sintéticos · Fuente: Backend».
+Si falta configuración, falla la conexión o la respuesta es incompatible, se muestra
+un estado recuperable con regreso explícito a simulación, sin fallback automático.
+
+ En modo API también se leen las
 evaluaciones aeróbicas y sesiones del backend; no se mezclan con fixtures locales
 para ocultar errores. Los borradores de actividad y revisión del usuario siguen
-siendo locales al navegador, hasta acordar un contrato de escritura.
+siendo locales al navegador, aislados por fuente y persona, hasta acordar un contrato
+de escritura. Los estados de las sesiones recibidos por API son de solo lectura.
+Las claves mock anteriores se conservan; no se copian notas entre fuentes.
 
-Para volver al desarrollo independiente: `HEALTH_DATA_SOURCE=mock`.
+Para volver al desarrollo independiente: abrir `/?source=mock`; no requiere reiniciar.
 
 ## Comprobaciones antes de integrar
 

@@ -1,6 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getResearchCase } from "@/features/health-monitoring/data/service";
+import {
+  getHealthDataReader,
+  getResearchCase,
+} from "@/features/health-monitoring/data/service";
 import { originLabels } from "@/features/health-monitoring/evidence";
 import {
   researchCsv,
@@ -11,6 +14,14 @@ import { numberFormat } from "@/features/health-monitoring/mission";
 import { ThemeControl } from "@/features/health-monitoring/components/theme-control";
 import { DownloadData } from "@/features/health-monitoring/components/download-data";
 
+import {
+  sourceHref,
+  switchSourceHref,
+} from "@/features/health-monitoring/data/source-context";
+import { DataSourceControl } from "@/features/health-monitoring/components/data-source-control";
+import { SourceContent } from "@/features/health-monitoring/components/source-navigation";
+import { SourceState } from "@/features/health-monitoring/components/source-state";
+
 export const metadata: Metadata = { title: "Casos de investigación | Órbita" };
 const technicalNumber = new Intl.NumberFormat("es-AR", {
   maximumFractionDigits: 3,
@@ -20,30 +31,61 @@ export default async function ResearchPage({
   searchParams,
 }: PageProps<"/investigacion">) {
   const params = await searchParams;
+  const source = getHealthDataReader(params.source);
+  if (!source.ok)
+    return (
+      <SourceState
+        mode={source.error.mode}
+        code={source.error.code}
+        params={params}
+        path="/investigacion"
+      />
+    );
+  const mode = source.reader.mode;
+  if (mode === "api")
+    return (
+      <SourceState
+        mode={mode}
+        code="research_pending"
+        params={params}
+        path="/investigacion"
+      />
+    );
   const projection = await getResearchCase(params.example === "synthetic");
   const assessment = projection?.assessment;
   return (
     <div className="mission-app">
       <header className="mission-header">
         <div className="header-identity">
-          <Link className="mission-brand" href="/">
+          <Link className="mission-brand" href={sourceHref("/", mode)}>
             Órbita
           </Link>
           <span className="application-name">
             Exploración de pruebas aeróbicas
           </span>
         </div>
-        <ThemeControl />
+        <div className="header-controls">
+          <DataSourceControl
+            mode={mode}
+            label={
+              assessment
+                ? originLabels[assessment.origin]
+                : "Datos no disponibles"
+            }
+            targetHref={switchSourceHref("/investigacion", "api", params)}
+          />
+          <ThemeControl />
+        </div>
       </header>
       <div className="navigation-row">
         <nav className="mission-navigation" aria-label="Contexto de datos">
-          <Link href="/">Seguimiento personal</Link>
-          <Link href="/investigacion" aria-current="page">
+          <Link href={sourceHref("/", mode)}>Seguimiento personal</Link>
+          <Link href={sourceHref("/investigacion", mode)} aria-current="page">
             Investigación
           </Link>
         </nav>
       </div>
-      <main className="mission-main research-workspace">
+      <SourceContent className="mission-main research-workspace">
         <div className="page-heading">
           <div>
             <h1 id="contenido" tabIndex={-1}>
@@ -62,13 +104,17 @@ export default async function ResearchPage({
         </div>
         <nav className="research-switch" aria-label="Fuente del caso">
           <Link
-            href="/investigacion"
+            href={sourceHref("/investigacion", mode)}
             aria-current={!assessment ? "page" : undefined}
           >
             Disponibilidad de MR080G
           </Link>
           <Link
-            href="/investigacion?example=synthetic"
+            href={sourceHref(
+              "/investigacion",
+              "mock",
+              new URLSearchParams({ example: "synthetic" }),
+            )}
             aria-current={assessment ? "page" : undefined}
           >
             Ejemplo sintético de etapas
@@ -351,7 +397,7 @@ export default async function ResearchPage({
             </section>
           </>
         )}
-      </main>
+      </SourceContent>
       <footer className="mission-footer">
         <p>
           Órbita · prototipo de investigación · sin validación para uso médico u

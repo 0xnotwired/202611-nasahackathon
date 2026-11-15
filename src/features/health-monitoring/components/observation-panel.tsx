@@ -17,10 +17,8 @@ export function ObservationPanel({
   update: (patch: Partial<DemoJournal>) => void;
   memoryOnly?: boolean;
 }) {
-  const [draft, setDraft] = useState("");
-  const [draftEvaluationId, setDraftEvaluationId] = useState<string | null>(
-    null,
-  );
+  const draft = journal.observationDraft?.text ?? "";
+  const draftEvaluationId = journal.observationDraft?.evaluationId ?? null;
   const target =
     evaluations.find((item) => item.id === draftEvaluationId) ?? evaluation;
   const [saved, setSaved] = useState(false);
@@ -54,14 +52,13 @@ export function ObservationPanel({
           event.preventDefault();
           if (!target || !draft.trim()) return;
           update({
+            observationDraft: null,
             observation: {
               text: draft.trim(),
               evaluationId: target.id,
               recordedAt: new Date().toISOString(),
             },
           });
-          setDraft("");
-          setDraftEvaluationId(null);
           setSaved(true);
         }}
       >
@@ -75,18 +72,22 @@ export function ObservationPanel({
             placeholder="Por ejemplo: condiciones durante la evaluación…"
             value={draft}
             onChange={(event) => {
-              if (!draft && event.target.value)
-                setDraftEvaluationId(evaluation?.id ?? null);
-              if (!event.target.value) setDraftEvaluationId(null);
-              setDraft(event.target.value);
+              update({
+                observationDraft: event.target.value
+                  ? {
+                      text: event.target.value,
+                      evaluationId: draftEvaluationId ?? evaluation?.id ?? "",
+                    }
+                  : null,
+              });
               setSaved(false);
             }}
             disabled={!evaluation}
           />
         </label>
         <p className="field-help">
-          Guardar reemplaza la última observación local. El texto sin guardar
-          permanece mientras esta vista esté abierta.
+          Guardar reemplaza la última observación local. El borrador se conserva
+          en este navegador, separado por fuente y persona.
         </p>
         <button
           type="submit"
