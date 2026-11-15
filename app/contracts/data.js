@@ -1,5 +1,5 @@
 /**
- * Contract version 0.8. Authority: docs/CONTRACTS.md.
+ * Contract version 0.9. Authority: docs/CONTRACTS.md.
  * Documentation only: no runtime validation or module logic lives here.
  * Every persisted object additionally carries schema_version (section 3),
  * represented by Persisted<T>; nested criteria are not separately persisted.
@@ -137,4 +137,4 @@
  * @property {'queued'|'in_transit'|'received'} state
  */
 
-export const CONTRACT_VERSION = "0.8";
+export const CONTRACT_VERSION = "0.9";

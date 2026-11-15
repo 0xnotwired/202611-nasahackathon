@@ -1,6 +1,6 @@
 # Órbita: contracts between modules
 
-Version 0.8 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
+Version 0.9 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
 
 Plan and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). Rationale for the rules: [PROPOSAL_IMPROVEMENTS.md](PROPOSAL_IMPROVEMENTS.md) and [AGENTS.md](../AGENTS.md).
 
@@ -221,9 +221,16 @@ series(store, { subject, variable, from, to })
 latest(store, { subject, variable }, { clock })
    → { record | null, age_days | null }
 baseline(store, { subject, variable, to })
-   → { n, from, to }                       how many measurements exist; no judgment
+   → { n, from, to, excluded_non_comparable }
+        n: how many comparable recorded values exist before `to`; no judgment.
+        from, to: earliest and latest time of those values (null when n is 0).
+        excluded_non_comparable: how many recorded values were left out because their
+        method or unit differs, or their unit is unknown (0 when none).
 environment(store, { place, interval })
-   → { records, coverage: { from, to, sensors } }
+   → { records, coverage: { from, to, sensors, segments } }
+        segments: the merged intervals actually measured inside the asked interval, so a
+        hole between two sensor windows is never reported as continuous coverage.
+        from, to: first start and last end of the segments (null when there are none).
 cumulative(store, { subject, variable, from, to })
    → { total | null, unit, n, gaps }       total is null if there is no data at all
 attention(record, config)
@@ -233,6 +240,8 @@ attention(record, config)
 `attention` only compares against a criterion present in the configuration. `not_recorded`, `confirmed_none`, a missing value or a different unit give `not_assessed` with the reason; no criterion gives `no_criterion`. It never returns `within` without a criterion.
 
 `readings` does not decide what is normal. It returns data and how much supports it.
+
+A foreseen failure returns `{ ok: false, error: { code, field?, message } }` instead of the plain object, so a caller checks `ok === false` first. Records that carry only a source time (`time: null`) make `series`, `latest`, `baseline` and `cumulative` return `unresolved_time`: no UTC placement or age is invented for them. `cumulative` returns `not_comparable` rather than a partial total when the records in range differ in method or unit.
 
 ### procedures (M13)
 
@@ -477,3 +486,4 @@ Everything works with the keyboard. No state is conveyed by color alone. Views r
 | 0.7 | 2026-11-15 | User-requested source-date model: schema2 preserves unknown-zone/date-only/shifted times and explicit unknown units; legacy1 unchanged; scoped comparison and explicit UTC-query errors | M01–M07 and future import consumers |
 
 | 0.8 | 2026-11-15 | User-authorized M21 advance: deterministic source CSV adapters, bounded reports/rows, source-time and unknown-unit policy; selected adaptation profiles; no implicit persistence | M21, store/import consumers |
+| 0.9 | 2026-11-15 | User-authorized after M06 delivery: `readings.baseline` gains `excluded_non_comparable`, `readings.environment` coverage gains `segments`; the readings failure shape (`{ ok:false, error }`), `unresolved_time` and `not_comparable` are documented. Additive: existing fields keep their meaning | M06, M07 and every future readings consumer |
