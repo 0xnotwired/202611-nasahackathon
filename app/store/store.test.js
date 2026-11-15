@@ -9,7 +9,7 @@ test('M04 memory passes shared behavior and inherited contract',async()=>{
   await checkStore(store);
 });
 test('M04 fails visibly when IndexedDB or options are unavailable',async()=>{
-  for(const options of [null,[],{}, {kind:'other'},{kind:'memory',name:''}]) {
+  for(const options of [null,[],{}, {kind:'other'},{kind:'memory',name:''},{kind:'memory',name:null}]) {
     const result=await store.openStore(options);assert.equal(result.ok,false);assert.ok(result.error.message.length>0);
   }
   const result=await store.openStore({kind:'indexeddb'});

@@ -16,6 +16,8 @@ export async function checkStoreBehavior(module, assert, {kind='memory',name='m0
     const output=good(await store.get('records','r1')); output.value=999;
     assert.deepEqual(good(await store.get('records','r1')),record);
     bad(await store.updateState('records','r1',{state:'confirmed_none'}));
+    bad(await store.updateState('records','r1',{value:1}));
+    assert.deepEqual(good(await store.get('records','r1')),record);
     const shared=good(await store.save('shared',{id:'shared',subject:'A',time,what:['r1'],with:'team demo',channel:'simulated'}));
     assert.equal(shared.schema_version,1);
     bad(await store.updateState('shared','shared',{channel:'changed'}));
@@ -25,6 +27,7 @@ export async function checkStoreBehavior(module, assert, {kind='memory',name='m0
     bad(await store.saveBatch('records',[{...record,id:'before'},{...record,id:'invalid',method:''}]));
     assert.deepEqual(good(await store.list('records',{})).map(x=>x.id),['r1']);
     bad(await store.save('records',{...record,id:'future',schema_version:2}));
+    bad(await store.save('tasks',{id:'future-task',schema_version:2}));
     const more=[{...record,id:'b',subject:'B',value:-1},{...record,id:'later',time:'2026-11-16T12:00:00.000Z'}];
     assert.equal(good(await store.saveBatch('records',more)),2);
     assert.deepEqual(good(await store.list('records',{subject:'A'})).map(x=>x.id).sort(),['later','r1']);
@@ -36,6 +39,9 @@ export async function checkStoreBehavior(module, assert, {kind='memory',name='m0
     bad(await store.save('records',{...record,id:'wrong-origin',origin:'flight'}));
     bad(await store.saveBatch('records',[{...record,id:'new-synthetic',subject:'new'},{...record,id:'new-real',subject:'new',origin:'terrestrial'}]));
     assert.deepEqual(good(await store.list('records',{subject:'new'})),[]);
+    const originRace=await Promise.all([store.save('records',{...record,id:'origin-race-synthetic',subject:'origin-race'}),store.save('records',{...record,id:'origin-race-real',subject:'origin-race',origin:'flight'})]);
+    assert.equal(originRace.filter(x=>x.ok).length,1);
+    assert.equal(good(await store.list('records',{subject:'origin-race'})).length,1);
     const race=await Promise.all([store.save('records',{...record,id:'race'}),store.save('records',{...record,id:'race'})]);
     assert.equal(race.filter(x=>x.ok).length,1);
     for(const collection of ['executions','tasks','episodes','deliveries']) {
