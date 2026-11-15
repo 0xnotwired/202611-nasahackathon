@@ -31,7 +31,9 @@ export function renderTable(doc, model) {
   const head = create(doc, 'tr', {}, ...model.columns.map(column => create(doc, 'th', {scope: 'col'}, column.label)));
   const body = model.rows.map(row => create(doc, 'tr', {}, ...model.columns.map((column, index) =>
     create(doc, index === 0 ? 'th' : 'td', index === 0 ? {scope: 'row'} : {}, row[column.key]))));
-  return create(doc, 'table', {class: 'data-table'}, create(doc, 'caption', {}, model.caption), create(doc, 'thead', {}, head), create(doc, 'tbody', {}, ...body));
+  const table = create(doc, 'table', {class: 'data-table'}, create(doc, 'caption', {}, model.caption), create(doc, 'thead', {}, head), create(doc, 'tbody', {}, ...body));
+  // A wide table scrolls inside its own named, keyboard-reachable region instead of widening the page (reflow, WCAG 1.4.10).
+  return create(doc, 'div', {class: 'table-scroll', role: 'region', tabindex: '0', 'aria-label': model.caption}, table);
 }
 
 export function renderBadge(doc, badge) {

@@ -98,6 +98,13 @@ try:
             page.reload(); page.wait_for_selector('#nc-form', timeout=15000)
             page.select_option('#nc-source', 'BUT_CGM'); page.fill('#nc-subject-id', '101001')
             page.set_input_files('#nc-file', str(CGM)); page.click('#nc-load')
+            page.wait_for_selector('#nc-files-title', timeout=20000)  # the card is there; the chart may or may not be
+            # R9 in the page, checked BEFORE waiting for anything else: the shell's own persistent store must hold no imported record.
+            count = page.evaluate('''() => new Promise((resolve, reject) => { const open = indexedDB.open('orbita');
+                open.onerror = () => reject(open.error);
+                open.onsuccess = () => { const db = open.result; if (!db.objectStoreNames.contains('records')) { resolve(-1); return; }
+                    const request = db.transaction('records').objectStore('records').count(); request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error); }; })''')
+            check('R9 browser: the shell store holds 0 records right after loading 3016 real ones', count == 0, f'count={count}')
             page.wait_for_selector('.chart-block svg', timeout=20000)
             body = page.locator('#view-body').inner_text()
             check('X2: the study card shows the DOI, both citations and the licence', '10.13026/hv8f-3w60' in body and 'Šaclová' in body and 'Pollard, T., Moody' in body and 'Attribution 4.0' in body)
@@ -114,12 +121,6 @@ try:
             check('Y9 browser: the day with the real 20-minute hole shows exactly that break', len(break_rows) == 1 and '20 min' in break_rows[0], str(break_rows))
             check('no UTC-looking text on a source-clock screen', not UTC_LIKE.search(page.locator('#view-body').inner_text()))
             if SHOTS: page.screenshot(path=f'{SHOTS}/m22-cgm.png', full_page=True)
-            # R9 in the page: the shell's own persistent store must not hold a single imported record.
-            count = page.evaluate('''() => new Promise((resolve, reject) => { const open = indexedDB.open('orbita');
-                open.onerror = () => reject(open.error);
-                open.onsuccess = () => { const db = open.result; if (!db.objectStoreNames.contains('records')) { resolve(-1); return; }
-                    const request = db.transaction('records').objectStore('records').count(); request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error); }; })''')
-            check('R9 browser: the shell store holds 0 records after loading 3016 real ones', count == 0, f'count={count}')
         else:
             not_verified.append('BUT CGM real file missing: study card, chart, day selector and R9 store check NOT VERIFIED')
 
@@ -133,6 +134,36 @@ try:
             if SHOTS: page.screenshot(path=f'{SHOTS}/m22-mr079g.png', full_page=True)
         else:
             not_verified.append('MR079G real file missing: unordered list NOT VERIFIED')
+
+        MR035G = ROOT / 'data/originals/additional/MR035G-sample-1.csv'
+        MR080G = ROOT / 'data/originals/additional/MR080G-sample-1.csv'
+        if MR035G.exists() and MR080G.exists() and CGM.exists() and MR079G.exists():
+            page.reload(); page.wait_for_selector('#nc-form', timeout=15000)
+            for source, path, subject in [('BUT_CGM', CGM, '101001'), ('MR079G', MR079G, ''), ('MR035G', MR035G, ''), ('MR080G', MR080G, '')]:
+                page.select_option('#nc-source', source)
+                if subject: page.fill('#nc-subject-id', subject)
+                page.set_input_files('#nc-file', str(path)); page.click('#nc-load')
+                page.wait_for_function(f'document.querySelectorAll(".card h4").length >= {["BUT_CGM", "MR079G", "MR035G", "MR080G"].index(source) + 1}', timeout=20000)
+            titles = page.eval_on_selector_all('#nc-files-title ~ .card h4', 'els => els.map(e => e.textContent)')
+            check('four real files give four study cards in one session', len(titles) == 4, str(titles))
+            # Select all four subjects (each its own panel).
+            for index in range(4):
+                if not page.is_checked(f'#nc-pick-{index}'): page.check(f'#nc-pick-{index}')
+            page.wait_for_function('document.querySelectorAll("section.card[aria-labelledby^=nc-panel-]").length === 4', timeout=20000)
+            panels = page.eval_on_selector_all('section.card[aria-labelledby^=nc-panel-]', 'els => els.map(e => e.textContent)')
+            check('P3 browser: four subjects are four panels and no panel shows another subject\'s values',
+                  len(panels) == 4 and all(('Subject' in p) for p in panels), str([p[:40] for p in panels]))
+            by_subject = {next(w for w in ['101001', '9314', '8881', '7772'] if f'Subject {w}' in p): p for p in panels}
+            check('P3 browser: each panel carries only its own study (no ft-lb in the glucose panel, no mmol/L in the others)',
+                  'ft-lb' not in by_subject['101001'] and all('mmol/L' not in by_subject[k] for k in ('9314', '8881', '7772')), '')
+            check('MR035G browser: bone density values keep their unknown unit and are listed without an order',
+                  '0.827 (unit unknown)' in by_subject['8881'] and 'order not established' in by_subject['8881'] and 'ground analog' in by_subject['8881'], by_subject['8881'][:200])
+            check('MR080G browser: eight variables are selectable and a percentage keeps its unit',
+                  page.locator('section.card[aria-labelledby^=nc-panel-] select[id^=nc-var-]').first.evaluate('e => e.options.length') >= 1
+                  and '4.24 %' in by_subject['7772'], '')
+            if SHOTS: page.screenshot(path=f'{SHOTS}/m22-four-sources.png', full_page=True)
+        else:
+            not_verified.append('one of the four real files is missing: the four-source session NOT VERIFIED')
 
         check('no page error or console error', not errors, str(errors))
         print(json.dumps({'gate': 'M22 browser check', 'browser': browser.version, 'passed': sum(r['passed'] for r in results), 'total': len(results),

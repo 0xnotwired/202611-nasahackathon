@@ -471,7 +471,7 @@ M07 delivers the components every view uses, so the same data looks the same eve
 - `dataStateBadge(record, { clock })`: color plus text for the state of the data — current, old, not recorded, confirmed nothing new, not comparable. Color never means "normal".
 - `attentionBadge(result)`: shows the output of `readings.attention` with the criterion's `defined_by`, source and review status; `no_criterion` and `not_assessed` read as such. "demo" reads as such.
 - Change from the personal baseline is shown as text with how many measurements support it, never as a color judgment.
-- `renderChart(doc, chartModel)`, `renderTable(doc, tableModel)` and `renderBadge(doc, badge)`: DOM renderers for the models above, exported so that a view never imports a file inside this module. They build elements with `textContent` and `setAttribute` only; record text is never parsed as markup.
+- `renderChart(doc, chartModel)`, `renderTable(doc, tableModel)` and `renderBadge(doc, badge)`: DOM renderers for the models above, exported so that a view never imports a file inside this module. They build elements with `textContent` and `setAttribute` only; record text is never parsed as markup. `renderTable` returns the table inside a keyboard-reachable, named region (`role="region"`, `tabindex="0"`, `aria-label` equal to the caption) so that a wide table scrolls inside itself instead of widening the page.
 
 `services` also carries `readings`, `importers` (M21) and `openMemoryStore()`, which opens a private memory store. A view that handles imported real data (M22) keeps it in that private store and never writes it to `services.store`.
 

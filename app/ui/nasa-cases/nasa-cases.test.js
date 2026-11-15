@@ -157,9 +157,13 @@ test('M22-P3/X7: two subjects are two panels, never one series; the limit and un
   try {
     let current=await load(vm,'BUT_CGM','a.csv',cgm('2100-01-01 08:00:00;5.5','2100-01-01 08:05:00;5.6'),'A');
     current=await load(current,'BUT_CGM','b.csv',cgm('2100-01-01 08:00:00;9.1','2100-01-01 08:05:00;9.2'),'B');
+    const valuesOf=panel=>panel.chart.segments.flatMap(s=>s.points).map(p=>p.value);
+    // First selection after loading, with the first-selected subject NOT the one whose series is cold: each panel must read its own subject.
+    const reversed=await current.interactions.select({subjects:['B','A']});
+    assert.deepEqual(reversed.panels.map(p=>p.subject),['B','A']);
+    assert.deepEqual(reversed.panels.map(valuesOf),[[9.1,9.2],[5.5,5.6]]);
     const both=await current.interactions.select({subjects:['A','B']});
     assert.equal(both.panels.length,2);
-    const valuesOf=panel=>panel.chart.segments.flatMap(s=>s.points).map(p=>p.value);
     assert.deepEqual(both.panels.map(valuesOf),[[5.5,5.6],[9.1,9.2]]);
     const ids=both.panels.map(p=>p.chart.segments.flatMap(s=>s.points).map(x=>x.id));
     assert.equal(ids[0].some(id=>ids[1].includes(id)),false);
@@ -236,6 +240,44 @@ test('M22-X13: a session keeps a bounded number of file cards',async()=>{
     assert.equal(current.files.length,50);
     const over=await load(current,'BUT_CGM','one-more.csv',CGM_TEXT,'1');
     assert.equal(over.message.kind,'error');assert.match(over.message.text,/at most 50/i);assert.equal(over.files.length,50);assert.deepEqual(over.subjects,[]);
+  } finally {await main.close();}
+});
+
+test('M22-X14: choosing a day or variable reuses the computed series; loading another file refreshes it',async()=>{
+  const counts={list:0,series:0};
+  const {main,services}=await setup();
+  const spy={...services,
+    openMemoryStore:async()=>{const opened=await openStore({kind:'memory',name:'spy'});const real=opened.value;
+      return {ok:true,value:{list:(...a)=>{counts.list++;return real.list(...a);},saveBatch:(...a)=>real.saveBatch(...a),close:()=>real.close()}};},
+    readings:{...readings,seriesBySourceTime:(...a)=>{counts.series++;return readings.seriesBySourceTime(...a);}}};
+  try {
+    let vm=await model(spy,{});
+    vm=await load(vm,'BUT_CGM','a.csv',CGM_TEXT,'S');
+    assert.equal(vm.panels[0].chart.segments.flatMap(s=>s.points).length+vm.panels[0].chart.breaks.length>0,true);
+    const afterLoad={...counts};
+    assert.ok(afterLoad.series>=1);
+    vm=await vm.interactions.select({day:'2100-01-02'});
+    vm=await vm.interactions.select({day:'2100-01-01'});
+    vm=await vm.interactions.select({variables:{S:'glucose'}});
+    assert.deepEqual(counts,afterLoad,'no new store read and no new series query for selections on loaded data');
+    assert.equal(vm.panels[0].chart.day,'2100-01-01');
+    // A second file for the same subject must show up: the cache must have been invalidated.
+    const before=vm.panels[0].chart.days.length;
+    vm=await load(vm,'BUT_CGM','b.csv',cgm('2100-01-05 10:00:00;6.1','2100-01-05 10:05:00;6.2'),'S');
+    assert.ok(counts.series>afterLoad.series,'the series was recomputed after the new file');
+    assert.equal(vm.panels[0].chart.days.length,before+1);
+    assert.ok(vm.panels[0].chart.days.includes('2100-01-05'));
+    // One subject with several variables: the cache is keyed by variable, so each selection shows its own series.
+    const mr080g='Campaign,Subject,Date,Test_Phase,BR_Day,Test,Stage,HR,VO2,VCO2,RER,VO2 (ml/kg/min),VE,FEO2,FECO2\nC3C,7772,5/7/2006,PRE_TEST,-1,Pre Bed Rest Maximum Cycle-Light,50 Watt Av.,100,1,0.8,0.8,20,30,17,4';
+    let multi=await model(spy,{});
+    multi=await load(multi,'MR080G','m.csv',mr080g);
+    const texts=panel=>JSON.stringify(panel.unordered.map(u=>u.table.rows));
+    multi=await multi.interactions.select({variables:{'7772':'pulse'}});
+    assert.match(texts(multi.panels[0]),/100 bpm/);assert.equal(multi.panels[0].variable,'pulse');
+    multi=await multi.interactions.select({variables:{'7772':'FECO2'}});
+    assert.match(texts(multi.panels[0]),/4 %/);assert.doesNotMatch(texts(multi.panels[0]),/100 bpm/);assert.equal(multi.panels[0].variable,'FECO2');
+    multi=await multi.interactions.select({variables:{'7772':'pulse'}});
+    assert.match(texts(multi.panels[0]),/100 bpm/);
   } finally {await main.close();}
 });
 

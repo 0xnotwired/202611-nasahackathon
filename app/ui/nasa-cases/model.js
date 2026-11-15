@@ -72,8 +72,13 @@ async function buildPanel(services, session, records, summary, selection) {
   const source = describeSource(first ? first.source : undefined);
   const panel = {subject: summary.subject, study: [...summary.studies].join('; '), origin_text: originText(summary.origins), variable, variables,
     phases: counts(summary.phases, 'phase'), doi: source.doi, clock_text: 'no orderable source clock', chart: null, chart_error: null, unordered: [], other_clocks: [], notes: []};
-  let series;
-  try { series = await readings.seriesBySourceTime(session.store, {subject: summary.subject, variable}); } catch { series = {ok: false, error: {message: 'the readings query failed'}}; }
+  // The series depends only on the loaded records, so a selection change reuses it; loading a file clears the cache.
+  const cacheKey = `${summary.subject}\u0000${variable}`;
+  let series = session.cache.series.get(cacheKey);
+  if (!series) {
+    try { series = await readings.seriesBySourceTime(session.store, {subject: summary.subject, variable}); } catch { series = {ok: false, error: {message: 'the readings query failed'}}; }
+    session.cache.series.set(cacheKey, series);
+  }
   if (series.ok === false) { panel.chart_error = `This series could not be built: ${series.error.message}`; return panel; }
   if (series.clock) panel.clock_text = `source clock ${series.clock.scope}: ${series.clock.calendar} calendar, ${series.clock.precision} precision, time zone not established`;
   panel.other_clocks = series.other_clocks.filter(clock => clock.orderable).map(({scope, n}) => ({scope, n}));
@@ -101,10 +106,19 @@ async function buildPanel(services, session, records, summary, selection) {
   return panel;
 }
 
+/** Records and their per-subject summary, read from the private store once until something is loaded. */
+async function loadedRecords(session) {
+  if (!session.cache.records) {
+    const listed = await session.store.list('records', {});
+    const records = listed.ok ? listed.value : [];
+    session.cache.records = {records, summaries: summarize(records)};
+  }
+  return session.cache.records;
+}
+const clearCache = session => { session.cache.records = null; session.cache.series = new Map(); };
+
 async function buildViewModel(services, session, note) {
-  const listed = await session.store.list('records', {});
-  const records = listed.ok ? listed.value : [];
-  const summaries = summarize(records);
+  const {records, summaries} = await loadedRecords(session);
   const subjects = [...summaries.values()].map(entry => ({subject: entry.subject, origin_text: originText(entry.origins), study: [...entry.studies].join('; '),
     variables: counts(entry.variables, 'variable'), phases: counts(entry.phases, 'phase')}));
   const panels = [];
@@ -153,6 +167,7 @@ async function loadFile(services, session, input) {
     if (!saved.ok) { failure = saved.error.code; break; }
     kept += slice.length;
   }
+  clearCache(session); // records were written (fully or partly): every cached read and series is stale
   if (failure && kept === 0) return message('error', `The records could not be kept in this session (${failure}); nothing was loaded.`);
   const partial = failure !== null;
   const keptRecords = records.slice(0, kept);
@@ -170,7 +185,7 @@ async function loadFile(services, session, input) {
 
 async function select(services, session, input) {
   if (!plain(input)) return message('error', 'Nothing to select.');
-  const known = summarize((await session.store.list('records', {})).value ?? []);
+  const known = (await loadedRecords(session)).summaries;
   const next = {subjects: [...session.selection.subjects], variables: {...session.selection.variables}, day: session.selection.day};
   const subjects = own(input, 'subjects');
   if (subjects !== undefined) {
@@ -221,6 +236,6 @@ export async function model(services) {
   let opened;
   try { opened = await services.openMemoryStore(); } catch { opened = null; }
   if (!opened || opened.ok !== true) return errorModel(`NASA cases cannot start: its private store did not open${opened && opened.error ? ` (${opened.error.message})` : ''}.`);
-  const session = {store: opened.value, files: [], selection: {subjects: [], variables: {}, day: null}};
+  const session = {store: opened.value, files: [], selection: {subjects: [], variables: {}, day: null}, cache: {records: null, series: new Map()}};
   return buildViewModel(services, session, null);
 }

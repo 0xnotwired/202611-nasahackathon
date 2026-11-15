@@ -3,12 +3,13 @@
 :root {
   color-scheme: dark light;
   --bg: #0b1320; --panel: #121e2f; --text: #e8eef6; --muted: #a9b7c9; --border: #3a4c63;
+  --control-border: #7c8fa8; /* 3:1 or better against the page and the panel (WCAG 1.4.11) */
   --link: #8ebdff; --focus: #ffd166; --line: #8ebdff; --gap: #f2c782;
   --info: #8ebdff; --warning: #f2c782; --error: #ff9b9b;
   --sans: system-ui, "Segoe UI", Arial, sans-serif;
 }
 @media (prefers-color-scheme: light) {
-  :root { --bg: #ffffff; --panel: #f2f5f9; --text: #14202e; --muted: #435468; --border: #8a99ad;
+  :root { --bg: #ffffff; --panel: #f2f5f9; --text: #14202e; --muted: #435468; --border: #8a99ad; --control-border: #5f6f85;
     --link: #0b4fd1; --focus: #8a4b00; --line: #0b4fd1; --gap: #8a4b00; --info: #0b4fd1; --warning: #8a4b00; --error: #a31515; }
 }
 * { box-sizing: border-box; }
@@ -24,9 +25,9 @@ main:focus-visible { outline: 3px solid var(--focus); }
 .skip { position: absolute; left: -999px; top: 8px; background: var(--panel); padding: 8px 12px; border: 2px solid var(--focus); }
 .skip:focus { left: 8px; z-index: 10; }
 #status { color: var(--muted); max-width: 70ch; }
-.topbar { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: end; padding: 16px 0 8px; }
-.config { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; }
-.config select { min-height: 44px; padding: 4px 8px; background: var(--panel); color: var(--text); border: 1px solid var(--border); border-radius: 6px; max-width: 100%; }
+.topbar { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: end; padding: 16px 0 8px; min-width: 0; }
+.config { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; flex: 1 1 20rem; min-width: 0; }
+.config select { min-height: 44px; padding: 4px 8px; background: var(--panel); color: var(--text); border: 1px solid var(--control-border); border-radius: 6px; flex: 1 1 12rem; min-width: 0; max-width: 100%; }
 nav ul { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 12px 0; }
 nav a { display: inline-block; min-height: 44px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; text-decoration: none; }
 nav a[aria-current="page"] { background: var(--panel); border-width: 2px; font-weight: 700; text-decoration: underline; }
@@ -55,11 +56,15 @@ main { padding: 8px 0; }
 .chart .tick { fill: var(--muted); font-size: 11px; }
 .legend { color: var(--muted); font-size: 0.9rem; margin: 4px 0; }
 .field { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; margin: 10px 0; }
-.field input[type="text"], .field select { min-height: 36px; padding: 4px 8px; background: var(--panel); color: var(--text); border: 1px solid var(--border); border-radius: 6px; max-width: 100%; }
-button[type="submit"] { min-height: 44px; padding: 8px 18px; background: var(--panel); color: var(--text); border: 2px solid var(--border); border-radius: 8px; font: inherit; cursor: pointer; }
+.field input[type="text"], .field select { min-height: 36px; padding: 4px 8px; background: var(--panel); color: var(--text); border: 1px solid var(--control-border); border-radius: 6px; max-width: 100%; }
+.field input[type="file"] { min-height: 36px; max-width: 100%; }
+button[type="submit"] { min-height: 44px; padding: 8px 18px; background: var(--panel); color: var(--text); border: 2px solid var(--control-border); border-radius: 8px; font: inherit; cursor: pointer; }
 fieldset { border: 1px solid var(--border); border-radius: 8px; margin: 12px 0; }
 .card { border: 1px solid var(--border); border-radius: 8px; padding: 4px 16px 12px; margin: 14px 0; background: var(--panel); }
-.card dl { display: grid; grid-template-columns: max-content 1fr; gap: 2px 14px; }
+.card dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 2px 14px; }
+.card dd, .citation, .notice, .legend, figcaption { overflow-wrap: anywhere; }
+.data-table th, .data-table td { overflow-wrap: break-word; }
+.table-scroll { overflow-x: auto; max-width: 100%; }
 .card dt { font-weight: 700; } .card dd { margin: 0; }
 .citation { max-width: 80ch; font-size: 0.92rem; }
 figure { margin: 0 0 8px; }
