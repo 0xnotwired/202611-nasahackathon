@@ -1,0 +1,71 @@
+{
+  "data": [
+    {
+      "id": "m-01",
+      "astronautId": "astro-01",
+      "metricCode": "heart_rate",
+      "value": 72,
+      "recordedAt": "2026-11-15T08:00:00Z",
+      "source": "simulator"
+    },
+    {
+      "id": "m-02",
+      "astronautId": "astro-01",
+      "metricCode": "oxygen_saturation",
+      "value": 98,
+      "recordedAt": "2026-11-15T08:00:00Z",
+      "source": "simulator"
+    },
+    {
+      "id": "m-03",
+      "astronautId": "astro-01",
+      "metricCode": "body_temperature",
+      "value": 36.6,
+      "recordedAt": "2026-11-15T08:00:00Z",
+      "source": "simulator"
+    },
+    {
+      "id": "m-04",
+      "astronautId": "astro-01",
+      "metricCode": "sleep_duration",
+      "value": 7.2,
+      "recordedAt": "2026-11-15T06:00:00Z",
+      "source": "simulator"
+    },
+    {
+      "id": "m-05",
+      "astronautId": "astro-01",
+      "metricCode": "heart_rate",
+      "value": 75,
+      "recordedAt": "2026-11-14T08:00:00Z",
+      "source": "simulator"
+    }
+  ],
+  "metrics": [
+    {
+      "code": "heart_rate",
+      "label": "Frecuencia cardíaca",
+      "unit": "lpm"
+    },
+    {
+      "code": "oxygen_saturation",
+      "label": "Saturación de oxígeno",
+      "unit": "%"
+    },
+    {
+      "code": "body_temperature",
+      "label": "Temperatura corporal",
+      "unit": "°C"
+    },
+    {
+      "code": "sleep_duration",
+      "label": "Duración del sueño",
+      "unit": "h"
+    }
+  ],
+  "meta": {
+    "contractVersion": "0.1",
+    "dataKind": "synthetic",
+    "clinicalValidation": "pending"
+  }
+}

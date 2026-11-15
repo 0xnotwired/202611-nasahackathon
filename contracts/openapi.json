@@ -1,0 +1,461 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Órbita API",
+    "version": "0.1",
+    "description": "Contrato compartido frontend/backend. Solo simulación y lectura; los borradores del usuario siguen en el navegador."
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:4000/api/v1"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "Estado técnico del proceso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "service",
+                    "contractVersion"
+                  ],
+                  "properties": {
+                    "status": {
+                      "const": "ok"
+                    },
+                    "service": {
+                      "type": "string"
+                    },
+                    "contractVersion": {
+                      "const": "0.1"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/astronauts": {
+      "get": {
+        "operationId": "listAstronauts",
+        "responses": {
+          "200": {
+            "description": "Datos sintéticos; validación médica pendiente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AstronautsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/astronauts/{astronautId}/measurements": {
+      "get": {
+        "operationId": "getMeasurements",
+        "parameters": [
+          {
+            "name": "astronautId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Datos sintéticos; validación médica pendiente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeasurementsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Astronauta inexistente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/astronauts/{astronautId}/mission": {
+      "get": {
+        "operationId": "getMission",
+        "parameters": [
+          {
+            "name": "astronautId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Datos sintéticos; validación médica pendiente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MissionResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Astronauta inexistente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AstronautsResponse": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "callsign": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "role": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "mission": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "id",
+                "callsign",
+                "role",
+                "mission"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "meta": {
+            "type": "object",
+            "properties": {
+              "contractVersion": {
+                "type": "string",
+                "const": "0.1"
+              },
+              "dataKind": {
+                "type": "string",
+                "const": "synthetic"
+              },
+              "clinicalValidation": {
+                "type": "string",
+                "const": "pending"
+              }
+            },
+            "required": [
+              "contractVersion",
+              "dataKind",
+              "clinicalValidation"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ],
+        "additionalProperties": false
+      },
+      "MeasurementsResponse": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "astronautId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "metricCode": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "value": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "recordedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                },
+                "source": {
+                  "type": "string",
+                  "enum": [
+                    "simulator",
+                    "manual",
+                    "sensor"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "astronautId",
+                "metricCode",
+                "value",
+                "recordedAt",
+                "source"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "metrics": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "label": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "unit": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "code",
+                "label",
+                "unit"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "meta": {
+            "type": "object",
+            "properties": {
+              "contractVersion": {
+                "type": "string",
+                "const": "0.1"
+              },
+              "dataKind": {
+                "type": "string",
+                "const": "synthetic"
+              },
+              "clinicalValidation": {
+                "type": "string",
+                "const": "pending"
+              }
+            },
+            "required": [
+              "contractVersion",
+              "dataKind",
+              "clinicalValidation"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data",
+          "metrics",
+          "meta"
+        ],
+        "additionalProperties": false
+      },
+      "MissionResponse": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "evaluations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "recordedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                    },
+                    "value": {
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "unit": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "method": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "recordedAt",
+                    "value",
+                    "unit",
+                    "method"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "sessions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "label": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "scheduledAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                    },
+                    "durationMinutes": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "completed": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "label",
+                    "scheduledAt",
+                    "durationMinutes",
+                    "completed"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "evaluations",
+              "sessions"
+            ],
+            "additionalProperties": false
+          },
+          "meta": {
+            "type": "object",
+            "properties": {
+              "contractVersion": {
+                "type": "string",
+                "const": "0.1"
+              },
+              "dataKind": {
+                "type": "string",
+                "const": "synthetic"
+              },
+              "clinicalValidation": {
+                "type": "string",
+                "const": "pending"
+              }
+            },
+            "required": [
+              "contractVersion",
+              "dataKind",
+              "clinicalValidation"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "data",
+          "meta"
+        ],
+        "additionalProperties": false
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
