@@ -23,6 +23,9 @@ test('M02-P2: equipment presence must be explicitly listed',()=>{
   assert.equal(mission.hasEquipment(sample(),'demo-device'),true);
   assert.equal(mission.hasEquipment(sample(),'missing'),false);
   assert.equal(mission.hasEquipment(sample(),'unlisted-catalog-id'),false);
+  const empty={...sample(),available_equipment:[]};
+  assert.deepEqual(mission.validateConfig(empty),{ok:true,value:empty});
+  assert.equal(mission.hasEquipment(empty,'demo-device'),false);
 });
 test('M02-P3/X3: phases are half-open UTC intervals with no nearest fallback',()=>{
   const c={...sample(),phases:[{name:'first',from:'2026-11-15T00:00:00Z',to:'2026-11-16T00:00:00Z'},{name:'second',from:'2026-11-16T00:00:00Z',to:'2026-11-17T00:00:00Z'}]};
@@ -40,6 +43,8 @@ test('M02-P4: environments and criterion provenance are explicit',()=>{
 test('M02-P5: a criterion needs a finite bound and zero is a bound',()=>{
   const none=criterion(); delete none.low; delete none.high;
   fieldError({...sample(),attention_criteria:[none]},'attention_criteria[0]');
+  const negative={...sample(),attention_criteria:[{...criterion(),low:-1,high:0}]};
+  assert.deepEqual(mission.validateConfig(negative),{ok:true,value:negative});
   const low=criterion(); delete low.high;
   assert.equal(mission.validateConfig({...sample(),attention_criteria:[low]}).ok,true);
   const high=criterion(); delete high.low; high.high=0;
