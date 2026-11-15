@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Órbita — Foundation</title>
+<h1>Órbita foundation</h1>
+<p id="status">Open this page through the local server. Application modules are not available yet.</p>
+<script type="module">
+import { CONTRACT_VERSION } from './contracts/data.js';
+document.querySelector('#status').textContent = `Foundation modules loaded (contracts ${CONTRACT_VERSION}). Product views are not available yet.`;
+document.documentElement.dataset.modules = 'loaded';
+</script>
+</html>

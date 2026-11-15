@@ -75,7 +75,7 @@ No installation, server or account is needed. The interface is self-contained an
 | HTML mockup with synthetic data, interactive body and charts. | Integration of health, physical adaptation, habitat and a shared plan. |
 | Guided check-in, local demo storage and TXT summary. | Procedures adapted to mission resources and integrated follow-up of results. |
 | Product definition, roadmap and targeted academic review. | Sensor connectors, sync and a final persistence architecture. |
-| Build plan in 25 modules, with contracts and work orders. | All product code: the `app/` folder does not exist yet. |
+| Build plan in 25 modules, with contracts and work orders. | Domain-module implementations: `app/` currently contains the M00 foundation and placeholders. |
 
 The mockup mainly shows the initial check-in. It has no sensor integration, loaded NASA data, medical communication, AI model or validated clinical protocols. Use only fictional information in the demo. Choosing NASA sources does not imply certification or endorsement of the tool.
 
@@ -119,7 +119,7 @@ Studies, participants, missions, methods and frequencies are kept separate unles
 
 ## How it is built
 
-The product is not built yet. What exists is the plan to build it with several AI agents in parallel, under human review.
+The M00 foundation is implemented and independently reviewed; domain modules remain placeholders. Further modules are built with AI agents under human review.
 
 - **25 modules in 7 phases.** Each phase delivers something the astronaut can use: save records without losing their origin, see their situation, complete a procedure, close an episode.
 - **One module, one agent, one folder.** Modules communicate through [contracts](docs/CONTRACTS.md) fixed in advance, and each agent receives a [work order](docs/work-orders/) with its acceptance criteria.
@@ -151,7 +151,7 @@ Working and provenance rules are in [AGENTS.md](AGENTS.md). AI use must be recor
 
 The next results are understanding the integrated mission situation, completing plan tasks and reviewing changes with applicable procedures and follow-up. Their verification must cover missing data, provenance, consistency across views, task recovery, accessibility and understanding of the next step.
 
-The repository contains documentation, a build plan and a mockup. The stack decisions are recorded in [IMPLEMENTATION_LAYERS.md](docs/IMPLEMENTATION_LAYERS.md); no product code exists yet. The only available command is `python3 scripts/check_docs.py`, which checks the consistency of the documentation and the module board; there is no build, product test, clinical test or deployment. To contribute, follow [AGENTS.md](AGENTS.md) and propose changes through branches and pull requests. The integration branch is `english`.
+The repository contains documentation, two mockups and the M00 foundation. The stack decisions are recorded in [IMPLEMENTATION_LAYERS.md](docs/IMPLEMENTATION_LAYERS.md). Run `node --test` for the foundation and G0 checks, `python3 scripts/check_docs.py` for documentation consistency, and `npm run serve` for the minimal modular shell. No dependencies need installation. The [G0 record](docs/experiments/G0.md) documents user-authorized local integration, 37 passing tests, the HTTP browser check and the unverified file-origin CORS control. There are no implemented domain modules, clinical tests or deployment. To contribute, follow [AGENTS.md](AGENTS.md) and propose changes through branches and pull requests. The integration branch is `english`.
 
 ## License
 

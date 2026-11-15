@@ -14,6 +14,16 @@ Date: November 14, 2026. For any AI agent (or person) continuing Órbita. [ROADM
 | | Loaded NASA data; the originals are not in the repo |
 | Orchestration plan, contracts and 25 work orders, as proposals | Chosen and reviewed clinical procedure |
 
+## Foundation integration status — November 15, 2026
+
+M00 is implemented and independently reviewed; G0's technical checks passed
+(37 Node tests and the actual HTTP shell in Chromium). The user's instruction
+"hacelo" authorized local integration and gate closure after the reported
+results. See [G0](experiments/G0.md) for predictions, controls and the explicit
+file:// limitation. No remote push or deployment is part of this integration.
+Modules M01–M24 remain placeholders; no Level 0 checkbox is complete yet.
+Next work: F1 wave 1, M01/M02/M03, each with its own builder and reviewer.
+
 ## Destination
 
 A local application that lets an astronaut complete a **care episode** from start to finish, with health, adaptation and habitat in a single history, and that changes its behavior according to the mission's equipment and communication.
@@ -140,3 +150,4 @@ Each agent checks the real status with `git status`, `git log` and the tests bef
 | 2026-11-15 | Claude (orchestrator, web session) | Method and layers committed (c1535d2). User decisions of the day recorded: no already-made projects from others except dependencies approved by name (default none); D5, D7 and D8 confirmed by accepting the recommendation; code license Apache-2.0 (`LICENSE`). First delivery list of resources in `RESOURCES_USED.md`, licenses read in the installed copies. Tried to install Firefox and WebKit for Playwright: refused by the network allowlist (403) | Gate G0 experiments and threat model not done; no product code written; Chrome for Testing is not open source (user decided on 15/11 to keep it as a development tool); dataset citation strings not written; the event rules on AI use and the meeting rule on already-made projects are not verified |
 | 2026-11-15 | Claude (orchestrator, web session) | Challenge text supplied by the user compared with the plan; gaps closed by user decisions D10–D14 (data-state color, attention criteria as configuration, environment presets, blood sugar and mood, plan progress instead of gamification). Contracts 0.4; work orders M01, M02, M03, M05, M06, M07, M14, M15, M21 got new criteria and experiments. Dataset citations in `DATASET_CITATIONS.md`; blood sugar and mood research in DATASETS.md | Nothing built or run for these decisions; BUT CGM not downloaded or checked against its page; NLSP citation fields still missing; gate G0 open |
 | 2026-11-15 | Claude (orchestrator, web session) | BUT CGM citation compared with its page by elements (authors, year, title, version, RRID, DOI) and the standard PhysioNet citation added; license CC BY 4.0 confirmed. Handoff updated: AGENTS.md (D10–D14 rules, terrestrial origin, mood and gamification limits), CLAUDE.md ("Where to pick up"), blockers in the plan and here | BUT CGM not downloaded: physionet.org and its AWS bucket refused by the network; its columns and unit unknown. Nothing built |
+| 2026-11-15 | OpenAI Codex (M00 builder and orchestration); independent Codex reviewer | RUN: M00 foundation, JSDoc contracts 0.5, all 25 placeholders, loopback static server, core reference and negative controls. Independent review found and verified fixes for directory, missing-state and missing-export test gaps. RUN: G0-W1/W3 and 37 tests pass. BROWSER: G0-W2 HTTP shell and blocked-import control pass in Chromium 156. User instructed local integration/G0 closure with "hacelo" after results were reported | file:// CORS remains unverified under managed policy. No remote push. No F1 module implemented; no storage, sharing, clinical or product-level validation. Records: M00.md and G0.md in docs/experiments/ |
