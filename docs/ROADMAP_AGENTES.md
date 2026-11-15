@@ -24,7 +24,7 @@ Se construye por niveles. **No se propone un MVP.** Si el tiempo se acaba, se en
 
 Ya no viven en este documento, para que no haya dos copias que diverjan:
 
-- **Decisiones D1–D8** (lenguaje, dependencias, persistencia, pruebas, estructura, forma de abrir, protección de datos, historial sin edición): [PLAN_ORQUESTACION.md](PLAN_ORQUESTACION.md). Siguen pendientes de confirmación del usuario.
+- **Decisiones D1–D9** (lenguaje, dependencias, persistencia, pruebas, estructura, forma de abrir, protección de datos, historial sin edición, sincronización simulada): [PLAN_ORQUESTACION.md](PLAN_ORQUESTACION.md). Siguen pendientes de confirmación del usuario.
 - **Modelo de datos, reglas R1–R9 e interfaces:** [CONTRATOS.md](CONTRATOS.md).
 - **Quién construye qué:** [modulos.csv](modulos.csv) y [ordenes/](ordenes/).
 
@@ -107,7 +107,7 @@ Cada nivel termina con: revisión adversarial propia (¿rompí un invariante de 
 
 | Bloqueante | Quién | Afecta a |
 |---|---|---|
-| Confirmar las decisiones técnicas D1–D8 (compuerta G0) | Usuario | Todo el código |
+| Confirmar las decisiones técnicas D1–D9 (compuerta G0) | Usuario | Todo el código |
 | Elegir procedimiento de la demo y su fuente clínica | Usuario, con revisión competente | Nivel 2 |
 | Confirmar [V1 4030] en NASA-STD-3001 vol. 1 rev. C | Cualquiera, abriendo el PDF de S03 | Nivel 1, radiación |
 | Texto oficial del desafío 2026 y guía de evaluación | Usuario, desde el navegador | Presentación |
@@ -131,3 +131,4 @@ Cada agente verifica el estado real con `git status`, `git log` y las pruebas an
 | 2026-11-14 | Claude (sesión web) | Serie B de investigación, mejoras M1–M8, este roadmap, CLAUDE.md, `scripts/check_docs.py` ejecutado en verde | Nivel 0 sin empezar; ningún código de producto escrito |
 | 2026-11-15 | Claude (sesión web) | B01, B03 y B06 leídos completos desde PDF del usuario; corregida la comparación de B03; mejora M9 de privacidad; `check_docs.py` en verde | Nivel 0 sin empezar; ningún código de producto escrito |
 | 2026-11-14 | Claude (orquestador, sesión web) | Plan de orquestación, contratos v0.1, tablero y 24 órdenes; AGENTS.md, README, TECNICO y CLAUDE.md actualizados; `check_docs.py` ampliado y visto fallar de seis maneras; comprobado que `node --test` corre un módulo ES en Node 22 | Compuerta G0 sin aprobar: D1–D8 sin confirmar. Ningún módulo empezado. Nada comprobado en navegador |
+| 2026-11-15 | Claude (orquestador, sesión web) | Decisión D9: envío a tierra con sincronización simulada (opción C simulada), elegida por el usuario; módulo M24 en F4 ola 3, contratos v0.2 con forma `Envio` e interfaz `sincronizacion`. Servidor real queda como nivel posterior | D1–D8 siguen sin confirmar. Ningún módulo empezado |

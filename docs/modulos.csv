@@ -23,3 +23,4 @@ M20,Vista Me siento distinto,4,3,3,app/ui/me-siento-distinto/,M03;M07;M16;M17;M1
 M21,Importadores NASA,5,1,4,app/importadores/,M01;M04,ordenes/M21-importadores.md,pendiente
 M22,Vista Casos NASA,5,2,4,app/ui/casos-nasa/,M06;M07;M21,ordenes/M22-ui-casos-nasa.md,pendiente
 M23,Empaquetado,6,1,-,scripts/empaquetar.mjs,M20,ordenes/M23-empaquetado.md,pendiente
+M24,Sincronización simulada y panel en tierra,4,3,3,app/sincronizacion/;app/ui/tierra/,M07;M18;M19,ordenes/M24-sincronizacion-simulada.md,pendiente

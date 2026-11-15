@@ -90,6 +90,15 @@ Episodio
 
 Compartido
   id, sujeto, momento, que (ids o "resumen:<id>"), con, medio
+
+Envio
+  id                  único; el receptor lo usa para no duplicar
+  compartido_id       el Compartido que lo originó
+  sujeto, que
+  creado              cuándo se generó el contenido
+  enviado             cuándo salió de la cola
+  recibido?           cuándo lo recibió tierra; ausente si no llegó
+  estado              en_cola | en_transito | recibido
 ```
 
 «Indicada», «realizada» y «resultado» son tres cosas distintas: `Tarea.cumplimiento`, `Ejecucion` y `resultado_ids`. Una tarea realizada no implica un resultado.
@@ -239,6 +248,18 @@ importarAdaptacion(texto, { estudio }) → Resultado<{ registros, rechazados, om
 
 El texto importado es una entrada no confiable: se valida fila por fila. Los registros salen con `origen: "analogo_terrestre"`, el `sujeto` del archivo y `Test_Phase` en `fase_mision`. Los comentarios clínicos libres no se importan; `omitidos` dice cuántos.
 
+### sincronizacion (M24)
+
+```
+crearEnlace({ reloj, modo, demora_ms })        → Enlace     modo: tiempo_real | demora | sin_enlace
+Enlace.cambiarModo(modo, demora_ms?)
+encolar(almacen, compartidoId, { reloj, nuevoId }) → Resultado<Envio>
+avanzar(almacen, enlace, { reloj })             → Resultado<Envio[]>   entrega lo que corresponde según el modo
+recibidos(almacen, { sujeto? })                → Resultado<Envio[]>   lo que ve el panel en tierra
+```
+
+Simulado: no hay red ni servidor. Solo se encola lo que ya pasó por `privacidad.registrarCompartido`; nada sale sin esa acción. Un envío entregado dos veces se recibe una vez (por `id`). `recibidos` no incluye a quien no envió nada, y la vista de tierra muestra «sin envíos» en lugar de un estado inventado. La interfaz de usuario rotula «sincronización simulada». Un servidor real implementará estas mismas funciones.
+
 ## 5. Interfaz de usuario
 
 Cada vista es una carpeta con dos piezas:
@@ -268,3 +289,4 @@ Todo se usa con teclado. Ningún estado se comunica solo con color. Las vistas r
 | Versión | Fecha | Cambio | Módulos afectados |
 |---|---|---|---|
 | 0.1 | 2026-11-14 | Versión inicial | Todos |
+| 0.2 | 2026-11-15 | Forma `Envio` e interfaz `sincronizacion` (D9, opción C simulada) | M24; M19 y M18 solo como proveedores |

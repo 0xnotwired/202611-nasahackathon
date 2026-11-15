@@ -33,7 +33,7 @@ docs/ROADMAP.md           niveles desde el producto
 docs/PLAN_ORQUESTACION.md fases, olas, módulos, roles, compuertas
 docs/CONTRATOS.md         interfaces entre módulos y reglas R1–R9; solo el orquestador lo edita
 docs/modulos.csv          tablero: rutas propias, dependencias y estado de cada módulo
-docs/ordenes/             una orden de trabajo por módulo (M00–M23)
+docs/ordenes/             una orden de trabajo por módulo (M00–M24)
 docs/ROADMAP_AGENTES.md   casillas de cada nivel + registro de relevos
 docs/BASE_ACADEMICA.md    fuentes S01–S18 (y copia de A01–A06)
 docs/INVESTIGACION_APLICADA.md    fuentes A01–A06

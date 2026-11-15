@@ -1,6 +1,6 @@
 # Órbita: plan de orquestación
 
-Fecha: 14 de noviembre de 2026. Plan para que varios agentes de IA construyan Órbita en paralelo sin pisarse. Lo mantiene el orquestador. Es una **propuesta**: las decisiones D1–D8 necesitan confirmación del usuario antes de escribir código de producto.
+Fecha: 14 de noviembre de 2026. Plan para que varios agentes de IA construyan Órbita en paralelo sin pisarse. Lo mantiene el orquestador. Es una **propuesta**: las decisiones D1–D9 necesitan confirmación del usuario antes de escribir código de producto.
 
 Orden de autoridad: [AGENTS.md](../AGENTS.md) y [PROPUESTA_FINAL.md](PROPUESTA_FINAL.md) ganan sobre este plan. Este plan gana sobre las órdenes de trabajo.
 
@@ -26,6 +26,7 @@ No hay MVP. Si el tiempo se acaba, se entrega el nivel más alto que haya pasado
 | D6 | Cómo se abre | Servidor estático local escrito por el equipo. Un solo archivo HTML para entregar es el módulo M23, al final | Ver «Trampas conocidas» |
 | D7 | Protección de datos | Desbloqueo por sesión y registro de lo compartido. **Sin cifrado**: no se promete confidencialidad en disco | Añadir cifrado es un módulo nuevo con su modelo de amenazas |
 | D8 | Historial | Los registros no se editan ni se borran: una corrección es un registro nuevo que señala al anterior | Cambian M01 y M04 |
+| D9 | Envío a tierra | **Sincronización simulada** (opción C simulada, elegida por el usuario el 15/11/2026): una cola de envío, un enlace simulado y un panel en tierra dentro de la misma app, rotulados en pantalla. Sin servidor. La sincronización vive detrás de la interfaz `sincronizacion` de CONTRATOS.md para que un servidor real la reemplace después sin tocar el resto | Un servidor real es un nivel posterior, con su modelo de amenazas, y reabre D7 |
 
 Comprobado en esta sesión: `node --test` corre un módulo ES con su prueba en Node 22 sin instalar nada. No comprobado: nada en navegador.
 
@@ -46,6 +47,8 @@ Un módulo solo importa de capas inferiores, y solo por el `index.js` del otro m
 
 ```
 ui/           vistas; reciben los servicios por parámetro
+  ↑
+sincronizacion                       cola de envío, enlace simulado y lo que recibe tierra
   ↑
 copiloto  resumen                    componen el episodio para mostrarlo o exportarlo
   ↑
@@ -75,7 +78,7 @@ Una **ola** es un grupo de módulos que se construyen a la vez. La fuente de ver
 | | | 2 | M15 | |
 | **F4 Revisar un cambio** | Completa un episodio desde «me siento distinto» hasta el seguimiento | 1 | M16, M19 | G4: nivel 3 |
 | | | 2 | M17, M18 | |
-| | | 3 | M20 | |
+| | | 3 | M20, M24 | |
 | **F5 Casos NASA** | Explora datos reales de NASA, separados del escenario ficticio | 1 | M21 | G5: nivel 4 |
 | | | 2 | M22 | |
 | **F6 Cierre** | Recibe un archivo que abre sin instalar nada | 1 | M23 | G6: entrega |
@@ -107,6 +110,7 @@ Los niveles y sus casillas están en [ROADMAP_AGENTES.md](ROADMAP_AGENTES.md).
 | M18 | Resumen | `app/resumen/` | M02, M16, M19 | [M18](ordenes/M18-resumen.md) |
 | M19 | Privacidad | `app/privacidad/` | M01, M04 | [M19](ordenes/M19-privacidad.md) |
 | M20 | Vista Me siento distinto | `app/ui/me-siento-distinto/` | M03, M07, M16, M17, M18 | [M20](ordenes/M20-ui-me-siento-distinto.md) |
+| M24 | Sincronización simulada y panel en tierra | `app/sincronizacion/`, `app/ui/tierra/` | M07, M18, M19 | [M24](ordenes/M24-sincronizacion-simulada.md) |
 | M21 | Importadores NASA | `app/importadores/` | M01, M04 | [M21](ordenes/M21-importadores.md) |
 | M22 | Vista Casos NASA | `app/ui/casos-nasa/` | M06, M07, M21 | [M22](ordenes/M22-ui-casos-nasa.md) |
 | M23 | Empaquetado | `scripts/empaquetar.mjs` | M20 | [M23](ordenes/M23-empaquetado.md) |
@@ -214,7 +218,7 @@ Revisor:
 
 | Bloqueante | Detiene |
 |---|---|
-| Confirmar D1–D8 | F1 en adelante |
+| Confirmar D1–D9 | F1 en adelante |
 | Elegir el procedimiento de la demo y su fuente clínica | Contenido de F3; el motor no |
 | Confirmar [V1 4030] en NASA-STD-3001 vol. 1 | Mostrar el límite de radiación en M10 |
 | Descargar los archivos de NASA | F5 |

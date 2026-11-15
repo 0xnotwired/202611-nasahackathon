@@ -4,7 +4,7 @@ Estado: propuesta, sin integración de los repositorios consultados. La implemen
 
 ## Arquitectura modular propuesta
 
-La construcción se organiza en 24 módulos por capas; un módulo solo importa de capas inferiores y solo por el `index.js` del otro. El detalle está en [PLAN_ORQUESTACION.md](PLAN_ORQUESTACION.md) y las interfaces en [CONTRATOS.md](CONTRATOS.md).
+La construcción se organiza en 25 módulos por capas; un módulo solo importa de capas inferiores y solo por el `index.js` del otro. El detalle está en [PLAN_ORQUESTACION.md](PLAN_ORQUESTACION.md) y las interfaces en [CONTRATOS.md](CONTRATOS.md).
 
 | Capa | Módulos | Qué garantiza |
 |---|---|---|

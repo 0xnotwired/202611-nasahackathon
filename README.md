@@ -75,7 +75,7 @@ No requiere instalación, servidor ni cuenta. La interfaz es autocontenida y el 
 | Maqueta HTML con datos sintéticos, cuerpo interactivo y gráficos. | Integración de salud, adaptación física, hábitat y plan compartido. |
 | Chequeo guiado, guardado local de demostración y resumen TXT. | Procedimientos adaptados a recursos de misión y seguimiento integrado de resultados. |
 | Definición del producto, roadmap y revisión académica dirigida. | Conectores de sensores, sincronización y arquitectura definitiva de persistencia. |
-| Plan de construcción en 24 módulos, con contratos y órdenes de trabajo. | Todo el código del producto: la carpeta `app/` todavía no existe. |
+| Plan de construcción en 25 módulos, con contratos y órdenes de trabajo. | Todo el código del producto: la carpeta `app/` todavía no existe. |
 
 La maqueta muestra principalmente el chequeo inicial. No tiene integración de sensores, datos NASA cargados, comunicación médica, modelo de IA ni protocolos clínicos validados. Usar únicamente información ficticia en la demo. La selección de fuentes NASA no implica certificación o aprobación de la herramienta.
 
@@ -120,7 +120,7 @@ Los estudios, participantes, misiones, métodos y frecuencias se conservan por s
 
 El producto todavía no está construido. Lo que existe es el plan para construirlo con varios agentes de IA en paralelo, bajo revisión de personas.
 
-- **24 módulos en 7 fases.** Cada fase entrega algo que el astronauta puede usar: guardar registros sin perder su origen, ver su situación, completar un procedimiento, cerrar un episodio.
+- **25 módulos en 7 fases.** Cada fase entrega algo que el astronauta puede usar: guardar registros sin perder su origen, ver su situación, completar un procedimiento, cerrar un episodio.
 - **Un módulo, un agente, una carpeta.** Los módulos se comunican por [contratos](docs/CONTRATOS.md) fijados de antemano, y cada agente recibe una [orden de trabajo](docs/ordenes/) con sus criterios de aceptación.
 - **Quien construye no se aprueba a sí mismo.** Otro agente revisa ejecutando, y una persona aprueba cada fase.
 - **Sin MVP.** Si el tiempo no alcanza, se entrega la última fase completa y se dice cuál es.

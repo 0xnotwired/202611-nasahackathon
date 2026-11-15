@@ -47,7 +47,7 @@ El producto se construye con varios agentes en paralelo según docs/PLAN_ORQUEST
 
 **Capas.** Un módulo importa solo de capas inferiores: nucleo, mision y catalogos; después almacen; después lecturas, procedimientos, plan, privacidad e importadores; después episodio; después copiloto y resumen; al final ui. Las capas de dominio no usan el DOM ni leen el reloj: el tiempo entra por parámetro. Las vistas reciben los servicios por parámetro y no importan almacen.
 
-**Fases y compuertas.** Una fase no empieza hasta que una persona aprueba la compuerta de la anterior. Ningún constructor empieza F1 sin la compuerta G0, que incluye confirmar las decisiones técnicas D1–D8: hoy son propuestas.
+**Fases y compuertas.** Una fase no empieza hasta que una persona aprueba la compuerta de la anterior. Ningún constructor empieza F1 sin la compuerta G0, que incluye confirmar las decisiones técnicas D1–D9: hoy son propuestas (D9, la sincronización simulada, ya la eligió el usuario).
 
 **Quien construye no se aprueba.** El informe de otro agente es un dato a verificar, no un hecho. El revisor ejecuta las pruebas y rompe el código para verlas fallar; no aprueba por lo que lee en el informe. Vale también para el orquestador ante un revisor.
 
