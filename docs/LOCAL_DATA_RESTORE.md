@@ -6,7 +6,7 @@ local data instead of copying a browser profile across machines.
 
 ## Five originals required for the existing import workflow
 
-From the f2 checkout, this standard-library Python recipe downloads only
+From a working branch based on main, this standard-library Python recipe downloads only
 the five files required by scripts/import-real-samples.py, verifies their
 recorded SHA256 and preserves source bytes. Do not disable TLS verification.
 

@@ -57,7 +57,8 @@ app/                           M00 foundation and implemented M01–M05; later m
 ## Where to pick up — current handoff
 
 Read [docs/CURRENT_STATUS.md](docs/CURRENT_STATUS.md), inspect git status/HEAD,
-and continue the user-selected f2 branch. M00/M01–M05 and advanced M21 are
+and use the user-selected main base and a separate work branch such as
+mod/f2-claude. PR#3 already integrated f2 into main. M00/M01–M05 and advanced M21 are
 implemented/reviewed; G0/G1 accepted. Next is F2 M06 readings/M07 base UI,
 then M08–M12. M21's advance does not accept later phases or provide views.
 
@@ -166,7 +167,7 @@ Apply the `git-discipline` skill: a restore tag before each session (`git tag -a
 
 - **Nobody commits directly to the default branch**: not the owner, not the team, not an agent. AGENTS.md requires it because this is a team repo. Work happens on branches and is proposed through PRs.
 - **Write access is not permission to `git commit` or `git push`.** Every commit and every push needs an instruction from the user for that task. An authorization covers that action, not the rest of the session.
-- The `english` branch was created on 15/11/2026 at the user's request, because the hackathon requires English. **It is the integration branch from now on.** The `claude` branch keeps the Spanish history up to that date.
+- The `english` branch was created on 15/11/2026 at the user's request, because the hackathon requires English. It was the integration branch then; the later user decision makes main the current base. The `claude` branch keeps the Spanish history up to that date.
 - **Everything that lands in the repo is in English** (AGENTS.md, Work and verification): commit messages and PR descriptions included, even when the user writes in Spanish.
 - Module branches are named `mod/mNN-name`. **Not `claude/...`**: Git answers `cannot lock ref` while the `claude` branch exists. Verified on 14/11.
 - An agent's commits carry the prefix `docs(agent):`, `feat(agent):` or `fix(agent):` so they can be filtered, plus the co-author line given by the session.

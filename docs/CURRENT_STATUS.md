@@ -8,11 +8,13 @@ current-state summaries.
 
 ## Branch, modules and next work
 
-Continue from GitHub branch **f2**. Implementation baseline:177c03e; this
-status-only follow-up builds on that commit. Always inspect current HEAD
+Continue from GitHub branch **main**. PR#3 (634a489) already integrated f2,
+including implementation177c03e and documentatione51f830. The user explicitly
+requested main as the continuation base. Create a feature/module branch
+(e.g. mod/f2-claude) from current origin/main for new development. Always inspect current HEAD
 and git status rather than assuming a remembered hash or clean checkout.
-The historical integration branch remains english; do not switch/reset/merge
-to it automatically. Parallel work should use distinct working branches.
+The english and f2 branches retain prior work; do not reset or overwrite
+them. Parallel work should use distinct working branches.
 
 - M00 and M01–M05 are implemented and independently reviewed; G0/G1 accepted
   by the user, F1 closed.
@@ -110,4 +112,6 @@ OS/browser setup is already verified or silently install product dependencies.
 Do not carry transient /tmp logs, running processes, local authentication or
 network grants to another machine by assumption. Git commit/push and
 environment publication are distinct actions requiring task authorization;
-this task authorizes publishing documentation/code to f2, not deployment.
+the current task authorizes main integration/documentation publication, not deployment.
+
+Portable agent instructions: [Claude Code continuation prompt](CLAUDE_CONTINUATION_PROMPT.md).

@@ -18,7 +18,7 @@ Date: November 14, 2026. For any AI agent (or person) continuing Órbita. [ROADM
 
 [CURRENT_STATUS.md](CURRENT_STATUS.md) consolidates the present state and
 links reproducible evidence. M00/M01–M05 and user-advanced M21 are reviewed
-and integrated locally on f2; G0/G1 accepted.100 Node tests pass; real-source
+and integrated into main through PR#3; G0/G1 accepted.100 Node tests pass; real-source
 CSV import/persistence verified3861 records with exact restart readback and
 idempotent repeats. This is an isolated local profile, not a product UI.
 
@@ -186,3 +186,5 @@ Each agent checks the real status with `git status`, `git log` and the tests bef
 | 2026-11-15 | User and OpenAI Codex | USER: explicitly authorizes committing and pushing all current code/tests/dataset documentation to f2. Pre-push Node suite100/100 and documentation/diff checks pass; earlier independent M21/source/browser verification retained | Original datasets, local IndexedDB/browser profiles and trial state excluded by Git. No deployment or environment publication; git-discipline applied |
 
 | 2026-11-15 | User and OpenAI Codex | USER: requests current-state AGENTS/documentation refresh and push to f2. Added consolidated CURRENT_STATUS and LOCAL_DATA_RESTORE; corrected active handoff summaries while preserving historical evidence.100 Node tests, documentation links and diff checks pass; documented restoration recipe verified against five existing local sample hashes | No product behavior change or fresh-machine/browser claim. Originals/local profiles remain ignored. writing-agents-md and git-discipline applied; Git publication authorized, environment publication/deployment not requested |
+
+| 2026-11-15 | User and OpenAI Codex | USER requests all work on main and updated Claude prompt. Remote main already includes f2 via PR#3; ancestry checked. Current handoff now uses main with a separate module/feature branch. Git integration is authorized, without history rewriting | No deployment or environment publication; source originals/browser state remain excluded.100 tests and documentation checks repeated before push |

@@ -164,7 +164,7 @@ python3 scripts/check_docs.py
 npm run serve
 ```
 
-To continue elsewhere, clone branch f2 and read AGENTS.md/CLAUDE.md.
+To continue elsewhere, clone main, create a work branch such as mod/f2-claude and read AGENTS.md/CLAUDE.md.
 [Restore originals and rebuild IndexedDB](docs/LOCAL_DATA_RESTORE.md): neither
 raw datasets nor browser state is in Git. Source profiles, unresolved units,
 licenses and provisional PhysioNet use are recorded in the current-state index.
@@ -191,3 +191,5 @@ verify custody and load the isolated local IndexedDB profile.
 [Integration evidence](docs/experiments/REAL_IMPORT.md) records3861 exact
 records, restart recovery and duplicate-free reruns. Unknown units remain
 unknown; no clinical interpretation or source-data publication is implied.
+
+[Claude Code continuation prompt](docs/CLAUDE_CONTINUATION_PROMPT.md) starts from main and includes local data/profile restoration.
