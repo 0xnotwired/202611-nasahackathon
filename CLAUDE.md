@@ -54,28 +54,30 @@ scripts/check_docs.py          consistency of matrices, module board and links
 app/                           does not exist yet; the product goes there, one folder per module
 ```
 
-## Where to pick up (after M00 / G0, November 15, 2026)
+## Where to pick up (after F1 implementation, November 15, 2026)
 
-M00 is implemented, independently reviewed and locally integrated into
-`english`. G0 checks and 37 Node tests pass; the HTTP shell and import-failure
-control passed in Chromium 156. The user authorized this local integration
-and G0 closure with "hacelo" after the result was reported. Read
-`docs/experiments/M00.md` and `docs/experiments/G0.md`: file:// CORS remains
-unverified because managed policy blocks navigation. Nothing was pushed.
+M00 and M01–M05 are implemented, independently reviewed and locally integrated.
+G0 is accepted; G1 technical checks pass with 83 Node tests, shared memory/
+IndexedDB checks and actual Chromium restart/profile isolation. Human G1
+acceptance remains pending before F2. Read `docs/experiments/G1.md` and the
+individual module records for controls and limits. Nothing was pushed.
 
-1. F1 wave 1: build M01 core, M02 mission and M03 catalogs on their own module
-   branches, then independent review. No later module is implemented yet.
-2. Keep reusable contract checkers. The orchestrator retires each implemented
-   module's placeholder-rejection registry entry so the foundation harness
-   stops expecting it to be unimplemented. See tests/contract/README.md.
-3. Human inputs still needed later: verified BUT CGM file/columns/unit for
-   M21, NLSP citation text, event-rule confirmations, reviewed procedure
-   content and the radiation requirement source. Do not invent any of these.
+1. After human acceptance, F2 starts M06 readings and M07 base interface,
+   then M08–M12 views, each with its own work order and independent review.
+2. The orchestrator promotes each completed module into implementedNames in
+   tests/contract/registry.js. Keep all contract definitions and export
+   manifests; placeholder checks apply only to pending modules.
+3. Real sample acquisition remains network-blocked. Required NASA/PhysioNet
+   domains were saved in the environment draft; settings must be applied and
+   published before retry. See docs/DATASETS.md and docs/data/F1-acquisition.json.
+   Do not invent CRF/BUT CGM headers, units or clinical content.
+4. User-requested skills are available locally in `.agents/skills/` and must
+   be selected/read according to AGENTS.md rather than fetched ad hoc.
 
-Commands now available: `node --test`, `npm run serve`,
-`python3 scripts/check_docs.py`, `python3 tests/walkthrough/g0-browser.py`.
-No package installation is needed. The application still has no implemented
-domain modules; the core reference is test-only, not the M01 implementation.
+Commands: `node --test`, `npm run serve`, `python3 scripts/check_docs.py`,
+`python3 tests/walkthrough/g1-browser.py`. No package installation is needed.
+The shell is still minimal; storage warnings rendered by browser gate code
+are test-harness output, not M07's future product UI.
 
 ## The central rule
 
@@ -171,7 +173,7 @@ Apply the `git-discipline` skill: a restore tag before each session (`git tag -a
 
 ## Anna's skills
 
-The user asks that the skills from `github.com/annatchijova/SKILLS` always be applied. They are not installed in this repo: they are read from a clone. The ones that matter most here:
+The user explicitly requested a local copy of `github.com/annatchijova/SKILLS`. The complete snapshot now lives under `.agents/skills/`; `.agents/SKILLS_SOURCE.json` records the pinned commit and byte hashes. Follow AGENTS.md's local-skill workflow: read and apply the relevant SKILL.md files from this checkout. The ones that matter most here:
 
 | Skill | Where it applies |
 |---|---|

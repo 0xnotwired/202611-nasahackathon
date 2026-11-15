@@ -23,6 +23,7 @@ None (decision D2). The product is the team's own code, licensed under Apache-2.
 | Google Chrome for Testing | 153.0.8010.12 | the browser Playwright drove for experiment E00, screenshots and video | **Not open source.** Google Chrome terms of service apply | The installed `ABOUT` file says "See the Terms of Service at chrome://terms"; the bundled Widevine module's `LICENSE` says it is not open source software | Used only to test and record; not part of the Solution Materials. User decision of 2026-11-15: kept as a development tool, no further action. The tooling repository for Chrome for Testing is Apache-2.0 (secondary page), which is not the binary's license |
 | FFmpeg | 6.1.1 (Ubuntu build) | encoding the demonstration video | LGPL-2.1+ with optional GPL-2+ parts | The installed copy's Debian `copyright` file; https://www.ffmpeg.org/legal.html says that if the GPL parts are used the GPL applies to all of FFmpeg | The installed build reports `--enable-gpl`, so the GPL applies to that binary. Decision of 2026-11-15: used only as a command-line tool to produce the video. The binary is not redistributed and not linked into anything of ours, and the video is data, not FFmpeg code. If it is ever distributed or linked, rebuild without `--enable-gpl` and follow its LGPL checklist |
 | GitHub | n/a | hosting the repository | Service terms, no code used | n/a | |
+| annatchijova/SKILLS | Commit 92b4ff0ec30752ba1595615d881116d676485421 | User-requested local agent methodology; 199 SKILL.md files plus companion references/scripts, outside the product | Apache-2.0; bundled red-team attribution under MIT | Read upstream LICENSE and red-team/LICENSE.claude-red in the retrieved repository; both retained verbatim under .agents/skills/ | Explicit user authorization on 2026-11-15. Source URL and SHA-256 manifest: ../.agents/SKILLS_SOURCE.json. No product import or automatic helper execution |
 
 ## 3. Data
 
@@ -48,9 +49,9 @@ XState, Open mHealth, Open MCT, AMOS, LHC-Forms, CQL Execution and Medplum were 
 
 Claude (Anthropic), used through Claude Code, wrote the documentation and scripts in this repository and is the intended author of the product modules under the work orders. It is recorded in three places: the `Co-Authored-By` line of every commit, the handoff log in [AGENT_ROADMAP.md](AGENT_ROADMAP.md), and the module's experiment record. Nothing in this list claims a human review that those records do not show. Agents are forbidden to reproduce or transform code from other projects (AGENTS.md).
 
-OpenAI Codex also authored M00 foundation and the G0 walkthroughs in the
+OpenAI Codex also authored M00–M05 and the G0/G1 walkthroughs in the
 cloud session on November 15, 2026, with a separate Codex agent performing
-independent review. No outside project code or library was incorporated.
+independent review. No outside product implementation or library was incorporated. The user separately authorized the verbatim development-skill snapshot under .agents/skills/; its attribution is listed above.
 AI provenance and the controls are recorded in the M00/G0 experiment records,
 the handoff log and the integration commit's Co-Authored-By line. Existing
 development tools were reused; no dependency was installed.
