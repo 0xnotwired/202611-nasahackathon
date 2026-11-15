@@ -55,11 +55,27 @@ export function renderChart(doc, model) {
 
 /** One record as a list item. Every view draws entries through this, so the same record always looks the same. */
 export function renderEntry(doc, entry) {
+  if (entry.kind === 'comparison') return renderComparison(doc, entry);
   const where = [entry.place ? `place ${entry.place}` : null, entry.sensor ? `sensor ${entry.sensor}` : null].filter(Boolean);
   const when = entry.time ?? (entry.source_time_raw ? `date as written in the source: ${entry.source_time_raw} (time zone not established)` : 'time not established');
   const meta = entry.has_record ? [`method ${entry.method}`, when, entry.origin_text, ...where].join(' · ') : 'no record';
   return create(doc, 'li', {class: 'entry', 'data-state': entry.state}, create(doc, 'strong', {class: 'entry-label'}, entry.label ?? entry.variable ?? 'Value'), ': ',
-    create(doc, 'span', {class: 'entry-value'}, entry.value_text), ' ', renderBadge(doc, entry.badge), create(doc, 'div', {class: 'entry-meta legend'}, meta));
+    create(doc, 'span', {class: 'entry-value'}, entry.value_text), ' ', renderBadge(doc, entry.badge), entry.attention ? renderBadge(doc, entry.attention) : null,
+    create(doc, 'div', {class: 'entry-meta legend'}, meta), ...extraLines(doc, entry));
+}
+
+// Optional lines a view model may attach to an entry. Each is plain text from the model; none is computed here.
+function extraLines(doc, entry) {
+  const lines = [entry.assessment_label ? `Shown as: ${entry.assessment_label}` : null, entry.repeat && entry.repeat.text ? `Repeat: ${entry.repeat.text}` : null,
+    entry.coverage_text, entry.phase_text, entry.correction_text].filter(line => typeof line === 'string' && line.length > 0);
+  return lines.map(line => create(doc, 'div', {class: 'entry-extra legend'}, line));
+}
+
+/** A variable's latest value beside what its earlier values show, or the reason there is no comparison. */
+function renderComparison(doc, entry) {
+  return create(doc, 'li', {class: 'entry', 'data-state': entry.latest ? entry.latest.state : 'not_recorded'}, create(doc, 'strong', {class: 'entry-label'}, entry.label ?? entry.variable ?? 'Value'), ': ',
+    create(doc, 'span', {class: 'entry-value'}, entry.latest && entry.latest.has_record ? entry.latest.text : 'not recorded'), ' ', entry.latest && entry.latest.badge ? renderBadge(doc, entry.latest.badge) : null,
+    create(doc, 'div', {class: 'entry-meta legend'}, entry.comparison ? entry.comparison.text : entry.reason ?? 'No comparison.'));
 }
 
 /**
@@ -71,6 +87,9 @@ export function renderSection(doc, section) {
   if (section.note) parts.push(create(doc, 'p', {class: 'legend'}, section.note));
   if (section.state && section.state !== 'ready') parts.push(create(doc, 'p', {class: `notice notice-${section.state === 'error' ? 'error' : 'info'}`, role: section.state === 'error' ? 'alert' : 'status'}, section.text ?? ''));
   if (section.entries && section.entries.length) parts.push(create(doc, 'ul', {class: 'entries'}, ...section.entries.map(entry => renderEntry(doc, entry))));
+  if (section.items && section.items.length) parts.push(create(doc, 'ul', {class: 'items'}, ...section.items.map(item => create(doc, 'li', {}, item.text,
+    item.items && item.items.length ? create(doc, 'ul', {}, ...item.items.map(inner => create(doc, 'li', {}, inner.text))) : null))));
+  if (section.links && section.links.length) parts.push(create(doc, 'ul', {class: 'links'}, ...section.links.map(link => create(doc, 'li', {}, create(doc, 'a', {href: link.href}, link.label)))));
   for (const chart of section.charts ?? []) parts.push(renderChart(doc, chart));
   for (const table of section.tables ?? []) parts.push(renderTable(doc, table));
   return create(doc, 'section', {class: 'card', 'aria-labelledby': `sec-${section.id}`}, ...parts);

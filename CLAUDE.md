@@ -86,13 +86,10 @@ app/                           M00 foundation and implemented M01–M05; later m
 ## Where to pick up — current handoff
 
 Read [docs/CURRENT_STATUS.md](docs/CURRENT_STATUS.md), inspect git status/HEAD,
-and use the user-selected main base and a separate work branch such as
-mod/f2-claude. PR#3 already integrated f2 into main. M00/M01–M05 and advanced M21 are
-implemented/reviewed; G0/G1 accepted. Next is F2 M06 readings/M07 base UI,
-then M08–M12. M21's advance does not accept later phases or provide views.
-
-100 Node tests pass. Run node --test and python3 scripts/check_docs.py;
-Chromium G0/G1 commands remain in CURRENT_STATUS with verification scope.
+and work on a separate branch such as mod/f2-claude. F2 views M06–M12 and M22 are
+built with records and a G2 walkthrough, but not independently reviewed or
+accepted; statuses stay `pending`. 230 Node tests pass. Run node --test and
+python3 scripts/check_docs.py; browser scripts need ORBITA_CHROMIUM.
 Original datasets, local IndexedDB profile and source-data reports are not
 restored by Git. Use [docs/LOCAL_DATA_RESTORE.md](docs/LOCAL_DATA_RESTORE.md),
 verify hashes and rerun scripts/import-real-samples.py before claiming real

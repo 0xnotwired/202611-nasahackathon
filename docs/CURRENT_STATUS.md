@@ -20,10 +20,13 @@ them. Parallel work should use distinct working branches.
   by the user, F1 closed.
 - M21 was explicitly advanced by user instruction and is implemented/reviewed.
   This does not close F2–F5 or implement the later product views.
-- Next: F2 M06 readings and M07 base interface, then M08–M12 views, following
-  their contracts/work orders and independent review. Other modules remain
-  pending as recorded in modules.csv.
-- Contract version0.8; current record schema2, with unchanged legacy1 readers.
+- F2 built on mod/f2-claude (local commits, not pushed): M06 readings, M07 base
+  interface, M08–M12 views, shared view kit, data-source selector, M22 view.
+  Records M06–M12 and G2 are in docs/experiments/. Statuses in modules.csv are
+  still `pending`: independent review of M08–M12 and acceptance of G2 are for a
+  person. G2 evidence: 230 Node tests; g2.test.js; g2-browser.py (Chromium only).
+  Next: independent review of M08–M12, then F3 (needs explicit authorization).
+- Contract version 0.12; current record schema2, with unchanged legacy1 readers.
 
 ## What actually runs
 

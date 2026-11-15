@@ -293,6 +293,21 @@ test('M07-R8: a ready view without mount is an error; a series result with a clo
   assert.equal(empty.time_basis,'source');assert.match(empty.table.columns[0].label,/Source day/);
 });
 
+test('M07-F7: banner, attention note, variable lists and the latest entry keep absence and failure visible',async()=>{
+  const ctx=viewKit.contextOf({...goodServices(),readings:{...goodServices().readings,
+    latest:async(store,q)=>q.variable==='pulse'?{record:base,age_days:2}:q.variable==='none'?{record:null,age_days:null}:{ok:false,error:{code:'unresolved_time',message:'x'}},
+    attention:(r,c)=>({status:'within',criterion:{id:'c',variable:'pulse',unit:'bpm',low:1,high:99,defined_by:'team demo',source:'team_defined',review_status:'demo'}})},
+    data_source:{id:'demo',label:'Synthetic demo',synthetic:true,note:'Fictional.'},config:{attention_criteria:[]}}).value;
+  const banner=viewKit.bannerSection(ctx);assert.match(banner.note,/Subject subject-a/);assert.match(banner.note,/Synthetic demo/);assert.equal(banner.id,'source');
+  assert.match(viewKit.bannerSection({...ctx,data_source:null}).note,/not named/);
+  assert.match(viewKit.attentionNote(ctx),/No attention criteria/);assert.equal(viewKit.attentionNote({...ctx,config:{attention_criteria:[{id:'c'}]}}),null);
+  assert.deepEqual(viewKit.variablesOfType(ctx,['measurement']).map(v=>v.id),['pulse']);assert.deepEqual(viewKit.variablesOfType({...ctx,catalogs:{variables:()=>{throw new Error('x');}}},['measurement']),[]);
+  const hit=await viewKit.latestEntry(ctx,{id:'pulse',label:'Pulse'});assert.equal(hit.has_record,true);assert.equal(hit.attention.kind,'within');assert.match(hit.attention.text,/Demo criterion/);
+  const none=await viewKit.latestEntry(ctx,{id:'none',label:'None'});assert.equal(none.has_record,false);assert.equal(none.value_text,'not recorded');assert.equal(none.attention,null);
+  const bad=await viewKit.latestEntry(ctx,{id:'other',label:'Other'});assert.equal(bad.has_record,false);assert.match(bad.value_text,/time is not established/);assert.notEqual(bad.value_text,'not recorded');assert.equal(bad.badge.kind,'unknown');
+  const thrown=await viewKit.latestEntry({...ctx,readings:{...ctx.readings,latest:async()=>{throw new Error('x');}}},{id:'pulse',label:'P'});assert.match(thrown.value_text,/could not be read/);
+});
+
 test('M07-P3: every origin has its own label; an unknown origin says so and never defaults to synthetic (R4)',()=>{
   const labels=ORIGINS.map(origin=>originLabel(origin));
   assert.equal(new Set(labels).size,ORIGINS.length);

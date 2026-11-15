@@ -1,6 +1,6 @@
 // Shared model helpers for the views. One place decides how a record becomes a screen entry, so the same record
 // reads the same in every view (the F2 claim). Pure: no DOM, no imports from other modules, the clock is injected.
-import {ownValue, stateLabel, originLabel, valueText, valueWithContext, dataStateBadge, isRecordShape} from './labels.js';
+import {ownValue, stateLabel, originLabel, valueText, valueWithContext, dataStateBadge, attentionBadge, isRecordShape} from './labels.js';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const isText = value => typeof value === 'string' && value.length > 0;
@@ -83,4 +83,50 @@ export function keysOf(model) {
   const found = new Set();
   walk(model, {key(key) { found.add(key); }, value() {}}, new Set());
   return [...found];
+}
+
+/** The first section of every view: whose data this is and where it comes from. Nothing is shown without it. */
+export function bannerSection(ctx) {
+  const source = ctx.data_source;
+  const where = source ? `${ownValue(source, 'label') ?? 'unnamed source'}. ${ownValue(source, 'note') ?? ''}`.trim() : 'The data source is not named.';
+  return {id: 'source', title: 'Whose data and from where', state: 'ready', note: `Subject ${ctx.subject}. Source: ${where}`, entries: []};
+}
+
+/** One sentence, once per section, when the mission defines no attention criterion (R6: a variable without one says so). */
+export function attentionNote(ctx) {
+  const criteria = ownValue(ctx.config, 'attention_criteria');
+  return Array.isArray(criteria) && criteria.length ? null : 'No attention criteria are defined for this mission, so nothing here is compared with a criterion.';
+}
+
+/** Catalog labels carry an instruction after a dash ("Radiation dose — retain recorded dose type and unit"); a screen shows only the name. */
+export const cleanLabel = label => (typeof label === 'string' ? label.split(' — ')[0] : label);
+
+/** Catalog variables of the given types, as { id, label, unit, type }. A broken catalog gives an empty list, never an exception. */
+export function variablesOfType(ctx, types) {
+  let all;
+  try { all = ctx.catalogs.variables(); } catch { return []; }
+  return Array.isArray(all) ? all.filter(item => item && types.includes(item.type)).map(item => ({id: item.id, label: cleanLabel(item.label), unit: item.unit, type: item.type})) : [];
+}
+
+/**
+ * The newest record of one variable of the subject (any state) as an entry, or the absent entry. When the record is a measured
+ * value, the entry also carries the mission's attention result for it. A failed query is a visible problem, not a blank.
+ */
+export async function latestEntry(ctx, info) {
+  const base = {clock: ctx.clock, variable: info.id, label: info.label ?? info.id};
+  let result;
+  try { result = await ctx.readings.latest(ctx.store, {subject: ctx.subject, variable: info.id}, {clock: ctx.clock}); } catch { result = {ok: false, error: {message: 'the query failed'}}; }
+  if (!result || result.ok === false) {
+    const code = ownValue(ownValue(result, 'error'), 'code');
+    const why = code === 'unresolved_time' ? 'records exist but their time is not established' : 'could not be read';
+    return {...recordEntry(null, base), state: 'unreadable', state_text: why, value_text: why, text: `${base.label}: ${why}`, problem: why,
+      badge: {kind: 'unknown', symbol: '?', tone: 'unknown', text: why}};
+  }
+  const record = ownValue(result, 'record');
+  const entry = recordEntry(record ?? null, base);
+  if (record && entry.has_record && entry.state === 'recorded' && ['measurement', 'environment', 'exam'].includes(entry.type)) {
+    let judged; try { judged = ctx.readings.attention(record, ctx.config); } catch { judged = {status: 'not_assessed', reason: 'the attention check failed'}; }
+    entry.attention = attentionBadge(judged);
+  } else entry.attention = null;
+  return entry;
 }
