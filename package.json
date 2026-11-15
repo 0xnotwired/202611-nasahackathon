@@ -6,6 +6,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "test": "node --test",
-    "serve": "node scripts/serve.mjs"
+    "serve": "node scripts/serve.mjs",
+    "package": "node scripts/package.mjs"
   }
 }
