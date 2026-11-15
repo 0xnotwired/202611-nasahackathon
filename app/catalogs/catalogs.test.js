@@ -67,6 +67,14 @@ test('M03: reusable catalog suite',()=>checkCatalogs(catalog));
 test('M03-P1: every observation points to an existing source',()=>checkReferences(catalog));
 test('M03-P2: fatigue and vision retain their specific evidence',()=>checkSpecificSources(catalog));
 test('M03-P3: B source reading levels equal the independent research matrix',()=>checkReadingLevels(catalog));
+test('M03-X3: partial S09 and S12 evidence is not promoted to full-text',()=>{
+  for(const id of ['S09','S12']) {
+    const source=catalog.sources().find(item=>item.id===id);
+    assert.equal(source?.reading_level,'S',`${id}: inherited partial review must stay conservative`);
+    assert.match(source.citation,/Targeted partial review/);
+    assert.match(source.citation,/not revalidated here/);
+  }
+});
 test('M03-P4: every item has exactly its contracted keys',()=>checkShapes(catalog));
 test('M03-P5: mood is an explicitly unvalidated team self-report',()=>checkMood(catalog));
 test('M03: glucose metadata preserves source-unit uncertainty',()=>{
