@@ -16,17 +16,20 @@ Date: November 14, 2026. For any AI agent (or person) continuing Órbita. [ROADM
 
 ## Current integration status — November 15, 2026
 
-M00 and M01–M05 are implemented and independently reviewed. G0 is accepted;
-G1 technical checks passed: 83 Node tests, documentation consistency, the
-shared memory/IndexedDB contract, 16-record scenario round-trip, browser
-restart, clean-profile isolation and explicit storage failures in Chromium.
-See [G1](experiments/G1.md) for controls and limits. Human G1 acceptance is
-pending before F2; no M06+ implementation is included and nothing was pushed.
+M00 and M01–M05 are implemented and independently reviewed. G0 and G1 are
+accepted. On November15 the user explicitly closed G1/F1 and authorized a
+new `f2` branch and GitHub push of all current project changes. The closure
+baseline is87 passing Node tests, documentation consistency and actual
+Chromium memory/IndexedDB persistence, restart and profile-isolation checks.
+See [G1](experiments/G1.md) and [source uncertainty](experiments/SOURCE_UNCERTAINTY.md).
+F2 is ready to begin with M06/M07, then M08–M12; those modules remain pending.
 
-Real dataset acquisition remains blocked by the runtime network policy.
-Required domains were saved in the environment draft, not applied. See
-[the acquisition status](DATASETS.md) and its manifest. This remains an open
-data-preparation task, not a reason to invent source-file schemas or units.
+Three original CRF/MR079G/BUT CGM samples are acquired under ignored
+`data/originals/`. NASA CC0 and BUT CGM CC BY4.0 citations/conditions are
+verified. Schema2 preserves unknown-zone dates and unknown units without
+fabricating metadata; CRF units and MR079G slash-date ordering still need
+source evidence before interpretation/canonical import. This does not block
+G1 closure or authorize clinical claims. See [readiness](data/import-readiness-2026-11-15.json).
 
 The user also requested a local skills copy. All 199 SKILL.md definitions and
 companion files are preserved under `.agents/skills/`; source commit and
@@ -66,7 +69,7 @@ Each level ends with: an adversarial review against the rules of the earlier lev
 - [x] Save, close and browser reopen restores the same thing; the store API returns explicit errors and a nonpersistent status/reason. Browser-gate notices demonstrate propagation; the product warning UI remains M07 work.
 - [x] Every test was seen failing against broken code before passing.
 
-RUN/BROWSER evidence is in [G1](experiments/G1.md) and the individual module records. These checks establish the data core, not clinical correctness or an implemented product UI. Human gate acceptance remains pending.
+RUN/BROWSER evidence is in [G1](experiments/G1.md) and the individual module records. These checks establish the data core, not clinical correctness or an implemented product UI. The user accepted G1 on November15; F1 is closed.
 
 ### Level 1 — Understand my situation
 
@@ -163,3 +166,9 @@ Each agent checks the real status with `git status`, `git log` and the tests bef
 | 2026-11-15 | Claude (orchestrator, web session) | BUT CGM citation compared with its page by elements (authors, year, title, version, RRID, DOI) and the standard PhysioNet citation added; license CC BY 4.0 confirmed. Handoff updated: AGENTS.md (D10–D14 rules, terrestrial origin, mood and gamification limits), CLAUDE.md ("Where to pick up"), blockers in the plan and here | BUT CGM not downloaded: physionet.org and its AWS bucket refused by the network; its columns and unit unknown. Nothing built |
 | 2026-11-15 | OpenAI Codex (M00 builder and orchestration); independent Codex reviewer | RUN: M00 foundation, JSDoc contracts 0.5, all 25 placeholders, loopback static server, core reference and negative controls. Independent review found and verified fixes for directory, missing-state and missing-export test gaps. RUN: G0-W1/W3 and 37 tests pass. BROWSER: G0-W2 HTTP shell and blocked-import control pass in Chromium 156. User instructed local integration/G0 closure with "hacelo" after results were reported | file:// CORS remains unverified under managed policy. No remote push. No F1 module implemented; no storage, sharing, clinical or product-level validation. Records: M00.md and G0.md in docs/experiments/ |
 | 2026-11-15 | OpenAI Codex orchestrator, M01–M05 builders and independent reviewers | RUN: M01–M05 implemented and independently reviewed; copied predictions precede code in module history. All 83 tests, shared contracts, mutations and documentation checks pass. BROWSER: actual IndexedDB round-trip, restart and profile isolation in Chromium156. Local F1 integration and G1 evidence prepared. User-requested full local skill snapshot: 264 verbatim upstream files, 199 SKILL.md definitions, licenses and SHA-256 manifest | Human G1 acceptance before F2; original dataset downloads blocked by runtime policy (draft domains saved, not applied); M07 product warning UI pending; no remote push or clinical validation |
+| 2026-11-15 | OpenAI Codex | RUN: acquired3 original CSV samples (CRF113rows, MR079G12, BUTCGM3016), official metadata and BUTCGM README/license/checksum list. Parent re-fetched and verified NASA originals in the current published environment; all8files ignored by Git. BUTCSV/README/license match publishedSHA256; metadata-only manifest records URLs/times/hashes/headers | CRF/glucose unit dictionaries, UTC interpretation and complete NASA citation/terms remain unresolved. No importers, configuration changes, publication, commit or push performed for acquisition |
+| 2026-11-15 | OpenAI Codex | SOURCE: linked author companion declares BUT CGM mmol/L; pinned URLs/hashes recorded without copying its code into product. RUN: official NASA file-level MD5s match both CSVs; SHA-256 custody hashes retained. Documented preserve-source-time policy with no fabricated UTC conversion | CRF unit dictionary and original UTC/timezone semantics not established by reviewed metadata; source records stay outside UTC Record imports. No contacts, configuration changes, commits, pushes or publication |
+
+| 2026-11-15 | OpenAI Codex orchestrator, source-uncertainty builder and independent reviewer | RUN: contract0.7/schema2 preserves unknown-zone dates at date/minute/second precision, shifted/unknown calendars and explicit unknown units; legacy1 reads remain exact. 87 Node tests, standalone store/G1 browsers, documentation checks and negative controls pass; see experiments/SOURCE_UNCERTAINTY.md | CRF units still need source-specific dictionary; MR079G slash format requires evidence before canonical import. Model/storage support implemented; no importer/product views, clinical interpretation, commit, push or publication |
+
+| 2026-11-15 | User and OpenAI Codex orchestrator | USER: explicitly accepted and closed G1/F1, authorized branch f2 and commit/push of all current project changes. Gate record and current status updated; original CSVs excluded | F2 M06–M12 pending; source metadata limits retained. No deployment or environment publication authorized. Local git-discipline and decision-record-discipline skills applied |

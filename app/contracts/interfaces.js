@@ -1,5 +1,5 @@
 /**
- * Interfaces mirror docs/CONTRACTS.md 0.6. All store consumers return promises.
+ * Interfaces mirror docs/CONTRACTS.md 0.7. All store consumers return promises.
  * Unspecified return shapes use unknown rather than invented fields.
  * @typedef {import('./data.js').Record} Record
  * @typedef {import('./data.js').MissionConfig} MissionConfig

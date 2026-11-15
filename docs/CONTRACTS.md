@@ -1,6 +1,6 @@
 # Órbita: contracts between modules
 
-Version 0.6 · November 15, 2026 · G0 accepted; F1 implementation policies under gate G1. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
+Version 0.7 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
 
 Plan and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). Rationale for the rules: [PROPOSAL_IMPROVEMENTS.md](PROPOSAL_IMPROVEMENTS.md) and [AGENTS.md](../AGENTS.md).
 
@@ -10,7 +10,7 @@ Plan and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). Rationale for 
 - **A single door.** Each module exports through its `index.js`. Nobody imports another module's internal file.
 - **Result, not exception.** Every function that can fail for a foreseen reason returns `{ ok: true, value }` or `{ ok: false, error: { code, field?, message } }`. Exceptions are reserved for programming errors.
 - **`message` names the problem.** "Missing field `origin`", not "invalid data".
-- **Time.** ISO 8601 strings in UTC. The domain does not read the clock: it receives `clock()` as a parameter. Identifiers are generated with an injected function.
+- **Time.** Known instants use ISO8601 UTC strings. Record schema2 can explicitly preserve a source date/local datetime without known timezone using time:null plus source_time; it must not invent a UTC instant. Other clock-derived domain events remain UTC. The domain receives clock() and identifiers by injection.
 - **Identifiers.** Always text. `"007"` is not `7`.
 - **Names.** English identifiers in camelCase for functions and snake_case for data fields (`mission_phase`, `schema_version`).
 - **Asynchronous.** The store and everything that uses it return promises.
@@ -43,9 +43,11 @@ Record
   type            observation | measurement | action | environment | exam
   state           recorded | confirmed_none | not_recorded
   variable        catalog text (e.g. "pulse", "headache", "co2")
-  value, unit     required if type is measurement, environment or exam and state is recorded
+  value, unit     required for recorded measurement/environment/exam; schema2 unit:null needs unit_status unknown
+  unit_status     known | unknown, optional; schema2 only; unknown requires unit:null
   method          instrument or "self_report"
-  time            ISO 8601; for environment, also interval { from, to }
+  time            UTC ISO8601 string, or schema2 null with source_time; environment also needs UTC interval { from, to }
+  source_time     schema2 only, optional: { value, raw, precision, timezone, calendar, scope }
   origin          synthetic | ground_analog | terrestrial | flight | cell_culture
                   (terrestrial: people on Earth who are not in a spaceflight analog)
   source          id from the sources catalog, or "user_entered"
@@ -113,6 +115,48 @@ Delivery
 ```
 
 "Assigned", "done" and "result" are three different things: `Task.completion`, `Execution` and `result_ids`. A completed task does not imply a result.
+
+## Source uncertainty and schema compatibility
+
+SCHEMA_VERSION is2 for new objects. Strict legacy schema1 UTC records remain
+readable and return unchanged, including schema_version1; they are not
+silently migrated on validation, get or list. Unknown/future versions fail.
+Generic persisted objects and mission configurations support known1/2; a
+missing generic version is stamped2. Existing schema1 records cannot acquire
+schema2 fields without an explicit new record/correction.
+
+For schema2, source_time is present exactly when time is null and has exactly:
+value (canonical ISO date YYYY-MM-DD or local datetime YYYY-MM-DDTHH:mm for minute precision, or YYYY-MM-DDTHH:mm:ss
+with optional1–3 fractional digits for second precision), raw (unchanged original field text),
+precision (date, minute or second), timezone (null for unknown), calendar (original,
+shifted or unknown), and scope (nonempty source clock/cohort namespace, at most512 characters;
+raw is also nonempty and at most512 characters). A date-only
+assessment does not get an invented midnight. Reject invalid calendar dates,
+Z/offsets on unknown-zone values and contradictory UTC time/source_time.
+No age, absolute-UTC interval or cross-source calendar alignment is inferred.
+
+For a recorded numeric measurement, schema2 may retain unit:null only with
+explicit unit_status:unknown. Omitted unit still fails normal validation;
+this is not a way to accept accidental missing fields. Missing numerical
+values remain absent according to the three states. Unknown units always
+make records not comparable, even when both are unknown. Unknown calendar
+also prevents comparison. Compatible source
+time comparison requires matching subject/source-clock scope, calendar and
+precision as well as the existing subject/variable/unit/method rules; mixing
+UTC and unknown-zone bases is not comparable. Raw strings and calendar
+values are preserved, never normalized into clinical certainty.
+
+UTC from/to store queries return explicit unresolved_time if an otherwise
+equality-matching record has unknown source time. Records belonging to other
+subjects do not trigger that error. Unbounded/equality queries return the
+source-aware record unchanged. Generic non-record objects without time keep
+the previous exclusion behavior for time windows. Both backends behave alike.
+
+Source files lacking CRF units remain unit-unknown until a source-specific
+dictionary is supplied. This representation resolves honest storage and
+review; it does not claim that missing source metadata was recovered.
+Future M06/M07 consumers must surface these unknowns and avoid UTC age,
+unit conversions, criterion comparisons or reassuring badges on that basis.
 
 ## 4. Interfaces
 
@@ -294,14 +338,15 @@ clinical rules or data sources:
   as sources of invented procedures. This is not reviewed clinical content.
 - The glucose catalog uses `unit: "as_recorded"` as unresolved metadata,
   never as a Record.unit. Actual measurements retain the verified input unit;
-  the catalog does not select or convert the unknown BUT CGM file unit.
+  the catalog does not select or convert units; the acquired BUT CGM
+  sample unit is source-verified as mmol/L in the import-readiness manifest.
   Mood is the team's non-validated self-report scale, not a clinical score.
 - Store `list` combines equality filters with optional `from` / `to` bounds
   on the object's `time`. Invalid UTC bounds or reversed ranges fail; no
-  filter is silently discarded. An object without a time does not match a
-  requested time range. `get` of an absent id returns a named error Result.
-- Saved records must pass core validation with an explicit current schema
-  version. For other collections the store stamps the current schema version
+  filter is silently discarded. A generic non-record object without time does not match a
+  requested time range; a matching source-time record returns unresolved_time. `get` of an absent id returns a named error Result.
+- Saved records must pass core validation with an explicit supported schema
+  version (legacy1 or current2). For other collections the store stamps the current schema version
   if absent, rejects unknown versions, and preserves detached plain JSON
   data. Collection-specific business rules remain the owning module's job.
 - `updateState` returns Promise<Result<object>> for executions, tasks,
@@ -342,7 +387,7 @@ This clarification does not standardize unspecified domain error codes or
 unspecified result fields. Placeholder functions always return a fresh
 `not_implemented` Result, including normally non-Result functions; callers
 must handle that temporary unavailable state explicitly. Core constants
-are the documented enums and schema version 1, not functions. All functions
+are the documented enums and schema version2 for new records, not functions. All functions
 that accept `store`, plus `openStore` and view `model`, are asynchronous;
 other functions are synchronous.
 
@@ -374,3 +419,4 @@ Everything works with the keyboard. No state is conveyed by color alone. Views r
 | 0.4 | 2026-11-15 | User decisions D10–D14: R6 reworded (criteria only as configuration data); `terrestrial` origin; `environment`, `gravity_note`, `attention_criteria` in `MissionConfig`; `readings.attention`; `plan.progress`; `importGlucose`; `dataStateBadge` and `attentionBadge` | M01, M02, M03, M05, M06, M07, M14, M15, M21 |
 | 0.5 | 2026-11-15 | User-authorized M00 clarification: view index exports, minimal shell ownership, placeholder behavior and async boundary; no domain behavior added | M00, M07–M12, M15, M20, M22, M24 |
 | 0.6 | 2026-11-15 | F1 implementation policies: mission/time boundaries, source-unit metadata, explicit store errors/schema stamping/provenance isolation, atomic writes and detached plain data | M01–M05; future store consumers |
+| 0.7 | 2026-11-15 | User-requested source-date model: schema2 preserves unknown-zone/date-only/shifted times and explicit unknown units; legacy1 unchanged; scoped comparison and explicit UTC-query errors | M01–M07 and future import consumers |

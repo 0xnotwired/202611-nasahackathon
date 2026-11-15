@@ -49,3 +49,61 @@ Study titles and accession ids as recorded in [DATASETS.md](DATASETS.md), where 
 - Read the OSDR citation button for OSD-51, OSD-56 and the Environmental Data App.
 - Fill the NLSP fields from each card's Metadata API when it is reachable, or ask the user for the page text.
 - Importer M21 and view M22 must show the citation of whatever they display.
+
+## Acquisition follow-up — November 15, 2026
+
+RUN: Current official full metadata for CRF and MR079G were fetched and kept
+unchanged under ignored data/originals/. DOI elements verified directly in
+those documents: CRF **10.83263/wjw1-ta27**, MR079G **10.83263/bk5h-r757**.
+No complete author/year citation or explicit NASA license is claimed by this
+follow-up. BUT CGM 1.0.0 official README, CC BY4.0 LICENSE and publisher
+SHA256SUMS were retrieved; CSV/README/license checksums match the published
+list. See [the acquisition manifest](data/acquisition-2026-11-15.json).
+
+SOURCE follow-up: the official PhysioNet page links the BioSig-BUT companion.
+At commit d5867dc9022715223ddbf11244b98db64109bcf0, its viewer labels the
+CGM series mmol/l, while the loader reads Glycemia without a unit conversion.
+This establishes the author's unit interpretation; the original CSV omits it.
+Pinned source URLs and hashes are in the acquisition manifest. No external
+application code was incorporated into Órbita. Official NASA file-level
+metadata additionally supplies matching MD5 checksums for both original CSVs.
+
+## Verified minimum references for the acquired samples
+
+These title-led references use only directly verified source elements. A PI
+list is not substituted for dataset creators, and DOI registration date is
+not substituted for publication year. Complete registry metadata is still
+blocked by CONNECT403 to api.datacite.org; the references remain usable
+identifiers without inventing missing bibliographic fields.
+
+- Case Report Form (CRF). NASA Life Sciences Portal / Life Sciences Data Archive. https://doi.org/10.83263/wjw1-ta27. Accessed November 15, 2026.
+- Isokinetic Muscle Function (Flight Analog) (MR079G). NASA Life Sciences Portal / Life Sciences Data Archive. https://doi.org/10.83263/bk5h-r757. Accessed November 15, 2026.
+
+BUT CGM retains the author/year/version citation above and the downloaded
+CC BY4.0 license. Reuse requires attribution, license linkage, retained
+notices and identifying changes. Official availability of NASA files is
+verified; an explicit redistribution grant is not established by that fact.
+See [readiness decisions](data/import-readiness-2026-11-15.json).
+
+## Direct license/citation verification follow-up
+
+The complete official BUT CGM1.0.0 HTML page and downloaded CC BY4.0 license
+were read directly for this review. Both the dataset citation and the
+requested standard PhysioNet citation match the prepared
+[delivery notice](DATA_ATTRIBUTIONS.md). See [use conditions](DATA_USE_AND_DELIVERY.md)
+for precise scope and the unverified NASA-policy access; earlier fetch-tool
+quoting limits do not describe this later direct-page verification.
+
+## Verified NASA DOI registry follow-up
+
+SOURCE: Both official DataCite records now declare CC0-1.0, publisher Ames
+Research Center and publication year2026. Creator names below follow the
+registry, including its spelling; this supersedes earlier incomplete
+creator/year/rights notes.
+
+- Meck, Janice Fritsch- Yelle; Bridgeford, Jeffrey S.; Paloski, William H.; Cromwell, Ronita L. (2026). Case Report Form [Dataset]. Ames Research Center. https://doi.org/10.83263/wjw1-ta27 License: CC0-1.0.
+- Moore, Alan D., Jr.; Lee, Stuart M. C.; Ciaozzo, Vince J.; Baldwin, Kenneth M.; Ploutz- Snyder, Lori (2026). Isokinetic Muscle Function (Flight Analog) [Dataset]. Ames Research Center. https://doi.org/10.83263/bk5h-r757 License: CC0-1.0.
+
+Evidence: [legal review](data/use-conditions-2026-11-15.json). Attribution
+remains part of project/source provenance; CC0 itself does not impose an
+attribution condition. No endorsement or universal NASA-license claim is made.

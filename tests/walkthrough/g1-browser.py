@@ -35,6 +35,13 @@ try:
                 const core = await import('/core/index.js');
                 const store = await import('/store/index.js');
                 const scenario = await import('/scenario/index.js');
+                const {checkStoreBehavior} = await import('/store/contract-checks.js');
+                const assert = {
+                    equal(a,b,message='') { if(a!==b) throw new Error(message || 'Equality failed: '+JSON.stringify([a,b])); },
+                    deepEqual(a,b) { if(JSON.stringify(a)!==JSON.stringify(b)) throw new Error('Round-trip mismatch: '+JSON.stringify([a,b])); },
+                    ok(value) { if(!value) throw new Error('Expected truthy assertion'); }
+                };
+                await checkStoreBehavior(store,assert,{kind:'indexeddb',name:'g1-source-uncertainty'});
                 const run = new Function(operations.replace('export async function', 'async function') + '; return runG1Operations;')();
                 const check = new Function(contract.replace('export async function', 'async function') + '; return checkStore;')();
                 const shared = await check(store, {kind:'indexeddb', name:'g1-contract'});
@@ -42,10 +49,16 @@ try:
                 const opened = await store.openStore({kind:'indexeddb',name:'g1-restart'});
                 if (!opened.ok) throw new Error('Cannot open restart test database');
                 const record = scenario.generateScenario({seed:1}).records[0];
+                const legacy={...record,id:'restart-legacy',schema_version:1};
+                const unknown={...record,id:'restart-unknown',subject:'source-restart',origin:'terrestrial',time:null,unit:null,unit_status:'unknown',source_time:{value:'2100-01-02',raw:'02/01/2100',precision:'date',timezone:null,calendar:'unknown',scope:'source:restart'}};
+                for(const item of [legacy,unknown]) {
+                    const result=await opened.value.save('records',item);
+                    if(!result.ok) throw new Error('Cannot save source/legacy restart sample');
+                }
                 const saved = await opened.value.save('records',record);
                 if (!saved.ok) throw new Error('Cannot save restart test record');
                 await opened.value.close();
-                return {shared,integration,record};
+                return {shared,integration,record,legacy,unknown};
             }''', {'operations': OPERATIONS, 'contract': CONTRACT})
         finally:
             context.close()
@@ -54,10 +67,15 @@ try:
         try:
             page = context.new_page()
             page.goto(url)
-            restarted = page.evaluate('''async expected => {
+            restarted = page.evaluate('''async saved => {
+                const expected=saved.record;
                 const {openStore} = await import('/store/index.js');
                 const opened = await openStore({kind:'indexeddb',name:'g1-restart'});
                 if (!opened.ok) throw new Error('Cannot reopen IndexedDB');
+                for(const item of [saved.legacy,saved.unknown]) {
+                    const restored=await opened.value.get('records',item.id);
+                    if(!restored.ok || JSON.stringify(restored.value)!==JSON.stringify(item)) throw new Error('Source/legacy restart changed a record');
+                }
                 const record = await opened.value.get('records',expected.id);
                 await opened.value.close();
                 if (!record.ok || JSON.stringify(record.value)!==JSON.stringify(expected)) throw new Error('Restart lost or changed record');
@@ -70,15 +88,15 @@ try:
                 await new Promise((resolve,reject)=>{
                     const tx=db.transaction('records','readwrite');
                     tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error); tx.onabort=()=>reject(tx.error);
-                    tx.objectStore('records').put({...expected,id:'gate-future-raw',schema_version:999});
+                    tx.objectStore('records').put({...expected,id:'gate-future-raw',schema_version:3});
                 });
                 db.close();
                 const futureStore=await openStore({kind:'indexeddb',name:'g1-restart'});
                 const failure=futureStore.ok?await futureStore.value.get('records','gate-future-raw'):futureStore;
                 if (futureStore.ok) await futureStore.value.close();
                 if (failure.ok || !/version/i.test(failure.error.message+' '+failure.error.field)) throw new Error('Future schema read was not explicitly rejected');
-                return 'same record after browser restart; future-version read rejected';
-            }''', result['record'])
+                return 'UTC, legacy1 and unknown time/unit records unchanged after browser restart; future3 read rejected';
+            }''', result)
         finally:
             context.close()
 

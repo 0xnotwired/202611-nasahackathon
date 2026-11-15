@@ -57,20 +57,21 @@ app/                           M00 foundation and implemented M01–M05; later m
 ## Where to pick up (after F1 implementation, November 15, 2026)
 
 M00 and M01–M05 are implemented, independently reviewed and locally integrated.
-G0 is accepted; G1 technical checks pass with 83 Node tests, shared memory/
-IndexedDB checks and actual Chromium restart/profile isolation. Human G1
-acceptance remains pending before F2. Read `docs/experiments/G1.md` and the
-individual module records for controls and limits. Nothing was pushed.
+G0 and G1 are accepted. The user explicitly closed F1 on November15 and
+authorized creating `f2`, committing all current project changes and pushing
+that branch to GitHub. Closure evidence:87 Node tests, real Chromium
+IndexedDB restart/isolation and independent source-uncertainty review.
+Read `docs/experiments/G1.md` and `docs/experiments/SOURCE_UNCERTAINTY.md`.
 
-1. After human acceptance, F2 starts M06 readings and M07 base interface,
+1. F2 is ready on `f2`: start M06 readings and M07 base interface,
    then M08–M12 views, each with its own work order and independent review.
 2. The orchestrator promotes each completed module into implementedNames in
    tests/contract/registry.js. Keep all contract definitions and export
    manifests; placeholder checks apply only to pending modules.
-3. Real sample acquisition remains network-blocked. Required NASA/PhysioNet
-   domains were saved in the environment draft; settings must be applied and
-   published before retry. See docs/DATASETS.md and docs/data/F1-acquisition.json.
-   Do not invent CRF/BUT CGM headers, units or clinical content.
+3. Three small CRF/MR079G/BUT CGM original CSVs are now acquired under ignored
+   data/originals/ after environment publication. Read docs/DATASETS.md and
+   docs/data/import-readiness-2026-11-15.json: CRF units remain unconfirmed; schema2 now preserves unknown-zone source dates and explicit unknown units without inventing UTC. BUT CGM mmol/L is
+   supported by the pinned, linked author companion source. Do not invent those or clinical content.
 4. User-requested skills are available locally in `.agents/skills/` and must
    be selected/read according to AGENTS.md rather than fetched ad hoc.
 

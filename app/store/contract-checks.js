@@ -19,7 +19,7 @@ export async function checkStoreBehavior(module, assert, {kind='memory',name='m0
     bad(await store.updateState('records','r1',{value:1}));
     assert.deepEqual(good(await store.get('records','r1')),record);
     const shared=good(await store.save('shared',{id:'shared',subject:'A',time,what:['r1'],with:'team demo',channel:'simulated'}));
-    assert.equal(shared.schema_version,1);
+    assert.equal(shared.schema_version,2);
     bad(await store.updateState('shared','shared',{channel:'changed'}));
     assert.deepEqual(good(await store.get('shared','shared')),shared);
     bad(await store.saveBatch('records',[{...record,id:'before'},record,{...record,id:'after'}]));
@@ -28,8 +28,8 @@ export async function checkStoreBehavior(module, assert, {kind='memory',name='m0
     bad(await store.saveBatch('records',[{...record,id:'same-batch',value:3},{...record,id:'same-batch',value:4}]));
     bad(await store.get('records','same-batch'));
     assert.deepEqual(good(await store.list('records',{})).map(x=>x.id),['r1']);
-    bad(await store.save('records',{...record,id:'future',schema_version:2}));
-    bad(await store.save('tasks',{id:'future-task',schema_version:2}));
+    bad(await store.save('records',{...record,id:'future',schema_version:3}));
+    bad(await store.save('tasks',{id:'future-task',schema_version:3}));
     const more=[{...record,id:'b',subject:'B',value:-1},{...record,id:'later',time:'2026-11-16T12:00:00.000Z'}];
     assert.equal(good(await store.saveBatch('records',more)),2);
     assert.deepEqual(good(await store.list('records',{subject:'A'})).map(x=>x.id).sort(),['later','r1']);
@@ -49,8 +49,23 @@ export async function checkStoreBehavior(module, assert, {kind='memory',name='m0
     for(const collection of ['executions','tasks','episodes','deliveries']) {
       good(await store.save(collection,{id:'mutable',subject:'A',state:'pending'}));
       assert.equal(good(await store.updateState(collection,'mutable',{state:'done'})).state,'done');
-      for(const changes of [{id:'other'},{subject:'B'},{schema_version:2}]) bad(await store.updateState(collection,'mutable',changes));
+      for(const changes of [{id:'other'},{subject:'B'},{schema_version:3}]) bad(await store.updateState(collection,'mutable',changes));
     }
+    const uncertain={...record,id:'source-time',schema_version:2,subject:'source-subject',origin:'terrestrial',time:null,unit:null,unit_status:'unknown',source_time:{value:'2100-01-02T03:04',raw:'02/01/2100 3:04',precision:'minute',timezone:null,calendar:'shifted',scope:'study:cohort-a'}};
+    assert.deepEqual(good(await store.save('records',uncertain)),uncertain);
+    assert.deepEqual(good(await store.get('records',uncertain.id)),uncertain);
+    assert.deepEqual(good(await store.list('records',{subject:'source-subject'})),[uncertain]);
+    for(const filter of [{from:time,subject:'source-subject'},{subject:'source-subject',to:time},{from:time}]) {
+      const result=await store.list('records',filter);bad(result);assert.equal(result.error.code,'unresolved_time');
+    }
+    assert.equal((await store.list('records',{from:time,subject:'B'})).ok,true);
+    bad(await store.save('records',{...uncertain,id:'legacy-source',schema_version:1}));
+    bad(await store.save('records',{...uncertain,id:'missing-unit-status',unit_status:'known'}));
+    bad(await store.save('records',{...uncertain,id:'bad-source',source_time:{...uncertain.source_time,timezone:'UTC'}}));
+    const config1={id:'legacy-config',schema_version:1};assert.deepEqual(good(await store.save('config',config1)),config1);
+    assert.deepEqual(good(await store.get('config','legacy-config')),config1);
+    good(await store.save('tasks',{id:'undated'}));
+    assert.deepEqual(good(await store.list('tasks',{id:'undated',from:time})),[]);
     for(const collection of ['unknown','__proto__',null]) bad(await store.list(collection,{}));
     bad(await store.get('records','missing')); bad(await store.get('records',7));
     bad(await store.save('records',null)); bad(await store.saveBatch('records',{}));

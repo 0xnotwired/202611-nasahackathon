@@ -4,6 +4,113 @@ Query run: 2026-11-14T15:30:14.906452+00:00
 
 The eight full NLSP study cards were consulted through the public API used by the website, along with the human catalog and the metadata/file listings of OSD-51 and OSD-56. Small downloads from the eight NLSP studies were checked. Not all of their files, nor the bulk OSDR ZIPs, were downloaded or processed.
 
+## Current decision — source uncertainty
+
+Record schema2 now preserves dates without a known zone using `time:null`
+and `source_time`: original text, canonical source value, precision,
+`timezone:null`, calendar status and a source-clock scope. Date-only data
+gets no invented midnight. BUT CGM retains its shifted calendar, with a
+participant-specific scope; NASA calendar-shifting status remains unknown.
+Unknown calendar or units prevent comparison; UTC-window queries on matching
+unknown-time records fail explicitly. Legacy schema1 UTC records stay unchanged.
+See [the contract](CONTRACTS.md) and [experiment](experiments/SOURCE_UNCERTAINTY.md).
+This implements the model and storage, not M21 importers or product views.
+
+| Sample | Verified units | Source-time preparation | Citation / reuse |
+|---|---|---|---|
+| CRF | Not confirmed for Pulse, SysBP, DiaBP, Resp Rate, Weight, Body Temp or Height | Preserve Date and Vitals Time; timezone and shifting unknown | Full DOI citation; CC0-1.0 |
+| MR079G | ft-lb, explicit CSV column | Date-only; zone unknown; slash-date ordering still needs evidence | Full DOI citation; CC0-1.0 |
+| BUT CGM | mmol/L, official-linked author companion | Local datetime, participant-shifted calendar; zone unknown | Full dataset/PhysioNet citations; CC BY4.0 |
+
+CRF source review checked the exact CSV, experiment metadata, dataset
+`7153409b-d8a3-5a23-b667-9df8a182dfdc` and file metadata. The parameter list
+names variables without unit mappings, and the experiment lists no linked
+documents. This does not establish kg/lb, °C/°F or any other physical unit.
+The application can retain `unit:null, unit_status:"unknown"`; confirmation
+still requires a dictionary/protocol tied to this file. No guesses from
+numeric ranges, study location or another campaign are used.
+
+The CRF Date column contains second components above12, consistent with
+month/day ordering; the small MR079G sample does not disambiguate its slash
+ordering. Preserve originals in staging until an import mapping is evidenced.
+Canonical source-time validation cannot itself resolve ambiguous raw text.
+
+Official DataCite DOI records verify CC0-1.0 and full citations for the two
+NASA studies. BUT CGM is CC BY4.0. Earlier blocked-access and pending-rights
+notes below are historical and superseded. See [readiness metadata](data/import-readiness-2026-11-15.json),
+[use conditions](DATA_USE_AND_DELIVERY.md) and [delivery attributions](DATA_ATTRIBUTIONS.md).
+Delivery can include the app, manifest and download links while leaving
+original CSVs out. Published real charts/extracts still retain applicable
+attribution duties. No external author contact was made.
+
+## Unit and time follow-up — November 15, 2026
+
+SOURCE: BUT CGM glucose is interpreted as **mmol/L** by the author-maintained
+companion linked in the official PhysioNet Usage Notes. At pinned commit
+`d5867dc9022715223ddbf11244b98db64109bcf0`, the CGM loader reads Timestamp
+and Glycemia without a unit conversion; the controller labels that series
+"Glucose level [mmol/l]" (lines 906, 928, 1156, 1201). The exact source URLs,
+hashes and scope are in [the manifest](data/acquisition-2026-11-15.json).
+This is author-source evidence, not a unit declaration inside the CSV or a
+clinical validation. No companion code was incorporated; its interpolation,
+aggregation and clinical display bands are not adopted.
+
+RUN: Deeper official NASA file records publish __file_md5sum. Both originals
+match: CRF 9c708f3e8d0a63dd71f878727aac4472; MR079G
+bbb1110fba2c2cc3a5aa34a17a9aa131. Local SHA-256 hashes are retained separately.
+Earlier notes about checksums being unestablished referred to the experiment
+metadata; the file-level metadata now provides the additional evidence.
+
+SOURCE: CRF experiment, dataset and file metadata reviewed do not establish
+a per-variable unit mapping for this CSV. Do not fill it from catalog defaults,
+plausible values or collection location. MR079G retains explicit ft-lb.
+
+**Time policy:** preserve raw Date, Vitals Time and Timestamp strings plus
+Test_Phase/BR_Day. No authoritative UTC offset was established; BUT CGM also
+shifts calendar dates per participant. Do not append Z, choose a timezone from
+location, infer original DST from shifted dates, or align subjects by their
+shifted calendar dates. This earlier UTC-only restriction is superseded by schema2 preservation
+above; UTC conversion still requires evidence. M21 remains unimplemented. CRF comments remain excluded from public imports.
+
+Remaining external evidence: CRF's sample-specific unit dictionary and the
+original timestamp/timezone conventions. They cannot be reconstructed
+reliably from the current source files. Obtaining them requires additional
+authoritative documentation; no author contact was made by this task.
+
+## Current acquisition — November 15, 2026, after environment publication
+
+RUN: Three original CSV samples are now present under ignored `data/originals/`.
+The published network policy resolved the earlier CONNECT403 blocker. Files
+were retrieved over verified HTTPS from official NASA/PhysioNet routes and
+kept unchanged. The [current manifest](data/acquisition-2026-11-15.json)
+records exact source/final URLs, retrieval times, byte counts, SHA-256,
+headers and missingness. The historical blocked attempt below is retained.
+
+| Sample | Local original | Data rows / columns | Verified format and remaining issues |
+|---|---|---|---|
+| CRF Daily Vitals | data/originals/CRF-daily-vitals.csv | 113 / 17 | Comma CSV; Subject, Date, Test_Phase, BR_Day, Vitals Time and measurement columns. Units are not stated in the CSV; obtain a per-variable dictionary. Exclude Comment and Bowel Movement Description from public imports. |
+| MR079G muscle function | data/originals/MR079G-muscle-function.csv | 12 / 12 | Comma CSV; explicit Units values are ft-lb. Preserve source method/position and phase; source range columns are not universal clinical limits. |
+| BUT CGM 1.0.0 | data/originals/but-cgm-1.0.0/101001_CGM.csv | 3,016 / 2 | UTF-8 BOM, semicolon delimiter, Timestamp and Glycemia; dot decimals and no missing cells in this sample. The CSV/README omit the unit; the linked author companion supports mmol/L. See the follow-up evidence above. |
+
+RUN: BUT CGM CSV, README and license hashes match the publisher's
+SHA256SUMS.txt. NASA file-level MD5s now match the originals; local SHA-256 hashes are also retained, as documented in the follow-up above. Both NASA metadata documents were preserved.
+Their verified DOIs are CRF `10.83263/wjw1-ta27` and MR079G
+`10.83263/bk5h-r757`. Public-availability statements are not an invented
+license or a complete author/year citation. BUT CGM LICENSE.txt explicitly
+states Creative Commons Attribution 4.0.
+
+SOURCE: BUT CGM README says dates are participant-specifically shifted into
+2100–2199 and cross-participant time relationships are not preserved. The
+sample Timestamp format is `%Y-%m-%d %H:%M:%S`, with no UTC offset. NASA
+sample dates/times likewise lack an established UTC interpretation. M21 must
+resolve units/time policy before converting to the UTC Record contract;
+appending Z or assigning the synthetic subject would invent information.
+
+READ: These are acquired source samples, not implemented importers or
+validated clinical data integration. No original records are versioned or
+included in app/. No configuration was changed and nothing was published
+by this acquisition. Browser/clinical capabilities are unchanged.
+
 ## F1 acquisition status — November 15, 2026
 
 RUN: The current cloud checkout still has zero original dataset files. Fresh

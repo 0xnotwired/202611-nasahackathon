@@ -1,0 +1,226 @@
+{
+  "reviewed_at_utc": "2026-11-15T18:08:51.425083+00:00",
+  "sources": [
+    {
+      "url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "url": "https://www.nasa.gov/about/highlights/HP_Privacy.html",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "url": "https://nlsp.nasa.gov/about",
+      "final": "https://nlsp.nasa.gov/about",
+      "status": 200,
+      "bytes": 1273,
+      "file": "/tmp/orbita-acquire/legal-94b755ad20fb.html",
+      "type": "text/html; charset=UTF-8",
+      "sha256": "77b2908f7f61ced9a314a1d7bfc5b5bcf95053030d5493e66de16f926d9707cd",
+      "saved_file_scope": "temporary research evidence; not bundled source data"
+    },
+    {
+      "url": "https://physionet.org/content/but-cgm/1.0.0/",
+      "final": "https://physionet.org/content/but-cgm/1.0.0/",
+      "status": 200,
+      "bytes": 78133,
+      "file": "/tmp/orbita-acquire/legal-68adfbf6ec4b.html",
+      "type": "text/html; charset=utf-8",
+      "sha256": "cf8c2096c1c0ebc150407a52920fcfc09c8173a4cd0c4596f6726927acd7fe3a",
+      "saved_file_scope": "temporary research evidence; not bundled source data"
+    },
+    {
+      "url": "https://api.datacite.org/dois/10.83263/wjw1-ta27",
+      "error": "<urlopen error Tunnel connection failed: 403 Forbidden>"
+    },
+    {
+      "url": "https://api.datacite.org/dois/10.83263/wjw1-ta27",
+      "status": 200,
+      "sha256": "fde9c63e268aeaf1a62f6865bbd358d2141747cc79ba1eb81846165818317277",
+      "file": "data/originals/CRF-datacite.json",
+      "retrieved_at_utc": "2026-11-15T18:27:22.573665+00:00"
+    },
+    {
+      "url": "https://api.datacite.org/dois/10.83263/bk5h-r757",
+      "status": 200,
+      "sha256": "c4f680ae90d612b3afd5358cc9b6e9bdf441e550ce72415c14cd8584bbf9c850",
+      "file": "data/originals/MR079G-datacite.json",
+      "retrieved_at_utc": "2026-11-15T18:27:22.573665+00:00"
+    }
+  ],
+  "but_cgm": {
+    "status": "specific_license_verified",
+    "version": "1.0.0",
+    "doi": "10.13026/hv8f-3w60",
+    "license": "Creative Commons Attribution4.0",
+    "license_source": "https://physionet.org/files/but-cgm/1.0.0/LICENSE.txt",
+    "license_sha256": "9a78e7f22742dde9f66ae235ec793ba2212019dc4d0ced75c4da09ced0b35fb2",
+    "sections_reviewed": [
+      "1(i): Share includes public display and dissemination",
+      "2(a): reproduction/sharing/adaptation and no downstream restrictions/endorsement",
+      "2(b): privacy/publicity/trademark rights scope",
+      "3(a): retained notices, attribution, source/license links and changes",
+      "4: database rights",
+      "5: disclaimer"
+    ],
+    "required_attribution": [
+      "Dataset authors/title/version/DOI/RRID as requested on study card",
+      "Standard PhysioNet citation explicitly requested by study card",
+      "License notice/link and supplied warranty disclaimer",
+      "Identify preprocessing/subsetting/conversions when sharing modified data"
+    ],
+    "application_license": "Original application code remains Apache2.0; dataset material retains its own terms"
+  },
+  "nasa_samples": {
+    "ids": [
+      "CRF",
+      "MR079G"
+    ],
+    "status": "specific_license_cc0_1_0_verified_in_official_doi_records",
+    "records": {
+      "CRF": {
+        "url": "https://api.datacite.org/dois/10.83263/wjw1-ta27",
+        "retrieved_at_utc": "2026-11-15T18:27:22.573665+00:00",
+        "file": "data/originals/CRF-datacite.json",
+        "sha256": "fde9c63e268aeaf1a62f6865bbd358d2141747cc79ba1eb81846165818317277",
+        "creators": [
+          {
+            "name": "Principal Investigator: Meck, Janice Fritsch- Yelle",
+            "nameType": "Personal",
+            "givenName": "Janice Fritsch- Yelle",
+            "familyName": "Meck",
+            "affiliation": [],
+            "nameIdentifiers": []
+          },
+          {
+            "name": "Technical Assistant to Principal Investigator: Bridgeford, Jeffrey S.",
+            "nameType": "Personal",
+            "givenName": "Jeffrey S.",
+            "familyName": "Bridgeford",
+            "affiliation": [],
+            "nameIdentifiers": []
+          },
+          {
+            "name": "Principal Investigator: Paloski, William H.",
+            "nameType": "Personal",
+            "givenName": "William H.",
+            "familyName": "Paloski",
+            "affiliation": [],
+            "nameIdentifiers": []
+          },
+          {
+            "name": "Principal Investigator: Cromwell, Ronita L.",
+            "nameType": "Personal",
+            "givenName": "Ronita L.",
+            "familyName": "Cromwell",
+            "affiliation": [],
+            "nameIdentifiers": []
+          }
+        ],
+        "title": "Case Report Form",
+        "publication_year": 2026,
+        "publisher": "Ames Research Center",
+        "rights": [
+          {
+            "lang": "en-US",
+            "rights": "Creative Commons Zero v1.0 Universal",
+            "rightsUri": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+            "schemeUri": "https://spdx.org/licenses/",
+            "rightsIdentifier": "cc0-1.0",
+            "rightsIdentifierScheme": "SPDX"
+          }
+        ],
+        "citation": "Meck, Janice Fritsch- Yelle; Bridgeford, Jeffrey S.; Paloski, William H.; Cromwell, Ronita L. (2026). Case Report Form [Dataset]. Ames Research Center. https://doi.org/10.83263/wjw1-ta27"
+      },
+      "MR079G": {
+        "url": "https://api.datacite.org/dois/10.83263/bk5h-r757",
+        "retrieved_at_utc": "2026-11-15T18:27:22.573665+00:00",
+        "file": "data/originals/MR079G-datacite.json",
+        "sha256": "c4f680ae90d612b3afd5358cc9b6e9bdf441e550ce72415c14cd8584bbf9c850",
+        "creators": [
+          {
+            "name": "Principal Investigator: Moore, Alan D., Jr.",
+            "nameType": "Personal",
+            "givenName": "Alan D., Jr.",
+            "familyName": "Moore",
+            "affiliation": [],
+            "nameIdentifiers": []
+          },
+          {
+            "name": "Technical Assistant to Principal Investigator: Lee, Stuart M. C.",
+            "nameType": "Personal",
+            "givenName": "Stuart M. C.",
+            "familyName": "Lee",
+            "affiliation": [],
+            "nameIdentifiers": []
+          },
+          {
+            "name": "Technical Assistant to Principal Investigator: Ciaozzo, Vince J.",
+            "nameType": "Personal",
+            "givenName": "Vince J.",
+            "familyName": "Ciaozzo",
+            "affiliation": [],
+            "nameIdentifiers": []
+          },
+          {
+            "name": "Co-Investigator: Baldwin, Kenneth M.",
+            "nameType": "Personal",
+            "givenName": "Kenneth M.",
+            "familyName": "Baldwin",
+            "affiliation": [],
+            "nameIdentifiers": []
+          },
+          {
+            "name": "Principal Investigator: Ploutz- Snyder, Lori",
+            "nameType": "Personal",
+            "givenName": "Lori",
+            "familyName": "Ploutz- Snyder",
+            "affiliation": [],
+            "nameIdentifiers": []
+          }
+        ],
+        "title": "Isokinetic Muscle Function (Flight Analog)",
+        "publication_year": 2026,
+        "publisher": "Ames Research Center",
+        "rights": [
+          {
+            "lang": "en-US",
+            "rights": "Creative Commons Zero v1.0 Universal",
+            "rightsUri": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
+            "schemeUri": "https://spdx.org/licenses/",
+            "rightsIdentifier": "cc0-1.0",
+            "rightsIdentifierScheme": "SPDX"
+          }
+        ],
+        "citation": "Moore, Alan D., Jr.; Lee, Stuart M. C.; Ciaozzo, Vince J.; Baldwin, Kenneth M.; Ploutz- Snyder, Lori (2026). Isokinetic Muscle Function (Flight Analog) [Dataset]. Ames Research Center. https://doi.org/10.83263/bk5h-r757"
+      }
+    },
+    "scope": "The two specific study DOIs declare CC0; not a claim that every NASA-hosted resource has identical rights.",
+    "license_implications": "CC0 permits reuse without a copyright attribution condition to the extent the affirmer can waive rights; project/source-citation requirements still apply. Privacy and endorsement are not automatically granted.",
+    "primary_nasa_policy": {
+      "url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "http_status": 200,
+      "scope": "General media guidelines read, not substituted for the study-specific DataCite rights declarations."
+    }
+  },
+  "delivery": {
+    "contents": [
+      "Original application",
+      "Metadata-only provenance manifest",
+      "DATA_ATTRIBUTIONS.md",
+      "Official DOI/study/download links",
+      "Clearly labeled synthetic demonstration data"
+    ],
+    "exclude": [
+      "Original real CSVs",
+      "Original data embedded in JavaScript/HTML/fixtures",
+      "Real source rows in exported tables, screenshots or demo video until their applicable terms are checked"
+    ],
+    "limits": "Omitting CSVs avoids bundling original files but is not a blanket exemption for copied/extracted material in charts, screenshots, summaries or databases. Reuse conditions and attribution still follow any actual shared dataset material.",
+    "implementation_status": "Delivery specification only. M23 packager is not implemented; .gitignore alone is not proof that future distribution excludes files."
+  },
+  "configuration_changed": false,
+  "publication": false,
+  "external_messages_sent": false,
+  "followup_at_utc": "2026-11-15T18:27:22.573665+00:00"
+}

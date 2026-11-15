@@ -50,7 +50,7 @@ function list(value) {
 }
 
 /** Validate into a detached plain-data configuration. schema_version may be
- * absent before persistence; when supplied only the current version is read. */
+ * absent before persistence; when supplied, known legacy1 and current2 versions are read unchanged. */
 export function validateConfig(data) {
   const error = shapeError(data, fields, 'config');
   if (error) return fail(error);
@@ -59,7 +59,7 @@ export function validateConfig(data) {
   }
   if (!text(data.id, MAX_ID)) return fail('id');
   if (!text(data.name)) return fail('name');
-  if (has(data, 'schema_version') && data.schema_version !== 1) return fail('schema_version');
+  if (has(data, 'schema_version') && ![1,2].includes(data.schema_version)) return fail('schema_version');
   if (!MODES.includes(data.communication)) return fail('communication');
   if (!ENVIRONMENTS.includes(data.environment)) return fail('environment');
   if (has(data, 'gravity_note') && !text(data.gravity_note)) return fail('gravity_note');

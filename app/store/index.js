@@ -47,7 +47,7 @@ function normalize(collection,input,stored=false) {
   if(!object||Array.isArray(object)||typeof object!=='object')return invalid('object');
   if(!text(object.id))return invalid('id');
   if(collection!=='records'&&!stored&&!own(object,'schema_version'))object.schema_version=SCHEMA_VERSION;
-  if(object.schema_version!==SCHEMA_VERSION)return fail('schema_version','schema_version',`Unsupported schema_version; expected ${SCHEMA_VERSION}`);
+  if(![1,SCHEMA_VERSION].includes(object.schema_version))return fail('schema_version','schema_version',`Unsupported schema_version; expected 1 or ${SCHEMA_VERSION}`);
   if(collection==='records')return validateRecord(object);
   if(own(object,'subject')&&!text(object.subject))return invalid('subject');
   return ok(object);
@@ -178,7 +178,14 @@ function makeStore(kind,backend) {
     async list(collection,input={}) {
       if(closed)return fail('closed','store','Store is closed');
       const checked=filterData(input);if(!checked.ok)return checked;
-      return access(collection,false,map=>ok([...map.values()].filter(value=>matches(value,checked.value)).map(value=>structuredClone(value))));
+      return access(collection,false,map=>{
+        const filter=checked.value;
+        const equality=Object.fromEntries(Object.entries(filter).filter(([key])=>key!=='from'&&key!=='to'));
+        const candidates=[...map.values()].filter(value=>matches(value,equality));
+        if(collection==='records' && (own(filter,'from')||own(filter,'to')) && candidates.some(value=>value.time===null))
+          return fail('unresolved_time','time','UTC filtering requires a known timezone; source time is unresolved');
+        return ok(candidates.filter(value=>matches(value,filter)).map(value=>structuredClone(value)));
+      });
     },
     async saveBatch(collection,input) {
       if(closed)return fail('closed','store','Store is closed');

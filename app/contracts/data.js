@@ -1,5 +1,5 @@
 /**
- * Contract version 0.6. Authority: docs/CONTRACTS.md.
+ * Contract version 0.7. Authority: docs/CONTRACTS.md.
  * Documentation only: no runtime validation or module logic lives here.
  * Every persisted object additionally carries schema_version (section 3),
  * represented by Persisted<T>; nested criteria are not separately persisted.
@@ -21,9 +21,11 @@
  * @property {'recorded'|'confirmed_none'|'not_recorded'} state
  * @property {string} variable
  * @property {number} [value]
- * @property {string} [unit]
+ * @property {string|null} [unit]
+ * @property {'known'|'unknown'} [unit_status]
  * @property {string} method
- * @property {string} time
+ * @property {string|null} time
+ * @property {{value:string,raw:string,precision:'date'|'minute'|'second',timezone:null,calendar:'original'|'shifted'|'unknown',scope:string}} [source_time]
  * @property {{from:string,to:string}} [interval]
  * @property {'synthetic'|'ground_analog'|'terrestrial'|'flight'|'cell_culture'} origin
  * @property {string} source
@@ -135,4 +137,4 @@
  * @property {'queued'|'in_transit'|'received'} state
  */
 
-export const CONTRACT_VERSION = "0.6";
+export const CONTRACT_VERSION = "0.7";
