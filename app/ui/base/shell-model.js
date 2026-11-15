@@ -104,16 +104,27 @@ function interpret(label, result) {
   return {state: 'error', text: `${label} returned an unrecognised state.`};
 }
 
-async function resolveCurrent(planned, loader, services, params) {
+const LOAD_TIMEOUT_MS = 15000; // a view that does not answer must not hold the whole shell; technical, not clinical
+
+function withTimeout(promise, ms) {
+  let timer;
+  const timeout = new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('timeout')), ms); });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+}
+
+async function resolveCurrent(planned, loader, services, params, timeoutMs) {
   const label = planned.label;
   if (!loader || typeof loader.load !== 'function') return {id: planned.id, state: 'not_available', text: `${label} is not available yet.`};
   let module;
-  try { module = await loader.load(); } catch { return {id: planned.id, state: 'error', text: `${label} could not be loaded.`}; }
+  try { module = await withTimeout(Promise.resolve().then(() => loader.load()), timeoutMs); } catch (error) { return {id: planned.id, state: 'error', text: error && error.message === 'timeout' ? `${label} did not respond in time.` : `${label} could not be loaded.`}; }
   if (!module || typeof module.model !== 'function') return {id: planned.id, state: 'error', text: `${label} could not be loaded: its module has no model.`};
   let result;
-  try { result = await module.model(services, params); } catch { return {id: planned.id, state: 'error', text: `${label} failed while preparing its data.`}; }
+  try { result = await withTimeout(Promise.resolve().then(() => module.model(services, params)), timeoutMs); } catch (error) { return {id: planned.id, state: 'error', text: error && error.message === 'timeout' ? `${label} did not respond in time.` : `${label} failed while preparing its data.`}; }
   const current = {id: planned.id, ...interpret(label, result)};
-  if (current.state === 'ready' && typeof module.mount === 'function') current.mount = module.mount;
+  if (current.state === 'ready') {
+    if (typeof module.mount === 'function') current.mount = module.mount;
+    else return {id: planned.id, state: 'error', text: `${label} returned a ready view with no mount function, so nothing can be drawn.`};
+  }
   return current;
 }
 
@@ -121,12 +132,12 @@ async function resolveCurrent(planned, loader, services, params) {
  * buildShell({ views, currentId, services, params }) → { nav, current, storage, config }
  * The navigation always lists every planned view. One view failing never stops the shell.
  */
-export async function buildShell({views = [], currentId, services, params, sources = []} = {}) {
+export async function buildShell({views = [], currentId, services, params, sources = [], timeout_ms = LOAD_TIMEOUT_MS} = {}) {
   const loaders = new Map((Array.isArray(views) ? views : []).filter(view => plain(view) && isText(view.id)).map(view => [view.id, view]));
   const nav = PLANNED_VIEWS.map(view => ({id: view.id, label: view.label, folder: view.folder, href: `#/${view.id}`, current: view.id === currentId}));
   const planned = PLANNED_VIEWS.find(view => view.id === currentId);
   const current = planned
-    ? await resolveCurrent(planned, loaders.get(planned.id), services, params)
+    ? await resolveCurrent(planned, loaders.get(planned.id), services, params, timeout_ms)
     : {id: null, state: 'unknown_view', text: 'This address does not match any view. Choose one from the navigation.'};
   const store = ownValue(services, 'store');
   let status;

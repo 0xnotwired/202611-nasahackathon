@@ -48,16 +48,20 @@ export async function cumulative(store, query) {
 }
 
 export async function environment(store, query) {
-  const read = readQuery(query, ['place', 'interval']);
+  const read = readQuery(query, ['place', 'interval', 'subject', 'variable']);
   if (!read.ok) return read;
   if (!isText(read.value.place)) return fail('invalid_query', 'place', 'Field place must be non-empty text');
+  for (const key of ['subject', 'variable']) if (read.value[key] !== undefined && !isText(read.value[key])) return fail('invalid_query', key, `Field ${key} must be non-empty text when given`);
   const span = readQuery(read.value.interval, ['from', 'to']);
   if (!span.ok || Object.keys(read.value.interval).sort().join(',') !== 'from,to') return fail('invalid_query', 'interval', 'Field interval must be { from, to }');
   const from = instant(span.value.from, 'interval.from'); if (!from.ok) return from;
   const to = instant(span.value.to, 'interval.to'); if (!to.ok) return to;
   if (from.value >= to.value) return fail('invalid_query', 'interval', 'Interval end must be after its start');
 
-  const found = await list(store, {type: 'environment', place: read.value.place}); if (!found.ok) return found;
+  const filter = {type: 'environment', place: read.value.place};
+  if (read.value.subject !== undefined) filter.subject = read.value.subject;
+  if (read.value.variable !== undefined) filter.variable = read.value.variable;
+  const found = await list(store, filter); if (!found.ok) return found;
   const superseded = new Set(found.value.filter(record => typeof record.corrects === 'string').map(record => record.corrects));
   const overlapping = [];
   for (const record of found.value) {
@@ -68,8 +72,10 @@ export async function environment(store, query) {
   }
   overlapping.sort((a, b) => (a.start - b.start) || (a.record.id < b.record.id ? -1 : 1));
   const measured = overlapping.filter(entry => entry.record.state === 'recorded');
+  const variablesSeen = new Set(measured.map(entry => entry.record.variable));
+  const severalVariables = variablesSeen.size > 1;
   const segments = [];
-  for (const entry of measured) {
+  for (const entry of severalVariables ? [] : measured) {
     const start = Math.max(entry.start, from.value); const end = Math.min(entry.end, to.value);
     const last = segments[segments.length - 1];
     if (last && start <= last.end) last.end = Math.max(last.end, end); else segments.push({start, end});
@@ -81,7 +87,8 @@ export async function environment(store, query) {
       from: segments.length ? iso(segments[0].start) : null,
       to: segments.length ? iso(segments[segments.length - 1].end) : null,
       sensors: [...new Set(measured.map(entry => entry.record.sensor))].sort(),
-      segments: segments.map(segment => ({from: iso(segment.start), to: iso(segment.end)}))
+      segments: segments.map(segment => ({from: iso(segment.start), to: iso(segment.end)})),
+      ...(severalVariables ? {segments_note: 'Several variables are present; no continuous cover is claimed across them. Ask for one variable to get its segments.'} : {})
     }
   };
 }

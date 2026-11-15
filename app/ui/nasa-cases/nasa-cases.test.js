@@ -263,10 +263,9 @@ test('M22-X14: choosing a day or variable reuses the computed series; loading an
     assert.equal(vm.panels[0].chart.day,'2100-01-01');
     // A second file for the same subject must show up: the cache must have been invalidated.
     const before=vm.panels[0].chart.days.length;
-    vm=await load(vm,'BUT_CGM','b.csv',cgm('2100-01-05 10:00:00;6.1','2100-01-05 10:05:00;6.2'),'S');
-    assert.ok(counts.series>afterLoad.series,'the series was recomputed after the new file');
-    assert.equal(vm.panels[0].chart.days.length,before+1);
-    assert.ok(vm.panels[0].chart.days.includes('2100-01-05'));
+    vm=await load(vm,'BUT_CGM','b.csv',cgm('2100-01-05 10:00:00;6.1','2100-01-05 10:05:00;6.2'),'T');
+    assert.ok(counts.series>afterLoad.series,'the series was computed for the new file');
+    assert.equal(vm.panels[0].subject,'T');assert.deepEqual(vm.panels[0].chart.days,['2100-01-05']);assert.ok(before>=1);
     // One subject with several variables: the cache is keyed by variable, so each selection shows its own series.
     const mr080g='Campaign,Subject,Date,Test_Phase,BR_Day,Test,Stage,HR,VO2,VCO2,RER,VO2 (ml/kg/min),VE,FEO2,FECO2\nC3C,7772,5/7/2006,PRE_TEST,-1,Pre Bed Rest Maximum Cycle-Light,50 Watt Av.,100,1,0.8,0.8,20,30,17,4';
     let multi=await model(spy,{});
@@ -278,6 +277,49 @@ test('M22-X14: choosing a day or variable reuses the computed series; loading an
     assert.match(texts(multi.panels[0]),/4 %/);assert.doesNotMatch(texts(multi.panels[0]),/100 bpm/);assert.equal(multi.panels[0].variable,'FECO2');
     multi=await multi.interactions.select({variables:{'7772':'pulse'}});
     assert.match(texts(multi.panels[0]),/100 bpm/);
+  } finally {await main.close();}
+});
+
+test('M22-X15: two participants are never merged under one typed identifier, and one file is never split into two',async()=>{
+  const {main,vm}=await setup();
+  try {
+    const a=cgm('2100-01-01 08:00:00;5.5','2100-01-01 08:05:00;5.6');
+    const b=cgm('2100-02-01 09:00:00;7.5','2100-02-01 09:05:00;7.6');
+    let cur=await load(vm,'BUT_CGM','a.csv',a,'P1');
+    assert.match(cur.files[0].subject_note,/typed by you/i);
+    const merged=await load(cur,'BUT_CGM','b.csv',b,'P1');
+    assert.equal(merged.message.kind,'error');assert.match(merged.message.text,/merge two participants/i);assert.equal(merged.files.length,1);assert.equal(merged.subjects.length,1);
+    const split=await load(cur,'BUT_CGM','a-again.csv',a,'P2');
+    assert.equal(split.message.kind,'error');assert.match(split.message.text,/already loaded under subject P1/i);assert.deepEqual(split.subjects.map(s=>s.subject),['P1']);
+    const ok=await load(cur,'BUT_CGM','b.csv',b,'P2');assert.equal(ok.files.length,2);assert.deepEqual(ok.subjects.map(s=>s.subject).sort(),['P1','P2']);
+    const mr=await load(ok,'MR079G','m.csv',MR079G);assert.match(mr.files[2].subject_note,/comes from the file/i);
+  } finally {await main.close();}
+});
+
+test('M22-X16/X17: prototype-like subject names work; an accessor on the variables map is never run',async()=>{
+  const {main,vm}=await setup();
+  try {
+    for(const [index,name] of ['constructor','__proto__','toString','hasOwnProperty'].entries()) {
+      const cur=await load(vm,'BUT_CGM',`${name}.csv`,cgm(`2100-01-01 08:00:00;5.${index}`,`2100-01-01 08:05:00;6.${index}`),name);
+      assert.equal(cur.panels[0].subject,name,name);assert.equal(cur.panels[0].chart_error,null,name);assert.ok(cur.panels[0].chart,name);
+      const picked=await cur.interactions.select({variables:{[name]:'glucose'}});assert.equal(picked.message,null,name);assert.equal(Object.getPrototypeOf(picked.selection.variables),Object.prototype);
+    }
+    const cur=await load(vm,'BUT_CGM','a.csv',cgm('2100-01-01 08:00:00;5.5'),'S');
+    let ran=false;const trap={};Object.defineProperty(trap,'S',{enumerable:true,get(){ran=true;return 'glucose';}});
+    const out=await cur.interactions.select({variables:trap});
+    assert.equal(ran,false);assert.equal(out.message.kind,'error');
+  } finally {await main.close();}
+});
+
+test('M22-X18: a partial card and a refused card are labelled differently',async()=>{
+  const rows=Array.from({length:300},(_,i)=>`2100-01-0${1+Math.floor(i/200)} ${String(Math.floor((i%200)/12)).padStart(2,'0')}:${String((i%12)*5).padStart(2,'0')}:00;5.${i%10}`);
+  const {main,services}=await setup();
+  try {
+    const flaky=async()=>{const o=await openStore({kind:'memory',name:'f'});let n=0;const r=o.value;return {ok:true,value:{list:(...a)=>r.list(...a),close:()=>r.close(),saveBatch:async(...a)=>(++n===2?{ok:false,error:{code:'capacity',message:'x'}}:r.saveBatch(...a))}};};
+    const part=await load(await model({...services,openMemoryStore:flaky},{}),'BUT_CGM','p.csv',cgm(...rows),'S');
+    assert.equal(part.files[0].status,'partial');assert.equal(part.files[0].error_label,'Only partly loaded');
+    const ref=await load(await model(services,{}),'BUT_CGM','r.csv','Foo;Bar\n1;2','S');
+    assert.equal(ref.files[0].status,'refused');assert.equal(ref.files[0].error_label,'Refused as a whole');
   } finally {await main.close();}
 });
 

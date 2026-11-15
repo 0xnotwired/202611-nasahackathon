@@ -51,11 +51,11 @@ export function mount(element, viewModel, actions) {
   }
 
   function fileCard(file, index) {
-    const rows = [['Study', file.study], ['Origin of these records', file.origin_text], ['Subjects', file.subjects.join(', ') || 'none'], ['Records loaded', String(file.records)],
+    const rows = [['Study', file.study], ['Origin of these records', file.origin_text], ['Subjects', file.subjects.join(', ') || 'none'], ['Subject identifier', file.subject_note], ['Records loaded', String(file.records)],
       ['DOI', file.doi ?? 'not given'], ['Licence', file.license]];
     const parts = [h(doc, 'h4', {id: `nc-file-${index}`}, file.name), h(doc, 'dl', {}, ...rows.flatMap(([term, value]) => [h(doc, 'dt', {}, term), h(doc, 'dd', {}, value)]))];
     parts.push(h(doc, 'p', {class: 'legend'}, 'Citation:'), ...file.citation.map(text => h(doc, 'p', {class: 'citation'}, text)));
-    if (file.error_text) parts.push(h(doc, 'p', {class: 'notice notice-error', role: 'alert'}, `Refused as a whole: ${file.error_text}`));
+    if (file.error_text) parts.push(h(doc, 'p', {class: 'notice notice-error', role: 'alert'}, `${file.error_label ?? 'Problem'}: ${file.error_text}`));
     if (file.rejected.length) {
       const table = accessibleTable({caption: `${file.rejected.length} rejected rows in ${file.name} (row numbers count the header as row 1; the cell text is not shown)`,
         columns: [{key: 'row', label: 'Row'}, {key: 'code', label: 'Reason'}, {key: 'field', label: 'Field'}], rows: file.rejected});

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {series,latest,baseline,environment,cumulative,attention} from './index.js';
+import {series,latest,baseline,environment,cumulative,attention,seriesBySourceTime} from './index.js';
 import {openStore} from '../store/index.js';
 
 // Expected values are written by hand from the work order, never computed by the code under test.
@@ -313,6 +313,66 @@ test('M06-X8: within happens only with a well-formed criterion, the record\'s ow
   }
   // (60 bpm, bpm criterion) and (60 other, the criterion in unit other): the only two well-formed same-unit in-range pairings.
   assert.equal(withinCount,2);
+});
+
+test('M06-R1/R2/R5: latest ignores superseded records, age floors, utc_records ignores superseded',async()=>{
+  const store=await storeWith([rec({id:'old',time:at(9),value:60}),rec({id:'fix',time:at(8),value:61,corrects:'old'})]);
+  try {
+    const out=await latest(store,{subject:'subject-a',variable:'pulse'},NOW);
+    assert.equal(out.record.id,'fix','the superseded record is newer by time but is not the latest');
+    const young=await latest(store,{subject:'subject-a',variable:'pulse'},{clock:()=>`${day(8)}T11:59:59.000Z`});
+    assert.equal(young.ok,false,'the active record at 12:00 is after this clock');
+    const floored=await latest(store,{subject:'subject-a',variable:'pulse'},{clock:()=>`${day(10)}T11:59:59.000Z`});
+    assert.equal(floored.age_days,1,'1.9999 days is 1');
+  } finally {await store.close();}
+  const utc={...rec({id:'u1',value:5}),time:`${day(2)}T12:00:00.000Z`};delete utc.source_time;
+  const fixUtc={...rec({id:'u2',value:6,corrects:'u1'}),time:`${day(2)}T13:00:00.000Z`};delete fixUtc.source_time;
+  const sourced=rec({id:'s1',value:7,source_time:{value:day(1),raw:day(1),precision:'date',timezone:null,calendar:'original',scope:'x'},time:null});
+  const st2=await storeWith([utc,fixUtc,sourced]);
+  try {assert.equal((await seriesBySourceTime(st2,{subject:'subject-a',variable:'pulse'})).utc_records,1);} finally {await st2.close();}
+});
+
+test('M06-R3: windows are [from, to): a record at from is in, at to is out, for series and baseline',async()=>{
+  const store=await storeWith([rec({id:'atFrom',time:`${day(1)}T00:00:00.000Z`,value:60}),rec({id:'atTo',time:`${day(6)}T00:00:00.000Z`,value:61})]);
+  try {
+    const out=await series(store,Q);assert.deepEqual(out.points.map(p=>p.id),['atFrom']);
+    const bl=await baseline(store,{subject:'subject-a',variable:'pulse',to:`${day(6)}T00:00:00.000Z`});assert.equal(bl.n,1);
+  } finally {await store.close();}
+});
+
+test('M06-R4: source-clock order uses seconds',async()=>{
+  const clk=value=>({value,raw:value,precision:'second',timezone:null,calendar:'shifted',scope:'x'});
+  const mk=(id,t,v)=>({...rec({id,value:v}),time:null,source_time:clk(`2100-01-01T10:00:${t}`)});
+  const store=await storeWith([mk('a-late','30',2),mk('b-early','05',1)]); // ids sort the opposite way, so only the seconds can give this order
+  try {const out=await seriesBySourceTime(store,{subject:'subject-a',variable:'pulse'});assert.deepEqual(out.points.map(p=>p.id),['b-early','a-late']);} finally {await store.close();}
+});
+
+test('M06-R6: a criterion without a text unit is refused even against a unit-unknown record',()=>{
+  const unknownRec={...meas({value:60}),unit:null,unit_status:'unknown'};
+  for(const unit of [null,undefined,'',7]) {
+    const out=attention(unknownRec,withCriteria({...criterion,unit}));assert.equal(out.status,'not_assessed',String(unit));
+    const known=attention(meas({value:60}),withCriteria({...criterion,unit}));assert.equal(known.status,'not_assessed',String(unit));
+  }
+});
+
+test('M06-R7/R8: environment filters by subject and variable and never claims cover across variables; bounds must be UTC',async()=>{
+  const store=await storeWith([env({id:'c1',interval:{from:at(2,11),to:at(2,12)}}),env({id:'t1',variable:'ambient_temperature',unit:'degC',interval:{from:at(2,12),to:at(2,13)},time:at(2,13)}),
+    env({id:'other',subject:'subject-z',interval:{from:at(2,11),to:at(2,12)}}),env({id:'before',interval:{from:at(2,9),to:at(2,10)},time:at(2,10),value:1})]);
+  try {
+    const interval={from:at(2,10),to:at(3,0)};
+    const all=await environment(store,{place:'A',interval});
+    assert.deepEqual(all.coverage.segments,[]);assert.match(all.coverage.segments_note,/several variables/i);assert.deepEqual(all.coverage.sensors,['s1']);
+    assert.equal(all.records.some(r=>r.id==='before'),false,'a record ending exactly at the interval start is not inside it');
+    const one=await environment(store,{place:'A',interval,variable:'co2'});
+    assert.deepEqual(one.coverage.segments,[{from:at(2,11),to:at(2,12)}]);assert.ok(one.records.every(r=>r.variable==='co2'));
+    const mine=await environment(store,{place:'A',interval,variable:'co2',subject:'subject-a'});
+    assert.deepEqual(mine.records.map(r=>r.id),['c1']);
+    for(const bad of [{place:'A',interval:{from:'2026-03-02',to:'2026-03-03'}},{place:'A',interval:{from:'2026-03-02T00:00:00',to:'2026-03-03T00:00:00'}},{place:'A',interval:{from:'2026-03-02T00:00:00+14:00',to:'2026-03-03T00:00:00Z'}}]) {
+      const out=await environment(store,bad);assert.equal(out.ok,false,JSON.stringify(bad));assert.equal(out.error.code,'invalid_query');
+    }
+    for(const bad of [{...Q,from:'2026-03-01'},{...Q,to:'2026-03-06T00:00:00'},{...Q,from:'2026-03-01T00:00:00+02:00'}]) {const out=await series(store,bad);assert.equal(out.ok,false);assert.equal(out.error.code,'invalid_query');}
+    assert.equal((await baseline(store,{subject:'subject-a',variable:'pulse',to:'2026-03-06'})).ok,false);
+  } finally {await store.close();}
 });
 
 test('M06-X11: the module source holds no numeric literal beyond the reviewed structural list (R6 tripwire)',async()=>{

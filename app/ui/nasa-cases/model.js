@@ -67,7 +67,7 @@ function valueText(record) {
 async function buildPanel(services, session, records, summary, selection) {
   const readings = own(services, 'readings');
   const variables = counts(summary.variables, 'variable');
-  const variable = selection.variables[summary.subject] ?? variables[0].variable;
+  const variable = selection.variables.get(summary.subject) ?? variables[0].variable;
   const first = records.find(record => record.subject === summary.subject && record.variable === variable);
   const source = describeSource(first ? first.source : undefined);
   const panel = {subject: summary.subject, study: [...summary.studies].join('; '), origin_text: originText(summary.origins), variable, variables,
@@ -124,7 +124,7 @@ async function buildViewModel(services, session, note) {
   const panels = [];
   for (const subject of session.selection.subjects) if (summaries.has(subject)) panels.push(await buildPanel(services, session, records, summaries.get(subject), session.selection));
   return {state: 'ready', title: 'NASA cases', notice: NOTICE, loader: loaderModel(), files: session.files.map(file => ({...file})), subjects,
-    selection: {subjects: [...session.selection.subjects], variables: {...session.selection.variables}, day: session.selection.day},
+    selection: {subjects: [...session.selection.subjects], variables: Object.fromEntries(session.selection.variables), day: session.selection.day},
     limits: {max_file_bytes: MAX_FILE_CHARS}, panels, empty_reason: panels.length ? null : (session.files.length ? 'No subject is selected. Choose one to see its series.' : 'No file loaded yet. Choose a verified source and a file below.'),
     message: note ?? null, interactions: interactions(services, session)};
 }
@@ -151,12 +151,20 @@ async function loadFile(services, session, input) {
   if (!result || result.ok !== true) {
     const error = result && result.error ? result.error : {code: 'import_failed', message: 'the importer refused this file'};
     session.files.push({id, name, source_id: profile.id, study: profile.label, origin_text: 'no records were loaded', subjects: [], records: 0, rejected: [], skipped: 0,
-      doi: profile.doi, citation: [...profile.citation], license: profile.license, status: 'refused', error_text: `${error.code}: ${error.message}`});
+      doi: profile.doi, citation: [...profile.citation], license: profile.license, subject_note: 'No subject was loaded.', error_label: 'Refused as a whole', status: 'refused', error_text: `${error.code}: ${error.message}`});
     return message('error', `${name} was refused as a whole and nothing was loaded: ${error.code}.`);
   }
   const {records, rejected, skipped} = result.value;
   const known = await session.store.list('records', {});
   const existing = new Set(known.ok ? known.value.map(record => record.id) : []);
+  if (profile.needs_subject && records.length && known.ok) {
+    const first = records[0];
+    const fileKey = record => String(record.source).split(';row=')[0]; // every record of one file shares this
+    const sameFile = known.value.find(record => fileKey(record) === fileKey(first));
+    if (sameFile && sameFile.subject !== first.subject) return message('error', `Already loaded under subject ${sameFile.subject.slice(0, 60)} as ${sameFile.subject === first.subject ? 'this identifier' : 'another identifier'}; nothing was added, so one participant is not split into two subjects.`);
+    const otherFile = known.value.find(record => record.subject === first.subject && fileKey(record) !== fileKey(first));
+    if (otherFile) return message('error', `Subject ${first.subject.slice(0, 60)} already holds records from another file; loading this one under the same identifier would merge two participants. Use a different identifier.`);
+  }
   const already = records.filter(record => existing.has(record.id)).length;
   if (records.length && already === records.length) return message('info', 'Already loaded: these records are already in this session. Nothing was added.');
   if (already) return message('error', 'Part of this file overlaps records already loaded, so nothing was added.');
@@ -176,9 +184,10 @@ async function loadFile(services, session, input) {
   session.files.push({id, name, source_id: profile.id, study: profile.label, origin_text: originText(new Set(keptRecords.map(record => record.origin))), subjects, records: kept,
     rejected: rejected.map(row => ({row: row.row, code: row.code, field: row.field, text: `row ${row.row}: ${row.code} (${row.field})`})), skipped: skipped.length,
     doi: source.doi ?? profile.doi, citation: [...(source.profile ? source.citation : profile.citation)], license: source.profile ? source.license : profile.license,
-    status: partial ? 'partial' : rejected.length ? (records.length ? 'loaded_with_rejections' : 'all_rows_rejected') : 'loaded',
+    subject_note: profile.needs_subject ? 'The subject identifier was typed by you; the file carries none.' : 'The subject identifier comes from the file.',
+    error_label: partial ? 'Only partly loaded' : null, status: partial ? 'partial' : rejected.length ? (records.length ? 'loaded_with_rejections' : 'all_rows_rejected') : 'loaded',
     error_text: partial ? `only ${kept} of ${records.length} records were kept (${failure})` : null});
-  if (subjects.length) { session.selection.subjects = subjects.slice(0, MAX_SUBJECTS); session.selection.variables = {}; session.selection.day = null; }
+  if (subjects.length) { session.selection.subjects = subjects.slice(0, MAX_SUBJECTS); session.selection.variables = new Map(); session.selection.day = null; }
   if (partial) return message('error', `Only ${kept} of ${records.length} records from ${name} could be kept (${failure}). The file is only partly loaded.`);
   return message('info', `Loaded ${records.length} records from ${name}${rejected.length ? `; ${rejected.length} rows were rejected (listed on its card)` : ''}.`);
 }
@@ -186,7 +195,7 @@ async function loadFile(services, session, input) {
 async function select(services, session, input) {
   if (!plain(input)) return message('error', 'Nothing to select.');
   const known = (await loadedRecords(session)).summaries;
-  const next = {subjects: [...session.selection.subjects], variables: {...session.selection.variables}, day: session.selection.day};
+  const next = {subjects: [...session.selection.subjects], variables: new Map(session.selection.variables), day: session.selection.day};
   const subjects = own(input, 'subjects');
   if (subjects !== undefined) {
     if (!Array.isArray(subjects) || subjects.some(subject => !isText(subject))) return message('error', 'Subjects must be a list of subject identifiers.');
@@ -194,14 +203,18 @@ async function select(services, session, input) {
     const missing = unique.find(subject => !known.has(subject));
     if (missing !== undefined) return message('error', `Subject ${missing.slice(0, 60)} is not in the loaded files.`);
     if (unique.length > MAX_SUBJECTS) return message('error', `At most ${MAX_SUBJECTS} subjects can be shown at once, each in its own panel.`);
-    next.subjects = unique; next.variables = {}; next.day = null;
+    next.subjects = unique; next.variables = new Map(); next.day = null;
   }
   const variables = own(input, 'variables');
   if (variables !== undefined) {
     if (!plain(variables)) return message('error', 'Variables must map a subject to one of its variables.');
-    for (const [subject, variable] of Object.entries(variables)) {
+    let descriptors;
+    try { descriptors = Object.getOwnPropertyDescriptors(variables); } catch { return message('error', 'Variables could not be read.'); }
+    for (const [subject, descriptor] of Object.entries(descriptors)) {
+      if (!Object.hasOwn(descriptor, 'value')) return message('error', 'Variables must be plain values, not accessors.');
+      const variable = descriptor.value;
       if (!known.has(subject) || !known.get(subject).variables.has(variable)) return message('error', `Subject ${subject.slice(0, 60)} has no variable ${String(variable).slice(0, 60)}.`);
-      next.variables[subject] = variable;
+      next.variables.set(subject, variable);
     }
   }
   const day = own(input, 'day');
@@ -236,6 +249,6 @@ export async function model(services) {
   let opened;
   try { opened = await services.openMemoryStore(); } catch { opened = null; }
   if (!opened || opened.ok !== true) return errorModel(`NASA cases cannot start: its private store did not open${opened && opened.error ? ` (${opened.error.message})` : ''}.`);
-  const session = {store: opened.value, files: [], selection: {subjects: [], variables: {}, day: null}, cache: {records: null, series: new Map()}};
+  const session = {store: opened.value, files: [], selection: {subjects: [], variables: new Map(), day: null}, cache: {records: null, series: new Map()}};
   return buildViewModel(services, session, null);
 }

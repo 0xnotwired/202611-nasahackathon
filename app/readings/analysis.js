@@ -35,7 +35,8 @@ export function readSubjectVariable(input, extraKeys = []) {
 }
 
 function instant(value, field) {
-  const ms = typeof value === 'string' ? Date.parse(value) : NaN;
+  // Bounds are UTC instants: text without a trailing Z (date-only, local time, an offset) would mean different instants in different time zones.
+  const ms = typeof value === 'string' && value.includes('T') && value.endsWith('Z') ? Date.parse(value) : NaN;
   return Number.isNaN(ms) ? fail('invalid_query', field, `Field ${field} must be an ISO8601 UTC instant`) : {ok: true, value: ms};
 }
 

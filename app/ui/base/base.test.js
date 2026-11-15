@@ -89,7 +89,7 @@ test('M07-Y1: a series on a source clock says so; a UTC series does not',()=>{
   assert.match(source.table.columns[0].label,/Source day/);assert.match(source.table.columns[0].label,/time zone not established/);
   const utc=lineChart(input,{unit:'bpm',label:'Pulse'});
   assert.equal(utc.time_basis,'utc');assert.equal(utc.table.columns[0].label,'Day');assert.doesNotMatch(utc.summary,/source/i);
-  assert.equal(lineChart({...input,clock:null},{unit:'bpm',label:'x'}).time_basis,'utc');
+  assert.equal(lineChart({...input,clock:null},{unit:'bpm',label:'x'}).time_basis,'source','the key clock marks a source series even when no clock could be used');
 });
 
 test('M07-Y2: values that are not drawn are still in the table, noted, and never in the drawing',()=>{
@@ -236,6 +236,61 @@ test('M07-F5: services accept the F2 fields and the source selector never invent
   const picked=sourceSelector(sources,'mine');
   assert.deepEqual(picked.options.map(o=>o.id),['demo','mine']);assert.equal(picked.selected_id,'mine');assert.match(picked.options[0].detail,/fictional/i);assert.match(picked.options[1].detail,/this browser/i);
   assert.equal(sourceSelector(sources,null).selected_id,null);assert.equal(sourceSelector(sources,'zzz').selected_id,null);assert.deepEqual(sourceSelector('x',null).options,[]);
+});
+
+test('M07-R1/R2: badge tones are pinned; the freshness boundary and the age floor are exact',()=>{
+  const rule={clock,old_after_days:7};
+  assert.equal(dataStateBadge(absent('not_recorded'),rule).tone,'absent');assert.equal(dataStateBadge(absent('confirmed_none'),rule).tone,'none');
+  assert.equal(dataStateBadge(base,rule).tone,'current');assert.equal(dataStateBadge({...base,time:'2026-02-01T12:00:00.000Z'},rule).tone,'old');
+  assert.equal(dataStateBadge(base,{...rule,comparable:false,reason:'x'}).tone,'incomparable');assert.equal(dataStateBadge(null,rule).tone,'unknown');
+  const ago=days=>({...base,time:new Date(Date.parse(NOW)-days*86400000).toISOString()});
+  assert.equal(dataStateBadge(ago(7),rule).kind,'current');assert.equal(dataStateBadge(ago(8),rule).kind,'old');
+  assert.equal(valueWithContext({...base,time:new Date(Date.parse(NOW)-1.9999*86400000).toISOString()},{clock}).parts.age_days,1);
+});
+
+test('M07-R4/R5: prototype names are unknown, the caveats stay, non-finite values are never printed',()=>{
+  for(const name of ['toString','constructor','__proto__','hasOwnProperty']) {assert.equal(originLabel(name),'origin unknown');assert.equal(stateLabel(name),'state unknown');}
+  assert.match(originLabel('cell_culture'),/not a person/);assert.match(originLabel('terrestrial'),/not a spaceflight analog/);
+  for(const bad of [NaN,Infinity,-Infinity]) {
+    const text=valueWithContext({...base,value:bad},{clock}).text;assert.doesNotMatch(text,/NaN|Infinity/);
+    assert.equal(accessibleTable({caption:'x',columns:[{key:'a',label:'A'}],rows:[{a:bad}]}).ok,false);
+  }
+  assert.equal(accessibleTable({caption:'x',columns:[{key:'a',label:'A'},{key:'a',label:'B'}],rows:[]}).ok,false);
+});
+
+test('M07-R3: two readings exactly 1.5 sampling intervals apart are joined; one second more breaks',()=>{
+  const mk=(t,v)=>({id:'x'+t,day:DAY,time:null,source_time:`${DAY}T${t}`,value:v,unit:'mmol/L',method:'m',origin:'terrestrial'});
+  const joined=lineChart(timeSeries([mk('08:00:00',5),mk('08:07:30',6)]),timeOpts({sampling:SAMPLING}));
+  assert.equal(joined.segments.length,1);
+  const broken=lineChart(timeSeries([mk('08:00:00',5),mk('08:07:31',6)]),timeOpts({sampling:SAMPLING}));
+  assert.equal(broken.segments.length,2);
+});
+
+test('M07-R6: a view that never answers gets its own error and the navigation still draws',async()=>{
+  const hanging=allViews();hanging[0]={...hanging[0],load:()=>new Promise(()=>{})};
+  const shell=await buildShell({views:hanging,currentId:'my-health',services:services(),timeout_ms:50});
+  assert.equal(shell.current.state,'error');assert.match(shell.current.text,/did not respond/i);assert.deepEqual(shell.nav.map(n=>n.id),PLANNED_VIEWS.map(v=>v.id));
+  const slowModel=await buildShell({views:allViews({'my-health':()=>new Promise(()=>{})}),currentId:'my-health',services:services(),timeout_ms:50});
+  assert.equal(slowModel.current.state,'error');assert.match(slowModel.current.text,/did not respond/i);
+});
+
+test('M07-R7: large or extreme chart input gives error Results or finite drawings, never an exception',()=>{
+  const many=Array.from({length:200000},(_,i)=>({day:day(1),value:i}));
+  const big=lineChart({points:many,gaps:[],n:many.length,non_comparable_groups:[]},{unit:'x',label:'x'});
+  assert.equal(big.ok,false);assert.notEqual(big.error.code,'not_implemented');
+  const mid=Array.from({length:20001},(_,i)=>({day:day(1),value:i}));
+  const midOut=lineChart({points:mid,gaps:[],n:mid.length,non_comparable_groups:[]},{unit:'x',label:'x'});
+  assert.equal(midOut.ok,false,'the table error is returned, not hidden inside a model');
+  const extreme=lineChart({points:[point(1,1e308),point(2,-1e308)],gaps:[],n:2,non_comparable_groups:[]},{unit:'x',label:'x'});
+  for(const node of walk(extreme.svg)) for(const value of Object.values(node.attrs??{})) assert.doesNotMatch(String(value),/NaN|Infinity|undefined/);
+});
+
+test('M07-R8: a ready view without mount is an error; a series result with a clock key is a source series even when the clock is null',async()=>{
+  const noMount=allViews();noMount[0]={...noMount[0],load:async()=>({model:async()=>({state:'ready'})})};
+  const shell=await buildShell({views:noMount,currentId:'my-health',services:services()});
+  assert.equal(shell.current.state,'error');assert.match(shell.current.text,/no mount/i);
+  const empty=lineChart({points:[],gaps:[],n:0,non_comparable_groups:[],clock:null},{unit:'x',label:'x'});
+  assert.equal(empty.time_basis,'source');assert.match(empty.table.columns[0].label,/Source day/);
 });
 
 test('M07-P3: every origin has its own label; an unknown origin says so and never defaults to synthetic (R4)',()=>{

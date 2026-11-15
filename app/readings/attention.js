@@ -16,7 +16,7 @@ function ownValue(object, key) {
 
 /** A criterion is usable only if it says who defined it, where it comes from and its review status. */
 function problemWith(criterion) {
-  for (const key of ['id', 'defined_by', 'source']) if (!isText(ownValue(criterion, key))) return `its ${key} is missing`;
+  for (const key of ['id', 'defined_by', 'source', 'unit']) if (!isText(ownValue(criterion, key))) return `its ${key} is missing`;
   if (!REVIEW_STATUSES.includes(ownValue(criterion, 'review_status'))) return 'its review_status is not demo or reviewed';
   const low = ownValue(criterion, 'low'); const high = ownValue(criterion, 'high');
   if (low === undefined && high === undefined) return 'it has neither low nor high';

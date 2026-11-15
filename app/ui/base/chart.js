@@ -12,6 +12,11 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 const fail = (code, field, message) => ({ok: false, error: {code, field, message}});
 const isText = value => typeof value === 'string' && value.length > 0;
 const num = value => Number(value.toFixed(2));
+const minOf = list => list.reduce((a, b) => (b < a ? b : a), Infinity);
+const maxOf = list => list.reduce((a, b) => (b > a ? b : a), -Infinity);
+// Position between lo and hi without overflowing for values near the float limits (work in halves).
+const ratioOf = (value, lo, hi) => (hi === lo ? 0.5 : (value / 2 - lo / 2) / (hi / 2 - lo / 2));
+const hasClockKey = input => { try { return Object.getOwnPropertyDescriptor(input, 'clock') !== undefined; } catch { return false; } };
 
 function dayNumber(day) {
   if (typeof day !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(day)) return NaN;
@@ -33,6 +38,7 @@ export function accessibleTable(spec) {
     const key = ownValue(column, 'key');
     const label = ownValue(column, 'label');
     if (!isText(key) || !isText(label)) return fail('invalid_table', 'columns', 'Each column needs a key and a label');
+    if (cleanColumns.some(existing => existing.key === key)) return fail('invalid_table', 'columns', `Column key ${key.slice(0, 40)} is used twice`);
     cleanColumns.push({key, label});
   }
   const cleanRows = [];
@@ -72,6 +78,7 @@ export function lineChart(input, options) {
   const gaps = ownValue(input, 'gaps');
   const groups = ownValue(input, 'non_comparable_groups') ?? [];
   if (!Array.isArray(points) || !Array.isArray(gaps) || !Array.isArray(groups)) return fail('invalid_chart', 'series', 'points, gaps and non_comparable_groups must be lists');
+  if (points.length + gaps.length > MAX_ROWS) return fail('too_many_points', 'series', `A chart holds at most ${MAX_ROWS} points and gaps; this series has ${points.length + gaps.length}. Choose a shorter range.`);
   const label = isText(ownValue(options, 'label')) ? ownValue(options, 'label') : 'Series';
   const unit = isText(ownValue(options, 'unit')) ? ownValue(options, 'unit') : '';
   const resolution = ownValue(options, 'resolution') ?? 'day';
@@ -119,7 +126,7 @@ export function lineChart(input, options) {
   cleanGaps.sort((a, b) => a.n - b.n);
   if (resolution === 'time') {
     const clockInfo = ownValue(input, 'clock');
-    const basis = clockInfo !== null && typeof clockInfo === 'object' && !Array.isArray(clockInfo) ? 'source' : 'utc';
+    const basis = hasClockKey(input) ? 'source' : 'utc';
     return timeOfDayChart(points, groups, {label, unit, day: chosenDay, sampling: sampling === undefined ? null : {interval_s: ownValue(sampling, 'interval_s'), source: ownValue(sampling, 'source')}, basis});
   }
 
@@ -131,13 +138,14 @@ export function lineChart(input, options) {
   }
 
   const clock = ownValue(input, 'clock');
-  const timeBasis = clock !== null && typeof clock === 'object' && !Array.isArray(clock) ? 'source' : 'utc';
+  const timeBasis = hasClockKey(input) ? 'source' : 'utc';
   const rows = [
     ...cleanPoints.map(p => ({n: p.n, day: p.day, value: unit ? `${p.value} ${unit}` : String(p.value), note: ''})),
     ...cleanGaps.map(g => ({n: g.n, day: g.day, value: g.value, note: g.note})),
     ...undrawn
   ].sort((a, b) => a.n - b.n);
   const table = accessibleTable({caption: `${label} by day`, columns: [{key: 'day', label: timeBasis === 'source' ? 'Source day (time zone not established)' : 'Day'}, {key: 'value', label: unit ? `Value (${unit})` : 'Value'}, {key: 'note', label: 'Note'}], rows});
+  if (table.ok === false) return table;
 
   const droppedCount = groups.reduce((sum, group) => sum + (Number.isInteger(ownValue(group, 'n')) ? ownValue(group, 'n') : 0), 0);
   const reasons = [...new Set(groups.map(group => ownValue(group, 'reason')).filter(isText))];
@@ -147,15 +155,15 @@ export function lineChart(input, options) {
   const empty = cleanPoints.length === 0;
   const summary = `${label}${timeBasis === 'source' ? ' (source dates, time zone not established)' : ''}: ${cleanPoints.length} ${cleanPoints.length === 1 ? 'value' : 'values'}, ${cleanGaps.length} ${cleanGaps.length === 1 ? 'day' : 'days'} without a value. The same information is in the table.`;
   const allDays = [...cleanPoints, ...cleanGaps].map(item => item.n);
-  const minDay = Math.min(...allDays);
-  const maxDay = Math.max(...allDays);
+  const minDay = minOf(allDays);
+  const maxDay = maxOf(allDays);
   const plotW = WIDTH - MARGIN.left - MARGIN.right;
   const plotH = HEIGHT - MARGIN.top - MARGIN.bottom;
   const xFor = n => num(MARGIN.left + (maxDay === minDay ? plotW / 2 : ((n - minDay) / (maxDay - minDay)) * plotW));
   const values = cleanPoints.map(p => p.value);
-  const lo = empty ? 0 : Math.min(...values);
-  const hi = empty ? 0 : Math.max(...values);
-  const yFor = value => num(MARGIN.top + plotH - (hi === lo ? plotH / 2 : ((value - lo) / (hi - lo)) * plotH));
+  const lo = empty ? 0 : minOf(values);
+  const hi = empty ? 0 : maxOf(values);
+  const yFor = value => num(MARGIN.top + plotH - ratioOf(value, lo, hi) * plotH);
 
   const children = [node('title', {}, [], label), node('desc', {}, [], summary)];
   children.push(node('line', {class: 'axis', x1: MARGIN.left, y1: HEIGHT - MARGIN.bottom, x2: WIDTH - MARGIN.right, y2: HEIGHT - MARGIN.bottom}));
@@ -261,9 +269,9 @@ function timeOfDayChart(points, groups, {label, unit, day, sampling, basis}) {
   const summary = `${label} on ${day}${basisText}: ${timed.length} ${timed.length === 1 ? 'reading' : 'readings'}; ${joining}. The same information is in the table.`;
   const plotW = WIDTH - MARGIN.left - MARGIN.right; const plotH = HEIGHT - MARGIN.top - MARGIN.bottom;
   const values = timed.map(p => p.value);
-  const lo = values.length ? Math.min(...values) : 0; const hi = values.length ? Math.max(...values) : 0;
+  const lo = values.length ? minOf(values) : 0; const hi = values.length ? maxOf(values) : 0;
   const xFor = seconds => num(MARGIN.left + (seconds / DAY_SECONDS) * plotW);
-  const yFor = value => num(MARGIN.top + plotH - (hi === lo ? plotH / 2 : ((value - lo) / (hi - lo)) * plotH));
+  const yFor = value => num(MARGIN.top + plotH - ratioOf(value, lo, hi) * plotH);
   const children = [node('title', {}, [], label), node('desc', {}, [], summary),
     node('line', {class: 'axis', x1: MARGIN.left, y1: HEIGHT - MARGIN.bottom, x2: WIDTH - MARGIN.right, y2: HEIGHT - MARGIN.bottom}),
     node('line', {class: 'axis', x1: MARGIN.left, y1: MARGIN.top, x2: MARGIN.left, y2: HEIGHT - MARGIN.bottom})];
