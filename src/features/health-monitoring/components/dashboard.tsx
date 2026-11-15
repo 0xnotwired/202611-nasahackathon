@@ -18,21 +18,21 @@ import type { Astronaut, MeasurementsResponse } from "../schemas";
 import type { DemoMission } from "../mission";
 import { ThemeControl } from "./theme-control";
 import { useDemoJournal } from "./use-demo-journal";
-import { SummaryView } from "./summary-view";
-import { EvolutionView } from "./evolution-view";
+import { AerobicOverview } from "./aerobic-overview";
+import { scenarios, type Scenario } from "../aerobic";
 import { ExerciseView } from "./exercise-view";
 import { FollowupView } from "./followup-view";
 
 export const viewNames = {
-  resumen: "Resumen",
-  evolucion: "Evolución física",
+  resumen: "Mi perspectiva",
+  evolucion: "Historial aeróbico",
   ejercicio: "Ejercicio",
   seguimiento: "Seguimiento",
 } as const;
 export type DashboardView = keyof typeof viewNames;
 const navigation = [
-  { id: "resumen", label: "Resumen", icon: LayoutDashboard },
-  { id: "evolucion", label: "Evolución física", icon: ChartNoAxesCombined },
+  { id: "resumen", label: "Mi perspectiva", icon: LayoutDashboard },
+  { id: "evolucion", label: "Historial aeróbico", icon: ChartNoAxesCombined },
   { id: "ejercicio", label: "Ejercicio", icon: Dumbbell },
   { id: "seguimiento", label: "Seguimiento", icon: ClipboardList },
 ] as const;
@@ -44,6 +44,8 @@ export function Dashboard({
   mission,
   view,
   reference,
+  scenario,
+  demoControls,
 }: {
   astronauts: Astronaut[];
   astronaut: Astronaut;
@@ -51,6 +53,8 @@ export function Dashboard({
   mission: DemoMission;
   view: DashboardView;
   reference: string;
+  scenario: Scenario;
+  demoControls: boolean;
 }) {
   const router = useRouter();
   const { journal, update, memoryOnly } = useDemoJournal(astronaut.id);
@@ -65,13 +69,17 @@ export function Dashboard({
   }, [view]);
 
   const href = (target: string, id = astronaut.id, evaluation = reference) => {
-    const params = new URLSearchParams({ view: target, astronaut: id });
+    const params = new URLSearchParams({
+      view: target,
+      astronaut: id,
+      ...(demoControls ? { scenario } : {}),
+    });
     if (evaluation) params.set("reference", evaluation);
     return `/?${params}`;
   };
 
   return (
-    <div className="app-shell">
+    <div className="app-shell mission-shell">
       <aside className="app-sidebar">
         <Link
           className="brand"
@@ -82,10 +90,10 @@ export function Dashboard({
             <Orbit size={29} aria-hidden="true" />
           </span>
           <span>
-            Órbita<small>Tu salud, a bordo</small>
+            Órbita<small>Salud humana en el espacio</small>
           </span>
         </Link>
-        <p className="workspace-label">Tu espacio de seguimiento</p>
+        <p className="workspace-label">Mi espacio de misión</p>
         <nav aria-label="Principal">
           {navigation.map((item) => (
             <Link
@@ -106,9 +114,9 @@ export function Dashboard({
         <div className="sidebar-bottom">
           <div>
             <ShieldCheck size={20} aria-hidden="true" />
-            <strong>Datos con contexto</strong>
+            <strong>Tu historia, conectada</strong>
           </div>
-          <p>Mediciones y actividad para dar continuidad a tu seguimiento.</p>
+          <p>Cada medición es un punto. Tu seguimiento les da perspectiva.</p>
           <span className="sidebar-demo">Prototipo con datos simulados</span>
         </div>
       </aside>
@@ -148,6 +156,31 @@ export function Dashboard({
             </select>
           </label>
           <span className="mission-label">{astronaut.mission}</span>
+          {demoControls ? (
+            <label className="scenario-control" htmlFor="scenario-selector">
+              Escenario simulado
+              <select
+                id="scenario-selector"
+                value={scenario}
+                onChange={(event) => {
+                  const params = new URLSearchParams({
+                    view,
+                    astronaut: astronaut.id,
+                    scenario: event.target.value,
+                  });
+                  router.push(`/?${params}`, { scroll: false });
+                }}
+              >
+                {Object.entries(scenarios).map(([id, label]) => (
+                  <option key={id} value={id}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : (
+            <span className="soft-tag">Datos de la API · simulación</span>
+          )}
         </div>
         <main className="dashboard-main">
           <div className="demo-banner">
@@ -164,22 +197,19 @@ export function Dashboard({
               esta visita; descargá el resumen antes de salir.
             </p>
           ) : null}
-          {view === "resumen" ? (
-            <SummaryView
+          {view === "resumen" || view === "evolucion" ? (
+            <AerobicOverview
+              key={`${scenario}-${view}`}
               astronaut={astronaut}
               mission={mission}
               journal={journal}
-              href={href}
-            />
-          ) : view === "evolucion" ? (
-            <EvolutionView
-              astronaut={astronaut}
-              mission={mission}
               measurements={measurements}
               reference={reference}
               onReference={(id) =>
                 router.push(href(view, astronaut.id, id), { scroll: false })
               }
+              href={href}
+              expanded={view === "evolucion"}
             />
           ) : view === "ejercicio" ? (
             <ExerciseView mission={mission} journal={journal} update={update} />

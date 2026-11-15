@@ -8,10 +8,12 @@ import {
 } from "../schemas";
 import { getMockMeasurements, listMockAstronauts } from "./mock";
 import { getMockMission } from "./mission-mock";
+import type { Scenario } from "../aerobic";
 
-export async function getMission(astronautId: string) {
+export async function getMission(astronautId: string, scenario?: Scenario) {
   const config = getDataConfig();
-  if (config.HEALTH_DATA_SOURCE === "mock") return getMockMission(astronautId);
+  if (config.HEALTH_DATA_SOURCE === "mock")
+    return getMockMission(astronautId, scenario);
   try {
     const response = await getJson(
       `${config.HEALTH_API_BASE_URL!.replace(/\/$/, "")}/astronauts/${encodeURIComponent(astronautId)}/mission`,

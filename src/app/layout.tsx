@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "../features/health-monitoring/components/aerobic.css";
 
 export const metadata: Metadata = {
   title: "Monitoreo de salud | Órbita",
