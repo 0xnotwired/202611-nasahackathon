@@ -44,7 +44,7 @@ Extra observation, not predicted: the throwaway server (about 10 lines of `node:
 
 ## Not verified
 
-- Firefox and Safari. Everything above is Chrome 153 only. E00-P5 in particular (IndexedDB from `file://`) is known to vary between browsers; M23 must test the browsers the team will present on.
+- Firefox and Safari. Everything above is Chrome 153 only. On 15/11/2026 an attempt to download Firefox 155 and WebKit through Playwright failed: the session's network allowlist answered 403 for `cdn.playwright.dev` and `playwright.download.prss.microsoft.com`. Nothing was run on them. E00-P5 in particular (IndexedDB from `file://`) is known to vary between browsers; M23 must test the browsers the team will present on.
 - A private or incognito window, where IndexedDB may be refused. M04 must handle that case and say so on screen.
 - Windows and macOS.
 - Storage limits and eviction.

@@ -30,7 +30,7 @@ Each decision is a bet about the future. This table says what it rests on and wh
 | D8 | Records are never edited or deleted | A correction is a new record | To be shown by M04-P1 and M04-P2 | Storage size becomes a problem on the device |
 | D9 | Simulated sync | The `sync` interface can be reimplemented by a real server | To be shown by M24 | The team builds the server: reopens D7 |
 
-Status on 15/11/2026: D9 was chosen by the user. D1, D2, D3, D4 and D6 match the stack the user listed and asked to continue with on 15/11/2026. **D5, D7 and D8 have not been confirmed explicitly** and are part of gate G0.
+Status on 15/11/2026: D9 was chosen by the user. D1, D2, D3, D4 and D6 match the stack the user listed and asked to continue with on 15/11/2026. D5, D7 and D8 were confirmed by the user on 15/11/2026 by accepting the orchestrator's recommendation with its reasons; gate G0 still needs its experiments and the threat model.
 
 ## F0 — Foundation
 
@@ -46,7 +46,7 @@ Status on 15/11/2026: D9 was chosen by the user. D1, D2, D3, D4 and D6 match the
 
 **The claim is false if** two modules need to write the same file, or a suite passes against a placeholder.
 
-**Closes when** G0-W1 to G0-W3 are recorded, `docs/THREAT_MODEL.md` exists, and a person confirms D5, D7 and D8.
+**Closes when** G0-W1 to G0-W3 are recorded, `docs/THREAT_MODEL.md` exists, (D5, D7 and D8 were confirmed on 15/11/2026).
 
 ## F1 — Data core (level 0)
 

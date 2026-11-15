@@ -146,9 +146,13 @@ Working and provenance rules are in [AGENTS.md](AGENTS.md). AI use must be recor
 - [Product and scope decisions](docs/PRODUCT.md).
 - [Challenge goals and project criteria](docs/REQUIREMENTS.md).
 - [Roadmap and closing criteria](docs/ROADMAP.md).
-- [Free sources and conceptual references](docs/RESOURCES.md).
+- [Free sources and conceptual references](docs/RESOURCES.md); [resources used, with licenses (delivery list)](docs/RESOURCES_USED.md).
 - [Proposed architecture and repository research](docs/TECHNICAL.md).
 
 The next results are understanding the integrated mission situation, completing plan tasks and reviewing changes with applicable procedures and follow-up. Their verification must cover missing data, provenance, consistency across views, task recovery, accessibility and understanding of the next step.
 
-The repository contains documentation, a build plan and a mockup. The stack is proposed and not confirmed. The only available command is `python3 scripts/check_docs.py`, which checks the consistency of the documentation and the module board; there is no build, product test, clinical test or deployment. To contribute, follow [AGENTS.md](AGENTS.md) and propose changes through branches and pull requests. The integration branch is `english`.
+The repository contains documentation, a build plan and a mockup. The stack decisions are recorded in [IMPLEMENTATION_LAYERS.md](docs/IMPLEMENTATION_LAYERS.md); no product code exists yet. The only available command is `python3 scripts/check_docs.py`, which checks the consistency of the documentation and the module board; there is no build, product test, clinical test or deployment. To contribute, follow [AGENTS.md](AGENTS.md) and propose changes through branches and pull requests. The integration branch is `english`.
+
+## License
+
+Apache License 2.0. See [LICENSE](LICENSE). Third-party resources and their licenses are listed in [docs/RESOURCES_USED.md](docs/RESOURCES_USED.md).

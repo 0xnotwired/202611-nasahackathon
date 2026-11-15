@@ -1,6 +1,6 @@
 # Órbita: orchestration plan
 
-Date: November 14, 2026 (translated and updated on November 15). Plan for several AI agents to build Órbita in parallel without stepping on each other. Maintained by the orchestrator. Decision D9 was chosen by the user; D1–D4 and D6 match the stack the user listed on November 15; **D5, D7 and D8 still need the user's explicit confirmation** before any product code is written. What each phase must prove is in [IMPLEMENTATION_LAYERS.md](IMPLEMENTATION_LAYERS.md), and how it is tested and recorded is in [METHOD.md](METHOD.md).
+Date: November 14, 2026 (translated and updated on November 15). Plan for several AI agents to build Órbita in parallel without stepping on each other. Maintained by the orchestrator. Decision D9 was chosen by the user; D1–D4 and D6 match the stack the user listed on November 15; D5, D7 and D8 were confirmed by the user on November 15, 2026 by accepting the orchestrator's recommendation together with its reasons ("ok, resolve it"); the user can reopen any of them. What each phase must prove is in [IMPLEMENTATION_LAYERS.md](IMPLEMENTATION_LAYERS.md), and how it is tested and recorded is in [METHOD.md](METHOD.md).
 
 Order of authority: [AGENTS.md](../AGENTS.md) and [FINAL_PROPOSAL.md](FINAL_PROPOSAL.md) win over this plan. This plan wins over the work orders.
 
@@ -224,12 +224,11 @@ Reviewer:
 
 | Blocker | Stops |
 |---|---|
-| Confirm D5, D7 and D8 explicitly | F1 onward |
-| List of resources used, with licenses, for the delivery | Delivery |
+| List of resources used: first version in [RESOURCES_USED.md](RESOURCES_USED.md); dataset citations and the browser question are open | Delivery |
 | Choose the demo procedure and its clinical source | F3 content; not the engine |
 | Confirm [V1 4030] in NASA-STD-3001 vol. 1 | Showing the radiation limit in M10 |
 | Download the NASA files | F5 |
-| Event rules on AI use; code license | Delivery |
+| Event rules on AI use (the code license is decided: Apache-2.0) | Delivery |
 | Official 2026 challenge text | Presentation |
 
 ## What the machine checks and what it does not
