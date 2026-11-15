@@ -256,7 +256,16 @@ license or a complete author/year citation. BUT CGM LICENSE.txt explicitly
 states Creative Commons Attribution 4.0.
 
 SOURCE: BUT CGM README says dates are participant-specifically shifted into
-2100–2199 and cross-participant time relationships are not preserved. The
+2100–2199 and cross-participant time relationships are not preserved.
+Full text read on 2026-11-15 (README.txt, 19415 bytes, sha256
+e09f1c63e9edf0e7c185b106eae7e56de115955d43ebefed0cb5ff331a3fc028, reading
+level FT): the offset is "a participant-specific random offset of whole weeks"
+that "preserves days of the week, clock times, and all within-participant
+timing (such as ECG, CGM, and sleep alignment, as well as intervals between
+measurement periods)". The same README states glucose was recorded "Every 5th
+minute" with a Dexcom G7 sensor. In the acquired 101001 file, 3014 of 3015
+consecutive recorded intervals fall between 281 and 320 seconds and one is
+1200 seconds (RUN, counted on the imported records). The
 sample Timestamp format is `%Y-%m-%d %H:%M:%S`, with no UTC offset. NASA
 sample dates/times likewise lack an established UTC interpretation. M21 must
 resolve units/time policy before converting to the UTC Record contract;
