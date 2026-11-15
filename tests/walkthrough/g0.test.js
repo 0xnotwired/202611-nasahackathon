@@ -44,9 +44,12 @@ test('G0-W3: documentation checks pass and missing experiment is detected',async
     assert.equal(control.status,0,control.stdout+control.stderr);
     const boardPath=join(temp,'docs/modules.csv');
     const board=await readFile(boardPath,'utf8');
-    const chosen=board.split('\n').find(line=>/^M\d\d,/.test(line)&&line.endsWith(',pending')&&!existsSync(join(temp,'docs/experiments',line.split(',')[0]+'.md')));
-    assert.ok(chosen,'control needs an unimplemented module with no experiment record');
+    // Any pending module will do: its record is removed from the temporary copy first, so the control does not depend on how far the project has got.
+    const chosen=board.split('\n').find(line=>/^M\d\d,/.test(line)&&line.endsWith(',pending'));
+    assert.ok(chosen,'control needs a pending module');
     const id=chosen.split(',')[0];
+    await rm(join(temp,'docs/experiments',id+'.md'),{force:true});
+    assert.equal(existsSync(join(temp,'docs/experiments',id+'.md')),false);
     const mutated=board.replace(chosen,chosen.replace(/,pending$/,',in_review'));
     assert.notEqual(mutated,board);
     await writeFile(boardPath,mutated);

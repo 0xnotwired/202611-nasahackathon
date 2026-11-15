@@ -91,7 +91,8 @@ test('package has no dependencies',async()=>{
   const pkg=JSON.parse(await readFile(new URL('../../package.json',import.meta.url)));
   assert.equal(pkg.type,'module');
   assert.deepEqual(pkg.dependencies??{},{}); assert.deepEqual(pkg.devDependencies??{},{});
-  assert.equal(pkg.scripts.test,'node --test');
+  // Explicit folders: a bare `node --test` from the root would also run the TypeScript tests of frontend/, which need their own install.
+  assert.equal(pkg.scripts.test,'node --test "app/**/*.test.js" "tests/**/*.test.js"');
 });
 
 test('export surface check detects removed BaseUI entry points', async()=>{

@@ -1,0 +1,27 @@
+{
+  "data": [
+    {
+      "id": "astro-01",
+      "callsign": "Vega",
+      "role": "Comandante",
+      "mission": "Órbita Demo"
+    },
+    {
+      "id": "astro-02",
+      "callsign": "Lyra",
+      "role": "Especialista de misión",
+      "mission": "Órbita Demo"
+    },
+    {
+      "id": "astro-03",
+      "callsign": "Atlas",
+      "role": "Ingeniería de vuelo",
+      "mission": "Órbita Demo"
+    }
+  ],
+  "meta": {
+    "contractVersion": "0.1",
+    "dataKind": "synthetic",
+    "clinicalValidation": "pending"
+  }
+}

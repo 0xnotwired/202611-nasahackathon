@@ -1,0 +1,123 @@
+import { Check, Clock3, Dumbbell } from "lucide-react";
+import type { DemoMission } from "../mission";
+import { formatDate } from "../mission";
+import type { DemoJournal } from "./use-demo-journal";
+
+export function ExerciseView({
+  mission,
+  journal,
+  update,
+}: {
+  mission: DemoMission;
+  journal: DemoJournal;
+  update: (patch: Partial<DemoJournal>) => void;
+}) {
+  const readOnly = mission.presentation?.transport === "api";
+  return (
+    <>
+      <div className="page-heading">
+        <div>
+          <h1 id="contenido" tabIndex={-1}>
+            Actividad
+          </h1>
+          <p>Registro de sesiones y observaciones de actividad.</p>
+        </div>
+        <span className="badge">
+          {readOnly
+            ? "Programa sintético del backend · solo lectura"
+            : "Programa de demostración"}
+        </span>
+      </div>
+      <div className="notice">
+        <Dumbbell size={20} aria-hidden="true" />
+        <p>
+          Estas actividades y duraciones son ficticias. La aplicación no
+          prescribe ni modifica programas de ejercicio.
+        </p>
+      </div>
+      <div className="content-grid equal-columns">
+        <section className="panel">
+          <div className="panel-heading">
+            <div>
+              <h2>Registro de sesiones</h2>
+              <p>
+                Registro independiente del período seleccionado en evaluaciones.
+              </p>
+            </div>
+          </div>
+          <div className="session-list">
+            {mission.sessions.map((session) => {
+              const done = readOnly
+                ? session.completed
+                : (journal.completed[session.id] ?? session.completed);
+              return (
+                <label className="session-row" key={session.id}>
+                  <input
+                    type="checkbox"
+                    checked={done}
+                    disabled={readOnly}
+                    onChange={(event) =>
+                      update({
+                        completed: {
+                          ...journal.completed,
+                          [session.id]: event.target.checked,
+                        },
+                      })
+                    }
+                  />
+                  <span className="session-content">
+                    <strong>{session.label}</strong>
+                    <span>
+                      {formatDate(session.scheduledAt)} ·{" "}
+                      {session.durationMinutes} min
+                    </span>
+                  </span>
+                  <span className={`session-state ${done ? "complete" : ""}`}>
+                    {done ? (
+                      <Check size={15} aria-hidden="true" />
+                    ) : (
+                      <Clock3 size={15} aria-hidden="true" />
+                    )}
+                    {done ? "Completada" : "Pendiente"}
+                  </span>
+                </label>
+              );
+            })}
+            {!mission.sessions.length ? (
+              <p className="empty-state">
+                Todavía no hay un programa de demostración para este astronauta.
+              </p>
+            ) : null}
+          </div>
+        </section>
+        <section className="panel">
+          <div className="panel-heading">
+            <div>
+              <h2>Observación de actividad</h2>
+              <p>
+                Una dificultad o una observación pueden aportar contexto al
+                seguimiento.
+              </p>
+            </div>
+          </div>
+          <label htmlFor="difficulty">
+            Observación del astronauta
+            <textarea
+              id="difficulty"
+              name="difficulty"
+              rows={6}
+              maxLength={2000}
+              placeholder="Por ejemplo: interrupción de una sesión y condiciones observadas…"
+              value={journal.difficulty}
+              onChange={(event) => update({ difficulty: event.target.value })}
+            />
+          </label>
+          <p className="field-help">
+            Se conserva como borrador local mientras escribís. No se envía al
+            especialista.
+          </p>
+        </section>
+      </div>
+    </>
+  );
+}

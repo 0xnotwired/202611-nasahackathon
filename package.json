@@ -5,7 +5,7 @@
   "type": "module",
   "license": "Apache-2.0",
   "scripts": {
-    "test": "node --test",
+    "test": "node --test \"app/**/*.test.js\" \"tests/**/*.test.js\"",
     "serve": "node scripts/serve.mjs",
     "package": "node scripts/package.mjs"
   }

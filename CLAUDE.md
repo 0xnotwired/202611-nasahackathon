@@ -80,7 +80,8 @@ docs/RESOURCES.md              reading list and concept references (not the deli
 docs/REQUIREMENTS.md           challenge text and its goals; gaps closed by D10–D14
 LICENSE                        Apache-2.0
 scripts/check_docs.py          consistency of matrices, module board and links
-app/                           M00 foundation and implemented M01–M05; later modules remain placeholders
+app/                           the implemented product modules and views (vanilla ES modules, no dependencies)
+frontend/                      a teammate's separate Next.js prototype with its own backend; see frontend/INTEGRATION.md
 ```
 
 ## Where to pick up — current handoff
@@ -88,7 +89,7 @@ app/                           M00 foundation and implemented M01–M05; later m
 Read [docs/CURRENT_STATUS.md](docs/CURRENT_STATUS.md), inspect git status/HEAD,
 and work on a separate branch such as mod/f2-claude. F2 (M06–M12, M22) and F3 (M13–M15) are
 built with records and G2/G3 walkthroughs, but not independently reviewed or
-accepted; statuses stay `pending`. 343 Node tests pass. `npm run package` builds dist/orbita.html. The store is IndexedDB schema v2 (a profile is upgraded on open). Run node --test and
+accepted; statuses stay `pending`. 343 Node tests pass (`npm test`; a bare `node --test` also finds frontend/'s TypeScript tests). `npm run package` builds dist/orbita.html. `frontend/` is a teammate's separate Next.js prototype (see frontend/INTEGRATION.md). The store is IndexedDB schema v2 (a profile is upgraded on open). Run node --test and
 python3 scripts/check_docs.py; browser scripts need ORBITA_CHROMIUM.
 Original datasets, local IndexedDB profile and source-data reports are not
 restored by Git. Use [docs/LOCAL_DATA_RESTORE.md](docs/LOCAL_DATA_RESTORE.md),

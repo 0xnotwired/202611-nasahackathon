@@ -159,7 +159,7 @@ scenario remains separate. No product import screen or clinical validation is
 claimed. See [import evidence](docs/experiments/REAL_IMPORT.md).
 
 ```bash
-node --test
+npm test
 python3 scripts/check_docs.py
 npm run serve
 ```

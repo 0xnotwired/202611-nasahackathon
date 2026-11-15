@@ -89,7 +89,7 @@ Product views, final archive/media review and M23 packaging are pending.
 ## Reproduce and verify
 
 ```bash
-node --test
+npm test
 python3 scripts/check_docs.py
 python3 tests/walkthrough/g0-browser.py
 python3 tests/walkthrough/g1-browser.py
