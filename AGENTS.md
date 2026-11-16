@@ -81,17 +81,32 @@ In practice, for now: `package.json` declares no dependencies, and no `import` p
 
 ## Product and verified status
 
-Start with [docs/CURRENT_STATUS.md](docs/CURRENT_STATUS.md) for the current
-module/data handoff, then verify actual checkout state. The user selected `main` as the continuation base after PR#3 integrated f2.
-Create a dedicated module/feature branch from current origin/main; do not
-reset, overwrite or rewrite existing branches.
-AGENTS remains the instruction authority and CONTRACTS the interface authority.
+**Where the work stands (2026-11-16): read [docs/HANDOFF.md](docs/HANDOFF.md) first.** It is the
+handoff written for whoever continues (a person or another AI agent): state, first commands, rules,
+what is left in priority order, a map and the traps. Then [docs/CURRENT_STATUS.md](docs/CURRENT_STATUS.md)
+and [docs/AUDIT.md](docs/AUDIT.md). Verify the actual checkout (`git status`, `git log`, branch) instead of
+assuming a hash.
 
-M00/M01–M05 and user-advanced M21 are implemented and independently reviewed.
-G0/G1 are accepted; F1 closed. M21's advance is not closure of later gates.
-Next work is F2 M06/M07, then M08–M12 under their work orders. Contract0.8,
-record schema2 with legacy1 reading. Latest Node suite100/100, plus actual
-Chromium persistence checks; these results are not clinical validation.
+- The delivered state is the GitHub branch **final-claude**. `main` stays the integration branch; do not
+  commit to it. Create your own work branch from `final-claude`; do not reset, overwrite or rewrite
+  existing branches and do not delete branches you did not create.
+- F1 (M00–M05) is accepted by the user (G0, G1). F2–F6 (M06–M25, including the M21 importers and the M25
+  review and export module) are **built, tested, and reviewed by independent agents (F3, F4, F5 and every
+  layer together as G6-W3) but not accepted by a person**: every status stays `pending` in
+  `docs/modules.csv` until the user accepts. Test success is not acceptance and an agent's review is a
+  judgment, not an acceptance.
+- Contract 0.22, record schema 2 with legacy 1 reading, IndexedDB schema v3. 435 Node tests, browser
+  walkthroughs and negative controls (`node scripts/run-gates.mjs`) pass in Chromium; none of this is
+  clinical validation.
+- **Left to do** (full list with how-to in HANDOFF.md): (A, needs a person) the volunteer test G6-W4,
+  acceptance of the gates, real guidance rules from a qualified source, the organizers' position on
+  PhysioNet use and on retention of NASA data; (B, an agent can do it) a repair path for a damaged
+  stored record (needs a design decision about immutable history), a hash-based script policy for
+  `dist/orbita.html`, IndexedDB write cost and a 10,000-record keep, importer limits (MR080G, omics,
+  unit dictionaries; never guess), connecting the teammate's backend to the main store (decision
+  first), other browsers and a screen reader, and the small items in HANDOFF.md section 4B. Ask the user
+  before starting anything in group A or any decision-bearing item in group B.
+- AGENTS remains the instruction authority and CONTRACTS the interface authority.
 
 Source-data handling invariants for the next agent:
 
@@ -113,9 +128,10 @@ Source-data handling invariants for the next agent:
 - PhysioNet is provisionally enabled by the user's explicit decision, with
   licenses/citations and withdrawal if declined. Never claim an official
   organizer acceptance. Original app code stays independent of source apps.
-- A minimal HTTP shell and separate mockups are not product views, actual
-  sync, clinical rules, encryption or deployment. M23 final packaging/media
-  inspection remains pending; .gitignore alone does not certify a package.
+- The HTTP shell, the single-file package and the separate mockups are not
+  actual sync, clinical rules, encryption or deployment. `dist/orbita.html` was
+  checked for determinism, content-security policy and parity with the served app
+  (G6); final media inspection and the volunteer test remain pending.
 
 Historical experiments/manifests keep their original outcomes. Read their
 follow-ups and CURRENT_STATUS before carrying an old blocked/pending claim

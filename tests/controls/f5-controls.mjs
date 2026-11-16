@@ -11,10 +11,15 @@ const M=[
  ['F5-c: the memory store revalidates the whole collection on every write','S',SI,[["const loaded={ok:true,value:new Map(collections.get(collection))};","const loaded=load(collection,[...collections.get(collection).values()]);if(!loaded.ok)return loaded;"]]],
  ['F5-d: one kept batch of 1000 records','N',NM,[["const KEEP_BATCH = 256;","const KEEP_BATCH = 1000;"]]],
  ['F5-e: removal without the confirmation','N',NM,[["if (!plain(input) || own(input, 'confirmed') !== true) return message(","if (false) return message("]]],
- ['F5-f: kept cases are not restored','N',NM,[["  const records = await opened.value.list('records', {}); const cards","  return null; const records = await opened.value.list('records', {}); const cards"]]],
- ['F5-g: a file is marked kept although nothing was written','N',NM,[["  const mine = all.value.filter(record => fileKeyOf(record) === card.file_key);","  const mine = all.value.filter(record => fileKeyOf(record) === card.file_key); if (mine.length) { card.kept = true; }"]]],
+ ['F5-f: kept cases are not restored','N',NM,[["for (const card of good) session.files.push(","for (const card of []) session.files.push("]]],
+ ['F5-g: a file is marked kept although nothing was written','N',NM,[["  const mine = all.value.filter(record => fileKeyOf(record) === card.file_key);","  const mine = all.value.filter(record => fileKeyOf(record) === card.file_key); if (mine.length) { card.kept = true; }"],["card.kept = keys.has(`nasa-file:${card.file_key}`) || (card.status === 'partial' && card.kept === true);","card.kept = card.kept || keys.has(`nasa-file:${card.file_key}`);"]]],
  ['F5-h: an empty cell becomes a rejected row instead of not recorded','R',II,[["const raw=row[column],absent=missing(raw);","const raw=row[column],absent=false&&missing(raw);"]]],
  ['F5-i: the importer reads the wrong column for pulse','R',II,[["const CRF_COLUMNS=['Pulse','SysBP',","const CRF_COLUMNS=['SysBP','Pulse',"]]],
+ ['F5r-F1: NA counted as free text','I',II,[["if(row[column]?.trim()&&!missing(row[column]))skipped.push","if(row[column]?.trim())skipped.push"]]],
+ ['F5r-F2a: a kept card is trusted as it is','N',NM,[["const card = cleanCard(entry.card); if (card) good.push(card); else bad += 1;","const card = entry.card; if (card) good.push(card); else bad += 1;"]]],
+ ['F5r-F2b: an unreadable kept store cannot be removed','N',NM,[["session.kept.unreadable = true; session.kept_reason","session.kept = null; session.kept_reason"]]],
+ ['F5r-F3: records without a card come back bare','N',NM,[["for (const [key, list] of orphans) good.push(orphanCard(key, list));",""]]],
+ ['F5r-F4: kept flags never refreshed','N',NM,[["async function refreshKept(services, session) {\n  if (!session.kept || session.kept.unreadable) return;","async function refreshKept(services, session) {\n  return;"]]],
 ];
 const only=process.argv[2];let bad=0;
 for(const [label,tk,file,edits] of M){

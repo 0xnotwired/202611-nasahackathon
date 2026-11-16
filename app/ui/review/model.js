@@ -5,11 +5,13 @@
 import {viewKit} from '../base/index.js';
 
 const {contextOf, bannerSection, attentionNote, variablesOfType, recordEntry} = viewKit;
-const PERIODS = Object.freeze([{months: 0, label: 'All recorded values'}, {months: 3, label: 'Last 3 months'}, {months: 6, label: 'Last 6 months'}, {months: 12, label: 'Last 12 months'}]);
+const PERIODS = Object.freeze([{months: 0, label: 'All recorded values'}, {months: 3, label: 'Last 3 months (counted back from the newest value)'}, {months: 6, label: 'Last 6 months (counted back from the newest value)'}, {months: 12, label: 'Last 12 months (counted back from the newest value)'}]);
 const isText = value => typeof value === 'string' && value.length > 0;
 const plain = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const msg = (kind, text) => ({kind, text});
 const number = new Intl.NumberFormat('en', {maximumFractionDigits: 6});
+/** A value with its unit, or "unit unknown" when the source did not give one: never the word null. */
+const valueText = record => (record.state !== 'recorded' ? record.state.replace('_', ' ') : typeof record.value !== 'number' ? 'recorded, no number' : `${record.value} ${typeof record.unit === 'string' && record.unit ? record.unit : '(unit unknown)'}`);
 
 function periodStart(latestMs, months) {
   if (months === 0) return -Infinity;
@@ -45,9 +47,14 @@ async function build(services, session, message) {
   const sections = [bannerSection(ctx)];
   const candidates = variablesOfType(ctx, ['measurement', 'exam']);
   const withData = [];
-  for (const info of candidates) { const found = await seriesOf(ctx, info.id); if (found.ok && (found.timed.length || found.untimed.length)) withData.push({...info, n: found.timed.length + found.untimed.length}); }
+  let unreadable = null;
+  for (const info of candidates) { const found = await seriesOf(ctx, info.id); if (!found.ok) { unreadable = found.error; continue; } if (found.timed.length || found.untimed.length) withData.push({...info, n: found.timed.length + found.untimed.length}); }
   const noteAttention = attentionNote(ctx);
   const exports = {all: {enabled: Boolean(ctx.exporter), reason: ctx.exporter ? null : 'Export is not available yet.'}};
+  if (unreadable) {
+    sections.push({id: 'review', title: 'Review for a specialist', state: 'error', text: `The records could not be read, so nothing can be reviewed or exported from this view: ${unreadable.message ?? 'a stored record is damaged'}. This does not mean nothing was recorded; nothing was deleted.`});
+    return {state: 'ready', title: 'Review and export', sections, selection: null, review: null, exports: {all: {enabled: false, reason: 'The records could not be read.'}}, message: message ?? null, interactions: interactions(services, session)};
+  }
   if (!withData.length) {
     sections.push({id: 'review', title: 'Review for a specialist', state: 'empty', text: 'No measurement or exam is recorded for this subject yet, so there is nothing to review. This is not "nothing new": nothing was recorded.'});
     return {state: 'ready', title: 'Review and export', sections, selection: null, review: null, exports, message: message ?? null, interactions: interactions(services, session)};
@@ -83,14 +90,14 @@ async function build(services, session, message) {
     outsidePeriod ? `${outsidePeriod} value(s) before the period are not included.` : null,
     found.untimed.length ? `${found.untimed.length} value(s) have no established time and are not placed in any period.` : null,
     'Performance criterion: not configured. No value is graded here.',
-    `Reference: ${reference ? `${reference.time} · ${reference.state === 'recorded' ? `${reference.value} ${reference.unit}` : reference.state.replace('_', ' ')}` : 'not available'}.`,
+    `Reference: ${reference ? `${reference.time} · ${valueText(reference)}` : 'not available'}.`,
     description, '', 'Values in this selection:',
-    ...group.map(record => `${record.id} · ${record.time} · ${record.state === 'recorded' ? `${record.value} ${record.unit}` : record.state.replace('_', ' ')} · ${record.method} · ${record.origin}`),
+    ...group.map(record => `${record.id} · ${record.time} · ${valueText(record)} · ${record.method} · ${record.origin}`),
     '', 'Data and provenance annex (unrounded values, CSV):', csv.ok ? csv.value.replace(/^﻿/, '').trimEnd() : 'The annex could not be prepared.'
   ].filter(line => line !== null);
   sections.push({id: 'select', title: 'What to review', state: 'ready', note: 'Choose one variable, a period and one method. Values of different methods are never compared with each other.',
     variables: withData.map(({id, label, n}) => ({id, label: `${label} (${n})`})), periods: PERIODS.map(({months: m, label}) => ({months: m, label})), methods: methods.map(item => ({id: item, label: item})),
-    chosen: {variable, months, method, reference: reference ? reference.id : null}, references: group.map(record => ({id: record.id, label: `${record.time} · ${record.state === 'recorded' ? `${record.value} ${record.unit}` : record.state.replace('_', ' ')}`}))});
+    chosen: {variable, months, method, reference: reference ? reference.id : null}, references: group.map(record => ({id: record.id, label: `${record.time} · ${valueText(record)}`}))});
   sections.push({id: 'values', title: 'Values in this selection', state: group.length ? 'ready' : 'empty', text: group.length ? '' : 'No value of this method falls in this period.', note: noteAttention, entries: group.map(entry),
     outside: {other_methods: outsideMethod, before_period: outsidePeriod, no_time: found.untimed.length}, untimed: found.untimed.map(entry)});
   sections.push({id: 'change', title: 'Change from the reference', state: 'ready', text: description, difference: recordedInGroup < 2 ? null : change.difference});
@@ -124,9 +131,9 @@ function interactions(services, session) {
     },
     exportSeries: async () => {
       const made = contextOf(services); if (!made.ok) return {ok: false, error: {message: made.error.message}};
-      const ctx = made.value; if (!ctx.exporter || !session.variable) return {ok: false, error: {message: 'Nothing to export in this selection.'}};
+      const ctx = made.value; if (!ctx.exporter) return {ok: false, error: {message: 'Export is not available yet.'}};
       const vm = await build(services, session, null); const values = vm.sections.find(s => s.id === 'values');
-      if (!values || !values.entries.length) return {ok: false, error: {message: 'No value in this selection.'}};
+      if (!vm.selection || !values || !values.entries.length) return {ok: false, error: {message: 'No value in this selection.'}};
       const listed = await ctx.store.list('records', {subject: ctx.subject, variable: vm.selection.variable}); if (!listed.ok) return {ok: false, error: {message: `The records could not be read: ${listed.error.message}`}};
       const ids = new Set(values.entries.map(item => item.id)); const rows = listed.value.filter(record => ids.has(record.id));
       const csv = ctx.exporter.recordsToCsv(rows); return csv.ok ? {ok: true, value: {filename: ctx.exporter.safeFileName('orbita', ctx.subject, vm.selection.variable), text: csv.value, records: rows.length}} : {ok: false, error: {message: csv.error.message}};

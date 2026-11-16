@@ -8,7 +8,7 @@ The delivered state is on the GitHub branch **final-claude**, built on mod/f2-cl
 
 - Contract version 0.22; record schema 2 with unchanged legacy 1 readers; IndexedDB schema v3 (a v1 or v2 profile is upgraded on its next open and keeps its data).
 - 26 modules (M00–M25). Every module is `pending` in modules.csv except those the user accepted earlier (M00–M05, M21): independent review by agents happened for F3, F4 and F5 and is summarised in AUDIT.md; **no layer after F1 has been accepted by a person**.
-- 419 Node tests (`npm test`), `check_docs.py` OK, and browser walkthroughs for every gate (Chromium only, no screen reader, no second browser engine).
+- 435 Node tests (`npm test`), `check_docs.py` OK, and browser walkthroughs for every gate (Chromium only, no screen reader, no second browser engine).
 
 ## What runs
 
@@ -22,7 +22,7 @@ The standalone HTML mockups under `demo/` are design artifacts, not the product 
 
 ## Open, in one place
 
-Real guidance rules (nobody has supplied any); the volunteer test (G6-W4); other browsers and screen readers; units for CRF and MR035G and the immune denominators; omics adapters; MR080G beyond its one verified test; PhysioNet use is provisional under the user's decision, not an organizer answer; the teammate's backend does not read the main app's store; acceptance of every gate after G1 by a person. The reasons and the evidence are in [AUDIT.md](AUDIT.md) and in each experiment record's "Not verified".
+A damaged stored record makes the whole subject unreadable and the app has no repair path (the views and a banner say so; the person must remove the page's site data); Real guidance rules (nobody has supplied any); the volunteer test (G6-W4); other browsers and screen readers; units for CRF and MR035G and the immune denominators; omics adapters; MR080G beyond its one verified test; PhysioNet use is provisional under the user's decision, not an organizer answer; the teammate's backend does not read the main app's store; acceptance of every gate after G1 by a person. The reasons and the evidence are in [AUDIT.md](AUDIT.md) and in each experiment record's "Not verified".
 
 ## Datasets, evidence and remaining limits
 

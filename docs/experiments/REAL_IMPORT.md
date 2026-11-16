@@ -22,7 +22,7 @@ implementation of views. The orchestrator owns this integration experiment.
 
 RUN/BROWSER: python3 scripts/import-real-samples.py loaded791 CRF,12 MR079G,
 10 MR035G,32 selected MR080G and3016 BUT CGM records (3861 total), with zero
-rejected source rows. Excluded226 nonempty CRF comment cells were counted
+rejected source rows. Excluded 13 free-text CRF cells were counted (the earlier figure 226 wrongly counted the missing-value token NA; corrected 2026-11-16)
 without retaining their text. Each source SHA matches acquisition receipts
 before decoding; raw BOM/newlines remain in importer fingerprints.
 

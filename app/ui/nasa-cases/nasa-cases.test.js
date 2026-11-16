@@ -345,7 +345,7 @@ test('M22-C1: CRF loads with its caveats; an empty cell is "not recorded"; units
     const after=await load(vm,'CRF','crf.csv',CRF_TEXT);
     assert.equal(after.message.kind,'info',JSON.stringify(after.message));
     const card=after.files[0]; assert.equal(card.doi,'10.83263/wjw1-ta27'); assert.match(card.license,/CC0/); assert.equal(card.subjects.join(),'8615');
-    assert.equal(card.caveats.length,3); assert.match(card.caveats[0],/unit of any vital-sign column/); assert.match(card.caveats[1],/month\/day\/year/); assert.match(card.caveats[2],/free text/);
+    assert.equal(card.caveats.length,4); assert.match(card.caveats[0],/unit of any vital-sign column/); assert.match(card.caveats[1],/month\/day\/year/); assert.match(card.caveats[2],/free text/);
     assert.equal(card.skipped,1); assert.deepEqual(card.unread_columns,['Head Down Tilt Verified','Bowel Movement','Quantity']);
     const panel=after.panels[0]; const all=JSON.stringify(panel);
     assert.match(all,/unit unknown/); assert.equal(/a free text about the person/.test(JSON.stringify(after)),false,'no comment text anywhere in the model');
@@ -427,4 +427,50 @@ test('M22-K5: a file of more than a thousand records is kept completely (the sto
     out=await out.interactions.keep(out.files[0].id); assert.equal(out.message.kind,'info',out.message.text); assert.equal((await kept.peek().list('records',{})).value.length,1500);
     const again=await model({importers,readings,openMemoryStore:()=>openStore({kind:'memory',name:'p9'}),keptCases:kept.door}); assert.equal(again.files[0].records,1500); assert.equal(again.subjects.length,1);
   } finally {await main.close();}
+});
+
+// ---- From the independent review of F5 ----
+const seedKept = async (kept, mutate) => { const base = keptDoor(); const {main, vm} = await withKept(base); let out = await load(vm, 'BUT_CGM', 'a.csv', CGM_TEXT, '101001'); out = await out.interactions.keep(out.files[0].id); await main.close(); if (mutate) await mutate(base.peek()); return base; };
+const reopen = base => model({importers, readings, openMemoryStore: () => openStore({kind: 'memory', name: `r${Math.random()}`}), keptCases: base.door});
+
+test('M22-F1: a kept card that is corrupt or hostile is skipped with a message; the page still draws; text stays text', async () => {
+  const base = await seedKept(null, async store => {
+    await store.save('config', {id: 'nasa-file:bad1', schema_version: 2, card: {name: 'x'}});
+    await store.save('config', {id: 'nasa-file:bad2', schema_version: 2, card: {name: 'n', file_key: 'k', source_id: 's', records: 1, citation: 'not a list', subjects: 5, caveats: 5, rejected: 'x'}});
+    await store.save('config', {id: 'nasa-file:bad3', schema_version: 2, card: 'a string'});
+  });
+  const vm = await reopen(base); assert.equal(vm.state, 'ready'); assert.equal(vm.message.kind, 'error'); assert.match(vm.message.text, /2 kept file card\(s\) were unreadable|3 kept file card\(s\) were unreadable/);
+  const good = vm.files.find(f => f.name === 'a.csv'); assert.ok(good && good.kept); for (const file of vm.files) { for (const key of ['citation', 'subjects', 'caveats', 'rejected', 'unread_columns']) assert.ok(Array.isArray(file[key]), `${file.name}.${key}`); }
+  assert.equal(vm.files.some(f => f.name === 'x'), false);
+});
+
+test('M22-F2: a kept store that cannot be read says so, and can still be removed', async () => {
+  const base = keptDoor(); const store = (await base.door.open()).value;
+  const broken = {...store, list: async () => ({ok: false, error: {code: 'storage_error', message: 'unreadable'}})};
+  const door = {open: async () => ({ok: true, value: broken}), clear: base.door.clear};
+  const vm = await model({importers, readings, openMemoryStore: () => openStore({kind: 'memory', name: 'u1'}), keptCases: door});
+  assert.equal(vm.keep.unreadable, true); assert.equal(vm.keep.removable, true); assert.equal(vm.keep.available, false); assert.match(vm.message.text, /remove everything kept/);
+  assert.equal((await vm.interactions.removeKept({confirmed: true})).message.kind, 'info'); assert.equal(base.cleared(), 1);
+});
+
+test('M22-F3: an interrupted keep (records without their card) comes back marked as partial, with its citation and caveat, never as a bare series', async () => {
+  const base = keptDoor(); const {main, vm} = await withKept(base);
+  const full = await load(vm, 'BUT_CGM', 'a.csv', CGM_TEXT, '101001'); const key = String(( await main.list('records', {})).value[0]?.source ?? '');
+  const records = (await base.peek().list('records', {})).value; assert.equal(records.length, 0);
+  // Write only some of the file's records into the kept store, and no card.
+  const session = await full.interactions.keep(full.files[0].id); await base.peek().list('config', {});
+  const store = base.peek(); const cfg = (await store.list('config', {})).value; assert.equal(cfg.length, 1);
+  const half = {...store, list: async (c, f) => (c === 'config' ? {ok: true, value: []} : store.list(c, f))};
+  const door = {open: async () => ({ok: true, value: half}), clear: base.door.clear};
+  const again = await model({importers, readings, openMemoryStore: () => openStore({kind: 'memory', name: 'o1'}), keptCases: door}); await main.close();
+  const card = again.files[0]; assert.equal(card.status, 'partial'); assert.match(card.caveats[0], /interrupted/); assert.equal(card.doi, '10.13026/hv8f-3w60'); assert.ok(card.citation.length > 0); assert.equal(card.kept, true);
+  assert.match(again.message.text, /no card|interrupted/);
+});
+
+test('M22-F4: another tab removed the kept store: the next interaction shows the cards as not kept instead of claiming they are', async () => {
+  const base = keptDoor(); const {main, vm} = await withKept(base);
+  let out = await load(vm, 'BUT_CGM', 'a.csv', CGM_TEXT, '101001'); out = await out.interactions.keep(out.files[0].id); assert.equal(out.files[0].kept, true);
+  await base.peek().close(); // this tab's connection stops working (another tab deleted the database)
+  const next = await out.interactions.select({subjects: ['101001']}); await main.close();
+  assert.equal(next.files[0].kept, false); assert.equal(next.keep.available, false); assert.match(next.keep.unavailable_reason, /no longer reachable/);
 });

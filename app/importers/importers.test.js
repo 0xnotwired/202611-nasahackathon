@@ -70,3 +70,10 @@ test('MR079G absent value may have absent unit, while numeric value requires its
 test('ill-formed UTF16 cannot alias another UTF8 fingerprint or subject identity',()=>{
  const text='Timestamp;Glycemia\n2100-01-02 01:02:03;5.5';assert.equal(importGlucose(text,{subject:'\ud800'}).ok,false);assert.equal(importGlucose(text,{subject:'\udc00'}).ok,false);assert.equal(importGlucose(text+'\n\ud800',{subject:'A'}).ok,false);assert.equal(importGlucose(text,{subject:'\ufffd'}).ok,true);assert.equal(importGlucose(text,{subject:'🛰️'}).ok,true);
 });
+
+test('M21-R1: the missing-value token NA in a free-text column is a missing cell, not free text: it is not counted as left out',()=>{
+  const header='Subject,Date,Test_Phase,BR_Day,Vitals Time,Pulse,SysBP,DiaBP,Resp Rate,Weight,Body Temp,Height,Comment,Bowel Movement Description';
+  const text=[header,'1,7/6/2007,PRE_TEST,13,9:40,70,120,80,16,75,36.6,180,NA,NA','1,7/7/2007,PRE_TEST,12,6:00,70,120,80,16,75,36.6,180,a real comment,','1,7/8/2007,PRE_TEST,11,6:00,70,120,80,16,75,36.6,180,,na'].join('\n');
+  const r=importCRF(text); assert.equal(r.ok,true,JSON.stringify(r.error)); assert.deepEqual(r.value.skipped.map(s=>[s.row,s.column]),[[3,'Comment']]);
+  assert.equal(JSON.stringify(r.value).includes('a real comment'),false,'no free text in the result');
+});

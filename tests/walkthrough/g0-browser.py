@@ -22,7 +22,7 @@ try:
     assert match, 'Expected loopback startup message'
     url = f'http://127.0.0.1:{match[1]}/index.html'
     with sync_playwright() as p:
-        browser = p.chromium.launch(executable_path='/usr/bin/chromium', headless=True)
+        browser = p.chromium.launch(executable_path=os.environ.get('ORBITA_CHROMIUM') or '/usr/bin/chromium', headless=True)
         page = browser.new_page()
         errors = []
         page.on('pageerror', lambda error: errors.append(str(error)))

@@ -59,7 +59,7 @@ The proposed integrated demo would show the same episode under two mission confi
 
 Órbita exists in three forms, from the simplest to open to the most complete:
 
-1. **One file, no installation.** Build it with `npm run package` and double-click `dist/orbita.html`. It is a single self-contained page that makes no network request (checked in Chromium). Records are kept in the browser if it allows IndexedDB; the page says on screen when it does not.
+1. **One file, no installation.** Build it with `npm run package` and double-click `dist/orbita.html`. It is a single self-contained page; a content-security policy blocks remote loads, `eval` and form posts, and no network request was seen in Chromium, including with hostile files, rules and notes. The policy does not restrict top-level navigation or WebRTC, and it allows inline scripts, so a future unsafe DOM sink would not be stopped by it (none exists today). Records are kept in the browser if it allows IndexedDB; the page says on screen when it does not. **Every page opened from `file://` in the same Chromium shares that storage**: it is not encrypted and not isolated per file (other browsers were not tested).
 2. **The same app served locally.** `npm run serve` serves `app/` over HTTP at a loopback address. This is the form most of the tests drive.
 3. **The teammate's server edition.** `frontend/` is a Next.js app with its own Node backend for the aerobic-capacity follow-up ([how it relates to the rest](frontend/INTEGRATION.md)). It needs a Node server, so it cannot be inside the single file; what was useful in it was brought into the main app (the review and export view and the manual theme).
 
@@ -78,7 +78,7 @@ The product is built in layers, each with a gate that says what it must prove ([
 | F3 plan and procedures | My plan (tasks, repeating exams, undo, results linked afterwards) and On board (procedures with equipment checks, preparation, steps that record a value, retirement); concurrent writers are safe across tabs | built, independent agent review with fixes, G3 |
 | F4 episodes | "I feel different": an episode with what was recorded, what is known and what is missing before any suggestion; a copilot that only suggests from a rule that carries a source, version and review status (none is shipped for real use); a summary for the ground; simulated sync | built, independent agent review with fixes, G4 |
 | F5 NASA cases | CRF, MR079G, MR035G, MR080G and BUT CGM files can be loaded in a viewer separate from every other view, optionally kept on the device | built, independent agent review (findings listed in [the audit](docs/AUDIT.md)), G5 |
-| F6 closing | One packaged file; a review and export view; a manual theme | packaging checked against the served app (G6-W1, W2); the state of the integrated adversarial review (G6-W3) and of the volunteer test (G6-W4) is in [G6](docs/experiments/G6.md) |
+| F6 closing | One packaged file; a review and export view; a manual theme | packaging checked against the served app (G6-W1, W2); an integrated adversarial review (G6-W3) attacked every layer and its findings were fixed except one (a damaged stored record has no in-app repair path); the volunteer test (G6-W4) is **not done** (see [G6](docs/experiments/G6.md)) |
 
 What it deliberately does not do: it has no clinical rule, threshold or diagnosis, no generative model, no real network sync, no sensors and no encryption. A suggestion appears only from a rule that someone supplies with its source, and the screen says the app cannot verify a rule\'s review status. Data from NASA studies is never presented as an astronaut\'s own. See [the central rule](CLAUDE.md#the-central-rule).
 
@@ -135,7 +135,7 @@ AI use is recorded in [docs/RESOURCES_USED.md](docs/RESOURCES_USED.md), includin
 ## Run the checks
 
 ```bash
-npm test                          # 419 tests (Node 22, no dependencies)
+npm test                          # 435 tests (Node 22, no dependencies)
 python3 scripts/check_docs.py     # consistency of matrices, module board, work orders, links
 npm run package                   # dist/orbita.html
 npm run serve                     # the app over HTTP
@@ -158,6 +158,7 @@ Working and provenance rules are in [AGENTS.md](AGENTS.md). AI use must be recor
 
 ## Documentation and next results
 
+- **[Handoff: what is done and what is left](docs/HANDOFF.md)** and the [continuation prompt for another AI agent](docs/CLAUDE_CONTINUATION_PROMPT.md).
 - [Final proposal, demo and acceptance criteria](docs/FINAL_PROPOSAL.md).
 - [What to improve from the original proposal](docs/PROPOSAL_IMPROVEMENTS.md) and [third academic extension, series B](docs/EXTENDED_RESEARCH_B.md) with its [matrix](docs/RESEARCH_MATRIX_B.csv).
 - [Orchestration plan](docs/ORCHESTRATION_PLAN.md), [contracts between modules](docs/CONTRACTS.md), [work orders](docs/work-orders/) and [module board](docs/modules.csv).

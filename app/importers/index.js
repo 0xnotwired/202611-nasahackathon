@@ -53,7 +53,7 @@ function prepare(input,profile,subject){
   const sourceRow=entry.row;const reject=(code,field)=>rejected.push({row:sourceRow,code,field});
   if(entry.bad||entry.cells.length!==headers.length){reject('row_shape','row');continue;}
   const row=Object.fromEntries(headers.flatMap((key,i)=>allowed.has(key)?[[key,entry.cells[i]]]:[]));
-  if(profile==='CRF')for(const column of ['Comment','Bowel Movement Description'])if(row[column]?.trim())skipped.push({row:sourceRow,column,reason:'excluded_free_text'});
+  if(profile==='CRF')for(const column of ['Comment','Bowel Movement Description'])if(row[column]?.trim()&&!missing(row[column]))skipped.push({row:sourceRow,column,reason:'excluded_free_text'}); // the token NA is a missing value, not free text
   const who=subject??row.Subject??row.SUBJECT;
   const phase=profile==='BUT_CGM'?'source_observation':row.Test_Phase??row.TEST_PHASE;
   const day=row.BR_Day??row.BR_DAY;
