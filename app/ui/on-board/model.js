@@ -102,16 +102,18 @@ function interactions(services) {
     advance: (id, input) => run(async ctx => {
       const found = await ctx.store.get('executions', id);
       if (!found.ok) return msg('error', 'Not saved: no execution has this id.');
+      if (found.value.state !== 'in_progress') return msg('error', `Not saved: this execution is ${found.value.state.replace('_', ' ')}, not in progress. Nothing was recorded.`);
       const declared = (Array.isArray(found.value.step_records) ? found.value.step_records[found.value.current_step] : null) ?? null;
       if (!declared) return saved(await ctx.procedures.advance(ctx.store, id, {clock: ctx.clock}), 'Step done.');
       if (input && input.no_record === true) return saved(await ctx.procedures.advance(ctx.store, id, {clock: ctx.clock, no_record: true}), 'Step done. Nothing was recorded for it, and the execution says so.');
       if (!input || input.value === undefined) return msg('error', `Not saved: this step records ${declared}. Enter the value, or choose "Step done without recording".`);
       if (!ctx.core) return msg('error', 'Recording needs the core, which is not available.');
+      if (!isText(typeof input.method === 'string' ? input.method.trim() : '')) return msg('error', 'Not saved: say how it was measured (the method); none is assumed.');
       if (typeof input.value !== 'number' || !Number.isFinite(input.value)) return msg('error', 'Not saved: the value must be a number.');
       const catalog = variablesOfType(ctx, ['measurement', 'exam']).find(item => item.id === declared);
       const unit = catalog && catalog.unit !== 'as_recorded' ? catalog.unit : (typeof input.unit === 'string' ? input.unit.trim() : '');
       if (!isText(unit)) return msg('error', `Not saved: ${catalog ? catalog.label : declared} needs the unit it was recorded in.`);
-      const created = ctx.core.createRecord({type: 'measurement', state: 'recorded', variable: declared, value: input.value, unit, method: isText(input.method) ? input.method : 'self_report', origin: ctx.record_origin, source: 'user_entered', mission_phase: phaseName(ctx), subject: ctx.subject}, {clock: ctx.clock, newId: ctx.newId});
+      const created = ctx.core.createRecord({type: 'measurement', state: 'recorded', variable: declared, value: input.value, unit, method: input.method.trim(), origin: ctx.record_origin, source: 'user_entered', mission_phase: phaseName(ctx), subject: ctx.subject}, {clock: ctx.clock, newId: ctx.newId});
       if (!created.ok) return msg('error', `Not saved: ${created.error.message}`);
       const record = await ctx.store.save('records', created.value);
       if (!record.ok) return msg('error', `Not saved: ${record.error.message}`);

@@ -39,7 +39,7 @@ export function mount(element, viewModel) {
 
   function suggestion(section) {
     const parts = [el('h3', {id: 'sec-suggestion'}, section.title), el('p', {class: 'legend'}, section.note)];
-    if (section.suggestion) parts.push(el('p', {}, section.suggestion.text), el('p', {class: 'legend'}, `Source: ${section.suggestion.source_text}`));
+    if (section.suggestion) parts.push(el('p', {}, section.suggestion.text), el('p', {class: 'legend'}, `Source: ${section.suggestion.source_text}`), section.suggestion.caution ? el('p', {class: 'notice notice-warning'}, section.suggestion.caution) : null);
     else parts.push(el('p', {class: 'notice notice-info'}, section.text));
     parts.push(el('details', {class: 'table-toggle'}, el('summary', {}, 'What was not looked at'), el('ul', {}, ...section.not_assessed.map(text => el('li', {}, text)))));
     if (section.alert) parts.push(el('p', {class: 'notice notice-warning', role: 'alert'}, section.alert.text), button('feel-ack', 'Mark the alert as issued', current.actions.close.enabled, () => apply(current.interactions.acknowledgeAlert(), 'feel-ack')));
@@ -69,6 +69,17 @@ export function mount(element, viewModel) {
     return el('section', {class: 'card', 'aria-labelledby': 'sec-actions'}, ...parts);
   }
 
+  const reopenReasons = new Map();
+  function historyCard(section) {
+    const rows = section.items.map(item => {
+      const why = el('input', {id: `feel-reopen-why-${item.id}`, type: 'text', maxlength: '500', autocomplete: 'off'}); why.value = reopenReasons.get(item.id) ?? ''; why.addEventListener('input', () => reopenReasons.set(item.id, why.value));
+      const b = el('button', {type: 'button', id: `feel-reopen-${item.id}`}, 'Reopen this episode'); if (!item.reopen.enabled) b.setAttribute('disabled', 'disabled');
+      b.addEventListener('click', () => apply(current.interactions.reopenEpisode(item.id, why.value).then(next => { if (next.message && next.message.kind === 'info') reopenReasons.delete(item.id); return next; }), b.id));
+      return el('li', {class: 'entry'}, el('div', {}, item.text), el('div', {class: 'field'}, el('label', {for: why.id}, 'Why reopen it (needed)'), why), b, item.reopen.enabled ? null : el('p', {class: 'notice notice-info'}, item.reopen.reason));
+    });
+    return el('section', {class: 'card', 'aria-labelledby': 'sec-history'}, el('h3', {id: 'sec-history'}, section.title), el('ul', {class: 'entries'}, ...rows));
+  }
+
   function draw() {
     const parts = [];
     if (current.message) parts.push(el('p', {id: 'feel-message', class: `notice notice-${current.message.kind === 'error' ? 'error' : 'info'}`, role: current.message.kind === 'error' ? 'alert' : 'status'}, current.message.text));
@@ -76,6 +87,7 @@ export function mount(element, viewModel) {
       if (section.id === 'start') parts.push(start(section));
       else if (section.id === 'suggestion') parts.push(suggestion(section));
       else if (section.id === 'link') parts.push(linkCard(section));
+      else if (section.id === 'history' && section.state === 'ready') parts.push(historyCard(section));
       else if (section.id === 'summary') continue;
       else parts.push(renderSection(doc, section));
     }

@@ -73,3 +73,23 @@ test('M20-V8: no score, no reassuring word, no causal sentence; hostile services
   for (const broken of [{store: undefined}, {readings: {}}, {subject: ''}, {clock: 'x'}]) assert.equal((await model({...base, ...broken}, {})).state, 'error');
   assert.equal((await model(undefined, {})).state, 'error'); assert.equal(section(await model(await makeServices({drop: ['episode']}), {}), 'start').state, 'not_available');
 });
+
+test('M20-R1: closed episodes are listed, and a closed one is reopened with a reason that is kept', async () => {
+  const services = await makeServices(); let vm = await model(services, {});
+  vm = await vm.interactions.open('fatigue'); vm = await vm.interactions.closeEpisode();
+  const history = vm.sections.find(s => s.id === 'history'); assert.equal(history.state, 'ready'); assert.equal(history.items.length, 1); assert.equal(history.items[0].reopen.enabled, true);
+  assert.equal((await vm.interactions.reopenEpisode(history.items[0].id, ' ')).message.kind, 'error');
+  vm = await vm.interactions.reopenEpisode(history.items[0].id, 'closed by mistake'); assert.equal(vm.message.kind, 'info'); assert.ok(vm.sections.some(s => s.id === 'episode'), 'the episode is open again');
+  vm = await vm.interactions.closeEpisode(); assert.match(vm.sections.find(s => s.id === 'history').items[0].text, /reopened 1 time.*closed by mistake/);
+  const ro = await makeServices({writable: false}); const rv = await model(ro, {}); assert.equal((await rv.interactions.reopenEpisode('x', 'y')).message.kind, 'error');
+});
+
+test('M20-R2: a rule marked demo or draft shows its suggestion with a caution; a reviewed one does not', async () => {
+  const rule = status => ({id: 'r1', when: {recorded_variable: 'fatigue'}, suggestion: 'Fictional text.', source: 'team demo (fictional rule)', version: 'v1', review_status: status});
+  for (const [status, caution] of [['demo', true], ['draft', true], ['reviewed', false]]) {
+    const services = await makeServices({rules: [rule(status)]}); const vm = await (await model(services, {})).interactions.open('fatigue');
+    const sug = vm.sections.find(s => s.id === 'suggestion').suggestion; assert.equal(sug.reviewed, status === 'reviewed'); assert.equal(sug.caution !== null, caution, status);
+    if (caution) assert.match(sug.caution, /not reviewed guidance/);
+  }
+  const none = await (await model(await makeServices(), {})).interactions.open('fatigue'); assert.equal(none.sections.find(s => s.id === 'suggestion').suggestion, null);
+});

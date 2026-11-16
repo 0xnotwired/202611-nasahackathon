@@ -94,3 +94,28 @@ test('M15-R8: with several completed executions the person chooses which one the
   assert.equal((await vm.interactions.markDone('a', 'nope')).message.kind, 'error'); assert.equal((await services.store.get('tasks', 'a')).value.completion, 'pending');
   await vm.interactions.markDone('a', 'ex-1'); assert.equal((await services.store.get('tasks', 'a')).value.execution_id, 'ex-1');
 });
+
+// ---- From the independent review of F3 ----
+test('M15-R9: a date without the Z (a local or zone-less time) is refused; nothing is converted with the browser zone', async () => {
+  const services = await makeServices(); const vm = await model(services, {});
+  for (const at of ['2026-11-15T23:30:00', '2026-11-15', 'Nov 15 2026 23:30', '2026-11-15T23:30:00+02:00', '2026-02-30T10:00:00Z'])
+    assert.equal((await vm.interactions.createTask({description: 'x', scheduled_at: at, planned_minutes: '5'})).message.kind, 'error', at);
+  assert.equal((await services.store.list('tasks', {})).value.filter(t => t.description === 'x').length, 0);
+  assert.equal((await vm.interactions.createTask({description: 'ok', scheduled_at: '2026-11-15T23:30:00Z', planned_minutes: '5'})).message.kind, 'info');
+});
+
+test('M15-R10: an old execution never evidences a task of a later day; with none that fits, the task is marked done without one and says so', async () => {
+  const old = execution({id: 'ex-old', updated: '2026-10-01T10:00:00.000Z'});
+  const services = await makeServices({objects: {tasks: [task('a', {procedure_id: scenario.procedures[0].id})], executions: [old]}}); const vm = await model(services, {});
+  assert.equal(tasksOf(vm)[0].execution, null); assert.deepEqual(tasksOf(vm)[0].execution_choices, []);
+  await vm.interactions.markDone('a'); const saved = (await services.store.get('tasks', 'a')).value; assert.equal(saved.completion, 'done'); assert.equal(saved.execution_id ?? null, null);
+  assert.equal((await vm.interactions.markDone('a', 'ex-old')).message.kind, 'error');
+});
+
+test('M15-R11: the history never prints "null": a mark carries the time, and a missing one reads "time not recorded"', async () => {
+  const services = await makeServices({objects: {tasks: [task('a'), task('b', {completion: 'done', history: [{completion: 'done', at: null}]})]}}); let vm = await model(services, {});
+  assert.match(tasksOf(vm).find(t => t.id === 'b').history[0], /time not recorded/);
+  vm = await vm.interactions.markDone('a'); vm = await vm.interactions.reopen('a', 'oops');
+  for (const line of tasksOf(vm).find(t => t.id === 'a').history) assert.doesNotMatch(line, /null/);
+  assert.match((await services.store.get('tasks', 'a')).value.history[0].at, /^2026-/);
+});

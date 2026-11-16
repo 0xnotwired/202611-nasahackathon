@@ -50,7 +50,7 @@ export const expectedExports = {
   procedures: 'validateProcedure availability start advance interrupt resume finish publishProcedure listProcedures getProcedure retireProcedure',
   plan: 'tasksFor progress mark linkResult createTask scheduleSeries reopenTask',
   privacy: 'createSession logShared sharedLog',
-  episode: 'open situation link close issueAlert',
+  episode: 'open situation link close issueAlert reopen listEpisodes',
   copilot: 'card validateRules',
   summary: 'generate',
   importers: 'importCRF importAdaptation importGlucose',

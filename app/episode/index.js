@@ -81,6 +81,39 @@ export function close(store, episodeId, options) {
   });
 }
 
+/**
+ * reopen(store, episodeId, { reason, clock? }) → Result<Episode>. Undoes a close with a stated reason; the earlier close stays in `reopened`.
+ * Refused while another episode of the same subject is open (one open episode at a time), and when the episode is not closed.
+ */
+export function reopen(store, episodeId, options) {
+  return serial(`episodes/${episodeId}`, async () => {
+    if (!isPlain(options) || !isText(options.reason)) return fail('invalid_reason', 'reason', 'Say why the episode is being reopened');
+    let at = null;
+    if (options.clock !== undefined) {
+      let now; try { now = typeof options.clock === 'function' ? options.clock() : undefined; } catch { now = undefined; }
+      if (!isInstant(now)) return fail('invalid_clock', 'clock', 'The clock did not return an ISO8601 UTC instant');
+      at = now;
+    }
+    const loaded = await load(store, episodeId); if (!loaded.ok) return loaded;
+    const e = loaded.value;
+    if (!closed(e)) return fail('episode_not_closed', 'episodeId', 'The episode is not closed, so there is nothing to reopen');
+    if (!has(store, ['list'])) return fail('invalid_store', 'store', 'A store with list() is required');
+    const others = await store.list('episodes', {subject: e.subject}); if (!others.ok) return others;
+    if (others.value.some(o => o.id !== e.id && !closed(o))) return fail('another_episode_open', 'episodeId', 'Another episode is open; close it first');
+    const history = Array.isArray(e.reopened) ? e.reopened : [];
+    return store.updateState('episodes', episodeId, {closed: null, reopened: [...history, {previous_closed: e.closed, at, reason: options.reason}]}, {expect: {closed: e.closed}});
+  });
+}
+
+/** listEpisodes(store, { subject }) → Result<{ id, opened, closed, observation_id, reopened }[]>, newest first. Reads only. */
+export async function listEpisodes(store, query) {
+  if (!has(store, ['list'])) return fail('invalid_store', 'store', 'A store with list() is required');
+  if (!isPlain(query) || !isText(query.subject)) return fail('invalid_input', 'subject', 'A subject is required');
+  const listed = await store.list('episodes', {subject: query.subject}); if (!listed.ok) return listed;
+  return ok(listed.value.map(e => ({id: e.id, opened: e.opened, closed: closed(e) ? e.closed : null, is_closed: closed(e), observation_id: e.observation_id, reopened: Array.isArray(e.reopened) ? e.reopened : []}))
+    .sort((a, b) => (a.opened < b.opened ? 1 : a.opened > b.opened ? -1 : a.id < b.id ? -1 : 1)));
+}
+
 /** issueAlert(store, episodeId) → Result<{ issued, episode }>: `alert_issued` turns true once; a second call changes nothing. */
 export function issueAlert(store, episodeId) {
   return serial(`episodes/${episodeId}`, async () => {

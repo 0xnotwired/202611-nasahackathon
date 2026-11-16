@@ -199,3 +199,22 @@ test('M13-N4: a writer that read an older state is refused by the store and deci
   assert.equal((await m.advance(always, ex.id, {no_record: true})).error.code, 'conflict', 'it gives up visibly after a few tries');
   assert.equal((await get(store, ex.id)).current_step, 1);
 });
+
+// ---- From the independent review of F3 ----
+test('M13-N5: a not-recorded or nothing-new entry is never the record of a step', async () => {
+  const store = await fresh();
+  const proc = {...scenario.procedures[0], id: 'n5-proc', steps: [{id: 'a', text: 'Take the pulse', records: 'pulse'}]};
+  await m.publishProcedure(store, proc, {clock: () => NOW});
+  for (const state of ['not_recorded', 'confirmed_none']) {
+    const rec = makeRecord({id: `n5-${state}`, state}); assert.equal((await store.save('records', rec)).ok, true);
+    const started = await m.start(store, proc, withDevice, {subject: SUBJECT, clock: () => NOW, newId: () => `n5-ex-${state}`, preparation_confirmed: true});
+    const out = await m.advance(store, started.value.id, {clock: () => NOW, record: rec.id});
+    assert.equal(out.ok, false, state); assert.equal(out.error.code, 'not_a_result');
+    assert.deepEqual((await store.get('executions', started.value.id)).value.records, []);
+  }
+});
+
+test('M13-N6: an id that looks like a retirement entry is refused, so retiring cannot collide with a procedure', async () => {
+  const store = await fresh();
+  const out = await m.publishProcedure(store, {...scenario.procedures[0], id: 'retired:a'}, {clock: () => NOW}); assert.equal(out.ok, false);
+});

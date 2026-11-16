@@ -9,7 +9,7 @@ const fail = (code, field, message) => ({ok: false, error: {code, field, message
 const ok = value => ({ok: true, value});
 const isText = value => typeof value === 'string' && value.length > 0 && value.length <= MAX_TEXT;
 const isPlain = value => value !== null && typeof value === 'object' && !Array.isArray(value);
-const isInstant = value => typeof value === 'string' && /^\d{4}-\d\d-\d\dT[\d:.]+Z$/.test(value) && !Number.isNaN(Date.parse(value));
+const isInstant = value => typeof value === 'string' && /^\d{4}-\d\d-\d\dT[\d:.]+Z$/.test(value) && !Number.isNaN(Date.parse(value)) && new Date(value).toISOString().slice(0, 10) === value.slice(0, 10);
 const COMPLETION = Object.freeze(['pending', 'done', 'not_done']);
 const storeHas = (store, names) => isPlain(store) && names.every(name => typeof store[name] === 'function');
 

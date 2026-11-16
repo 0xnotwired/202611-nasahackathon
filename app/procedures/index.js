@@ -14,7 +14,7 @@ const fail = (code, field, message) => ({ok: false, error: {code, field, message
 const ok = value => ({ok: true, value});
 const isText = value => typeof value === 'string' && value.length > 0 && value.length <= MAX_TEXT;
 const isPlain = value => value !== null && typeof value === 'object' && !Array.isArray(value);
-const isInstant = value => typeof value === 'string' && /^\d{4}-\d\d-\d\dT[\d:.]+Z$/.test(value) && !Number.isNaN(Date.parse(value));
+const isInstant = value => typeof value === 'string' && /^\d{4}-\d\d-\d\dT[\d:.]+Z$/.test(value) && !Number.isNaN(Date.parse(value)) && new Date(value).toISOString().slice(0, 10) === value.slice(0, 10);
 const textList = value => Array.isArray(value) && value.length <= MAX_LIST && value.every(isText);
 
 function copyOf(data) { try { return structuredClone(data); } catch { return undefined; } }
@@ -126,6 +126,7 @@ export async function advance(store, executionId, input) {
       const found = await store.get('records', opts.value.record);
       if (!found.ok) return fail('unknown_record', 'record', 'No record has this id');
       if (found.value.subject !== e.subject) return fail('other_subject', 'record', 'The record belongs to another subject');
+      if (found.value.state !== 'recorded') return fail('not_a_result', 'record', 'Only a recorded value can be the record of a step; a not-recorded or nothing-new entry recorded nothing');
       if (declared !== null && found.value.variable !== declared) return fail('wrong_variable', 'record', `This step records ${declared}, not ${String(found.value.variable).slice(0, 40)}`);
       records = e.records.includes(opts.value.record) ? e.records : [...e.records, opts.value.record];
     } else if (declared !== null) {
@@ -177,6 +178,7 @@ const wrapperOk = w => isPlain(w) && isText(w.id) && isText(w.procedure_id) && i
 export async function publishProcedure(store, procedure, options) {
   if (!storeOk(store, ['save'])) return fail('invalid_store', 'store', 'A store with save() is required');
   const checked = validateProcedure(procedure); if (!checked.ok) return checked;
+  if (checked.value.id.startsWith('retired:')) return fail('invalid_procedure', 'id', 'id must not start with "retired:" (reserved for retirements)');
   if (checked.value.id.includes('@') || checked.value.version.includes('@')) return fail('invalid_procedure', 'id', 'id and version must not contain "@"');
   if (!isPlain(options) || typeof options.clock !== 'function') return fail('invalid_clock', 'clock', 'A clock is required to date a publication');
   let now; try { now = options.clock(); } catch { return fail('invalid_clock', 'clock', 'The clock failed'); }

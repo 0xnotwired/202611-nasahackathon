@@ -162,3 +162,13 @@ test('M15-R5: the editor can declare a step variable and an alternative, and ref
   const blocked = await model(await makeServices({config: spacecraft}), {}); const needs = await blocked.interactions.publish({...form, equipment: 'demo-device', title: 'Needs the device'});
   assert.equal(procOf(needs) !== undefined, true);
 });
+
+// ---- From the independent review of F3 ----
+test('M15-R12: a recording step needs a method, and an execution that is no longer in progress saves nothing', async () => {
+  const services = await makeServices(); let vm = await begin(services); const id = executionsOf(vm)[0].id; vm = await vm.interactions.advance(id);
+  const before = (await services.store.list('records', {variable: 'pulse'})).value.length;
+  const noMethod = await vm.interactions.advance(id, {value: 64}); assert.equal(noMethod.message.kind, 'error'); assert.match(noMethod.message.text, /method/);
+  await services.procedures.interrupt(services.store, id, {reason: 'from another tab', clock: services.clock});
+  const stale = await vm.interactions.advance(id, {value: 64, method: 'cuff'}); assert.equal(stale.message.kind, 'error'); assert.match(stale.message.text, /interrupted/);
+  assert.equal((await services.store.list('records', {variable: 'pulse'})).value.length, before, 'no orphan record');
+});

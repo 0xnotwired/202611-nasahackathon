@@ -45,13 +45,14 @@ export function mount(element, viewModel) {
     text.addEventListener('input', () => typed.set(e.id, text.value));
     const needsText = e.actions.some(a => a.needs === 'reason' || a.needs === 'difficulty' || a.needs === 'text' || (a.needs && a.needs !== 'record'));
     const rf = e.record_form; const value = rf ? el('input', {id: `board-value-${e.id}`, type: 'text', inputmode: 'decimal', autocomplete: 'off'}) : null; if (value) { value.value = recorded.get(e.id)?.value ?? ''; value.addEventListener('input', () => recorded.set(e.id, {...recorded.get(e.id), value: value.value})); }
+    const method = rf ? el('input', {id: `board-method-${e.id}`, type: 'text', maxlength: '100', autocomplete: 'off'}) : null; if (method) { method.value = recorded.get(e.id)?.method ?? ''; method.addEventListener('input', () => recorded.set(e.id, {...recorded.get(e.id), method: method.value})); }
     const unit = rf && rf.needs_unit ? el('input', {id: `board-unit-${e.id}`, type: 'text', maxlength: '40', autocomplete: 'off'}) : null; if (unit) { unit.value = recorded.get(e.id)?.unit ?? ''; unit.addEventListener('input', () => recorded.set(e.id, {...recorded.get(e.id), unit: unit.value})); }
     const buttons = e.actions.map(a => {
       const b = el('button', {type: 'button', id: `board-${e.id}-${a.id}`}, a.label); if (!a.enabled) b.setAttribute('disabled', 'disabled');
       b.addEventListener('click', () => {
         const i = current.interactions;
         const number = value && value.value.trim() !== '' ? Number(value.value) : undefined;
-        const work = a.id === 'advance' ? i.advance(e.id, rf ? {value: number === undefined ? undefined : number, ...(unit ? {unit: unit.value} : {})} : undefined) : a.id === 'advance_no_record' ? i.advance(e.id, {no_record: true}) : a.id === 'interrupt' ? i.interrupt(e.id, text.value) : a.id === 'resume' ? i.resume(e.id) : a.id === 'finish_completed' ? i.finish(e.id, 'completed') : i.finish(e.id, 'could_not', text.value);
+        const work = a.id === 'advance' ? i.advance(e.id, rf ? {value: number === undefined ? undefined : number, method: method ? method.value : undefined, ...(unit ? {unit: unit.value} : {})} : undefined) : a.id === 'advance_no_record' ? i.advance(e.id, {no_record: true}) : a.id === 'interrupt' ? i.interrupt(e.id, text.value) : a.id === 'resume' ? i.resume(e.id) : a.id === 'finish_completed' ? i.finish(e.id, 'completed') : i.finish(e.id, 'could_not', text.value);
         apply(work.then(next => { if (next.message && next.message.kind === 'info') { typed.delete(e.id); recorded.delete(e.id); } return next; }), b.id);
       });
       return b;
@@ -59,7 +60,7 @@ export function mount(element, viewModel) {
     return el('li', {class: 'entry', 'data-state': e.state}, el('strong', {class: 'entry-label'}, e.title), el('div', {class: 'legend'}, `Version ${e.procedure_version} · ${e.state_text}`), el('div', {}, e.progress_text),
       e.step_text ? el('p', {}, e.step_text) : null, e.difficulties.length ? el('p', {class: 'legend'}, `Difficulty: ${e.difficulties.join('; ')}`) : null,
       e.interruptions.length ? el('p', {class: 'legend'}, `Interrupted: ${e.interruptions.map(i => `${i.reason} (after ${i.step} steps)`).join('; ')}`) : null,
-      rf ? el('div', {class: 'field'}, el('label', {for: value.id}, `Record ${rf.label ?? rf.variable} (${rf.unit ?? 'unit needed'}) for this step`), value, unit ? el('label', {for: unit.id}, 'Unit') : null, unit) : null,
+      rf ? el('div', {class: 'field'}, el('label', {for: value.id}, `Record ${rf.label ?? rf.variable} (${rf.unit ?? 'unit needed'}) for this step`), value, el('label', {for: method.id}, 'How it was measured (method, needed)'), method, unit ? el('label', {for: unit.id}, 'Unit') : null, unit) : null,
       needsText ? el('div', {class: 'field'}, el('label', {for: `board-text-${e.id}`}, 'Reason or difficulty (needed to interrupt, or to say you could not complete it)'), text) : null, ...buttons);
   }
 

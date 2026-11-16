@@ -21,6 +21,16 @@ async function openEpisodeOf(ctx) {
   if (!listed.ok) return null;
   return listed.value.filter(e => e.closed === undefined || e.closed === null || e.closed === false).sort((a, b) => (a.opened < b.opened ? 1 : a.opened > b.opened ? -1 : a.id < b.id ? -1 : 1))[0] ?? null;
 }
+async function historySection(ctx, blocked) {
+  const base = {id: 'history', title: 'Earlier episodes', state: 'empty', text: 'No earlier episode.', items: []};
+  if (typeof ctx.episode.listEpisodes !== 'function') return {...base, state: 'not_available', text: 'The episode history is not available yet.'};
+  const listed = await ctx.episode.listEpisodes(ctx.store, {subject: ctx.subject});
+  if (!listed.ok) return {...base, state: 'error', text: `The history could not be read: ${listed.error.message}`};
+  const anyOpen = listed.value.some(e => !e.is_closed);
+  const items = listed.value.filter(e => e.is_closed).map(e => ({id: e.id, text: `Opened ${e.opened}, closed ${e.closed === true ? '(time not stated)' : e.closed}${e.reopened.length ? `; reopened ${e.reopened.length} time(s), last reason: ${e.reopened[e.reopened.length - 1].reason}` : ''}`,
+    reopen: {enabled: blocked === null && !anyOpen, reason: blocked ?? (anyOpen ? 'Another episode is open; close it first' : null)}}));
+  return items.length ? {...base, state: 'ready', text: '', items} : base;
+}
 async function entriesFor(ctx, ids) {
   const out = [];
   for (const id of ids) { const f = await ctx.store.get('records', id); out.push(f.ok ? recordEntry(f.value, {clock: ctx.clock}) : {...recordEntry(null, {variable: id, label: id}), value_text: 'record not found'}); }
@@ -40,6 +50,7 @@ async function build(services, message, extra) {
     const observations = ctx.catalogs && typeof ctx.catalogs.observations === 'function' ? ctx.catalogs.observations().map(({id, label}) => ({id, label})) : [];
     sections.push({id: 'start', title: 'What do you notice?', state: 'ready', note: 'Choose what fits best. This records what you report; it is not a diagnosis. You can ask for help without choosing.', options: observations,
       actions: {open: {enabled: blocked === null, reason: blocked}, help: {enabled: blocked === null, reason: blocked}}});
+    sections.push(await historySection(ctx, blocked));
     return {state: 'ready', title: 'I feel different', sections, message: message ?? null, summary: null, actions: {}, interactions: interactions(services)};
   }
   const s = await ctx.episode.situation(ctx.store, current.id, ctx.config, {clock: ctx.clock});
@@ -50,7 +61,8 @@ async function build(services, message, extra) {
   const gaps = {id: 'gaps', title: 'What is missing', state: card.gaps.length ? 'ready' : 'empty', text: s.why_empty.missing ?? '', items: card.gaps.map(g => ({text: gapText(g)}))};
   sections.push(gaps);
   sections.push({id: 'suggestion', title: 'Suggestion', state: 'ready', note: 'A suggestion comes only from a rule with a source, a version and a review status.', text: card.no_guidance ? 'There is no reviewed guidance for this.' : null,
-    suggestion: card.suggestion ? {text: card.suggestion.text, source_text: `${card.suggestion.source} · version ${card.suggestion.version} · ${card.suggestion.review_status}`} : null, not_assessed: card.not_assessed, alert: card.alert});
+    suggestion: card.suggestion ? {text: card.suggestion.text, source_text: `${card.suggestion.source} · version ${card.suggestion.version} · ${card.suggestion.review_status}`, reviewed: card.suggestion.review_status === 'reviewed',
+      caution: card.suggestion.review_status === 'reviewed' ? null : `This rule is marked "${card.suggestion.review_status}": it has not been reviewed, so it is not reviewed guidance.`} : null, not_assessed: card.not_assessed, alert: card.alert});
   sections.push({id: 'you_can', title: 'What you can do', state: s.you_can.length ? 'ready' : 'empty', text: s.why_empty.you_can ?? '', note: 'Procedures run from On board.',
     items: s.you_can.map(c => ({id: c.procedure_id, text: `${c.title} (version ${c.version}): ${c.available ? 'the equipment is in the mission configuration' : `blocked, this mission configuration lacks ${c.missing.join(', ')}`}`, available: c.available, missing: c.missing}))});
   sections.push({id: 'happened', title: 'What happened', state: s.happened.length ? 'ready' : 'empty', text: s.why_empty.happened ?? '',
@@ -59,6 +71,7 @@ async function build(services, message, extra) {
   const execs = await ctx.store.list('executions', {subject: ctx.subject}); const tasks = await ctx.store.list('tasks', {subject: ctx.subject, completion: 'pending'});
   sections.push({id: 'link', title: 'Link something to this episode', state: 'ready', executions: (execs.ok ? execs.value : []).filter(e => !current.execution_ids.includes(e.id)).map(e => ({id: e.id, label: `${e.procedure_id} version ${e.procedure_version} (${e.state})`})),
     tasks: (tasks.ok ? tasks.value : []).filter(t => !current.task_ids.includes(t.id)).map(t => ({id: t.id, label: t.description}))});
+  sections.push(await historySection(ctx, blocked));
   const summary = extra && extra.summary ? extra.summary : null;
   if (summary) sections.push({id: 'summary', title: 'Summary for the ground', state: 'ready', text: summary.text, note: summary.pending_send ? 'This link does not deliver at once, so the summary stands on its own. Generating it sent nothing.' : 'Generating it sent nothing.'});
   return {state: 'ready', title: 'I feel different', sections, message: message ?? null, summary, actions: {close: {enabled: blocked === null, reason: blocked}, share: {enabled: blocked === null && Boolean(ctx.sync && ctx.privacy && ctx.session), reason: blocked ?? (ctx.sync && ctx.privacy && ctx.session ? null : 'Sharing is not available yet.')}}, interactions: interactions(services)};
@@ -109,6 +122,11 @@ function interactions(services) {
       if (!logged.ok) return {message: saved(logged, '')};
       const queued = await ctx.sync.enqueue(ctx.store, logged.value.id, {clock: ctx.clock, newId: ctx.newId});
       return {message: queued.ok ? msg('info', 'Shared: logged and queued. It moves when the link allows it; see the Ground panel.') : msg('error', `The share was logged but could not be queued: ${queued.error.message}`)};
+    }),
+    reopenEpisode: run(async (ctx, episodeId, reason) => {
+      if (typeof ctx.episode.reopen !== 'function') return {message: msg('error', 'Reopening is not available yet.')};
+      if (!isText(typeof reason === 'string' ? reason.trim() : '')) return {message: msg('error', 'Not done: say why the episode is being reopened.')};
+      return {message: saved(await ctx.episode.reopen(ctx.store, episodeId, {reason: reason.trim(), clock: ctx.clock}), 'The episode is open again. The earlier close stays in its history.')};
     }),
     closeEpisode: run(async ctx => { const e = await current(ctx); if (!e) return {message: msg('error', 'Not done: no episode is open.')}; return {message: saved(await ctx.episode.close(ctx.store, e.id, {clock: ctx.clock}), 'The episode was closed.')}; })
   };

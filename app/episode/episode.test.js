@@ -67,3 +67,31 @@ test('M16-X2: link checks existence, subject and that the episode is open; close
   assert.equal((await m.link(store, ep.id, {record_id: 'mine'})).error.code, 'episode_closed'); assert.equal((await m.close(store, ep.id)).ok, false);
   assert.equal((await m.situation(store, 'nope', station, {clock: () => NOW})).ok, false);
 });
+
+// ---- Reopen and history ----
+test('M16-R1: a closed episode can be reopened with a reason; the earlier close stays in its history', async () => {
+  const store = await bare(); const ep = await opened(store);
+  assert.equal((await m.reopen(store, ep.id, {reason: 'x'})).error.code, 'episode_not_closed');
+  await m.close(store, ep.id, {clock: () => NOW});
+  for (const bad of [undefined, {}, {reason: ''}, {reason: 5}]) assert.equal((await m.reopen(store, ep.id, bad)).error.code, 'invalid_reason');
+  assert.equal((await m.reopen(store, ep.id, {reason: 'x', clock: () => 'noon'})).error.code, 'invalid_clock');
+  const back = await m.reopen(store, ep.id, {reason: 'closed by mistake', clock: () => NOW}); assert.equal(back.ok, true, JSON.stringify(back));
+  assert.equal((await store.get('episodes', ep.id)).value.closed, null); assert.deepEqual(back.value.reopened.map(r => [r.previous_closed, r.reason]), [[NOW, 'closed by mistake']]);
+  assert.equal((await m.link(store, ep.id, {record_id: 'obs-1'})).ok, true, 'open again, so it accepts links');
+  await m.close(store, ep.id, {clock: () => NOW}); await m.reopen(store, ep.id, {reason: 'again'}); assert.equal((await store.get('episodes', ep.id)).value.reopened.length, 2);
+});
+
+test('M16-R2: an episode is not reopened while another of the same subject is open; the history lists newest first', async () => {
+  const store = await bare([obs(), obs({id: 'obs-2', time: '2026-11-15T12:00:00.000Z'})]);
+  const first = (await m.open(store, obs(), {clock: () => '2026-11-15T10:00:00.000Z', newId: () => 'e-old'})).value; await m.close(store, first.id, {clock: () => NOW});
+  const second = (await m.open(store, obs({id: 'obs-2'}), {clock: () => '2026-11-15T12:00:00.000Z', newId: () => 'e-new'})).value;
+  assert.equal((await m.reopen(store, first.id, {reason: 'x'})).error.code, 'another_episode_open'); assert.equal((await store.get('episodes', first.id)).value.closed, NOW);
+  const listed = await m.listEpisodes(store, {subject: SUBJECT}); assert.deepEqual(listed.value.map(e => [e.id, e.is_closed]), [['e-new', false], ['e-old', true]]);
+  assert.equal((await m.listEpisodes(store, {})).ok, false); assert.deepEqual((await m.listEpisodes(store, {subject: 'nobody'})).value, []);
+});
+
+test('M16-R3: two reopens at once give exactly one success', async () => {
+  const store = await bare(); const ep = await opened(store); await m.close(store, ep.id, {clock: () => NOW});
+  const results = await Promise.all([m.reopen(store, ep.id, {reason: 'a'}), m.reopen(store, ep.id, {reason: 'b'})]);
+  assert.equal(results.filter(r => r.ok).length, 1); assert.equal((await store.get('episodes', ep.id)).value.reopened.length, 1);
+});

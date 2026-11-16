@@ -57,6 +57,7 @@ try:
         go('my-health', '#health-nothing-new')
         check('R0: before any choice, recording is off and says why', page.locator('#health-nothing-new').is_disabled() and 'off' in page.locator('#origin-bar').inner_text().lower() + page.locator('#view').inner_text().lower())
         page.select_option('#origin-select', 'terrestrial'); page.wait_for_timeout(500)
+        check('R1a: after choosing the origin the focus stays on the origin control', page.evaluate('document.activeElement && document.activeElement.id') == 'origin-select')
         go('my-health', '#health-form')
         check('R1: after the choice, recording is on', not page.locator('#health-nothing-new').is_disabled())
         page.select_option('#health-variable', 'pulse'); page.fill('#health-value', '64'); page.click('#health-save')
@@ -74,7 +75,7 @@ try:
         adv = page.locator('[id$="-advance"]').first.get_attribute('id'); page.click(f'#{adv}'); page.wait_for_selector('[id^="board-value-"]', timeout=10000)
         page.click(f'#{adv}'); page.wait_for_function('(document.querySelector("#board-message")||{textContent:""}).textContent.toLowerCase().includes("pulse")', timeout=10000); said = page.locator('#board-message').inner_text()
         check('R5: the recording step refuses to advance without a value', 'pulse' in said.lower(), said)
-        page.fill('[id^="board-value-"]', '61'); page.click(f'#{adv}'); page.wait_for_selector('[id$="-finish_completed"]', timeout=10000)
+        page.fill('[id^="board-value-"]', '61'); page.fill('[id^="board-method-"]', 'manual count'); page.click(f'#{adv}'); page.wait_for_selector('[id$="-finish_completed"]', timeout=10000)
         page.click('[id$="-finish_completed"]'); page.wait_for_function('document.querySelector("#view").textContent.includes("completed")', timeout=10000)
         # my-plan
         go('my-plan', '#plan-new-form')
@@ -88,7 +89,7 @@ try:
         text = page.locator('#view').inner_text(); check('R7: undo returns the task to pending, keeps the history and the linked result', 'tested the undo' in text and '1 result linked' in text)
         page.click(f'#plan-done-{task_id}'); page.wait_for_selector(f'#plan-undo-{task_id}', timeout=10000)
         # lock the origin
-        page.check('#origin-lock'); page.wait_for_timeout(400); check('R8: a locked origin cannot be changed', page.locator('#origin-select').is_disabled())
+        page.check('#origin-lock'); page.wait_for_timeout(400); check('R8a: after locking, the focus stays on the lock control', page.evaluate('document.activeElement && document.activeElement.id') == 'origin-lock'); check('R8: a locked origin cannot be changed', page.locator('#origin-select').is_disabled())
         # reload: everything must come back from IndexedDB
         open_app(); go('my-plan', '[id^="plan-undo-"]'); text = page.locator('#view').inner_text()
         check('R9: after a reload the task is Done with its result and history', 'Pulse check today' in text and 'Done: Done' in text and '1 result linked' in text and 'tested the undo' in text, text[:300])
