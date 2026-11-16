@@ -4,7 +4,8 @@
 // Writers are safe against each other, also across browser tabs: every change is a conditional update on the revision that was read.
 const MAX_TEXT = 500;
 const DAY_MS = 24 * 60 * 60 * 1000;
-const RETRIES = 5;
+const RETRIES = 12; // contention in one process or across tabs: read again after a short, growing pause
+const pause = attempt => new Promise(resolve => setTimeout(resolve, Math.floor(Math.random() * 4 * (attempt + 1))));
 const fail = (code, field, message) => ({ok: false, error: {code, field, message}});
 const ok = value => ({ok: true, value});
 const isText = value => typeof value === 'string' && value.length > 0 && value.length <= MAX_TEXT;
@@ -52,6 +53,7 @@ async function change(store, taskId, decide) {
     const written = await store.updateState('tasks', taskId, {...decided.value.changes, rev: (Number.isInteger(task.rev) ? task.rev : 0) + 1},
       {expect: {rev: Number.isInteger(task.rev) ? task.rev : null}});
     if (written.ok || !written.error || written.error.code !== 'conflict') return written;
+    await pause(attempt);
   }
   return fail('conflict', 'taskId', 'The task kept changing under another writer; try again');
 }
@@ -77,7 +79,7 @@ function readTaskInput(input) {
   if (!isPlain(input)) return fail('invalid_input', 'input', 'A task { subject, description, scheduled_at, planned_minutes } is required');
   if (!isText(input.subject)) return fail('invalid_input', 'subject', 'A subject is required; none is assumed');
   if (!isText(input.description)) return fail('invalid_input', 'description', 'A description is required');
-  if (typeof input.planned_minutes !== 'number' || !Number.isFinite(input.planned_minutes) || input.planned_minutes <= 0 || input.planned_minutes > 1440) return fail('invalid_input', 'planned_minutes', 'planned_minutes must be a number of minutes from 1 to 1440');
+  if (!Number.isInteger(input.planned_minutes) || input.planned_minutes <= 0 || input.planned_minutes > 1440) return fail('invalid_input', 'planned_minutes', 'planned_minutes must be a whole number of minutes from 1 to 1440');
   if (input.procedure_id !== undefined && !isText(input.procedure_id)) return fail('invalid_input', 'procedure_id', 'procedure_id must be a procedure id');
   if (input.assigned_by !== undefined && !isText(input.assigned_by)) return fail('invalid_input', 'assigned_by', 'assigned_by must say who assigned the task');
   return ok(input);
@@ -167,6 +169,10 @@ export async function linkResult(store, taskId, recordId) {
     if (found.value.subject !== task.subject) return fail('other_subject', 'recordId', 'The record belongs to another subject');
     if (found.value.state !== 'recorded') return fail('not_a_result', 'recordId', 'Only a recorded value can be a result; a not-recorded or nothing-new entry observed nothing');
     if (task.result_ids.includes(recordId)) return ok({changes: {}});
+    // "Observed afterwards": the value needs an established time that is not before the task's start (its scheduled instant, or the start of its day).
+    const from = typeof task.scheduled_at === 'string' ? task.scheduled_at : `${task.day}T00:00:00.000Z`;
+    if (typeof found.value.time !== 'string' || Number.isNaN(Date.parse(found.value.time))) return fail('time_not_established', 'recordId', 'The value has no established time, so it cannot be placed after the task');
+    if (Date.parse(found.value.time) < Date.parse(from)) return fail('observed_before', 'recordId', 'The value was observed before the task started, so it is not a result of it');
     return ok({changes: {result_ids: [...task.result_ids, recordId]}});
   });
 }

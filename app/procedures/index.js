@@ -62,7 +62,8 @@ function stamp(options) {
   return isInstant(now) ? ok({updated: now}) : fail('invalid_clock', 'clock', 'The clock did not return an ISO8601 UTC instant');
 }
 
-const RETRIES = 5;
+const RETRIES = 12; // contention in one process or across tabs: read again after a short, growing pause
+const pause = attempt => new Promise(resolve => setTimeout(resolve, Math.floor(Math.random() * 4 * (attempt + 1))));
 async function load(store, id) {
   if (!storeOk(store, ['get', 'updateState'])) return fail('invalid_store', 'store', 'A store with get() and updateState() is required');
   if (!isText(id)) return fail('invalid_id', 'executionId', 'An execution id is required');
@@ -84,6 +85,7 @@ async function change(store, executionId, decide) {
     const decided = await decide(e); if (!decided.ok) return decided;
     const written = await store.updateState('executions', executionId, {...decided.value, rev: (Number.isInteger(e.rev) ? e.rev : 0) + 1}, {expect: {rev: Number.isInteger(e.rev) ? e.rev : null}});
     if (written.ok || !written.error || written.error.code !== 'conflict') return written;
+    await pause(attempt);
   }
   return fail('conflict', 'executionId', 'The execution kept changing under another writer; try again');
 }

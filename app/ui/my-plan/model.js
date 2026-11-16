@@ -28,7 +28,8 @@ async function completedExecutions(ctx) {
 async function linkable(ctx, task) {
   const listed = await ctx.store.list('records', {subject: ctx.subject});
   if (!listed.ok) return [];
-  return listed.value.filter(r => r.state === 'recorded' && !task.result_ids.includes(r.id)).map(r => ({id: r.id, text: `${r.variable ?? r.type}: ${r.value ?? ''}${r.unit ? ` ${r.unit}` : ''} · ${r.time ?? 'time not established'} · ${r.origin}`}));
+  const from = Date.parse(typeof task.scheduled_at === 'string' ? task.scheduled_at : `${task.day}T00:00:00.000Z`); // only values observed after the task started, with an established time
+  return listed.value.filter(r => r.state === 'recorded' && !task.result_ids.includes(r.id) && typeof r.time === 'string' && Date.parse(r.time) >= from).map(r => ({id: r.id, text: `${r.variable ?? r.type}: ${r.value ?? ''}${r.unit ? ` ${r.unit}` : ''} · ${r.time ?? 'time not established'} · ${r.origin}`}));
 }
 
 function procedureOf(ctx, task, latest) {
@@ -115,12 +116,13 @@ function interactions(services) {
       const f = input && typeof input === 'object' ? input : {};
       if (!isText(typeof f.description === 'string' ? f.description.trim() : '')) return msg('error', 'Not saved: describe the task.');
       if (!isText(f.scheduled_at) || !/^\d{4}-\d\d-\d\dT\d\d:\d\d(:\d\d(\.\d+)?)?Z$/.test(f.scheduled_at.trim()) || Number.isNaN(Date.parse(f.scheduled_at.trim())) || new Date(f.scheduled_at.trim()).toISOString().slice(0, 10) !== f.scheduled_at.trim().slice(0, 10)) return msg('error', 'Not saved: give the date and time in UTC with the Z at the end, for example 2026-11-15T10:00:00Z. No time zone is assumed.');
-      const minutes = Number(f.planned_minutes);
-      if (f.planned_minutes === undefined || f.planned_minutes === '' || !Number.isInteger(minutes) || minutes < 1 || minutes > 1440) return msg('error', 'Not saved: say how many minutes it takes, a whole number from 1 to 1440; none is assumed.');
+      const whole = v => typeof v === 'string' || typeof v === 'number' ? /^\d{1,5}$/.test(String(v).trim()) : false; // digits only: no 0x10, no 1e3, no 1.5
+      const minutes = whole(f.planned_minutes) ? Number(String(f.planned_minutes).trim()) : NaN;
+      if (!Number.isInteger(minutes) || minutes < 1 || minutes > 1440) return msg('error', 'Not saved: say how many minutes it takes, a whole number from 1 to 1440; none is assumed.');
       const base = {subject: ctx.subject, description: f.description.trim(), scheduled_at: new Date(f.scheduled_at.trim()).toISOString(), planned_minutes: minutes, ...(isText(f.procedure_id) ? {procedure_id: f.procedure_id} : {})};
       if (f.every_days !== undefined && f.every_days !== '') {
         if (typeof ctx.plan.scheduleSeries !== 'function') return msg('error', 'Repeating tasks are not available yet.');
-        return saved(await ctx.plan.scheduleSeries(ctx.store, {...base, first_scheduled_at: base.scheduled_at, every_days: Number(f.every_days), count: Number(f.count)}, {newId: ctx.newId}), `Saved: ${f.count} tasks, one every ${f.every_days} days.`);
+        return saved(await ctx.plan.scheduleSeries(ctx.store, {...base, first_scheduled_at: base.scheduled_at, every_days: whole(f.every_days) ? Number(String(f.every_days).trim()) : NaN, count: whole(f.count) ? Number(String(f.count).trim()) : NaN}, {newId: ctx.newId}), `Saved: ${f.count} tasks, one every ${f.every_days} days.`);
       }
       return saved(await ctx.plan.createTask(ctx.store, base, {newId: ctx.newId}), 'Saved: task added.');
     }),

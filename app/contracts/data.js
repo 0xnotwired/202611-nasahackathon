@@ -1,5 +1,5 @@
 /**
- * Contract version 0.18. Authority: docs/CONTRACTS.md.
+ * Contract version 0.19. Authority: docs/CONTRACTS.md.
  * Documentation only: no runtime validation or module logic lives here.
  * Every persisted object additionally carries schema_version (section 3),
  * represented by Persisted<T>; nested criteria are not separately persisted.
@@ -105,14 +105,37 @@
  * @property {string} description
  * @property {string} assigned_by
  * @property {'pending'|'done'|'not_done'} completion
- * @property {string} [execution_id]
+ * @property {string|null} [execution_id]
  * @property {string[]} result_ids
- * @property {{reason:string}} [not_done_note]
+ * @property {{reason:string}|null} [not_done_note]
  * @property {string} [scheduled_at]
  * @property {number} [planned_minutes]
- * @property {{completion:string,at:string,reason?:string}[]} [history]
+ * @property {{completion:string,at:(string|null),reason?:string,note?:{reason:string},execution_id?:string}[]} [history]
  * @property {string} [series_id]
  * @property {number} [rev]
+ */
+
+/**
+ * A procedure as the registry stores it: one immutable entry per `id@version`.
+ * @typedef {Object} ProcedureEntry
+ * @property {string} id  "<procedure id>@<version>"
+ * @property {number} schema_version
+ * @property {string} published  instant of publication
+ * @property {string} procedure_id
+ * @property {string} version
+ * @property {Procedure} procedure
+ */
+
+/**
+ * The retirement of one version: a separate immutable entry; the version stays readable.
+ * @typedef {Object} ProcedureRetirement
+ * @property {string} id  "retired:<procedure id>@<version>"
+ * @property {number} schema_version
+ * @property {'retirement'} kind
+ * @property {string} procedure_id
+ * @property {string} version
+ * @property {string} retired  instant of retirement
+ * @property {string} reason
  */
 
 /**
@@ -151,4 +174,4 @@
  * @property {'queued'|'in_transit'|'received'} state
  */
 
-export const CONTRACT_VERSION = "0.18";
+export const CONTRACT_VERSION = "0.19";

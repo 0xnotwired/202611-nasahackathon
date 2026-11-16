@@ -119,3 +119,12 @@ test('M15-R11: the history never prints "null": a mark carries the time, and a m
   for (const line of tasksOf(vm).find(t => t.id === 'a').history) assert.doesNotMatch(line, /null/);
   assert.match((await services.store.get('tasks', 'a')).value.history[0].at, /^2026-/);
 });
+
+test('M15-R13: minutes and repeat counts are digits only (no 0x10, 1e3, 1.5); only values observed after the task are offered as results', async () => {
+  const services = await makeServices({objects: {tasks: [task('a', {scheduled_at: `${DAY}T12:00:00.000Z`, planned_minutes: 10})]}, records: [makeRecord({id: 'early', time: `${DAY}T09:00:00.000Z`}), makeRecord({id: 'late', time: `${DAY}T13:00:00.000Z`}), makeRecord({id: 'unplaced', time: null, source_time: {raw: '2026-11-15T14:00', value: '2026-11-15T14:00', precision: 'minute', scope: 'subject', calendar: 'unknown', timezone: null}})]});
+  const vm = await model(services, {}); const base = {description: 'x', scheduled_at: '2026-11-15T10:00:00Z'};
+  for (const bad of [{planned_minutes: '0x10'}, {planned_minutes: '1e3'}, {planned_minutes: '1.5'}, {planned_minutes: '-5'}, {planned_minutes: '10', every_days: '0x2', count: '3'}, {planned_minutes: '10', every_days: '2', count: '2.5'}])
+    assert.equal((await vm.interactions.createTask({...base, ...bad})).message.kind, 'error', JSON.stringify(bad));
+  const offered = tasksOf(vm).find(t => t.id === 'a').link_choices.map(c => c.id); assert.ok(offered.includes('late')); assert.equal(offered.includes('early'), false); assert.equal(offered.includes('unplaced'), false);
+  assert.equal((await services.store.list('tasks', {})).value.filter(t => t.description === 'x').length, 0);
+});

@@ -172,3 +172,12 @@ test('M15-R12: a recording step needs a method, and an execution that is no long
   const stale = await vm.interactions.advance(id, {value: 64, method: 'cuff'}); assert.equal(stale.message.kind, 'error'); assert.match(stale.message.text, /interrupted/);
   assert.equal((await services.store.list('records', {variable: 'pulse'})).value.length, before, 'no orphan record');
 });
+
+test('M15-R14: retiring the latest version says which version is offered again; with none left it says so', async () => {
+  const services = await makeServices(); let vm = await model(services, {});
+  const form = {title: 'Pulse check', purpose: 'p', equipment: '', preparation: '', steps: 'Sit\nPulse | records=pulse', alternative: ''};
+  vm = await vm.interactions.publish(form); const mine = section(vm, 'procedures').entries.find(p => p.title === 'Pulse check');
+  vm = await vm.interactions.publish({...form, based_on: mine.id, purpose: 'second'}); const v2 = section(vm, 'procedures').entries.find(p => p.id === mine.id); assert.equal(v2.version, '2');
+  vm = await vm.interactions.retire(mine.id, 'bad order'); assert.match(vm.message.text, /Retired version 2.*Version 1 is offered again/);
+  vm = await vm.interactions.retire(mine.id, 'also bad'); assert.match(vm.message.text, /Retired version 1.*No other version/);
+});

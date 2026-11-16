@@ -51,7 +51,7 @@ export function mount(element, viewModel) {
       const b = el('button', {type: 'button', id: `board-${e.id}-${a.id}`}, a.label); if (!a.enabled) b.setAttribute('disabled', 'disabled');
       b.addEventListener('click', () => {
         const i = current.interactions;
-        const number = value && value.value.trim() !== '' ? Number(value.value) : undefined;
+        const typedValue = value ? value.value.trim() : ''; const number = typedValue === '' ? undefined : /^-?\d+([.,]\d+)?$/.test(typedValue) ? Number(typedValue.replace(',', '.')) : NaN; // decimal digits only: no 0x10, no 1e3
         const work = a.id === 'advance' ? i.advance(e.id, rf ? {value: number === undefined ? undefined : number, method: method ? method.value : undefined, ...(unit ? {unit: unit.value} : {})} : undefined) : a.id === 'advance_no_record' ? i.advance(e.id, {no_record: true}) : a.id === 'interrupt' ? i.interrupt(e.id, text.value) : a.id === 'resume' ? i.resume(e.id) : a.id === 'finish_completed' ? i.finish(e.id, 'completed') : i.finish(e.id, 'could_not', text.value);
         apply(work.then(next => { if (next.message && next.message.kind === 'info') { typed.delete(e.id); recorded.delete(e.id); } return next; }), b.id);
       });

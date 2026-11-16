@@ -124,7 +124,10 @@ function interactions(services) {
       const found = (await loadProcedures(ctx)).latest.find(item => item.id === procedureId);
       if (!found) return msg('error', 'Not retired: choose one of the listed procedures.');
       if (!isText(typeof reason === 'string' ? reason.trim() : '')) return msg('error', 'Not retired: say why this version is retired.');
-      return saved(await ctx.procedures.retireProcedure(ctx.store, found.id, found.version, {clock: ctx.clock, reason: reason.trim()}), `Retired version ${found.version}. It is no longer offered; executions that used it still read it.`);
+      const out = await ctx.procedures.retireProcedure(ctx.store, found.id, found.version, {clock: ctx.clock, reason: reason.trim()});
+      if (!out.ok) return saved(out, '');
+      const after = (await loadProcedures(ctx)).latest.find(item => item.id === found.id);
+      return msg('info', `Retired version ${found.version}. It is no longer offered; executions that used it still read it.${after ? ` Version ${after.version} is offered again: check it is the one you want.` : ' No other version of it is offered.'}`);
     }),    interrupt: (id, reason) => run(async ctx => (isText(typeof reason === 'string' ? reason.trim() : '') ? saved(await ctx.procedures.interrupt(ctx.store, id, {reason: reason.trim(), clock: ctx.clock}), 'Interrupted. You can resume later.') : msg('error', 'Not saved: say why it was interrupted.'))),
     resume: id => run(async ctx => saved(await ctx.procedures.resume(ctx.store, id, {clock: ctx.clock}), 'Resumed at the same step.')),
     finish: (id, state, difficulty) => run(async ctx => {

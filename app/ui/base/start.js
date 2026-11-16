@@ -99,6 +99,8 @@ export async function start(doc = document, win = window) {
     if (moveFocus) parts.main.focus();
   }
 
+  // Another tab changed or locked the origin: this tab follows at once, so a lock cannot be bypassed from a stale page.
+  win.addEventListener('storage', event => { if (event.key === ORIGIN_KEY || event.key === null) { choice = readChoice(win); draw(false); } });
   win.addEventListener('hashchange', () => {
     currentId = (win.location.hash.match(/^#\/([\w-]+)$/) ?? [])[1] ?? currentId;
     draw(true);

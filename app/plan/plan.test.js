@@ -147,3 +147,27 @@ test('M14-C5: marking done can name which completed execution it refers to', asy
   const store = await setup({tasks: [task('a', {procedure_id: 'p1'})], executions: [execution('old', {updated: `${DAY}T08:00:00.000Z`}), execution('new', {updated: `${DAY}T09:00:00.000Z`})]});
   assert.equal((await plan.mark(store, 'a', {completion: 'done', execution_id: 'old'})).ok, true); assert.equal((await one(store, 'a')).execution_id, 'old');
 });
+
+// ---- From the independent review of F3 (F7, F11) ----
+test('M14-R1: eight writers at once on one task all succeed: contention is retried, not reported as a failure', async () => {
+  const records = Array.from({length: 8}, (_, i) => makeRecord({id: `c-${i}`, time: `${DAY}T10:0${i}:00.000Z`}));
+  const store = await setup({tasks: [task('t1')], records});
+  const results = await Promise.all(records.map(r => plan.linkResult(store, 't1', r.id)));
+  assert.deepEqual(results.map(r => r.ok), Array(8).fill(true), JSON.stringify(results.filter(r => !r.ok)));
+  assert.equal((await one(store, 't1')).result_ids.length, 8);
+});
+
+test('M14-R2: a result must be observed after the task started and have an established time', async () => {
+  const store = await setup({tasks: [task('day'), task('timed', {scheduled_at: `${DAY}T12:00:00.000Z`, planned_minutes: 30})],
+    records: [makeRecord({id: 'before', time: `${DAY}T09:00:00.000Z`}), makeRecord({id: 'after', time: `${DAY}T12:05:00.000Z`}), makeRecord({id: 'notime', time: null, source_time: {raw: '2026-11-15T14:00', value: '2026-11-15T14:00', precision: 'minute', scope: 'subject', calendar: 'unknown', timezone: null}})]});
+  assert.equal((await plan.linkResult(store, 'timed', 'before')).error.code, 'observed_before');
+  assert.equal((await plan.linkResult(store, 'timed', 'notime')).error.code, 'time_not_established');
+  assert.equal((await plan.linkResult(store, 'timed', 'after')).ok, true); assert.equal((await plan.linkResult(store, 'day', 'before')).ok, true, 'a task without a scheduled instant starts at the start of its day');
+  assert.equal((await one(store, 'timed')).result_ids.join(), 'after');
+});
+
+test('M14-R3: planned minutes are a whole number', async () => {
+  const store = await setup();
+  for (const minutes of [0.5, 1.5, '5', NaN, 0, 1441]) assert.equal((await plan.createTask(store, {subject: SUBJECT, description: 'x', scheduled_at: `${DAY}T10:00:00.000Z`, planned_minutes: minutes}, {newId: () => 'n1'})).ok, false, String(minutes));
+  assert.equal((await plan.createTask(store, {subject: SUBJECT, description: 'x', scheduled_at: `${DAY}T10:00:00.000Z`, planned_minutes: 30}, {newId: () => 'n2'})).ok, true);
+});
