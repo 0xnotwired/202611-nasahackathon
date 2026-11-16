@@ -158,6 +158,7 @@ Working and provenance rules are in [AGENTS.md](AGENTS.md). AI use must be recor
 
 ## Documentation and next results
 
+- **[Handoff: what is done and what is left](docs/HANDOFF.md)** and the [continuation prompt for another AI agent](docs/CLAUDE_CONTINUATION_PROMPT.md).
 - [Final proposal, demo and acceptance criteria](docs/FINAL_PROPOSAL.md).
 - [What to improve from the original proposal](docs/PROPOSAL_IMPROVEMENTS.md) and [third academic extension, series B](docs/EXTENDED_RESEARCH_B.md) with its [matrix](docs/RESEARCH_MATRIX_B.csv).
 - [Orchestration plan](docs/ORCHESTRATION_PLAN.md), [contracts between modules](docs/CONTRACTS.md), [work orders](docs/work-orders/) and [module board](docs/modules.csv).

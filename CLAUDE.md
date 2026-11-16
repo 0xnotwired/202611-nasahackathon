@@ -10,7 +10,7 @@ It does not repeat the README or AGENTS.md. Read them.
 
 ## Reading order for a new session
 
-1. [AGENTS.md](AGENTS.md)
+1. [docs/HANDOFF.md](docs/HANDOFF.md) (state, what is left, traps), then [AGENTS.md](AGENTS.md)
 2. [docs/FINAL_PROPOSAL.md](docs/FINAL_PROPOSAL.md) — what the product is
 3. [docs/PROPOSAL_IMPROVEMENTS.md](docs/PROPOSAL_IMPROVEMENTS.md) — what changed and why
 4. [docs/ORCHESTRATION_PLAN.md](docs/ORCHESTRATION_PLAN.md) — phases, modules, roles and gates

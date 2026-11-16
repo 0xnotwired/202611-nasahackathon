@@ -1,52 +1,43 @@
-# Claude Code continuation prompt
+# Continuation prompt
 
-Use this prompt in another development environment. main is the current
-base; read live repository state rather than relying on an old commit hash.
+Use this prompt to hand the project to another AI agent. Read live repository state, not an old hash.
 
 ```text
-Continue Orbita at https://github.com/0xnotwired/202611-nasahackathon.
+Continue Órbita (NASA Space Apps 2026, health monitoring software for astronauts) at
+https://github.com/0xnotwired/202611-nasahackathon, branch final-claude.
 
-Start from current origin/main. Create mod/f2-claude (or a distinct module
-branch) from it; preserve any existing checkout edits. Do not force-push,
-reset or overwrite main/f2/english. main already contains the f2 work.
+Setup: git fetch origin && git checkout final-claude, then create your own work branch from it
+(for example mod/next-<topic>). Never commit to main, never force-push, never rebase or squash,
+never delete branches you did not create. Commit and push only when the user asks for that task.
 
-First read AGENTS.md, CLAUDE.md, docs/CURRENT_STATUS.md,
-docs/CONTRACTS.md, docs/AGENT_ROADMAP.md and docs/modules.csv.
-Select/read the applicable local skills under .agents/skills/.
-Run node --test and python3 scripts/check_docs.py. Baseline:100 passing tests.
+Read, in this order: docs/HANDOFF.md (what is done and what is left, with the traps),
+AGENTS.md (wins over every other file), CLAUDE.md (mistakes that already happened),
+docs/CURRENT_STATUS.md, docs/AUDIT.md, docs/CONTRACTS.md, docs/METHOD.md, docs/modules.csv.
+Before the first line of work, open .agents/skills/README.md, select the skills your task triggers and
+read their SKILL.md bodies; record which and when in the module's experiment record.
 
-M00/M01-M05 are implemented/reviewed; F1/G1 accepted. M21 was explicitly
-advanced and implements selected CRF/MR079G/MR035G/MR080G/BUTCGM importers.
-There is a minimal modular shell, not the planned product views.
-Continue F2: M06 readings and M07 base interface, then M08-M12, following
-work orders, contract ownership and independent review. Do not rebuild F1
-or treat M21 as acceptance of later phase gates.
+Verify the baseline yourself: npm test (435 pass), python3 scripts/check_docs.py (OK),
+npm run package, and node scripts/run-gates.mjs with ORBITA_CHROMIUM set to a Chromium
+(it needs Python Playwright; real NASA files are not in git, see docs/LOCAL_DATA_RESTORE.md).
 
-Use your default environment, checking actual tools first. Product has no
-npm dependencies and needs no npm install. Node22.x/Python3 are the known
-baseline; Python Playwright and Chromium are development tools for browser
-checks. The existing script expects Linux /usr/bin/chromium: diagnose other
-platform/tool differences rather than claiming browser validation happened.
+State: everything is built and tested; independent AGENT reviews covered F3, F4, F5 and all layers
+(G6-W3), their findings are fixed except one; NO gate after G1 is accepted by a person, so keep every
+status pending. Do not rebuild layers; do not redo reviews that exist.
 
-Restore originals following docs/LOCAL_DATA_RESTORE.md, using receipt URLs
-and SHA256. Raw files, local browser profile and IndexedDB are NOT in Git.
-Then run python3 scripts/import-real-samples.py in a compatible environment:
-expect3861 exact records after restart; repeated run inserts0/retains3861.
-This is a dedicated local profile/database, not a product import screen.
-Do not claim those records exist on your machine before checking them.
-Optional genetic archive receipts are in
- docs/data/genetic-archive-downloads-2026-11-15.json; current M21 does not
-import omics arrays. Synthetic data suffice to start F2 if originals/browser
-are unavailable; report remaining validation limits explicitly.
+Non-negotiable rules: never present as known something that is not known (not recorded is not nothing
+new; NA is not 0; a ground analog is not an astronaut; silence is not all fine); no clinical threshold
+or rule in code (rules are data with source, version and review status; none is shipped); every claim
+carries an evidence level (RUN, BROWSER, READ, SOURCE) and a prediction written before the run; see a
+test fail (negative control) before trusting it; everything in the repo in English; no new root
+dependencies; contract changes only with a recorded bump (now 0.22).
 
-Preserve source identities, missing states, unknown units and clock scopes.
-Do not infer CRF/BMD/immune units or invent UTC/medical thresholds.
-PhysioNet use is provisionally authorized by the user, with required
-licenses/citations and withdrawal if organizers decline; no official approval
-has been received. Do not copy external projects/templates/code or add a
-library without user approval by name. Source code/docs are English;
-communicate with the user in Spanish.
+What is left (docs/HANDOFF.md section 4 has the detail): (A, needs a person) the volunteer test G6-W4,
+acceptance of the gates, real guidance rules, organizer decisions on PhysioNet and on data retention;
+(B, you can do) a repair path for a damaged stored record (design decision about immutable history first),
+a hash-based script policy for dist/orbita.html, IndexedDB write cost and a 10,000-record keep, importer
+limits (MR080G, omics, units need a source dictionary - never guess), connecting the teammate's backend
+to the main store only after a design decision, other browsers and a screen reader, and the small items
+listed there. Ask the user before starting anything in group A or any decision-bearing item in B.
 
-Do not commit, push, publish, deploy or approve gates without authorization
-for that action. Finish useful independent work before asking questions.
+Report like a reviewer: what was run, at which evidence level, what was not verified.
 ```

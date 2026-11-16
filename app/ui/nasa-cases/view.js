@@ -20,7 +20,7 @@ export function mount(element, viewModel, actions) {
     draw();
     const back = focusId && doc.getElementById(focusId);
     if (back) back.focus();
-    else { const note = doc.querySelector('[role="status"], [role="alert"]'); if (note) { note.setAttribute('tabindex', '-1'); note.focus(); } } // the control is gone (for example the keep button): the message takes the focus
+    else { const note = element.querySelector('[role="status"], [role="alert"]'); if (note) { note.setAttribute('tabindex', '-1'); note.focus(); } } // the control is gone (for example the keep button): the message takes the focus
   }
 
   function loader() {

@@ -6,7 +6,7 @@ const sha=s=>createHash('sha256').update(s).digest('hex').slice(0,12);
 const T={E:'app/export/export.test.js',V:'app/ui/review/review.test.js'};
 const EI='app/export/index.js', RM='app/ui/review/model.js';
 const M=[
- ['M25-a: formulas not neutralised in the CSV','E',EI,[["const FORMULA = /^[=+\\-@\\t\\r]/;","const FORMULA = /^$/;"]]],
+ ['M25-a: formulas not neutralised in the CSV','E',EI,[["const FORMULA = /^[\\s=+\\-@\\uFF1D\\uFF0B\\uFF0D\\uFF20]/;","const FORMULA = /^$/;"]]],
  ['M25-b: an absent state written as 0','E',EI,[["state === 'recorded' && typeof record.value === 'number' ? record.value : null","typeof record.value === 'number' ? record.value : 0"]]],
  ['M25-c: no byte-order mark','E',EI,[["value: `\\uFEFF${lines.join(","value: `${lines.join("]]],
  ['M25-d: a file name keeps path characters','E',EI,[["replace(/[^A-Za-z0-9_-]+/g, '-')","replace(/[^A-Za-z0-9_\\/.-]+/g, '-')"]]],
