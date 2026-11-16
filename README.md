@@ -93,6 +93,12 @@ Presentation scripts: [English pitch](docs/PITCH.md) · [Guion en español](docs
 
 **No installation:** use the [hosted demo on Vercel](https://hackathon-nasa-orbita.vercel.app/#/adaptation). Personal records, if you choose to create them, stay in that browser's local storage; the hosted page does not provide a shared crew database or real communication with Earth. Local and offline options follow.
 
+### Publishing updates on Vercel
+
+The hosted demo follows `main` through the project's GitHub integration. After merging an update, check **Vercel → Deployments** and wait for **Ready** before sharing the production link. The extended fictional case opens with `?case=complete#/my-day`.
+
+If Vercel blocks a deployment because it cannot identify the commit author, check that the author's email is verified on the appropriate GitHub account and that the account is linked to the Vercel project owner. A repository owner can merge a pull request from GitHub to create a new merge commit under their linked identity. This does not require rewriting existing history; author eligibility is still checked by Vercel.
+
 ### Main application — recommended
 
 You need **Git**, **Node.js 22** and its bundled **npm**, plus a browser. Chromium is the browser used in the recorded walkthroughs; other engines remain unverified.
