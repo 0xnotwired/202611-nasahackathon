@@ -25,7 +25,7 @@ try:
          tempfile.TemporaryDirectory(prefix='orbita-g1-fresh-') as fresh, sync_playwright() as p:
         def open_profile(path):
             return p.chromium.launch_persistent_context(
-                path, executable_path='/usr/bin/chromium', headless=True)
+                path, executable_path=os.environ.get('ORBITA_CHROMIUM') or '/usr/bin/chromium', headless=True)
 
         context = open_profile(profile)
         try:
@@ -117,7 +117,7 @@ try:
         finally:
             context.close()
 
-        browser = p.chromium.launch(executable_path='/usr/bin/chromium',headless=True)
+        browser = p.chromium.launch(executable_path=os.environ.get('ORBITA_CHROMIUM') or '/usr/bin/chromium',headless=True)
         try:
             private = browser.new_context()
             page = private.new_page()

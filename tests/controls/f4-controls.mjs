@@ -13,7 +13,7 @@ const M=[
  ['F1-b: stored rule replaced silently','C',CI,[["return failed('version_exists'","return ok(null) && failed('version_exists'"],["if (found.ok) { if (JSON.stringify(found.value.rule) === JSON.stringify(rule)) continue;","if (found.ok) { if (true) continue;"]]],
  ['F1-c: older version wins','C',CI,[["item.saved > newest.get(item.rule.id).saved ||","item.saved < newest.get(item.rule.id).saved ||"]]],
  ['F1-d: stored rules ignored by the card','I',IM,[["const card = ctx.copilot.card(s, ctx.config, found.rules);","const card = ctx.copilot.card(s, ctx.config, ctx.rules);"]]],
- ['F1-e: no caution on a draft rule','I',IM,[["caution: card.suggestion.review_status === 'reviewed' ? null :","caution: null ||"]]],
+ ['F1-e: no caution on a draft rule','I',IM,[["caution: cautionOf(card.suggestion.review_status)}","caution: null}"]]],
  ['E-a: reopen without a reason','E',EI,[["if (!isPlain(options) || !isText(options.reason)) return fail('invalid_reason', 'reason', 'Say why the episode is being reopened');",""]]],
  ['E-b: reopen while another is open','E',EI,[["if (others.value.some(o => o.id !== e.id && !closed(o))) return fail(","if (false) return fail("]]],
  ['E-c: reopen forgets the earlier close','E',EI,[["reopened: [...history, {previous_closed: e.closed, at, reason: options.reason}]","reopened: history"]]],
