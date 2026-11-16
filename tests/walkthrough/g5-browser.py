@@ -18,7 +18,7 @@ from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[2]
 REAL = ROOT / 'data/originals/but-cgm-1.0.0/101001_CGM.csv'
-VIEWS = ['my-health', 'adaptation', 'habitat', 'my-progress', 'my-day', 'my-plan', 'on-board', 'i-feel-different', 'ground']
+VIEWS = ['my-health', 'adaptation', 'habitat', 'my-progress', 'my-day', 'my-plan', 'on-board', 'i-feel-different', 'review', 'ground']
 results = []
 
 

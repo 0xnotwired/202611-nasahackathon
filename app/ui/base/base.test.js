@@ -325,7 +325,7 @@ const allViews=(overrides={})=>PLANNED_VIEWS.map(v=>({...v,...(overrides[v.id]?v
 const placeholder=async()=>({ok:false,error:{code:'not_implemented',message:'not yet'}});
 
 test('M07-P4: a not-implemented view says "not available yet" and navigation still lists every planned view',async()=>{
-  assert.deepEqual(PLANNED_VIEWS.map(v=>v.id),['my-health','adaptation','habitat','my-progress','my-day','my-plan','on-board','i-feel-different','nasa-cases','ground']);
+  assert.deepEqual(PLANNED_VIEWS.map(v=>v.id),['my-health','adaptation','habitat','my-progress','my-day','my-plan','on-board','i-feel-different','nasa-cases','review','ground']);
   for(const v of PLANNED_VIEWS) assert.equal(v.folder,`app/ui/${v.id}/`);
   const shell=await buildShell({views:allViews({'my-health':placeholder}),currentId:'my-health',services:services()});
   assert.equal(shell.current.state,'not_available');assert.match(shell.current.text,/not available yet/i);

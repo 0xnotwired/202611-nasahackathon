@@ -25,7 +25,7 @@ test('G0-W1: direct runners reject every placeholder and accept the core referen
 test('G0-W3: documentation checks pass and missing experiment is detected',async()=>{
   const green=run('python3',['scripts/check_docs.py']);
   assert.equal(green.error,undefined); assert.equal(green.status,0,green.stdout+green.stderr);
-  assert.match(green.stdout,/OK: 2 consistent matrices; 25 modules/);
+  assert.match(green.stdout,/OK: 2 consistent matrices; 26 modules/);
   const temp=await mkdtemp(join(tmpdir(),'orbita-g0-docs-'));
   try {
     // Copy only documentation inputs. No .git, credentials, data or dependencies.

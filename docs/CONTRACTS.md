@@ -1,6 +1,6 @@
 # Órbita: contracts between modules
 
-Version 0.21 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
+Version 0.22 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
 
 Plan and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). Rationale for the rules: [PROPOSAL_IMPROVEMENTS.md](PROPOSAL_IMPROVEMENTS.md) and [AGENTS.md](../AGENTS.md).
 
@@ -304,6 +304,17 @@ Since 0.17: `start(..., { preparation_confirmed })` refuses (`preparation_not_co
 
 Registry (added 0.14): `publishProcedure(store, procedure, { clock }) → Result<Procedure>` stores one immutable entry per `id@version` (neither may contain `@`) and refuses a second publication of the same version (`version_exists`); `listProcedures(store, { all? }) → Result<Procedure[]>` gives the latest published version of each procedure, or every version with `all`; `getProcedure(store, id, version) → Result<Procedure>` gives that exact version. A stored entry that cannot be read is an error (`corrupt_procedure`), never skipped. Executions are read against `getProcedure(store, procedure_id, procedure_version)`.
 
+### export (M25, added 0.22)
+
+```
+recordsToCsv(records)  → Result<string>   // BOM, CRLF, fixed COLUMNS; no record dropped, reordered or rounded
+csvCell(value, { numeric? }) → string      // a text cell that starts with = + - @ tab or CR gets a leading apostrophe; numbers do not
+safeFileName(...parts) → string            // letters, digits, dashes and one ".csv"
+COLUMNS = id subject type state variable value unit unit_status method time_utc source_time_raw source_time_calendar source_time_scope source_time_precision origin source mission_phase place sensor corrects note
+```
+
+A value is written only for `state: recorded` and a number; an absent state has no value and no unit. `time_utc` is empty when the record has only the source's own clock, which is written in the `source_time_*` columns and never converted. `services.exporter` carries this module to the views. The `review` view (`app/ui/review/`) prepares a review text for a specialist on the device (nothing is sent), compares two values only when `core.areComparable` accepts them and their origins are equal, groups by one method, and downloads the CSV of the series or of all the subject's records. The shell also offers a theme (automatic, light, dark); the choice is a per-viewer convenience kept in `localStorage`.
+
 ### plan (M14)
 
 ```
@@ -572,5 +583,6 @@ Everything works with the keyboard. No state is conveyed by color alone. Views r
 | 0.17 | 2026-11-16 | User-authorized ("lo recortado modificarlo para que sea de verdad, después F3 que funcione"): store `updateState` accepts `expect` (compare-and-set); Task gains `history`, `series_id`, `rev`; Execution gains `rev`, `step_records`, `unrecorded_steps`, `preparation_confirmed`; plan gains `createTask`, `scheduleSeries`, `reopenTask`; procedures gain `retireProcedure` and the preparation/recording rules above. All optional or additive. Consistency review only, no approval. |
 | 0.18 | 2026-11-16 | User-authorized ("fijate como solucionar esto … despues resolve el resto"): store collections `summaries` and `rules` (IndexedDB v3); `Episode.reopened`; `episode.reopen`/`listEpisodes`; `summary.keep`; `copilot.parseRules`/`saveRules`/`loadRules` (a rules file is untrusted text of at most 200 KB; stored rules are immutable per `id@version`; the app cannot verify a review status); `Shared.what` may carry `summary:<id>`, which the ground panel resolves from `summaries`. Fixes from the F3 independent review: `advance` refuses a record that is not `recorded`; ids starting with `retired:` are refused; instants must round-trip as real dates. Consistency review only, no approval. |
 | 0.19 | 2026-11-16 | User-authorized ("Arregla F7, F10, F11 y F12"): retries 5 → 12 with a pause (F7); retirement semantics stated (F10); `linkResult` observed-afterwards rule, whole-number minutes, digits-only inputs, other-tab origin lock (F11); data typedefs `ProcedureEntry`, `ProcedureRetirement`, nullable `execution_id`/`not_done_note`, full `history` entry (F12). Consistency review only, no approval. |
+| 0.22 | 2026-11-16 | User-authorized ("agregar lo de mi compañero lo que sirva … hay que combinarlos"): module M25 `export` and view `review` (Review and export), `services.exporter`, a manual theme in the shell. The teammate's Next.js frontend stays a separate deliverable (INTEGRATION.md); what was useful in it was brought into this app. Consistency review only, no approval. |
 | 0.21 | 2026-11-16 | User-authorized ("usar skills y resolver todo lo que falta o está pendiente en F5"): importers also return `unread_columns`; the NASA cases view offers CRF with caveats on its card and lists omics as not offered; `services.keptCases` (`open()`, `clear(store)`) lets a person keep an imported file in a separate persistent store (`orbita-nasa-cases`, IndexedDB), which the view restores on the next visit; the memory store no longer revalidates a whole collection on every write. R9 keeps its meaning: imported records never enter the synthetic or the "My records" store. Consistency review only, no approval. |
 | 0.20 | 2026-11-16 | User-authorized ("arreglalos en ese orden", the F4 review): one open episode per subject under one lock and `close` guarded by `expect`; rule fields are an allowlist, `@` refused in ids and versions, `saveRules` all or none, numeric version tie-break; an alert carries its source, version and declared status; summary ids get a counter and an identical text is not stored twice; environment readings are labelled in the summary text; data shapes `Summary` and `RuleEntry`. Consistency review only, no approval. |

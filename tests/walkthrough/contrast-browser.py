@@ -17,7 +17,7 @@ import subprocess
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[2]
-VIEWS = ['my-health', 'adaptation', 'habitat', 'my-progress', 'my-day', 'my-plan', 'on-board', 'i-feel-different', 'nasa-cases', 'ground']
+VIEWS = ['my-health', 'adaptation', 'habitat', 'my-progress', 'my-day', 'my-plan', 'on-board', 'i-feel-different', 'nasa-cases', 'review', 'ground']
 results = []
 
 MEASURE = """() => {
@@ -58,9 +58,14 @@ try:
     url = f'http://127.0.0.1:{match[1]}/index.html'
     with sync_playwright() as p:
         browser = p.chromium.launch(executable_path=chromium_executable(), headless=True)
-        for scheme in ['light', 'dark']:
+        # Four runs: the two system schemes as they are, and each system scheme with the OTHER theme chosen by hand in the page (data-theme).
+        for scheme, forced in [('light', None), ('dark', None), ('light', 'dark'), ('dark', 'light')]:
             page = browser.new_context(viewport={'width': 1100, 'height': 900}, color_scheme=scheme).new_page()
             page.goto(url); page.wait_for_selector('html[data-modules="loaded"]', timeout=15000)
+            if forced:
+                page.select_option('#theme-select', forced); page.wait_for_timeout(200)
+                assert page.evaluate("document.documentElement.getAttribute('data-theme')") == forced, 'the manual theme was not applied'
+            scheme = f'{scheme}+{forced}-chosen' if forced else scheme
             for view in VIEWS:
                 page.evaluate(f"location.hash = '#/{view}'"); page.wait_for_timeout(700)
                 out = page.evaluate(MEASURE); results.append({'scheme': scheme, 'view': view, 'measured': out['measured'], 'failing': len(out['bad'])})

@@ -12,6 +12,13 @@
   :root { --bg: #ffffff; --panel: #f2f5f9; --text: #14202e; --muted: #435468; --border: #8a99ad; --control-border: #5f6f85;
     --link: #0b4fd1; --focus: #8a4b00; --line: #0b4fd1; --gap: #8a4b00; --info: #0b4fd1; --warning: #8a4b00; --error: #a31515; }
 }
+/* A person's own choice beats the system setting. Same tokens as above, so contrast is the measured one. */
+:root[data-theme="dark"] { color-scheme: dark; --bg: #0b1320; --panel: #121e2f; --text: #e8eef6; --muted: #a9b7c9; --border: #3a4c63; --control-border: #7c8fa8;
+  --link: #8ebdff; --focus: #ffd166; --line: #8ebdff; --gap: #f2c782; --info: #8ebdff; --warning: #f2c782; --error: #ff9b9b; }
+:root[data-theme="light"] { color-scheme: light; --bg: #ffffff; --panel: #f2f5f9; --text: #14202e; --muted: #435468; --border: #8a99ad; --control-border: #5f6f85;
+  --link: #0b4fd1; --focus: #8a4b00; --line: #0b4fd1; --gap: #8a4b00; --info: #0b4fd1; --warning: #8a4b00; --error: #a31515; }
+#theme-bar { display: flex; gap: 8px; align-items: center; justify-content: flex-end; margin: 8px 0; }
+#theme-bar select { min-height: 44px; padding: 4px 8px; background: var(--panel); color: var(--text); border: 1px solid var(--control-border); border-radius: 6px; }
 * { box-sizing: border-box; }
 html { font: 16px/1.5 var(--sans); }
 body { margin: 0; background: var(--bg); color: var(--text); padding: 0 16px 32px; }

@@ -54,3 +54,19 @@ The root `AGENTS.md` wins over `frontend/AGENTS.md` and over every nested `AGENT
 3. **Spanish route.** `/investigacion` was left as the URL; renaming it needs a redirect for anyone with the old link.
 4. **Not verified.** Keyboard and screen-reader use, contrast, the API mode against the backend in a browser (only the mock mode was served), other browsers, a security audit of the dependencies. The old design analyses in `docs/` still describe the 0.1 shapes (`evaluations`, `recordedAt`) as history.
 5. **A visual defect seen earlier:** at 1200 px the last header of the recent-assessments table is clipped.
+
+## What was combined with the main app (2026-11-16)
+
+The user asked to add what is useful from this frontend to the main app, so the two are one product with two deliverables. Direction chosen: **port the useful parts into the main app (vanilla ES modules, single file) and keep this Next.js app as the server edition**. Embedding it in `dist/orbita.html` is not possible (it needs a Node server, and the package promises no network request).
+
+| From this frontend | In the main app | State |
+|---|---|---|
+| Follow-up and Evolution views (a review prepared locally for a specialist, a reference, a comparison blocked when method, unit, origin or time basis differ) | View `review` ("Review and export", module M25): variable, period, one method, reference; a difference only between comparable values, else the reason; a review text prepared on the device and not sent | Built, tested, not independently reviewed |
+| "Export test and provenance" (CSV with BOM) | `app/export/`: a CSV with state, unit, unit status, method, UTC time, source clock, origin and source of every record; absent states without a number; formula neutralisation | Built, tested, not independently reviewed |
+| Theme control | Automatic / light / dark in the shell, kept per viewer; measured for contrast with each theme chosen against each system scheme | Built, measured |
+| `Evidence` derived from records, comparability rules | Already in the main app as `core.areComparable` and the record entries; the review view reuses them | Done earlier |
+| Exercise sessions with a planned time and duration | Already in My plan (`scheduled_at`, `planned_minutes`, series) | Done earlier |
+| Slope over three assessments, scenarios (rise, decline, method change), the research case | **Not ported**: a slope reads as a trend and invites a judgement; scenarios are demo content; the research case keeps its own structure here | Decision recorded in `docs/experiments/M25.md` |
+
+Still separate: this app's backend serves its own seed, not the main app's store (open item 2 above). Connecting them remains a design decision.
+

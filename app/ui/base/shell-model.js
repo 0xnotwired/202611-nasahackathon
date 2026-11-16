@@ -5,7 +5,7 @@ import {ownValue} from './labels.js';
 
 export const PLANNED_VIEWS = Object.freeze([
   ['my-health', 'My health'], ['adaptation', 'Adaptation'], ['habitat', 'Habitat'], ['my-progress', 'My progress'], ['my-day', 'My day'],
-  ['my-plan', 'My plan'], ['on-board', 'On board'], ['i-feel-different', 'I feel different'], ['nasa-cases', 'NASA cases'], ['ground', 'Ground panel (simulated sync)']
+  ['my-plan', 'My plan'], ['on-board', 'On board'], ['i-feel-different', 'I feel different'], ['nasa-cases', 'NASA cases'], ['review', 'Review and export'], ['ground', 'Ground panel (simulated sync)']
 ].map(([id, label]) => Object.freeze({id, label, folder: `app/ui/${id}/`})));
 
 const fail = (code, field, message) => ({ok: false, error: {code, field, message}});

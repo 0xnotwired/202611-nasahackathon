@@ -24,3 +24,4 @@ M21,NASA importers,5,1,4,app/importers/,M01;M04,work-orders/M21-importers.md,int
 M22,NASA cases view,5,2,4,app/ui/nasa-cases/,M06;M07;M21,work-orders/M22-ui-nasa-cases.md,pending
 M23,Packaging,6,1,-,scripts/package.mjs,M20,work-orders/M23-packaging.md,pending
 M24,Simulated sync and ground panel,4,3,3,app/sync/;app/ui/ground/,M07;M18;M19,work-orders/M24-simulated-sync.md,pending
+M25,Review and export,6,2,-,app/export/;app/ui/review/,M01;M06;M07,work-orders/M25-review-export.md,pending

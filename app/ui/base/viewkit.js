@@ -64,7 +64,7 @@ export function contextOf(services) {
     record_origin: ownValue(services, 'record_origin') ?? null, flags: ownValue(services, 'flags') ?? {}, core: ownValue(services, 'core') ?? null,
     plan: ownValue(services, 'plan') ?? null, newId: ownValue(services, 'newId') ?? null,
     procedures: ownValue(services, 'procedures') ?? null, sync: ownValue(services, 'sync') ?? null, privacy: ownValue(services, 'privacy') ?? null, link: ownValue(services, 'link') ?? null, session: ownValue(services, 'session') ?? null,
-    episode: ownValue(services, 'episode') ?? null, copilot: ownValue(services, 'copilot') ?? null, summary: ownValue(services, 'summary') ?? null, rules: Array.isArray(ownValue(services, 'rules')) ? ownValue(services, 'rules') : []}};
+    exporter: ownValue(services, 'exporter') ?? null, episode: ownValue(services, 'episode') ?? null, copilot: ownValue(services, 'copilot') ?? null, summary: ownValue(services, 'summary') ?? null, rules: Array.isArray(ownValue(services, 'rules')) ? ownValue(services, 'rules') : []}};
 }
 
 function walk(value, visit, seen) {

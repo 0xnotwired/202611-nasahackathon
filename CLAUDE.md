@@ -81,6 +81,7 @@ docs/REQUIREMENTS.md           challenge text and its goals; gaps closed by D10â
 LICENSE                        Apache-2.0
 scripts/check_docs.py          consistency of matrices, module board and links
 app/                           the implemented product modules and views (vanilla ES modules, no dependencies)
+app/export/, app/ui/review/      M25: review for a specialist, CSV export with provenance (the teammate's useful parts, ported)
 frontend/                      a teammate's separate Next.js prototype with its own backend; see frontend/INTEGRATION.md
 ```
 
