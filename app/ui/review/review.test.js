@@ -63,3 +63,25 @@ test('M25-P13: hostile services give an error view model, never an exception', a
   for (const broken of [{store: undefined}, {readings: {}}, {subject: ''}, {clock: 'x'}]) assert.equal((await model({...base, ...broken})).state, 'error');
   for (const input of [undefined, null, 'x', 7]) assert.equal((await model(input)).state, 'error');
 });
+
+// ---- From the integrated adversarial review (G6-W3) ----
+test('M25-P15: a read failure is an error, never "nothing was recorded"; exports are off and the reason says nothing was deleted', async () => {
+  const services = await svc([vo2('a', '09-01', 30)]); const broken = {...services, store: {...services.store, list: async () => ({ok: false, error: {code: 'invalid_field', message: 'a stored record is damaged'}})}};
+  const vm = await model(broken); assert.equal(vm.state, 'ready'); assert.equal(section(vm, 'review').state, 'error');
+  assert.match(section(vm, 'review').text, /could not be read.*does not mean nothing was recorded.*nothing was deleted/s); assert.doesNotMatch(JSON.stringify(vm), /nothing was recorded for this subject|is not "nothing new"/);
+  assert.equal(vm.exports.all.enabled, false); assert.equal(vm.review, null);
+});
+
+test('M25-P16: a value with no known unit reads "(unit unknown)" in the review text and the choices, never "null"', async () => {
+  const vm = await open([vo2('a', '09-01', 30, {unit: null, unit_status: 'unknown'}), vo2('b', '10-01', 33, {unit: null, unit_status: 'unknown'})]);
+  assert.doesNotMatch(vm.review.text, /\bnull\b/); assert.match(vm.review.text, /30 \(unit unknown\)/); assert.doesNotMatch(JSON.stringify(section(vm, 'select').references), /null/); assert.match(section(vm, 'change').text, /Not compared: unknown unit/);
+});
+
+test('M25-P17: "download these values" works on an untouched view: it uses the selection the screen shows', async () => {
+  const services = await svc([vo2('a', '09-01', 30), vo2('b', '10-01', 33)], {}); const vm = await model(services);
+  assert.equal(vm.exports.series.enabled, true); const out = await vm.interactions.exportSeries(); assert.equal(out.ok, true, JSON.stringify(out.error)); assert.ok(out.value.records >= 1);
+});
+
+test('M25-P18: the period labels say they count back from the newest value, not from today', async () => {
+  const vm = await open([vo2('a', '09-01', 30)]); for (const period of section(vm, 'select').periods.filter(p => p.months > 0)) assert.match(period.label, /counted back from the newest value/);
+});

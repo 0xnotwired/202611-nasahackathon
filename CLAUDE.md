@@ -91,7 +91,7 @@ Read [docs/CURRENT_STATUS.md](docs/CURRENT_STATUS.md) and [docs/AUDIT.md](docs/A
 status/HEAD, and work on a separate branch. The delivered state is the branch **final-claude**.
 F1 is accepted by the user; F2–F6 are built with records and gate walkthroughs, independently
 reviewed by agents (F3, F4, F5; the state of the integrated review G6-W3 is in docs/experiments/G6.md) and **not accepted by a
-person**: statuses stay `pending`. 419 Node tests pass (`npm test`; a bare `node --test` also finds
+person**: statuses stay `pending`. 435 Node tests pass (`npm test`; a bare `node --test` also finds
 frontend/'s TypeScript tests, so use the npm script). `npm run package` builds dist/orbita.html.
 `frontend/` is a teammate's separate Next.js edition (see frontend/INTEGRATION.md); its useful parts
 were ported as M25. The store is IndexedDB schema v3 (a profile is upgraded on open). Negative

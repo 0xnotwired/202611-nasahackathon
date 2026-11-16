@@ -96,6 +96,24 @@ def walk(browser, label, url):
     context.close()
 
 
+def damaged(browser, label, url):
+    """A hand-written, invalid row in IndexedDB (G6-W3 finding): the app must say it cannot read, never "nothing was recorded"."""
+    context = browser.new_context(viewport={'width': 1100, 'height': 900}, accept_downloads=True)
+    page = context.new_page(); page.goto(url); poll(page, "document.documentElement.getAttribute('data-modules') === 'loaded'", 20000)
+    page.select_option('#source-select', 'mine'); page.wait_for_timeout(500)
+    page.evaluate("""async () => new Promise((res, rej) => { const q = indexedDB.open('orbita'); q.onsuccess = () => { const db = q.result; const tx = db.transaction('records', 'readwrite'); tx.objectStore('records').put({id: 'junk', foo: 1}); tx.oncomplete = () => { db.close(); res(true); }; tx.onerror = () => rej('write failed'); }; q.onerror = () => rej('open failed'); })""")
+    page.reload(); poll(page, "document.documentElement.getAttribute('data-modules') === 'loaded'", 20000)
+    page.select_option('#source-select', 'mine'); page.wait_for_timeout(800)
+    banner = page.locator('#store-health')
+    check(label, 'H1: a damaged stored record is announced once, above the views, as an alert', banner.is_visible() and 'could not be read' in banner.inner_text() and banner.get_attribute('role') == 'alert', banner.inner_text()[:120])
+    check(label, 'H2: the banner says it does not mean nothing was recorded and that nothing was deleted', 'does not mean nothing was recorded' in banner.inner_text() and 'nothing was deleted' in banner.inner_text())
+    page.evaluate("location.hash = '#/review'"); page.wait_for_timeout(800)
+    text = page.locator('#view').inner_text()
+    check(label, 'H3: the review view says it could not read, and never "nothing new" or "nothing was recorded for this subject"', 'could not be read' in text and 'nothing was recorded for this subject' not in text and 'is not "nothing new"' not in text, text[:200])
+    check(label, 'H4: the export of everything is disabled with its reason', page.locator('#review-download-all').is_disabled())
+    context.close()
+
+
 server = subprocess.Popen(['node', 'scripts/serve.mjs'], cwd=ROOT, env={**os.environ, 'PORT': '0'}, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 try:
     subprocess.run(['node', 'scripts/package.mjs'], cwd=ROOT, check=True, capture_output=True)
@@ -104,6 +122,8 @@ try:
         browser = p.chromium.launch(executable_path=chromium_executable(), headless=True)
         walk(browser, 'served', f'http://127.0.0.1:{match[1]}/index.html')
         walk(browser, 'packaged', DIST.as_uri())
+        damaged(browser, 'served', f'http://127.0.0.1:{match[1]}/index.html')
+        damaged(browser, 'packaged', DIST.as_uri())
         browser.close()
     served = [r['check'] for r in results if r['run'] == 'served']; packaged = [r['check'] for r in results if r['run'] == 'packaged']
     assert served == packaged, 'the two runs did not make the same checks'

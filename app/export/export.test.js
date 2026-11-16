@@ -52,3 +52,10 @@ test('M25-P6: a file name made from a person\'s text cannot leave the folder or 
     assert.equal(safeFileName(...input), expected);
   assert.equal(/[\\/]/.test(safeFileName('a/b\\c')), false);
 });
+
+test('M25-P14: a leading space, a line break or a fullwidth look-alike before a formula is neutralised too; a known unit says "known"', () => {
+  for (const text of [' =1+1', '\n=1+1', '＝1+1', '＋1', '＠SUM(A1)']) assert.match(csvCell(text), /^"?'/, JSON.stringify(text));
+  assert.equal(csvCell('plain text'), 'plain text');
+  const rows = parse(recordsToCsv([makeRecord({id: 'k', unit: 'bpm'}), makeRecord({id: 'u', unit: null, unit_status: 'unknown', value: 3}), makeRecord({id: 'n', state: 'not_recorded'})]).value);
+  assert.deepEqual([rows[1][col('unit_status')], rows[2][col('unit_status')], rows[3][col('unit_status')]], ['known', 'unknown', '']);
+});

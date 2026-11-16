@@ -81,6 +81,17 @@ try:
         page.evaluate("location.hash = '#/ground'"); page.wait_for_selector('#sec-share, .card', timeout=10000); page.wait_for_timeout(500)
         ground = page.locator('#view').inner_text()
         check('F5: the ground panel shows the summary text that was shared', 'and 1 summary' in ground and 'Episode summary' in ground and 'What was measured and how' in ground, ground[-400:])
+        # G4-W5 (IMPLEMENTATION_LAYERS): close and reopen in the middle of an episode: it is restored at the same point; a fresh profile has none (the control).
+        ctx5 = browser.new_context(viewport={'width': 1100, 'height': 900}); w5 = ctx5.new_page(); w5.goto(url); w5.wait_for_selector('html[data-modules="loaded"]', timeout=15000)
+        w5.select_option('#source-select', 'mine'); w5.wait_for_timeout(400); w5.select_option('#origin-select', 'terrestrial'); w5.wait_for_timeout(500)
+        w5.evaluate("location.hash = '#/i-feel-different'"); w5.wait_for_selector('#feel-symptom', timeout=15000); w5.select_option('#feel-symptom', 'headache'); w5.click('#feel-open'); w5.wait_for_selector('#sec-suggestion', timeout=10000)
+        w5.click('#feel-summary'); w5.wait_for_selector('#feel-summary-text', timeout=10000)
+        w5.goto(url + '#/i-feel-different'); w5.wait_for_selector('html[data-modules="loaded"]', timeout=15000); w5.select_option('#source-select', 'mine'); w5.wait_for_timeout(800)
+        check('W5: after closing and reopening the page, the episode is restored (no start form, the open episode is shown)', w5.locator('#feel-symptom').count() == 0 and 'Open episode' in w5.locator('#view').inner_text(), w5.locator('#view').inner_text()[:160])
+        fresh = browser.new_context(viewport={'width': 1100, 'height': 900}).new_page(); fresh.goto(url); fresh.wait_for_selector('html[data-modules="loaded"]', timeout=15000); fresh.select_option('#source-select', 'mine'); fresh.wait_for_timeout(500)
+        fresh.evaluate("location.hash = '#/i-feel-different'"); fresh.wait_for_timeout(800)
+        check('W5 control: a fresh profile has no episode (the start form is there)', fresh.locator('#feel-symptom').count() == 1)
+        ctx5.close()
         # Upgrade: a profile saved by the previous schema (v2, no `summaries` or `rules`) opens as v3 and keeps what it had.
         ctx2 = browser.new_context(viewport={'width': 1100, 'height': 900}); old = ctx2.new_page(); old.goto(url); old.wait_for_selector('html[data-modules="loaded"]', timeout=15000)
         made = old.evaluate('''async () => { await new Promise(r => { const q = indexedDB.deleteDatabase('orbita'); q.onsuccess = q.onerror = q.onblocked = () => r(); });

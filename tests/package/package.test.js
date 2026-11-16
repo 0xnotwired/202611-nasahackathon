@@ -43,7 +43,7 @@ test('M23-X1: the application source uses no network API, so the packaged file h
 test('M23-X2: a content security policy forbids every remote load, and the build is deterministic', () => {
   const a = buildPackage({root: join(ROOT, 'app')}).html, b = buildPackage({root: join(ROOT, 'app')}).html;
   assert.equal(a, b); const csp = a.match(/<meta http-equiv="Content-Security-Policy" content="([^"]+)"/)[1];
-  assert.match(csp, /default-src 'none'/); assert.match(csp, /script-src 'unsafe-inline' blob:/); assert.doesNotMatch(csp, /https?:|\*/); assert.doesNotMatch(csp, /connect-src(?! 'none')/);
+  assert.match(csp, /default-src 'none'/); assert.match(csp, /form-action 'none'/); assert.match(csp, /base-uri 'none'/); assert.match(csp, /script-src 'unsafe-inline' blob:/); assert.doesNotMatch(csp, /https?:|\*/); assert.doesNotMatch(csp, /connect-src(?! 'none')/);
 });
 
 test('M23-X3: a build that cannot be trusted fails loudly: cycle, missing file, remote import, no entry', () => {

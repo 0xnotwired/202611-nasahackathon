@@ -10,6 +10,18 @@ Read: `modules.csv`, `FINAL_PROPOSAL.md` (acceptance criteria), `REQUIREMENTS.md
 
 F0–F6 each have code, tests, negative controls and a browser walk, and none of the gates is accepted by a person. The product is **a coherent honest demo, not yet a usable product**, for five reasons in the next section, plus a process debt (no independent review of most of it). Statuses on the board: M00–M05 and M21 `integrated`; every other module `pending`.
 
+## Status after the work of 2026-11-16 (read this before the table below)
+
+The tables and the layer paragraphs below were written at the start of that day and are kept as the record of what the audit found. Since then:
+
+| Finding | Now |
+|---|---|
+| P0-1 "My records" is read-only | **Resolved as built**: "My records" records once the person states where their entries come from (terrestrial, ground analog, flight; saved, lockable); a persistent journey was walked on IndexedDB with a reload (`g3-real-browser.py`). The decision about the origin of real entries is mine and unreviewed by the organizers (G3 addendum). |
+| P0-2 It gives no guidance | **Open by design, now exercised**: no clinical rule exists; a fictional `demo` rule and a loadable rules file make the suggestion path visible; the screen says the app cannot verify a rule's declared status. Real rules need someone to supply and sign them. |
+| P0-3 No export | **Resolved as built** (M25): CSV with provenance of one series or all the subject's records, a review text for a specialist. Not independently reviewed before the G6-W3 review of 2026-11-16, which found and fixed four defects in it. |
+| P0-4 Result linking missing | **Resolved as built**: My plan links a recorded value observed after the task started, with undo, history and periodic series. |
+| P0-5 No independent review | **Partly resolved**: read-only reviews by agents that did not write the code covered F3, F4, F5 and, as the integrated G6-W3 review, every layer including M23, G6 and M25 (summaries in the G3, G4, G5 and G6 records). They are agents' judgments, not acceptances by a person, and the M13–M20 records have no formal `## Replication` section: the review reports live in the gate addenda. No gate after G1 is accepted by a person. |
+
 ## P0: what stops it from being believable as a product
 
 | # | Gap | Evidence | Decides |
@@ -82,3 +94,5 @@ F0–F6 each have code, tests, negative controls and a browser walk, and none of
 **F5 after the fixes (2026-11-16).** Done: CRF offered with caveats; unread columns named; whole-file viewer comparison for BUT CGM and row-by-row importer comparison for all five real files; a separate, opt-in persistent store for imported cases; the quadratic memory-store write; citations checked against the delivery attributions. Still open and why: MR080G accepts one combination only; CRF/MR035G units and immune denominators unconfirmed (no dictionary); omics has no adapter; 10,000-record bound; PhysioNet provisional; no second browser or screen reader; the IndexedDB backend still validates per write. Independent review of F5: see G5 addendum 2.
 
 **F6 and the frontend (2026-11-16).** The teammate's useful parts now live in the main app as M25 (review for a specialist, CSV export with provenance, manual theme); the Next.js app stays the server edition and is still not in `dist/orbita.html`. Open: M25 has no independent review; his slope, scenarios and research case were not ported; his backend still serves its own seed. G6-W3 and W4, other browsers, `file://` persistence after moving the file and a size or start-time budget remain as listed above.
+
+**F6 closing (2026-11-16, after G6-W3).** The integrated adversarial review ran, every gate experiment was repeated with `node scripts/run-gates.mjs` (23 steps in the reviewer's copy, plus the G4 layer experiments added afterwards), and its findings were fixed except M-2 (no repair path for a damaged stored record). Still open: G6-W4 (volunteers), other browsers and screen readers, a hash-based script policy, `file://` pages share one storage, the teammate's backend not reading the main app's store, acceptance of every gate after G1 by a person.

@@ -101,6 +101,8 @@ export async function start(doc = document, win = window) {
   themeSelect.addEventListener('change', () => { try { if (themeSelect.value === 'auto') win.localStorage.removeItem(THEME_KEY); else win.localStorage.setItem(THEME_KEY, themeSelect.value); } catch { /* the choice still applies to this page */ } applyTheme(themeSelect.value); doc.querySelector('#announce').textContent = `Theme: ${themeSelect.options[themeSelect.selectedIndex].text}.`; });
   themeBar.append(create(doc, 'label', {for: 'theme-select'}, 'Theme'), themeSelect); root.before(themeBar);
   win.addEventListener('storage', event => { if (event.key === THEME_KEY || event.key === null) { const v = readTheme(); themeSelect.value = v; applyTheme(v); } });
+  // A damaged stored record makes the whole collection unreadable. Say so once, above every view, in words that do not claim anything about what was recorded.
+  const health = create(doc, 'p', {id: 'store-health', class: 'notice notice-error', role: 'alert'}); health.hidden = true; root.before(health);
   const bar = create(doc, 'section', {id: 'origin-bar', class: 'card', 'aria-labelledby': 'origin-title'}); bar.hidden = true; root.after(bar);
   function drawBar() {
     const select = create(doc, 'select', {id: 'origin-select'}, create(doc, 'option', {value: ''}, 'Not chosen: recording is off'), ...ORIGINS.map(o => create(doc, 'option', {value: o.id}, o.label)));
@@ -121,6 +123,11 @@ export async function start(doc = document, win = window) {
         : {id: 'mine', label: 'My records', synthetic: false, note: 'Records saved in this browser.' + (choice.origin === null ? ' Recording is off until you say where your entries come from (below).' : ` Entries you add are recorded as: ${ORIGINS.find(o => o.id === choice.origin).label}.`)},
       collaborators: {exporter, readings, importers, catalogs, core, plan, procedures, sync, privacy, episode, copilot, summary, rules: isDemo ? demo.rules : [], link: LINK, session: SESSION, openMemoryStore: () => openStore({kind: 'memory', name: 'nasa-cases'}), keptCases}, storage_fallback_reason: isDemo ? undefined : opened.reason ?? undefined});
     if (!services.ok) { root.replaceChildren(create(doc, 'p', {class: 'notice notice-error', role: 'alert'}, `The application could not start: ${services.error.message}`)); return; }
+    health.hidden = true;
+    if (!isDemo && opened.reason === null) {
+      let probe; try { probe = await opened.store.list('records', {subject: LOCAL_SUBJECT}); } catch { probe = {ok: false, error: {message: 'the read failed'}}; }
+      if (!probe.ok) { health.textContent = `The records saved in this browser could not be read (${String(probe.error && probe.error.message).slice(0, 120)}). A stored record is probably damaged. This does not mean nothing was recorded, and nothing was deleted. The views say "could not be read" instead of showing anything. To start over, remove this page's site data in your browser settings; a repair path inside the app is not built yet.`; health.hidden = false; }
+    }
     const shell = await buildShell({views: loaders, currentId, services: services.value, params: {}, sources: SOURCES});
     const parts = renderShell(doc, root, shell, {onSource: id => { sourceId = id; draw(false).then(() => {
       doc.querySelector('#announce').textContent = `Data source changed to ${SOURCES.find(source => source.id === id)?.label ?? id}.`;

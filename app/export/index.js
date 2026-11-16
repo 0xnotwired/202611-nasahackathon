@@ -5,7 +5,7 @@ export const COLUMNS = Object.freeze(['id', 'subject', 'type', 'state', 'variabl
   'source_time_scope', 'source_time_precision', 'origin', 'source', 'mission_phase', 'place', 'sensor', 'corrects', 'note']);
 
 const plain = value => value !== null && typeof value === 'object' && !Array.isArray(value);
-const FORMULA = /^[=+\-@\t\r]/;
+const FORMULA = /^[\s=+\-@\uFF1D\uFF0B\uFF0D\uFF20]/; // also a leading space or line break and the fullwidth look-alikes: some tools strip them before reading a formula
 
 /** csvCell(value, { numeric }) → text for one cell. Numbers are written as they are; any other text that starts like a formula gets a leading apostrophe. */
 export function csvCell(value, {numeric = false} = {}) {
@@ -19,7 +19,7 @@ function rowOf(record) {
   const clock = plain(record.source_time) ? record.source_time : {};
   const state = record.state;
   return [record.id, record.subject, record.type, state, record.variable, state === 'recorded' && typeof record.value === 'number' ? record.value : null,
-    state === 'recorded' ? record.unit : null, record.unit_status, record.method, record.time, clock.raw, clock.calendar, clock.scope, clock.precision,
+    state === 'recorded' ? record.unit : null, record.unit_status ?? (state === 'recorded' && typeof record.unit === 'string' && record.unit ? 'known' : null), record.method, record.time, clock.raw, clock.calendar, clock.scope, clock.precision,
     record.origin, record.source, record.mission_phase, record.place, record.sensor, record.corrects, record.note];
 }
 
