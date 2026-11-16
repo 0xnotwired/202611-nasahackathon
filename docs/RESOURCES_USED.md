@@ -33,8 +33,6 @@ None (decision D2). The product is the team's own code, licensed under Apache-2.
 | GitHub | n/a | hosting the repository | Service terms, no code used | n/a | |
 | annatchijova/SKILLS | Commit 92b4ff0ec30752ba1595615d881116d676485421 | User-requested local agent methodology; 199 SKILL.md files plus companion references/scripts, outside the product | Apache-2.0; bundled red-team attribution under MIT | Read upstream LICENSE and red-team/LICENSE.claude-red in the retrieved repository; both retained verbatim under .agents/skills/ | Explicit user authorization on 2026-11-15. Source URL and SHA-256 manifest: ../.agents/SKILLS_SOURCE.json. No product import or automatic helper execution |
 
-## 3. Data
-
 ### Presentation-video tooling update
 
 The English videos in [media/videos](../media/videos/README.md) use the following additional or updated external production tools. No tool binary or library is included in the app or the media directory.
@@ -42,8 +40,11 @@ The English videos in [media/videos](../media/videos/README.md) use the followin
 | Tool | Use | License evidence | Distribution |
 |---|---|---|---|
 | eSpeak NG, via espeakng-loader 0.2.4 | Synthetic English narration | Upstream [COPYING](https://github.com/espeak-ng/espeak-ng/blob/master/COPYING) was retrieved and read: GNU GPL version 3. The library is external production tooling. | Generated narration only; no engine or voice-data binary shipped. |
+| espeakng-loader 0.2.4 | Loads the external speech library during video production | Upstream [LICENSE](https://github.com/thewh1teagle/espeakng-loader/blob/main/LICENSE) was retrieved and read: MIT, copyright 2025 thewh1teagle. Bundled eSpeak NG retains its own license. | No loader code or bundled library shipped. |
 | FFmpeg 7.1.5, Debian build | Video editing, burned-in subtitles and H.264/AAC encoding | Installed `ffmpeg -version` identifies 7.1.5 and `--enable-gpl`; the existing FFmpeg legal reference above applies. | MP4 output only; no executable shipped or linked. |
 
+
+## 3. Data
 
 | Source | Origin | Terms found | Citation status |
 |---|---|---|---|
