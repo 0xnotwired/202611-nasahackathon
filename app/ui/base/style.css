@@ -77,3 +77,5 @@ figcaption { color: var(--muted); font-size: 0.9rem; }
 .data-table thead th { border-bottom: 2px solid var(--border); }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }
 .links a { display: inline-block; padding: 4px 0; min-height: 24px; }
+.summary-text { white-space: pre-wrap; overflow-wrap: anywhere; max-width: 100%; margin: 0; padding: 10px 14px; border: 1px solid var(--border); border-radius: 6px; background: var(--panel); font: inherit; }
+.summary-block { max-width: 100%; }

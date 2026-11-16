@@ -79,3 +79,12 @@ test('M24-V9: without sync or privacy the sections say so; hostile services give
   for (const input of [undefined, null, 'x']) assert.equal((await model(input, {})).state, 'error');
   assert.ok(SUBJECT);
 });
+
+test('M24-R1: the panel never shows a summary or a record of another subject, even if a delivery names its id', async () => {
+  const other = 'someone-else';
+  const delivery = {id: 'd1', schema_version: 2, shared_id: 's1', subject: SUBJECT, what: [ids[0], 'summary:sum-other', 'summary:sum-mine'], created: NOW, state: 'queued'};
+  const services = await makeServices({objects: {deliveries: [delivery], summaries: [{id: 'sum-other', schema_version: 2, subject: other, episode_id: 'e', text: 'OTHER SUBJECT TEXT', origins: [], generated: NOW}, {id: 'sum-mine', schema_version: 2, subject: SUBJECT, episode_id: 'e', text: 'MY SUMMARY TEXT', origins: [], generated: NOW}]}, config: station});
+  const text = JSON.stringify(await model(services, {}));
+  assert.ok(text.includes('MY SUMMARY TEXT')); assert.equal(text.includes('OTHER SUBJECT TEXT'), false, 'another subject\'s summary text is never shown');
+  assert.ok(text.includes('The summary text is not in this data source') || text.includes('"text":null'), 'the unreadable one is said, not hidden');
+});

@@ -6,13 +6,17 @@ const isText = value => typeof value === 'string' && value.length > 0 && value.l
 const isPlain = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const list = value => (Array.isArray(value) ? value : []);
 
+const RULE_KEYS = new Set(['id', 'when', 'suggestion', 'source', 'version', 'review_status', 'alert']);
 function checkRule(rule) {
   if (!isPlain(rule)) return 'a rule must be an object';
+  const unknown = Object.keys(rule).find(key => !RULE_KEYS.has(key));
+  if (unknown !== undefined) return `a rule has a field that is not part of the contract (${String(unknown).slice(0, 30)}); only id, when, suggestion, source, version, review_status and alert are accepted`;
   if (!isText(rule.id)) return 'a rule needs an id';
+  if (rule.id.length > 100 || rule.id.includes('@')) return `rule ${rule.id.slice(0, 40)} needs an id of at most 100 characters without "@"`;
   if (!isPlain(rule.when) || Object.keys(rule.when).join() !== 'recorded_variable' || !isText(rule.when.recorded_variable)) return `rule ${String(rule.id).slice(0, 40)} needs when: { recorded_variable }`;
   if (!isText(rule.suggestion)) return `rule ${rule.id.slice(0, 40)} needs a suggestion text`;
   if (!isText(rule.source)) return `rule ${rule.id.slice(0, 40)} has no source`;
-  if (!isText(rule.version)) return `rule ${rule.id.slice(0, 40)} has no version`;
+  if (!isText(rule.version) || rule.version.length > 50 || rule.version.includes('@')) return `rule ${rule.id.slice(0, 40)} needs a version of at most 50 characters without "@"`;
   if (!REVIEW.includes(rule.review_status)) return `rule ${rule.id.slice(0, 40)} needs review_status demo, draft or reviewed`;
   if (rule.alert !== undefined && !isText(rule.alert)) return `rule ${rule.id.slice(0, 40)} has an alert that is not text`;
   return null;
@@ -52,12 +56,15 @@ export async function saveRules(store, rules, context) {
   if (!isPlain(context) || typeof context.clock !== 'function') return failed('invalid_context', 'clock', 'A clock is required');
   let saved; try { saved = context.clock(); } catch { saved = undefined; }
   if (typeof saved !== 'string' || Number.isNaN(Date.parse(saved))) return failed('invalid_clock', 'clock', 'The clock did not return an instant');
+  // All or nothing: every rule is checked against what is stored first, and only then are the new ones written in one batch.
+  const fresh = [];
   for (const rule of checked.value) {
     const id = `${rule.id}@${rule.version}`;
     const found = await store.get('rules', id);
-    if (found.ok) { if (JSON.stringify(found.value.rule) === JSON.stringify(rule)) continue; return failed('version_exists', 'version', `Rule ${rule.id.slice(0, 40)} version ${rule.version.slice(0, 20)} already exists with other content; publish a new version`); }
-    const out = await store.save('rules', {id, schema_version: 2, saved, rule}); if (!out.ok) return out;
+    if (found.ok) { if (JSON.stringify(found.value.rule) === JSON.stringify(rule)) continue; return failed('version_exists', 'version', `Rule ${rule.id.slice(0, 40)} version ${rule.version.slice(0, 20)} already exists with other content; publish a new version. No rule of this file was saved.`); }
+    fresh.push({id, schema_version: 2, saved, rule});
   }
+  if (fresh.length) { if (typeof store.saveBatch !== 'function') return failed('invalid_store', 'store', 'A store with saveBatch() is required'); const out = await store.saveBatch('rules', fresh); if (!out.ok) return out; }
   return {ok: true, value: checked.value};
 }
 
@@ -66,7 +73,7 @@ export async function loadRules(store) {
   if (!isPlain(store) || typeof store.list !== 'function') return failed('invalid_store', 'store', 'A store with list() is required');
   const listed = await store.list('rules', {}); if (!listed.ok) return listed;
   const newest = new Map();
-  for (const item of listed.value) if (isPlain(item) && isPlain(item.rule) && (!newest.has(item.rule.id) || item.saved > newest.get(item.rule.id).saved || (item.saved === newest.get(item.rule.id).saved && item.id > newest.get(item.rule.id).id))) newest.set(item.rule.id, item);
+  for (const item of listed.value) if (isPlain(item) && isPlain(item.rule) && (!newest.has(item.rule.id) || item.saved > newest.get(item.rule.id).saved || (item.saved === newest.get(item.rule.id).saved && item.rule.version.localeCompare(newest.get(item.rule.id).rule.version, 'en', {numeric: true}) > 0))) newest.set(item.rule.id, item);
   return {ok: true, value: [...newest.values()].map(item => item.rule).sort((a, b) => (a.id < b.id ? -1 : 1))};
 }
 
@@ -85,6 +92,6 @@ export function card(situation, config, rules) {
     data: [...recorded, ...list(s.we_know)], gaps: [...list(s.missing)],
     suggestion: rule ? {rule_id: rule.id, text: rule.suggestion, source: rule.source, version: rule.version, review_status: rule.review_status} : null,
     no_guidance: rule === null, not_assessed: notAssessed,
-    alert: rule && rule.alert !== undefined && s.alert_issued !== true ? {text: rule.alert} : null
+    alert: rule && rule.alert !== undefined && s.alert_issued !== true ? {text: rule.alert, rule_id: rule.id, source: rule.source, version: rule.version, review_status: rule.review_status} : null
   };
 }

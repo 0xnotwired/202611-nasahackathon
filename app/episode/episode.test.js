@@ -95,3 +95,34 @@ test('M16-R3: two reopens at once give exactly one success', async () => {
   const results = await Promise.all([m.reopen(store, ep.id, {reason: 'a'}), m.reopen(store, ep.id, {reason: 'b'})]);
   assert.equal(results.filter(r => r.ok).length, 1); assert.equal((await store.get('episodes', ep.id)).value.reopened.length, 1);
 });
+
+// ---- From the independent review of F4: one open episode per subject, across episodes ----
+test('M16-R4: opening is refused while an episode of the subject is open, and two opens at once give one episode', async () => {
+  const store = await bare([obs(), obs({id: 'obs-2', time: '2026-11-15T12:00:00.000Z'})]);
+  const both = await Promise.all([m.open(store, obs(), {clock: () => NOW, newId: () => 'a'}), m.open(store, obs({id: 'obs-2'}), {clock: () => NOW, newId: () => 'b'})]);
+  assert.equal(both.filter(r => r.ok).length, 1); assert.equal(both.find(r => !r.ok).error.code, 'another_episode_open');
+  assert.equal((await store.list('episodes', {subject: SUBJECT})).value.length, 1);
+});
+
+test('M16-R5: two reopens of two different closed episodes give one open episode', async () => {
+  const store = await bare([obs(), obs({id: 'obs-2', time: '2026-11-15T12:00:00.000Z'})]);
+  const a = (await m.open(store, obs(), {clock: () => NOW, newId: () => 'a'})).value; await m.close(store, a.id, {clock: () => NOW});
+  const b = (await m.open(store, obs({id: 'obs-2'}), {clock: () => NOW, newId: () => 'b'})).value; await m.close(store, b.id, {clock: () => NOW});
+  const results = await Promise.all([m.reopen(store, a.id, {reason: 'x'}), m.reopen(store, b.id, {reason: 'y'})]);
+  assert.equal(results.filter(r => r.ok).length, 1, JSON.stringify(results.map(r => r.ok || r.error.code)));
+  assert.equal((await store.list('episodes', {subject: SUBJECT})).value.filter(e => e.closed === null || e.closed === undefined).length, 1);
+});
+
+test('M16-R6: closing twice at once closes once; a legacy `closed: true` episode is listed as closed with no time', async () => {
+  const store = await bare(); const ep = await opened(store);
+  const two = await Promise.all([m.close(store, ep.id, {clock: () => NOW}), m.close(store, ep.id, {clock: () => NOW})]); assert.equal(two.filter(r => r.ok).length, 1);
+  const legacy = await bare([obs({id: 'o9'})]); const e = await opened(legacy, obs({id: 'o9'})); await m.close(legacy, e.id);
+  const listed = (await m.listEpisodes(legacy, {subject: SUBJECT})).value[0]; assert.equal(listed.is_closed, true); assert.equal(listed.closed, true);
+});
+
+test('M16-R7: close is refused, not applied, when another writer changed `closed` after it was read', async () => {
+  const store = await bare(); const ep = await opened(store); let raced = false;
+  const racing = {...store, updateState: async (collection, id, changes, options) => { if (!raced) { raced = true; await store.updateState('episodes', id, {closed: '2026-11-15T09:00:00.000Z'}); } return store.updateState(collection, id, changes, options); }};
+  const out = await m.close(racing, ep.id, {clock: () => NOW}); assert.equal(out.ok, false); assert.equal(out.error.code, 'conflict');
+  assert.equal((await store.get('episodes', ep.id)).value.closed, '2026-11-15T09:00:00.000Z');
+});

@@ -5,7 +5,7 @@ Run from the repository root:
 
 For each view, the text elements that are visible and not disabled are measured: the colour of the text against the first opaque background
 found walking up the tree (WCAG 2.x relative luminance). Ratio below 4.5, or below 3 for large text (24px, or 18.66px bold), is a failure.
-Two states are measured: the view as opened, and "I feel different" with an open episode and a suggestion (the demo rule), which draws the most text.
+States measured: every view as opened; "I feel different" with an open episode and the demo suggestion; the same with a loaded rules file, an alert, the summary, an error message and every <details> open; and the Ground panel with a delivered summary.
 Prediction (written before the run): some pair fails, since contrast was never measured on the new views. Limits: computed styles only; text over images or
 gradients is not handled (none is used); one engine; disabled controls are exempt by WCAG and are skipped.
 """
@@ -69,6 +69,17 @@ try:
             page.select_option('#feel-symptom', 'fatigue'); page.click('#feel-open'); page.wait_for_selector('#sec-suggestion', timeout=10000); page.wait_for_timeout(300)
             out = page.evaluate(MEASURE); results.append({'scheme': scheme, 'view': 'i-feel-different (open episode, demo suggestion)', 'measured': out['measured'], 'failing': len(out['bad'])})
             failures += [{'scheme': scheme, 'view': 'i-feel-different (open episode)', **b} for b in out['bad']]
+            # More states: every <details> open, an alert message, a loaded rules list, a summary on screen, and the ground panel with a delivered summary.
+            rules = json.dumps([{'id': 'c1', 'when': {'recorded_variable': 'fatigue'}, 'suggestion': 'Fictional.', 'alert': 'Fictional alert.', 'source': 'contrast test (fictional)', 'version': '1', 'review_status': 'reviewed'}]).encode()
+            page.set_input_files('#feel-rules-file', files=[{'name': 'r.json', 'mimeType': 'application/json', 'buffer': rules}]); page.click('#feel-rules-load'); page.wait_for_timeout(500)
+            page.click('#feel-summary'); page.wait_for_selector('#feel-summary-text', timeout=10000); page.evaluate("document.querySelectorAll('details').forEach(d => d.open = true)")
+            page.click('#feel-share'); page.wait_for_timeout(500)  # refused without the confirmation: an error alert on screen
+            out = page.evaluate(MEASURE); results.append({'scheme': scheme, 'view': 'i-feel-different (rules, alert, summary, error message, details open)', 'measured': out['measured'], 'failing': len(out['bad'])})
+            failures += [{'scheme': scheme, 'view': 'i-feel-different (all states)', **b} for b in out['bad']]
+            page.check('#feel-confirm'); page.click('#feel-share'); page.wait_for_timeout(500)
+            page.evaluate("location.hash = '#/ground'"); page.wait_for_timeout(800); page.evaluate("document.querySelectorAll('details').forEach(d => d.open = true)")
+            out = page.evaluate(MEASURE); results.append({'scheme': scheme, 'view': 'ground (delivery with summary, details open)', 'measured': out['measured'], 'failing': len(out['bad'])})
+            failures += [{'scheme': scheme, 'view': 'ground (delivery)', **b} for b in out['bad']]
         # Control: the detector must fail on a pair that is known to be low (light grey on white). Otherwise a pass proves nothing.
         page = browser.new_context(viewport={'width': 1100, 'height': 900}, color_scheme='light').new_page()
         page.goto(url); page.wait_for_selector('html[data-modules="loaded"]', timeout=15000)

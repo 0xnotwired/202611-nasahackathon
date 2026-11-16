@@ -1,6 +1,6 @@
 # Órbita: contracts between modules
 
-Version 0.19 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
+Version 0.20 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
 
 Plan and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). Rationale for the rules: [PROPOSAL_IMPROVEMENTS.md](PROPOSAL_IMPROVEMENTS.md) and [AGENTS.md](../AGENTS.md).
 
@@ -80,6 +80,15 @@ Procedure
   steps                 list of { id, text, records?: variable }
   source, review_status draft | demo | reviewed
   documented_alternative  id of another procedure, optional; never inferred
+
+Summary
+  id              "<episodeId>:<instant>", with "~<n>" when the instant repeats (stored summary text, added 0.18)
+  schema_version, subject, episode_id, text, origins, generated
+
+RuleEntry
+  id              "<rule id>@<version>" (stored guidance rule, added 0.18)
+  schema_version, saved
+  rule            { id, when, suggestion, source, version, review_status, alert? }; the app does not verify review_status
 
 ProcedureEntry
   id              "<procedure id>@<version>" (registry entry, added 0.19)
@@ -329,7 +338,7 @@ situation(store, episodeId, config, { clock })
    → { you_recorded, we_know, missing, you_can, happened, next }
 link(store, episodeId, { execution_id?, record_id?, task_id? })
 close(store, episodeId)
-reopen(store, episodeId, { reason, clock? })   → Result<Episode>   (added 0.18)
+reopen(store, episodeId, { reason, clock? })   → Result<Episode>   (added 0.18; `open` and `reopen` of one subject share one lock, so one episode of a subject is open at a time within a process; `open` refuses with `another_episode_open`; `close` writes with `expect` on `closed`)
 listEpisodes(store, { subject })               → Result<{ id, opened, closed, is_closed, observation_id, reopened }[]>   (added 0.18)
 ```
 
@@ -348,6 +357,8 @@ loadRules(store) → Result<Rule[]>
        not_assessed, alert: { text } | null }
 ```
 
+Since 0.20: a rule accepts only the fields id, when, suggestion, source, version, review_status and alert; `id` (at most 100 characters) and `version` (at most 50) must not contain `@`; a card's `alert` is `{ text, rule_id, source, version, review_status }`; `saveRules` writes all or none; `loadRules` breaks a tie in `saved` by version in numeric order. A review status is what the rule's file declares: the app cannot verify it, and the screen says so beside every suggestion and alert, `reviewed` included.
+
 Since 0.15: `validateRules(rules) → Result<Rule[]>`. A rule is data: `{ id, when: { recorded_variable }, suggestion, source, version, review_status: demo | draft | reviewed, alert? }`; one without a source (or version, or review status) is rejected, and `card` leaves it out and says so in `not_assessed`. A rule matches only a variable the person recorded; nothing is compared with a limit. `suggestion` is `{ rule_id, text, source, version, review_status }`; `alert` is `{ text }` only when the applicable rule has an `alert` text and the situation's `alert_issued` is not true. The module ships no rule.
 
 Pure function. `data` and `gaps` come first. If no rule applies, `suggestion` is `null` and `no_guidance` is `true`. Every suggestion carries `source`, `version` and `review_status`. `alert` is `null` if the episode already issued one. The `rules` are data; the module ships no clinical rule.
@@ -360,7 +371,7 @@ keep(store, episodeId, config, { clock }) → Result<{ id, text, origins, pendin
    → Result<{ id, text, origins, pending_send: boolean }>
 ```
 
-Since 0.15 the text has four numbered parts (what happened, what was measured and how, what is missing, what is being asked), one `Origin:` block per origin present, the three record states in their own words ("not recorded", "confirmed nothing new"), values with their unit or "(unit unknown)", and no free-text notes. `pending_send` is true unless the link is `real_time`. The text is not stored and not shared by `generate`; the "I feel different" view shares the episode's records, not the text (no collection holds it).
+Since 0.15 the text has four numbered parts (what happened, what was measured and how, what is missing, what is being asked), one `Origin:` block per origin present, the three record states in their own words ("not recorded", "confirmed nothing new"), values with their unit or "(unit unknown)", and no free-text notes. `pending_send` is true unless the link is `real_time`. `generate` stores and shares nothing. Since 0.18 `keep` also stores the text, immutably, in `summaries` under `<episodeId>:<instant>` (a counter `~2`, `~3` when the clock gives the same instant and the text differs; an identical text is not stored twice), and the "I feel different" view shares the episode's records plus `summary:<id>` of the newest summary. The text is free of record notes, but it does include what the person typed as a difficulty of an execution and the description of a pending task linked to the episode; the person sees the whole text before sharing. Environment readings are labelled "environment reading at <place>, not a personal measurement".
 
 `generate` sends nothing. The text separates synthetic, analog and flight data, and distinguishes the three record states. With `communication: "delayed"` the text stands on its own: what happened, what was measured and how, what is missing, what is being asked. Sharing goes through `privacy.logShared`.
 
@@ -557,7 +568,8 @@ Everything works with the keyboard. No state is conveyed by color alone. Views r
 | 0.13 | 2026-11-15 | User-authorized with the start of F3 (M13–M15): optional `clock` in the procedure transitions; Execution gains `step_count`, `interruptions` and `missing`; Task gains `not_done_note`; the rules of `mark`, `linkResult` and `finish` above; services may carry `procedures` and `procedure_list`; `ui/my-plan` and `ui/on-board` are implemented. Consistency review only, no approval. |
 | 0.14 | 2026-11-15 | User-authorized ("agrega versiones mínimas"): `procedures` collection and IndexedDB schema v2 with an upgrade; the procedure registry (`publishProcedure`, `listProcedures`, `getProcedure`); `privacy` (`createSession`, `logShared`, `sharedLog`) and `sync` (`createLink`, `enqueue`, `advance`, `received`, `deliveries`) implemented as above; `Delivery.sent` optional; `ui/ground` implemented; the On board editor. Consistency review only, no approval. |
 | 0.15 | 2026-11-15 | User-authorized ("versiones mínimas de F4"): `episode`, `copilot` and `summary` implemented as above (`issueAlert` and `validateRules` added); services may carry `episode`, `copilot`, `summary` and `rules`; `ui/i-feel-different` implemented. Consistency review only, no approval. |
-| 0.19 | 2026-11-16 | User-authorized ("Arregla F7, F10, F11 y F12"): retries 5 → 12 with a pause (F7); retirement semantics stated (F10); `linkResult` observed-afterwards rule, whole-number minutes, digits-only inputs, other-tab origin lock (F11); data typedefs `ProcedureEntry`, `ProcedureRetirement`, nullable `execution_id`/`not_done_note`, full `history` entry (F12). Consistency review only, no approval. |
-| 0.18 | 2026-11-16 | User-authorized ("fijate como solucionar esto … despues resolve el resto"): store collections `summaries` and `rules` (IndexedDB v3); `Episode.reopened`; `episode.reopen`/`listEpisodes`; `summary.keep`; `copilot.parseRules`/`saveRules`/`loadRules` (a rules file is untrusted text of at most 200 KB; stored rules are immutable per `id@version`; the app cannot verify a review status); `Shared.what` may carry `summary:<id>`, which the ground panel resolves from `summaries`. Fixes from the F3 independent review: `advance` refuses a record that is not `recorded`; ids starting with `retired:` are refused; instants must round-trip as real dates. Consistency review only, no approval. |
-| 0.17 | 2026-11-16 | User-authorized ("lo recortado modificarlo para que sea de verdad, después F3 que funcione"): store `updateState` accepts `expect` (compare-and-set); Task gains `history`, `series_id`, `rev`; Execution gains `rev`, `step_records`, `unrecorded_steps`, `preparation_confirmed`; plan gains `createTask`, `scheduleSeries`, `reopenTask`; procedures gain `retireProcedure` and the preparation/recording rules above. All optional or additive. Consistency review only, no approval. |
 | 0.16 | 2026-11-15 | User-authorized with the incorporation of the teammate's frontend ("usar nuestro modelo de datos, incorporando lo que él usa"): `Task` gains optional `scheduled_at` and `planned_minutes`, which its exercise plan needs. Optional, so earlier tasks stay valid. Consistency review only, no approval. |
+| 0.17 | 2026-11-16 | User-authorized ("lo recortado modificarlo para que sea de verdad, después F3 que funcione"): store `updateState` accepts `expect` (compare-and-set); Task gains `history`, `series_id`, `rev`; Execution gains `rev`, `step_records`, `unrecorded_steps`, `preparation_confirmed`; plan gains `createTask`, `scheduleSeries`, `reopenTask`; procedures gain `retireProcedure` and the preparation/recording rules above. All optional or additive. Consistency review only, no approval. |
+| 0.18 | 2026-11-16 | User-authorized ("fijate como solucionar esto … despues resolve el resto"): store collections `summaries` and `rules` (IndexedDB v3); `Episode.reopened`; `episode.reopen`/`listEpisodes`; `summary.keep`; `copilot.parseRules`/`saveRules`/`loadRules` (a rules file is untrusted text of at most 200 KB; stored rules are immutable per `id@version`; the app cannot verify a review status); `Shared.what` may carry `summary:<id>`, which the ground panel resolves from `summaries`. Fixes from the F3 independent review: `advance` refuses a record that is not `recorded`; ids starting with `retired:` are refused; instants must round-trip as real dates. Consistency review only, no approval. |
+| 0.19 | 2026-11-16 | User-authorized ("Arregla F7, F10, F11 y F12"): retries 5 → 12 with a pause (F7); retirement semantics stated (F10); `linkResult` observed-afterwards rule, whole-number minutes, digits-only inputs, other-tab origin lock (F11); data typedefs `ProcedureEntry`, `ProcedureRetirement`, nullable `execution_id`/`not_done_note`, full `history` entry (F12). Consistency review only, no approval. |
+| 0.20 | 2026-11-16 | User-authorized ("arreglalos en ese orden", the F4 review): one open episode per subject under one lock and `close` guarded by `expect`; rule fields are an allowlist, `@` refused in ids and versions, `saveRules` all or none, numeric version tie-break; an alert carries its source, version and declared status; summary ids get a counter and an identical text is not stored twice; environment readings are labelled in the summary text; data shapes `Summary` and `RuleEntry`. Consistency review only, no approval. |

@@ -62,3 +62,25 @@ test('M18-X1: unknown episode, bad config or clock give an error; the same input
   for (const [id, c, o] of [['nope', station, {clock: () => NOW}], [ep.id, null, {clock: () => NOW}], [ep.id, {}, {clock: () => NOW}], [ep.id, station, {}], [ep.id, station, {clock: () => 'yesterday'}]]) assert.equal((await m.generate(store, id, c, o)).ok, false);
   assert.equal((await m.generate(undefined, ep.id, station, {clock: () => NOW})).ok, false); assert.equal((await gen(store, ep)).value.text, (await gen(store, ep)).value.text); assert.ok(SUBJECT);
 });
+
+// ---- From the independent review of F4 ----
+test('M18-R1: with a clock that does not move, a second summary is stored under a counter, and an identical one is not stored twice', async () => {
+  const {makeServices, SUBJECT: S, NOW: N} = await import('../../tests/walkthrough/fixtures.js');
+  const services = await makeServices(); const store = services.store; const config = services.config;
+  const obsRec = (await store.list('records', {subject: S, type: 'observation'})).value[0];
+  const ep = (await services.episode.open(store, obsRec, {clock: () => N, newId: () => 'ep-r1'})).value;
+  const first = await m.keep(store, ep.id, config, {clock: () => N}); const again = await m.keep(store, ep.id, config, {clock: () => N});
+  assert.equal(first.ok && again.ok, true, JSON.stringify(again)); assert.equal(again.value.id, first.value.id, 'identical text: the same summary');
+  await services.episode.link(store, ep.id, {record_id: (await store.list('records', {subject: S, variable: 'pulse'})).value[0].id});
+  const changed = await m.keep(store, ep.id, config, {clock: () => N}); assert.equal(changed.ok, true, JSON.stringify(changed)); assert.match(changed.value.id, /~2$/);
+  assert.equal((await store.list('summaries', {})).value.length, 2);
+});
+
+test('M18-R2: an environment reading is labelled as a place reading, not a personal measurement', async () => {
+  const {makeServices, makeRecord, SUBJECT: S, NOW: N} = await import('../../tests/walkthrough/fixtures.js');
+  const env = makeRecord({id: 'env-x', type: 'environment', variable: 'co2', value: 700, unit: 'ppm', place: 'module-b', sensor: 's1', interval: {from: '2026-11-15T09:00:00.000Z', to: '2026-11-15T10:00:00.000Z'}, method: 'environment_sensor', time: '2026-11-15T10:00:00.000Z'});
+  const obsRec = makeRecord({id: 'obs-x', type: 'observation', variable: 'headache', value: undefined, method: 'self_report', place: 'module-b'});
+  const services = await makeServices({records: [env, obsRec]}); const ep = (await services.episode.open(services.store, obsRec, {clock: () => N, newId: () => 'ep-env'})).value;
+  const text = (await m.generate(services.store, ep.id, services.config, {clock: () => N})).value.text;
+  assert.match(text, /co2 \(environment reading at module-b, not a personal measurement\)/);
+});

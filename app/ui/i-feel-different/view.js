@@ -42,7 +42,7 @@ export function mount(element, viewModel) {
     if (section.suggestion) parts.push(el('p', {}, section.suggestion.text), el('p', {class: 'legend'}, `Source: ${section.suggestion.source_text}`), section.suggestion.caution ? el('p', {class: 'notice notice-warning'}, section.suggestion.caution) : null);
     else parts.push(el('p', {class: 'notice notice-info'}, section.text));
     parts.push(el('details', {class: 'table-toggle'}, el('summary', {}, 'What was not looked at'), el('ul', {}, ...section.not_assessed.map(text => el('li', {}, text)))));
-    if (section.alert) parts.push(el('p', {class: 'notice notice-warning', role: 'alert'}, section.alert.text), button('feel-ack', 'Mark the alert as issued', current.actions.close.enabled, () => apply(current.interactions.acknowledgeAlert(), 'feel-ack')));
+    if (section.alert) parts.push(el('div', {class: 'notice notice-warning', role: 'alert'}, el('p', {}, section.alert.text), el('p', {class: 'legend'}, `Source: ${section.alert.source_text}`), el('p', {class: 'legend'}, section.alert.caution)), button('feel-ack', 'Record the alert on this device', current.actions.close.enabled, () => apply(current.interactions.acknowledgeAlert(), 'feel-ack')));
     return el('section', {class: 'card', 'aria-labelledby': 'sec-suggestion'}, ...parts);
   }
 
@@ -63,13 +63,13 @@ export function mount(element, viewModel) {
     const parts = [el('h3', {id: 'sec-actions'}, 'Summary and sharing'), el('p', {class: 'legend'}, 'Generating a summary sends nothing. Sharing is a separate step.'),
       button('feel-summary', 'Generate summary', current.actions.close.enabled, () => apply(current.interactions.generateSummary(), 'feel-summary'))];
     const summary = sectionOf('summary');
-    if (summary) parts.push(el('h4', {}, summary.title), el('pre', {id: 'feel-summary-text', tabindex: '0', class: 'summary-text'}, summary.text), el('p', {class: 'legend'}, summary.note));
+    if (summary) parts.push(el('h4', {}, summary.title), el('pre', {id: 'feel-summary-text', tabindex: '0', class: 'summary-text', 'aria-label': 'Summary text, scrollable'}, summary.text), el('p', {class: 'legend'}, summary.note));
     parts.push(el('div', {class: 'field'}, confirm, ' ', el('label', {for: 'feel-confirm'}, 'I confirm I want to send this episode\'s records to the ground panel (simulated).')), share,
       current.actions.share.enabled ? null : el('p', {class: 'notice notice-info'}, current.actions.share.reason), button('feel-close', 'Close the episode', current.actions.close.enabled, () => apply(current.interactions.closeEpisode(), 'feel-close')));
     return el('section', {class: 'card', 'aria-labelledby': 'sec-actions'}, ...parts);
   }
 
-  const reopenReasons = new Map();
+  const reopenReasons = new Map(); let busy = false; // one reopening at a time from this page
   const MAX_RULES_BYTES = 200 * 1024;
   function rulesCard(section) {
     const input = el('input', {id: 'feel-rules-file', type: 'file', accept: 'application/json,.json'});
@@ -89,7 +89,7 @@ export function mount(element, viewModel) {
     const rows = section.items.map(item => {
       const why = el('input', {id: `feel-reopen-why-${item.id}`, type: 'text', maxlength: '500', autocomplete: 'off'}); why.value = reopenReasons.get(item.id) ?? ''; why.addEventListener('input', () => reopenReasons.set(item.id, why.value));
       const b = el('button', {type: 'button', id: `feel-reopen-${item.id}`}, 'Reopen this episode'); if (!item.reopen.enabled) b.setAttribute('disabled', 'disabled');
-      b.addEventListener('click', () => apply(current.interactions.reopenEpisode(item.id, why.value).then(next => { if (next.message && next.message.kind === 'info') reopenReasons.delete(item.id); return next; }), b.id));
+      b.addEventListener('click', () => { if (busy) return; busy = true; apply(current.interactions.reopenEpisode(item.id, why.value).then(next => { if (next.message && next.message.kind === 'info') reopenReasons.delete(item.id); return next; }), b.id).finally(() => { busy = false; }); });
       return el('li', {class: 'entry'}, el('div', {}, item.text), el('div', {class: 'field'}, el('label', {for: why.id}, 'Why reopen it (needed)'), why), b, item.reopen.enabled ? null : el('p', {class: 'notice notice-info'}, item.reopen.reason));
     });
     return el('section', {class: 'card', 'aria-labelledby': 'sec-history'}, el('h3', {id: 'sec-history'}, section.title), el('ul', {class: 'entries'}, ...rows));

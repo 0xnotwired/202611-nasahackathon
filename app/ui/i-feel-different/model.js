@@ -21,6 +21,8 @@ async function openEpisodeOf(ctx) {
   if (!listed.ok) return null;
   return listed.value.filter(e => e.closed === undefined || e.closed === null || e.closed === false).sort((a, b) => (a.opened < b.opened ? 1 : a.opened > b.opened ? -1 : a.id < b.id ? -1 : 1))[0] ?? null;
 }
+/** The status of a rule is what its file declares. This app cannot verify a review, so even "reviewed" carries that caveat beside the text. */
+const cautionOf = status => (status === 'reviewed' ? 'The status "reviewed" is what the rule\'s file declares; this app cannot verify it.' : `This rule is marked "${status}": it has not been reviewed, so it is not reviewed guidance.`);
 async function historySection(ctx, blocked) {
   const base = {id: 'history', title: 'Earlier episodes', state: 'empty', text: 'No earlier episode.', items: []};
   if (typeof ctx.episode.listEpisodes !== 'function') return {...base, state: 'not_available', text: 'The episode history is not available yet.'};
@@ -68,13 +70,14 @@ async function build(services, message, extra) {
   const s = await ctx.episode.situation(ctx.store, current.id, ctx.config, {clock: ctx.clock});
   if (s.ok === false) { sections.push({id: 'episode', title: 'Open episode', state: 'error', text: `The episode could not be read: ${s.error.message}`}); return {state: 'ready', title: 'I feel different', sections, message: message ?? null, summary: null, actions: {close: {enabled: blocked === null, reason: blocked}}, interactions: interactions(services)}; }
   const card = ctx.copilot.card(s, ctx.config, found.rules);
-  sections.push({id: 'episode', title: 'Open episode', state: 'ready', note: `Opened ${current.opened}.${s.alert_issued ? ' An alert was already issued for it.' : ''}`});
+  sections.push({id: 'episode', title: 'Open episode', state: 'ready', note: `Opened ${current.opened}.${s.alert_issued ? ' Help was recorded on this device for it; that does not mean anything was sent.' : ''}`});
   sections.push({id: 'data', title: 'What you recorded and what is known', state: 'ready', note: 'Each value shows its method, time and origin.', entries: await entriesFor(ctx, card.data.map(item => item.id))});
   const gaps = {id: 'gaps', title: 'What is missing', state: card.gaps.length ? 'ready' : 'empty', text: s.why_empty.missing ?? '', items: card.gaps.map(g => ({text: gapText(g)}))};
   sections.push(gaps);
   sections.push({id: 'suggestion', title: 'Suggestion', state: 'ready', note: 'A suggestion comes only from a rule with a source, a version and a review status.', text: card.no_guidance ? 'There is no reviewed guidance for this.' : null,
     suggestion: card.suggestion ? {text: card.suggestion.text, source_text: `${card.suggestion.source} · version ${card.suggestion.version} · ${card.suggestion.review_status}`, reviewed: card.suggestion.review_status === 'reviewed',
-      caution: card.suggestion.review_status === 'reviewed' ? null : `This rule is marked "${card.suggestion.review_status}": it has not been reviewed, so it is not reviewed guidance.`} : null, not_assessed: card.not_assessed, alert: card.alert});
+      caution: cautionOf(card.suggestion.review_status)} : null, not_assessed: card.not_assessed,
+    alert: card.alert ? {text: card.alert.text, source_text: `${card.alert.source} · version ${card.alert.version} · ${card.alert.review_status}`, caution: cautionOf(card.alert.review_status)} : null});
   sections.push({id: 'you_can', title: 'What you can do', state: s.you_can.length ? 'ready' : 'empty', text: s.why_empty.you_can ?? '', note: 'Procedures run from On board.',
     items: s.you_can.map(c => ({id: c.procedure_id, text: `${c.title} (version ${c.version}): ${c.available ? 'the equipment is in the mission configuration' : `blocked, this mission configuration lacks ${c.missing.join(', ')}`}`, available: c.available, missing: c.missing}))});
   sections.push({id: 'happened', title: 'What happened', state: s.happened.length ? 'ready' : 'empty', text: s.why_empty.happened ?? '',
@@ -116,9 +119,9 @@ function interactions(services) {
     askHelp: run(async ctx => {
       const opened = await startEpisode(ctx, 'other'); if (!opened.ok) return {message: saved(opened, '')};
       const alert = await ctx.episode.issueAlert(ctx.store, opened.value.id);
-      return {message: alert.ok ? msg('info', 'Help was requested and the alert was issued. This device has no network here: share the episode with the ground from this screen.') : saved(alert, '')};
+      return {message: alert.ok ? msg('info', 'Help was recorded on this device. Nothing has been sent yet: share the episode with the ground from this screen.') : saved(alert, '')};
     }),
-    acknowledgeAlert: run(async ctx => { const e = await current(ctx); if (!e) return {message: msg('error', 'Not done: no episode is open.')}; const r = await ctx.episode.issueAlert(ctx.store, e.id); return {message: saved(r, r.ok && r.value.issued ? 'The alert was marked as issued.' : 'The alert had already been issued.')}; }),
+    acknowledgeAlert: run(async ctx => { const e = await current(ctx); if (!e) return {message: msg('error', 'Not done: no episode is open.')}; const r = await ctx.episode.issueAlert(ctx.store, e.id); return {message: saved(r, r.ok && r.value.issued ? 'The alert was recorded on this device. Nothing was sent.' : 'The alert had already been recorded on this device.')}; }),
     link: run(async (ctx, input) => { const e = await current(ctx); if (!e) return {message: msg('error', 'Not done: no episode is open.')}; return {message: saved(await ctx.episode.link(ctx.store, e.id, input), 'Linked.')}; }),
     generateSummary: run(async ctx => {
       const e = await current(ctx); if (!e) return {message: msg('error', 'Not done: no episode is open.')};
@@ -130,11 +133,11 @@ function interactions(services) {
       if (!(ctx.sync && ctx.privacy && ctx.session)) return {message: msg('error', 'Sharing is not available yet.')};
       const e = await current(ctx); if (!e) return {message: msg('error', 'Not done: no episode is open.')};
       ctx.session.unlock();
-      const kept = await ctx.store.list('summaries', {subject: ctx.subject, episode_id: e.id}); const lastSummary = kept.ok ? kept.value.sort((a, b) => (a.generated < b.generated ? 1 : -1))[0] : undefined;
+      const kept = await ctx.store.list('summaries', {subject: ctx.subject, episode_id: e.id}); const lastSummary = kept.ok ? kept.value.sort((a, b) => (a.generated !== b.generated ? (a.generated < b.generated ? 1 : -1) : b.id.localeCompare(a.id, 'en', {numeric: true})))[0] : undefined;
       const logged = await ctx.privacy.logShared(ctx.store, {subject: ctx.subject, what: [e.observation_id, ...e.record_ids, ...(lastSummary ? [`summary:${lastSummary.id}`] : [])], with: 'ground panel (simulated)', channel: 'simulated sync'}, {clock: ctx.clock, newId: ctx.newId, session: ctx.session});
       if (!logged.ok) return {message: saved(logged, '')};
       const queued = await ctx.sync.enqueue(ctx.store, logged.value.id, {clock: ctx.clock, newId: ctx.newId});
-      return {message: queued.ok ? msg('info', (lastSummary ? 'Shared with the saved summary: logged and queued. It moves when the link allows it; see the Ground panel.' : 'Shared the records only (no summary was generated for this episode): logged and queued. It moves when the link allows it; see the Ground panel.')) : msg('error', `The share was logged but could not be queued: ${queued.error.message}`)};
+      return {message: queued.ok ? msg('info', (lastSummary ? `Shared with the summary generated at ${lastSummary.generated}: logged and queued. It moves when the link allows it; see the Ground panel.` : 'Shared the records only (no summary was generated for this episode): logged and queued. It moves when the link allows it; see the Ground panel.')) : msg('error', `The share was logged but could not be queued: ${queued.error.message}`)};
     }),
     // text: the content of a rules file. Works for any data source: a rules file is not personal data, and nothing here records anything about the person.
     loadRules: async text => {

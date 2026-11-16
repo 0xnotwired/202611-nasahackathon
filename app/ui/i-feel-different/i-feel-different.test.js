@@ -37,7 +37,7 @@ test('M20-V3: the two configurations give two different journeys (what you can d
 
 test('M20-V4: help can be asked without completing the questionnaire: an episode opens and the alert is issued', async () => {
   const services = await makeServices(); const vm = await (await model(services, {})).interactions.askHelp();
-  assert.equal(vm.message.kind, 'info'); assert.match(vm.message.text, /Help was requested/); const e = (await services.store.list('episodes', {})).value[0]; assert.equal(e.alert_issued, true);
+  assert.equal(vm.message.kind, 'info'); assert.match(vm.message.text, /Help was recorded on this device. Nothing has been sent/); const e = (await services.store.list('episodes', {})).value[0]; assert.equal(e.alert_issued, true);
   assert.equal((await services.store.get('records', e.observation_id)).value.variable, 'other'); assert.equal(section(vm, 'suggestion').alert, null);
 });
 
@@ -89,8 +89,8 @@ test('M20-R2: a rule marked demo or draft shows its suggestion with a caution; a
   const rule = status => ({id: 'r1', when: {recorded_variable: 'fatigue'}, suggestion: 'Fictional text.', source: 'team demo (fictional rule)', version: 'v1', review_status: status});
   for (const [status, caution] of [['demo', true], ['draft', true], ['reviewed', false]]) {
     const services = await makeServices({rules: [rule(status)]}); const vm = await (await model(services, {})).interactions.open('fatigue');
-    const sug = vm.sections.find(s => s.id === 'suggestion').suggestion; assert.equal(sug.reviewed, status === 'reviewed'); assert.equal(sug.caution !== null, caution, status);
-    if (caution) assert.match(sug.caution, /not reviewed guidance/);
+    const sug = vm.sections.find(s => s.id === 'suggestion').suggestion; assert.equal(sug.reviewed, status === 'reviewed'); assert.ok(sug.caution, `${status} always carries a caution`);
+    assert.match(sug.caution, caution ? /not reviewed guidance/ : /declares; this app cannot verify/);
   }
   const none = await (await model(await makeServices(), {})).interactions.open('fatigue'); assert.equal(none.sections.find(s => s.id === 'suggestion').suggestion, null);
 });
@@ -116,4 +116,18 @@ test('M20-R4: rules loaded from a file are stored, listed with their status and 
   for (const bad of ['{', JSON.stringify([{id: 'x'}]), 'x'.repeat(200 * 1024 + 1)]) { const out = await vm.interactions.loadRules(bad); assert.equal(out.message.kind, 'error', bad.slice(0, 20)); }
   assert.equal((await services.store.list('rules', {})).value.length, 1);
   const mine = await makeServices({writable: false}); const rv = await model(mine, {}); assert.equal((await rv.interactions.loadRules(good)).message.kind, 'info', 'a rules file is not personal data, so a read-only source can load it');
+});
+
+test('M20-R5: an alert from a rule shows its source, version and declared status, with the same caution; the wording never claims it was sent', async () => {
+  const rule = {id: 'a1', when: {recorded_variable: 'fatigue'}, suggestion: 'Fictional.', alert: 'Fictional alert.', source: 'team demo (fictional)', version: 'v1', review_status: 'reviewed'};
+  const services = await makeServices({rules: [rule]}); const vm = await (await model(services, {})).interactions.open('fatigue'); const alert = section(vm, 'suggestion').alert;
+  assert.match(alert.source_text, /team demo \(fictional\) · version v1 · reviewed/); assert.match(alert.caution, /cannot verify/);
+  const acked = await vm.interactions.acknowledgeAlert(); assert.match(acked.message.text, /Nothing was sent/);
+  assert.doesNotMatch(JSON.stringify(acked.sections.find(s => s.id === 'episode')), /already issued/);
+});
+
+test('M20-R6: while another episode is open, the history offers no reopening and says why', async () => {
+  const services = await makeServices(); let vm = await (await model(services, {})).interactions.open('fatigue'); vm = await vm.interactions.closeEpisode(); vm = await vm.interactions.open('headache');
+  const item = section(vm, 'history').items[0]; assert.equal(item.reopen.enabled, false); assert.match(item.reopen.reason, /Another episode is open/);
+  const refused = await vm.interactions.reopenEpisode(item.id, 'try'); assert.equal(refused.message.kind, 'error'); assert.match(refused.message.text, /Another episode is open/);
 });

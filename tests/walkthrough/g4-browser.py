@@ -143,12 +143,17 @@ try:
         check('close again', focus_until(page, "document.activeElement.id === 'feel-close'", 'Tab') and (page.keyboard.press('Enter') or True))
         page.wait_for_selector('#feel-symptom', timeout=10000)
         check('help: it can be asked without choosing anything', focus_until(page, "document.activeElement.id === 'feel-help'", 'Tab') and (page.keyboard.press('Enter') or True))
-        page.wait_for_function("document.querySelector('#feel-message').textContent.startsWith('Help was requested')", timeout=10000)
+        page.wait_for_function("document.querySelector('#feel-message').textContent.startsWith('Help was recorded')", timeout=10000)
         check('help: an episode is open and no second alert is offered', page.locator('#sec-data').count() == 1 and page.locator('#feel-ack').count() == 0)
 
+        page.click('#feel-summary'); page.wait_for_selector('#feel-summary-text', timeout=10000)  # the state that draws the most text: the summary is on screen
         page.set_viewport_size({'width': 320, 'height': 700})
         page.evaluate("location.hash = '#/i-feel-different'"); page.wait_for_timeout(400)
         check('i-feel-different: no sideways page scroll at 320 px', page.evaluate("document.documentElement.scrollWidth - document.documentElement.clientWidth") <= 0)
+        page.set_viewport_size({'width': 1100, 'height': 900}); page.wait_for_selector('#feel-confirm', timeout=10000); page.check('#feel-confirm'); page.click('#feel-share')
+        page.wait_for_function("document.querySelector('#feel-message').textContent.startsWith('Shared')", timeout=10000)
+        page.set_viewport_size({'width': 320, 'height': 700}); page.evaluate("location.hash = '#/ground'"); page.wait_for_timeout(600)
+        check('ground: the delivered summary is on screen and the page does not scroll sideways at 320 px', page.locator('.summary-text').count() >= 1 and page.evaluate("document.documentElement.scrollWidth - document.documentElement.clientWidth") <= 0, page.evaluate("document.documentElement.scrollWidth"))
         check('no console error, no page error and no response >= 400 during the walk', not errors and not failed, errors + failed)
         browser.close()
     print(json.dumps({'level': 'BROWSER (Chromium only, no screen reader, synthetic demo source)', 'checks': len(results), 'results': results}, indent=1))

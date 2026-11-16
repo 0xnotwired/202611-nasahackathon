@@ -29,7 +29,7 @@ test('M17-P3: a rule with no source is rejected on load, and is named in not_ass
 
 test('M17-P4: if the episode already issued an alert, alert is null; otherwise a rule may carry one', () => {
   const rule = toy({alert: 'TOY alert text'});
-  assert.deepEqual(m.card(situation(), config, [rule]).alert, {text: 'TOY alert text'}); assert.equal(m.card(situation({alert_issued: true}), config, [rule]).alert, null);
+  const alert = m.card(situation(), config, [rule]).alert; assert.equal(alert.text, 'TOY alert text'); for (const key of ['rule_id', 'source', 'version', 'review_status']) assert.equal(typeof alert[key], 'string', `the alert carries its ${key}`); assert.equal(m.card(situation({alert_issued: true}), config, [rule]).alert, null);
   assert.equal(m.card(situation(), config, [toy()]).alert, null, 'no alert text in the rule, no alert');
 });
 
@@ -65,4 +65,25 @@ test('M17-R2: stored rules are immutable per id@version; a changed rule needs a 
   await m.saveRules(store, [R({version: 'v2', suggestion: 'Newer.'})], {clock: () => '2026-11-16T11:00:00.000Z'}); assert.equal((await m.loadRules(store)).value[0].suggestion, 'Newer.');
   assert.equal((await m.saveRules(store, [R({id: 'r2', source: ''})], {clock})).ok, false); assert.equal((await m.saveRules(store, [R({id: 'r3'})], {clock: () => 'noon'})).error.code, 'invalid_clock');
   assert.equal((await m.loadRules({})).ok, false);
+});
+
+test('M17-R3: a rules file is all or nothing: a clash anywhere saves no rule of the file', async () => {
+  const store = await mem(); await m.saveRules(store, [R({id: 'r3'})], {clock});
+  const clash = await m.saveRules(store, [R({id: 'r1'}), R({id: 'r2'}), R({id: 'r3', suggestion: 'Changed.'})], {clock});
+  assert.equal(clash.error.code, 'version_exists'); assert.match(clash.error.message, /No rule of this file was saved/);
+  assert.deepEqual((await m.loadRules(store)).value.map(r => r.id), ['r3']);
+});
+
+test('M17-R4: only the contract fields are accepted; ids and versions cannot contain "@" or be long; version 10 beats 9', async () => {
+  for (const bad of [R({threshold: 5}), R({reviewed_by: 'Dr X'}), R({id: 'a@b'}), R({version: 'a@b'}), R({id: 'x'.repeat(101)}), R({version: 'v'.repeat(51)}), JSON.parse('{"__proto__": {"x": 1}, "id": "p", "when": {"recorded_variable": "a"}, "suggestion": "s", "source": "s", "version": "1", "review_status": "demo"}')])
+    assert.equal(m.validateRules([bad]).ok, false, JSON.stringify(bad).slice(0, 50));
+  const store = await mem(); const same = () => '2026-11-16T10:00:00.000Z';
+  await m.saveRules(store, [R({version: '9', suggestion: 'nine'})], {clock: same}); await m.saveRules(store, [R({version: '10', suggestion: 'ten'})], {clock: same});
+  assert.equal((await m.loadRules(store)).value[0].suggestion, 'ten');
+});
+
+test('M17-R5: more than 200 rules are refused, and a rule that matches only a not-recorded observation does not apply', () => {
+  assert.equal(m.validateRules(Array.from({length: 201}, (_, i) => R({id: `r${i}`}))).ok, false);
+  const sit = {you_recorded: [{id: 'o', variable: 'fatigue', state: 'not_recorded'}], we_know: [], missing: [], alert_issued: false};
+  assert.equal(m.card(sit, {}, [R()]).suggestion, null);
 });

@@ -1,5 +1,5 @@
 /**
- * Contract version 0.19. Authority: docs/CONTRACTS.md.
+ * Contract version 0.20. Authority: docs/CONTRACTS.md.
  * Documentation only: no runtime validation or module logic lives here.
  * Every persisted object additionally carries schema_version (section 3),
  * represented by Persisted<T>; nested criteria are not separately persisted.
@@ -116,6 +116,27 @@
  */
 
 /**
+ * The stored text of a summary. Immutable.
+ * @typedef {Object} Summary
+ * @property {string} id
+ * @property {number} schema_version
+ * @property {string} subject
+ * @property {string} episode_id
+ * @property {string} text
+ * @property {string[]} origins
+ * @property {string} generated
+ */
+
+/**
+ * A stored guidance rule. Immutable per `id@version`; its review status is the file's claim, not verified.
+ * @typedef {Object} RuleEntry
+ * @property {string} id
+ * @property {number} schema_version
+ * @property {string} saved
+ * @property {{id:string,when:{recorded_variable:string},suggestion:string,source:string,version:string,review_status:'demo'|'draft'|'reviewed',alert?:string}} rule
+ */
+
+/**
  * A procedure as the registry stores it: one immutable entry per `id@version`.
  * @typedef {Object} ProcedureEntry
  * @property {string} id  "<procedure id>@<version>"
@@ -174,4 +195,4 @@
  * @property {'queued'|'in_transit'|'received'} state
  */
 
-export const CONTRACT_VERSION = "0.19";
+export const CONTRACT_VERSION = "0.20";

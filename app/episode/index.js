@@ -42,7 +42,11 @@ export async function open(store, observation, context) {
   try { opened = context.clock(); id = context.newId(); } catch { return fail('invalid_context', 'context', 'The clock or the id generator failed'); }
   if (!isInstant(opened)) return fail('invalid_clock', 'clock', 'The clock did not return an ISO8601 UTC instant');
   if (!isText(id)) return fail('invalid_id', 'newId', 'The id generator did not return text');
-  return store.save('episodes', {id, schema_version: 2, subject: r.subject, opened, observation_id: r.id, execution_ids: [], record_ids: [], task_ids: [], alert_issued: false});
+  // One open episode per subject: the check and the write run under one lock for the subject, shared with `reopen`.
+  return serial(`subject/${r.subject}`, async () => {
+    if (has(store, ['list'])) { const others = await store.list('episodes', {subject: r.subject}); if (!others.ok) return others; if (others.value.some(o => !closed(o))) return fail('another_episode_open', 'observation', 'Another episode is open; close it first'); }
+    return store.save('episodes', {id, schema_version: 2, subject: r.subject, opened, observation_id: r.id, execution_ids: [], record_ids: [], task_ids: [], alert_issued: false});
+  });
 }
 
 const SOURCES = [['execution_id', 'executions', 'execution_ids'], ['record_id', 'records', 'record_ids'], ['task_id', 'tasks', 'task_ids']];
@@ -77,7 +81,7 @@ export function close(store, episodeId, options) {
     }
     const loaded = await load(store, episodeId); if (!loaded.ok) return loaded;
     if (closed(loaded.value)) return fail('episode_closed', 'episodeId', 'The episode is already closed');
-    return store.updateState('episodes', episodeId, {closed: stamp});
+    return store.updateState('episodes', episodeId, {closed: stamp}, {expect: {closed: loaded.value.closed === undefined ? null : loaded.value.closed}});
   });
 }
 
@@ -86,6 +90,12 @@ export function close(store, episodeId, options) {
  * Refused while another episode of the same subject is open (one open episode at a time), and when the episode is not closed.
  */
 export function reopen(store, episodeId, options) {
+  return serial(`subject-of/${episodeId}`, async () => {
+    const first = await load(store, episodeId); if (!first.ok) return first;
+    return serial(`subject/${first.value.subject}`, () => reopenLocked(store, episodeId, options));
+  });
+}
+function reopenLocked(store, episodeId, options) {
   return serial(`episodes/${episodeId}`, async () => {
     if (!isPlain(options) || !isText(options.reason)) return fail('invalid_reason', 'reason', 'Say why the episode is being reopened');
     let at = null;

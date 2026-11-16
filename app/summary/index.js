@@ -14,7 +14,7 @@ function valueWords(r) {
   if (typeof r.value !== 'number') return 'recorded (no numeric value)';
   return isText(r.unit) && r.unit !== 'not_applicable' ? `${r.value} ${r.unit}` : `${r.value} (unit unknown)`;
 }
-const line = r => `- ${r.variable ?? 'value'}: ${valueWords(r)} · method ${r.method ?? 'not stated'} · ${r.time ?? 'time not established'}`;
+const line = r => `- ${r.type === 'environment' ? `${r.variable ?? 'value'} (environment reading${r.place ? ` at ${r.place}` : ''}, not a personal measurement)` : r.variable ?? 'value'}: ${valueWords(r)} · method ${r.method ?? 'not stated'} · ${r.time ?? 'time not established'}`;
 
 /**
  * keep(store, episodeId, config, { clock }) → Result<{ id, text, origins, pending_send, saved }>. Generates the summary and stores its text, immutably, in `summaries`,
@@ -25,8 +25,16 @@ export async function keep(store, episodeId, config, context) {
   if (!made.ok) return made;
   if (typeof store.save !== 'function') return fail('invalid_store', 'store', 'A store with save() is required');
   const episode = (await store.get('episodes', episodeId)).value;
-  const saved = await store.save('summaries', {id: made.value.id, schema_version: 2, subject: episode.subject, episode_id: episodeId, text: made.value.text, origins: made.value.origins, generated: made.value.id.slice(episodeId.length + 1)});
-  return saved.ok ? {ok: true, value: {...made.value, saved: true}} : saved;
+  const generated = made.value.id.slice(episodeId.length + 1);
+  // The id is the episode and the instant; where the clock does not move (the demo) a second summary of the same instant gets a counter, and an identical text is not stored twice.
+  for (let n = 1; n <= 50; n += 1) {
+    const id = n === 1 ? made.value.id : `${made.value.id}~${n}`;
+    const there = await store.get('summaries', id);
+    if (there.ok) { if (there.value.text === made.value.text) return {ok: true, value: {...made.value, id, saved: true}}; continue; }
+    const saved = await store.save('summaries', {id, schema_version: 2, subject: episode.subject, episode_id: episodeId, text: made.value.text, origins: made.value.origins, generated});
+    return saved.ok ? {ok: true, value: {...made.value, id, saved: true}} : saved;
+  }
+  return fail('too_many', 'id', 'Too many summaries were generated at the same instant');
 }
 
 /** generate(store, episodeId, config, { clock }) → Result<{ id, text, origins, pending_send }>. Reads only; nothing is sent. */
