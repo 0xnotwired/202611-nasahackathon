@@ -36,6 +36,16 @@ Open the [live application](https://hackathon-nasa-orbita.vercel.app/#/adaptatio
 
 The copilot uses explicit, versioned rules supplied as data. No clinical rule is shipped for real use; when reviewed guidance is unavailable, the app says so. The demo demonstrates the software journey, not a treatment recommendation.
 
+### Explore a complete fictional case
+
+Choose **Complete mission case (fictional, 30 days)** in the **Data source** selector, or open the [extended case directly](https://hackathon-nasa-orbita.vercel.app/?case=complete#/my-day).
+
+This additional case contains **502 fictional records**: a month of vital signs and glucose with explicit gaps, previous strength/aerobic/bone assessments, and temperature, CO₂, humidity and absorbed-dose examples from two habitat modules. It also includes a pending task, a completed task with a linked result, a task not completed, a future task, completed/interrupted/blocked procedure examples and a closed episode with a saved summary.
+
+Use **My progress** or **Review and export** to explore the history; select a place in **Habitat**; inspect **My plan** and **On board**; reopen the example episode with a stated reason in **I feel different**, or start a new one. Choose another mission configuration to try different equipment and link modes. **NASA cases** still requires a user-selected research file, and the **Ground panel** starts without shared items until you explicitly share something.
+
+The original demo, extended case and personal records use separate stores. Both demos live only in memory: switching sources preserves their changes during the page session, while reloading restores the fictional fixtures. Every value and procedure is a team-authored demonstration, not a real measurement or reviewed medical guidance.
+
 ### How this answers the challenge
 
 The challenge asks for a visual tool that supports health self-assessment and guidance during space missions. Órbita connects the measurements to the actions and follow-up that give them practical context.

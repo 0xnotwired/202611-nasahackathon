@@ -64,6 +64,45 @@ export function generateScenario(options) {
   make({type:'environment',state:'recorded',variable:'co2',value:700+next()%50,unit:'ppm',method:'environment_sensor',place:'module-b',sensor:`${prefix}-sensor-b`,interval:{...interval},note:'Team demo: fictional reading from another spacecraft module; do not infer personal exposure.'});
   make({type:'environment',state:'recorded',variable:'ambient_temperature',value:20+next()%4,unit:'degC',method:'environment_sensor',place:'module-a',sensor:`${prefix}-sensor-a`,interval:{...interval}});
 
+  // Seed 2 is the extended team-authored case. Values are invented examples,
+  // never physiological ranges or source-derived clinical criteria.
+  if (seed === 2) {
+    for (const record of records) record.note += ' Fictional extended case.';
+    const daily = [
+      ['pulse', 'bpm', 'demo-device', 72, 5],
+      ['systolic_pressure', 'mmHg', 'demo-cuff', 112, 7],
+      ['diastolic_pressure', 'mmHg', 'demo-cuff', 72, 5],
+      ['respiration_rate', 'breaths/min', 'demo-respiration', 14, 3],
+      ['mass', 'kg', 'demo-scale', 71, 2],
+      ['temperature', 'degC', 'demo-thermometer', 36.4, 0.4],
+      ['sleep_hours', 'h', 'self_report', 6, 2],
+      ['glucose', 'mg/dL', 'demo-device', 91, 9]
+    ];
+    for (let day = 0; day < 30; day += 1) {
+      const date = new Date(Date.UTC(2026, 9, 17 + day)).toISOString().slice(0, 10);
+      const time = `${date}T16:00:00.000Z`;
+      const mission_phase = day < 15 ? 'preflight' : 'mission';
+      for (const [variable, unit, method, base, spread] of daily) {
+        const gap = (day === 6 || day === 14) && ['pulse', 'glucose'].includes(variable);
+        make({type:'measurement', state:gap?'not_recorded':'recorded', variable, method, time, mission_phase,
+          ...(gap?{}:{value:Math.round((base+(day%5)*spread/4)*100)/100,unit})});
+      }
+      for (const [place, offset] of [['module-a',0],['module-b',1]]) {
+        for (const [variable, unit, value] of [
+          ['co2','ppm',610+day*2+offset*80], ['ambient_temperature','degC',22+offset+(day%3)/10],
+          ['relative_humidity','%',42+(day%7)+offset], ['radiation_dose','mGy',0.01+(day%3)/100]
+        ]) make({type:'environment',state:'recorded',variable,value,unit,method:variable==='radiation_dose'?'demo_absorbed_dose':'environment_sensor',
+          time,mission_phase,place,sensor:`${prefix}-sensor-${place}`,interval:{from:`${date}T15:00:00.000Z`,to:time},
+          note:variable==='radiation_dose'?'Team demo: fictional absorbed dose for this interval, not equivalent or effective dose; no risk inference.':'Team demo: fictional environmental reading; no personal exposure or causal inference.'});
+      }
+    }
+    for (const [time,step] of [['2026-08-15T12:00:00.000Z',0],['2026-10-15T12:00:00.000Z',1]]) {
+      for (const [variable,unit,method,value] of [['strength','N m','dynamometer',110-step*3],['aerobic_capacity','mL/kg/min','cycle_ergometer',43-step],['bone_density','g/cm²','dxa',1.1-step*0.01]]) {
+        make({type:'exam',state:'recorded',variable,unit,method,value,time,mission_phase:'preflight',note:'Team demo: fictional previous assessment; not a current exam or an exam performed on board.'});
+      }
+    }
+  }
+
   const environments=['station','spacecraft','rover','surface_base'];
   const config=environments.map((environment,index)=>({
     id:`${prefix}-config-${environment}`,schema_version:SCHEMA_VERSION,
@@ -91,6 +130,13 @@ export function generateScenario(options) {
     procedure_id:procedures[0].id,description:'Team demo: complete the fictional recording walkthrough.',
     assigned_by:'team_defined',completion:'pending',result_ids:[]
   }];
+  if (seed === 2) {
+    for (const [suffix,description,day] of [
+      ['review','Team demo: review the fictional pulse result.','2026-11-15'],
+      ['interrupted','Team demo: document an interrupted walkthrough.','2026-11-15'],
+      ['tomorrow','Team demo: repeat the fictional recording walkthrough.','2026-11-16']
+    ]) tasks.push({...tasks[0],id:`${prefix}-task-${suffix}`,description,day,result_ids:[]});
+  }
   // Fictional guidance rules for the synthetic demo only. They carry no clinical content: they exist so the suggestion path can be seen working.
   // Source and review status say what they are; a real rule would come from a reviewed source and is never written here.
   const rules=[{id:'demo-rule-fatigue',when:{recorded_variable:'fatigue'},suggestion:'Team demo, fictional rule: it exists only to show how a suggestion appears on this screen. It is not guidance and says nothing about health.',

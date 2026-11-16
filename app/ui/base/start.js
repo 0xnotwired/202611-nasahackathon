@@ -27,21 +27,52 @@ const LOCAL_SUBJECT = 'local-user'; // one person on their own device; no accoun
 // One simulated link and one session for the whole page; the link follows the selected mission configuration (see the ground view).
 const LINK = sync.createLink({mode: 'no_link'});
 const SESSION = privacy.createSession({clock: () => new Date().toISOString()});
-const SOURCES = [{id: 'demo', label: 'Synthetic demo (fictional)', synthetic: true}, {id: 'mine', label: 'My records', synthetic: false}];
+const SOURCES = [{id: 'demo', label: 'Synthetic demo (fictional)', synthetic: true}, {id: 'demo-full', label: 'Complete mission case (fictional, 30 days)', synthetic: true}, {id: 'mine', label: 'My records', synthetic: false}];
 
-async function openDemo() {
-  const scenario = generateScenario({seed: 1});
-  const opened = await openStore({kind: 'memory', name: 'demo'});
+async function openDemo(seed = 1) {
+  const scenario = generateScenario({seed});
+  const opened = await openStore({kind: 'memory', name: `demo-${seed}`});
   if (!opened.ok) throw new Error('The synthetic demo store could not be opened');
   for (const [collection, objects] of [['records', scenario.records], ['tasks', scenario.tasks]]) {
-    const saved = await opened.value.saveBatch(collection, objects);
-    if (!saved.ok) throw new Error(`The synthetic demo could not be loaded (${collection}: ${saved.error.code})`);
+    for (let offset = 0; offset < objects.length; offset += 128) {
+      const saved = await opened.value.saveBatch(collection, objects.slice(offset, offset + 128));
+      if (!saved.ok) throw new Error(`The synthetic demo could not be loaded (${collection}: ${saved.error.code})`);
+    }
   }
   for (const item of scenario.procedures) {
     const published = await procedures.publishProcedure(opened.value, item, {clock: () => DEMO_NOW});
     if (!published.ok) throw new Error(`The synthetic demo procedures could not be loaded (${published.error.code})`);
   }
+  if (seed === 2) await loadFictionalHistory(opened.value, scenario);
   return {store: opened.value, subject: scenario.records[0].subject, configs: scenario.config, rules: scenario.rules};
+}
+
+// Seed through the domain APIs in a private memory store. No real consent,
+// user task completion or medical action is inferred from this fictional history.
+async function loadFictionalHistory(store, scenario) {
+  const take = result => { if (!result.ok) throw new Error(`Fictional history failed: ${result.error.code}`); return result.value; };
+  let id = 0;
+  const subject = scenario.records[0].subject;
+  const context = {subject, clock: () => '2026-11-15T17:00:00.000Z', newId: () => `synthetic-2-history-${++id}`, preparation_confirmed: true};
+  const procedure = scenario.procedures[0];
+  const pulse = scenario.records.findLast(r => r.variable === 'pulse' && r.state === 'recorded');
+  const fatigue = scenario.records.find(r => r.variable === 'fatigue' && r.state === 'recorded');
+  const current = take(await episode.open(store, fatigue, {...context, clock: () => '2026-11-15T16:30:00.000Z'}));
+  const completed = take(await procedures.start(store, procedure, scenario.config[0], context));
+  for (const step of procedure.steps) take(await procedures.advance(store, completed.id, {...(step.records ? {record: pulse.id} : {}), clock: context.clock}));
+  take(await procedures.finish(store, completed.id, {state: 'completed', clock: context.clock}));
+  const review = scenario.tasks.find(t => t.id.endsWith('-review'));
+  take(await plan.mark(store, review.id, {completion: 'done', execution_id: completed.id, clock: context.clock}));
+  take(await plan.linkResult(store, review.id, pulse.id));
+  const interrupted = take(await procedures.start(store, procedure, scenario.config[0], context));
+  take(await procedures.interrupt(store, interrupted.id, {reason: 'Fictional demonstration: interrupted to illustrate preserving progress.', clock: context.clock}));
+  const task = scenario.tasks.find(t => t.id.endsWith('-interrupted'));
+  take(await plan.mark(store, task.id, {completion: 'not_done', note: {reason: 'Fictional walkthrough interrupted; no care action took place.'}, clock: context.clock}));
+  take(await procedures.start(store, procedure, scenario.config[1], context));
+  take(await episode.link(store, current.id, {execution_id: completed.id, record_id: pulse.id, task_id: review.id}));
+  take(await episode.link(store, current.id, {execution_id: interrupted.id, task_id: task.id}));
+  take(await summary.keep(store, current.id, scenario.config[0], {clock: () => '2026-11-15T17:30:00.000Z'}));
+  take(await episode.close(store, current.id, {clock: () => '2026-11-15T17:45:00.000Z'}));
 }
 
 // The origin of records a person enters under "My records" is their own statement, never a default: until chosen, recording stays off.
@@ -84,8 +115,10 @@ export async function start(doc = document, win = window) {
   const root = doc.querySelector('#app');
   const opened = await openStorage();
   const demo = await openDemo();
-  const configs = demo.configs;
-  let sourceId = 'demo';
+  const demos = {demo, 'demo-full': await openDemo(2)};
+  let configs = demo.configs;
+  let sourceId = new URLSearchParams(win.location.search).get('case') === 'complete' ? 'demo-full' : 'demo';
+  configs = (demos[sourceId] ?? demo).configs;
   let choice = readChoice(win);
   let selected = configs.length ? configs[0].id : null; // an explicit, visible initial choice
   let currentId = (win.location.hash.match(/^#\/([\w-]+)$/) ?? [])[1] ?? PLANNED_VIEWS[0].id;
@@ -116,12 +149,13 @@ export async function start(doc = document, win = window) {
   }
 
   async function draw(moveFocus) {
-    const isDemo = sourceId === 'demo';
-    const services = assembleServices({store: isDemo ? demo.store : opened.store, clock: isDemo ? () => DEMO_NOW : () => new Date().toISOString(), newId: () => win.crypto.randomUUID(), configs,
-      selected_config_id: selected, subject: isDemo ? demo.subject : LOCAL_SUBJECT, writable: isDemo || (choice.origin !== null && opened.reason === null), record_origin: isDemo ? 'synthetic' : choice.origin ?? undefined, flags: {},
-      data_source: isDemo ? {id: 'demo', label: 'Synthetic demo (fictional data)', synthetic: true, note: 'Fictional records generated by the team. The demo clock is fixed at 2026-11-15 18:00 UTC so the data stays current.'}
+    const activeDemo = demos[sourceId];
+    const isDemo = Boolean(activeDemo);
+    const services = assembleServices({store: isDemo ? activeDemo.store : opened.store, clock: isDemo ? () => DEMO_NOW : () => new Date().toISOString(), newId: () => win.crypto.randomUUID(), configs,
+      selected_config_id: selected, subject: isDemo ? activeDemo.subject : LOCAL_SUBJECT, writable: isDemo || (choice.origin !== null && opened.reason === null), record_origin: isDemo ? 'synthetic' : choice.origin ?? undefined, flags: {},
+      data_source: isDemo ? {id: sourceId, label: SOURCES.find(source => source.id === sourceId).label, synthetic: true, note: 'Fictional records generated by the team. The demo clock is fixed at 2026-11-15 18:00 UTC so the data stays current.' + (sourceId === 'demo-full' ? ' Extended case: 30 days, two habitat modules, previous assessments, and preloaded fictional task/procedure/episode history. Reload resets this memory-only case. No sharing is preloaded; imports and simulated sharing require your action.' : '')}
         : {id: 'mine', label: 'My records', synthetic: false, note: 'Records saved in this browser.' + (choice.origin === null ? ' Recording is off until you say where your entries come from (below).' : ` Entries you add are recorded as: ${ORIGINS.find(o => o.id === choice.origin).label}.`)},
-      collaborators: {exporter, readings, importers, catalogs, core, plan, procedures, sync, privacy, episode, copilot, summary, rules: isDemo ? demo.rules : [], link: LINK, session: SESSION, openMemoryStore: () => openStore({kind: 'memory', name: 'nasa-cases'}), keptCases}, storage_fallback_reason: isDemo ? undefined : opened.reason ?? undefined});
+      collaborators: {exporter, readings, importers, catalogs, core, plan, procedures, sync, privacy, episode, copilot, summary, rules: isDemo ? activeDemo.rules : [], link: LINK, session: SESSION, openMemoryStore: () => openStore({kind: 'memory', name: 'nasa-cases'}), keptCases}, storage_fallback_reason: isDemo ? undefined : opened.reason ?? undefined});
     if (!services.ok) { root.replaceChildren(create(doc, 'p', {class: 'notice notice-error', role: 'alert'}, `The application could not start: ${services.error.message}`)); return; }
     health.hidden = true;
     if (!isDemo && opened.reason === null) {
@@ -129,7 +163,7 @@ export async function start(doc = document, win = window) {
       if (!probe.ok) { health.textContent = `The records saved in this browser could not be read (${String(probe.error && probe.error.message).slice(0, 120)}). A stored record is probably damaged. This does not mean nothing was recorded, and nothing was deleted. The views say "could not be read" instead of showing anything. To start over, remove this page's site data in your browser settings; a repair path inside the app is not built yet.`; health.hidden = false; }
     }
     const shell = await buildShell({views: loaders, currentId, services: services.value, params: {}, sources: SOURCES});
-    const parts = renderShell(doc, root, shell, {onSource: id => { sourceId = id; draw(false).then(() => {
+    const parts = renderShell(doc, root, shell, {onSource: id => { sourceId = id; configs = (demos[id] ?? demo).configs; selected = configs[0]?.id ?? null; draw(false).then(() => {
       doc.querySelector('#announce').textContent = `Data source changed to ${SOURCES.find(source => source.id === id)?.label ?? id}.`;
     }); }, onConfig: id => { selected = id; draw(false).then(() => {
       const label = configs.find(config => config.id === id)?.name ?? id;

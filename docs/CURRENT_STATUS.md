@@ -92,3 +92,7 @@ Portable agent instructions: [Claude Code continuation prompt](CLAUDE_CONTINUATI
 ## The teammate's frontend
 
 `frontend/` is a separate Next.js prototype with its own Node backend, translated to English and moved onto the main app's record model (its contract 0.2). See `frontend/INTEGRATION.md` for the decisions, the model comparison and what is still open. Use `npm run frontend:install`, then `npm run frontend:dev` and `npm run frontend:backend`, or `npm run frontend:check`. The main app's `npm test` does not run it.
+
+## Additional fictional case
+
+The main app now offers **Complete mission case (fictional, 30 days)** alongside the original demo and personal records. `?case=complete` selects it on load. It has 502 team-authored synthetic records, task/result examples, completed/interrupted/blocked procedure history and a closed episode with a saved summary. Initialization uses the existing domain APIs in a private memory store; no sharing or research import is preloaded. Reload resets the fixtures. See [verification](experiments/COMPLETE_DEMO.md). Public contract shapes and version 0.22 are unchanged.
