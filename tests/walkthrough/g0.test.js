@@ -33,6 +33,9 @@ test('G0-W3: documentation checks pass and missing experiment is detected',async
     await cp(join(root,'demo'),join(temp,'demo'),{recursive:true});
     await cp(join(root,'scripts'),join(temp,'scripts'),{recursive:true});
     for(const name of ['README.md','AGENTS.md','CLAUDE.md','LICENSE']) await cp(join(root,name),join(temp,name));
+    // Files and folders that documents link to (not dependencies): the teammate's integration note and the negative controls.
+    await mkdir(join(temp,'frontend'),{recursive:true}); await cp(join(root,'frontend','INTEGRATION.md'),join(temp,'frontend','INTEGRATION.md'));
+    await cp(join(root,'tests','controls'),join(temp,'tests','controls'),{recursive:true});
     // AGENTS now links to the user-authorized local skill snapshot. Copy only
     // linked documentation inputs; never include private agent configuration.
     for(const name of ['.agents/SKILLS_SOURCE.json','.agents/skills/README.md','.agents/skills/red-team/README.md']) {
