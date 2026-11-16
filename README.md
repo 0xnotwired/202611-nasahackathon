@@ -1,201 +1,204 @@
 # Órbita — Your health, on board
 
-[Final proposal](docs/FINAL_PROPOSAL.md) · [Build plan](docs/ORCHESTRATION_PLAN.md) · [Technical design](docs/TECHNICAL.md) · [Academic base](docs/ACADEMIC_BASE.md) · [Demo](demo/orbita.html) · [Final product vision](demo/final-product-vision.html)
+**From “I feel different” to a documented next step, with the equipment available on your mission.**
 
-During a space mission, an astronaut needs to understand how they are doing, what has changed and which care actions they can take with the resources at hand.
+NASA Space Apps Challenge 2026 · [Create Health Monitoring Software for Astronauts on Space Missions](https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/) · [Technical README](docs/TECHNICAL_README.md) · [Sources and licenses](docs/RESOURCES_USED.md)
 
-**Órbita is a proposed personal health application for astronauts that brings together their body, their physical adaptation and the mission environment to help them carry out and follow up on care actions.**
+## Summary
 
-> Órbita goes with the astronaut from what they feel to what they can do: it combines health, physical adaptation and habitat with guided procedures and personal follow-up during the mission.
+Órbita is a browser-based visual health tool developed for astronauts to connect what they feel, what has been measured and what they can do with the equipment available on their mission. It brings together health indicators, physical assessments, environmental readings, guided procedures and personal follow-up. A crew member can report a symptom, review available information and gaps, record an action and its result, and prepare a structured summary for support.
 
-Proposal for the challenge [Create Health Monitoring Software for Astronauts on Space Missions — NASA Space Apps 2026](https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/).
+The project addresses NASA Space Apps' health-monitoring challenge through an integrated self-assessment workflow that preserves the source, method and timing of each measurement. The application can run locally as a single HTML file; communication with Earth is demonstrated through a labeled simulation. Guidance comes from versioned rules supplied as data, with no clinical rules shipped for real use. Its intended contribution is clearer, more traceable health information and follow-up when distance, limited equipment and incomplete data make assessment difficult.
 
-## The astronaut's experience
+## Project Details
 
-When the app opens, **My day** would gather the available information, the changes observed and the upcoming tasks. From there, the astronaut could check their body, review their progress, follow their routine or start **I feel different**.
+### What we developed and how it works
 
-| Part | What the astronaut can do |
+We developed eleven connected application views around one journey: **observe, review context, perform an available action, record the result and follow up**. Measurements retain their subject, origin, method, units and time. The interface distinguishes a recorded value, an unrecorded measurement and a confirmation of nothing new.
+
+Health and adaptation views bring observations and assessments together; habitat readings retain their place and measurement interval. Plans and versioned procedures connect preparation, equipment checks, execution and results. The episode workflow gathers known information and gaps before showing any applicable rule-based suggestion. Users can prepare summaries and export records with provenance. The application cannot verify a rule's declared review status and supplies no clinical guidance for real use.
+
+### See the journey
+
+Start the application using the instructions below and keep **Synthetic demo (fictional)** selected. No NASA download, account, API key or personal health information is needed.
+
+1. Open **My health** to see measurements with their dates, methods and origins. A missing measurement stays missing.
+2. In **I feel different**, select **Fatigue** and open an episode. Review the available data and gaps before the suggestion. The demo rule is explicitly fictional.
+3. Open **On board**, confirm the preparation for the fictional recording walkthrough, and start the procedure. Change the mission configuration to explore equipment availability.
+4. In **My plan**, distinguish the task, whether it was completed, and the observed result linked afterwards.
+5. Generate the episode summary or use **Review and export** to download records with provenance. Generating a summary does not share it.
+
+**Observe → review context → perform an available action → record the result → follow up.**
+
+The copilot uses explicit, versioned rules supplied as data. No clinical rule is shipped for real use; when reviewed guidance is unavailable, the app says so. The demo demonstrates the software journey, not a treatment recommendation.
+
+### How this answers the challenge
+
+The challenge asks for a visual tool that supports health self-assessment and guidance during space missions. Órbita connects the measurements to the actions and follow-up that give them practical context.
+
+| Challenge need | What you can use today |
 |---|---|
-| **My health** | Record symptoms, vital signs and rest; explore their body and understand the measurements. |
-| **Adaptation** | Review strength, endurance, aerobic capacity and bone history, alongside recorded exercise and nutrition. |
-| **Habitat** | Check environmental conditions for the place and period: temperature, humidity, CO₂ or radiation, depending on available data. |
-| **My plan** | Follow assigned measurements, tests, exercise, nutrition and other actions; record completion and difficulties. |
-| **On board** | Run guided procedures with their purpose, required equipment, instructions and a grounded next step. |
-| **My progress** | See how observations, measurements and actions taken relate to each other over time. |
+| Enter useful health indicators | Record pulse, blood pressure, glucose, temperature, body mass and self-reported sleep, with units and methods; report symptoms and observations. |
+| Understand change over time | **My progress** charts values with gaps preserved; **Review and export** compares compatible measurements by method and reference. Charts also provide tabular values. |
+| Consider adaptation and environment | **Adaptation** shows the last known physical assessments; **Habitat** shows readings by place and time, without assuming personal exposure. |
+| Support a next action | **On board** checks procedure preparation and equipment; **I feel different** puts known information and gaps before rule-based suggestions. Clinical content still requires qualified review. |
+| Maintain a mission routine | **My day** gathers today's records and tasks; **My plan** supports scheduling, repetition, completion and result linking. Progress measures task completion, not health. |
+| Work across mission settings | Configurations represent a station, spacecraft, rover or surface base, with equipment and communication modes. |
+| Prepare support from Earth | Episodes produce structured summaries; **Ground panel** demonstrates explicit sharing and delivery through a clearly labeled local simulation. |
 
-These parts share history, context and follow-up. Health, adaptation and habitat belong to the product's core scope.
+NASA HRP's five hazards motivate the design: radiation, isolation and confinement, distance from Earth, gravity fields, and hostile closed environments. Órbita brings relevant observations and context together; it does not calculate a combined hazard score, infer a diagnosis or claim to measure every hazard.
 
-### The copilot's role
+### Benefits and intended impact
 
-The copilot is the contextual help that connects the journey. It uses the available information and applicable procedures to explain what to check, what is still unknown and which task can be done with that mission's equipment. A conversational interface and generative AI are options still to be decided; the concept does not depend on them.
+Órbita is designed to help a crew member understand which information is available, which measurements may need updating and which actions are feasible with the mission's resources. It keeps an observed result separate from task completion, and makes gaps visible for follow-up or consultation. Local operation allows the demonstrated workflow to continue without a remote service.
 
-The copilot would organize each episode around six questions: **what you recorded, what we know, what is missing, what you can do, what happened and what is still pending**. Preparation, difficulties and interruptions are part of the record, not just the measured value.
+The intended impact is more understandable health self-assessment and clearer communication of observations and actions. These are design goals: usability improvements, clinical outcomes and operational effectiveness have not been established by a human study.
 
-### A concrete walkthrough
+### What makes the approach creative
 
-In a demo scenario with fictional data:
+The central idea is to connect a health dashboard to an action-and-follow-up workflow. Changing the mission's equipment changes procedure availability; an episode retains what is known and missing; and a completed task does not automatically become evidence of physical improvement. Instead of filling gaps with a score or an invented answer, the interface makes uncertainty part of the experience. A fictional integrated scenario demonstrates this without pretending that unrelated research studies describe one astronaut.
 
-1. The astronaut records that they feel more tired.
-2. Órbita lets them review rest, recent measurements, physical tests, activity and the matching environment, when compatible information exists.
-3. The copilot helps complete the context and opens the relevant procedure.
-4. The astronaut performs the task and records the result.
-5. The episode stays available for follow-up or medical consultation.
+### Tools, languages and development
 
-**Observe → understand → take an action → record the result → continue care.**
+The main application uses **JavaScript ES modules, HTML, CSS, SVG and IndexedDB**, with no runtime dependencies. **Node.js 22** provides the local development server, test runner and single-file packager. **Python** supports documentation checks and data-inspection scripts; **Playwright and Chromium** support browser walkthroughs. **Git and GitHub** track collaboration and evidence. The team used AI-assisted development with documented experiments and independent agent reviews.
 
-A temporal coincidence between environment and symptoms is presented as context; it does not prove their cause.
+The separate teammate edition uses **Next.js, React, TypeScript and a Node backend**; it is not required to run the main application. No dedicated hardware is required for the demonstration, and no real medical-device or camera integration is implemented.
 
-## What we aim to set apart
+### Factors the team considered
 
-The proposal focuses on completing care actions and keeping their result. Charts and the body map let the astronaut explore information within that journey.
+- **Mission constraints:** available equipment, communication modes, local operation and the need for simple procedures.
+- **Scientific interpretation:** measurement method and age, unknown units and clocks, and separation of ground analogs from spaceflight data.
+- **Human interaction:** visible missing data, text alongside status symbols, chart tables, task preparation and the ability to record difficulties.
+- **Privacy and consent:** fictional public demonstrations, separate personal and research stores, and explicit sharing decisions. Local storage is not encrypted by the app.
+- **Responsible guidance:** sourced, versioned rules rather than invented thresholds or diagnoses; reviewed clinical content remains a requirement for real use.
+- **Reproducibility and reuse:** explicit contracts, recorded checks, source citations and dataset-specific conditions.
 
-Procedures would take available resources into account. If a test requires missing equipment, the app would explain that limitation and present the documented alternative or the need for support. Each exam would keep its method and frequency: a DXA history does not mean a DXA can be done on board.
+Presentation scripts: [English pitch](docs/PITCH.md) · [Guion en español](docs/PITCH_ES.md).
 
-Every piece of guidance must keep its source, version and conditions of use. Specific clinical rules and care procedures require selection and review; they are not automatically derived from the datasets.
+## Install and run
 
-The proposed integrated demo would show the same episode under two mission configurations: with and without the required equipment. Behavior must change visibly while keeping the follow-up. This feature is pending; its usefulness would be evaluated against metrics and static instructions. NASA already researches autonomous guides such as AMOS: we do not claim a world first.
+### Main application — recommended
 
-## Try it
-
-Órbita exists in three forms, from the simplest to open to the most complete:
-
-1. **One file, no installation.** Build it with `npm run package` and double-click `dist/orbita.html`. It is a single self-contained page; a content-security policy blocks remote loads, `eval` and form posts, and no network request was seen in Chromium, including with hostile files, rules and notes. The policy does not restrict top-level navigation or WebRTC, and it allows inline scripts, so a future unsafe DOM sink would not be stopped by it (none exists today). Records are kept in the browser if it allows IndexedDB; the page says on screen when it does not. **Every page opened from `file://` in the same Chromium shares that storage**: it is not encrypted and not isolated per file (other browsers were not tested).
-2. **The same app served locally.** `npm run serve` serves `app/` over HTTP at a loopback address. This is the form most of the tests drive.
-3. **The teammate's server edition.** `frontend/` is a Next.js app with its own Node backend for the aerobic-capacity follow-up ([how it relates to the rest](frontend/INTEGRATION.md)). It needs a Node server, so it cannot be inside the single file; what was useful in it was brought into the main app (the review and export view and the manual theme).
-
-The original single-file mockup, [demo/orbita.html](demo/orbita.html), is kept as the design reference and is not modified. [demo/final-product-vision.html](demo/final-product-vision.html) is a visualization for the team, not product code.
-
-Everything you can open starts on **synthetic, fictional data**. "My records" is a separate source that starts empty; there you say where your entries come from (terrestrial, ground analog or flight) before anything can be recorded, and nothing is assumed. NASA data goes in "NASA cases", apart from every other view.
-
-## What is built
-
-The product is built in layers, each with a gate that says what it must prove ([layers](docs/IMPLEMENTATION_LAYERS.md), [status by layer and what is still open](docs/AUDIT.md)). Everything below is **built and tested by the team's agents and reviewed by independent agents, but not accepted**: module statuses in [docs/modules.csv](docs/modules.csv) stay `pending` until a person accepts each gate.
-
-| Layer | What the person can do | Evidence |
-|---|---|---|
-| F1 data core | Records with three states (recorded, confirmed nothing new, not recorded), origin, source clock and unit status; memory and IndexedDB stores; a synthetic scenario | accepted by the user (G0, G1) |
-| F2 situation | My health, Adaptation, Habitat, My progress, My day: every value with its method, time and origin, "not recorded" never shown as "nothing new" | built, reviewed by an agent, G2 walkthrough |
-| F3 plan and procedures | My plan (tasks, repeating exams, undo, results linked afterwards) and On board (procedures with equipment checks, preparation, steps that record a value, retirement); concurrent writers are safe across tabs | built, independent agent review with fixes, G3 |
-| F4 episodes | "I feel different": an episode with what was recorded, what is known and what is missing before any suggestion; a copilot that only suggests from a rule that carries a source, version and review status (none is shipped for real use); a summary for the ground; simulated sync | built, independent agent review with fixes, G4 |
-| F5 NASA cases | CRF, MR079G, MR035G, MR080G and BUT CGM files can be loaded in a viewer separate from every other view, optionally kept on the device | built, independent agent review (findings listed in [the audit](docs/AUDIT.md)), G5 |
-| F6 closing | One packaged file; a review and export view; a manual theme | packaging checked against the served app (G6-W1, W2); an integrated adversarial review (G6-W3) attacked every layer and its findings were fixed except one (a damaged stored record has no in-app repair path); the volunteer test (G6-W4) is **not done** (see [G6](docs/experiments/G6.md)) |
-
-What it deliberately does not do: it has no clinical rule, threshold or diagnosis, no generative model, no real network sync, no sensors and no encryption. A suggestion appears only from a rule that someone supplies with its source, and the screen says the app cannot verify a rule\'s review status. Data from NASA studies is never presented as an astronaut\'s own. See [the central rule](CLAUDE.md#the-central-rule).
-
-## Offline operation and scalability
-
-The architectural recommendation is **local operation with sync when connectivity is available**: browse history and procedures, record measurements and continue tasks locally; share records and receive updates when possible. For the hackathon, the trip to the ground team is a **simulated sync** (decision D9): a send queue, a simulated link and a ground panel inside the same app, labeled as such on screen. A real server, backups and conflict resolution are a later level.
-
-To grow, we propose our own core to which the following can be added:
-
-- **Sensors and sources**, through connectors with explicit provenance, units and methods.
-- **Procedures**, with equipment requirements, steps, sources and versions.
-- **Mission configurations**, according to environment, resources and available communication.
-- **Crew members**, keeping their records and permissions separate.
-
-This is a design direction; there are no load tests, concurrency figures or demonstrated scalability yet. See the [technical design](docs/TECHNICAL.md).
-
-## Scientific basis and NASA data
-
-The [academic base](docs/ACADEMIC_BASE.md) gathers a targeted review of books, standards, the Human Integration Design Handbook and eight HRP reports. It distinguishes scientific evidence, normative requirements and design inferences. It is neither a systematic review nor a clinical validation of the software.
-
-The [extended research](docs/APPLIED_RESEARCH.md) adds a targeted reading of six full texts and a [matrix of findings and proposals](docs/APPLIED_RESEARCH_MATRIX.csv):
-
-- **AMOS:** preparation, configuration and difficulties during procedures.
-- **Sprint and multisystem study:** separate exercise performed from individual physical response.
-- **Bone follow-up:** keep the exam's method, region and age.
-- **Sleep:** distinguish rest, self-report and instrument estimates.
-- **CO₂:** show environmental context without automatically attributing causation.
-
-Sources ground design decisions; they do not validate Órbita. Specific procedures and medical care criteria are still pending selection and review. The official evaluation guide we could consult is from 2025; whether it matches 2026 remains to be verified.
-
-| Candidate source | Relevant use |
-|---|---|
-| **CRF Daily Vitals** | Explore vital signs and mass/weight recorded in a bed-rest ground analog. |
-| **MR079G / MR080G / MR035G** | Investigate strength, aerobic capacity and densitometry history, respectively. |
-| **MSD007 / DTO 684** | Explore historical cases of Mir environment and Shuttle radiation. |
-| **OSDR Environmental Data App** | Real ISS cabin temperature, humidity and CO₂ for Habitat (terms of use to be verified). |
-
-Studies, participants, missions, methods and frequencies are kept separate unless a match is verified. No real paired series integrating all these variables for a single astronaut was found. An identified synthetic scenario allows the integrated journey to be demonstrated without fabricating that match.
-
-[Dataset review](docs/DATASETS.md) · [Evidence matrix](docs/EVIDENCE_MATRIX.csv) · [BibTeX references](docs/REFERENCES.bib)
-
-## How it is built
-
-The product was built with AI agents under human direction, in the open, with the checks written down:
-
-- **Layers and modules.** 26 modules in 7 phases, each with a [work order](docs/work-orders/) (predictions written before the code), a record of what was run in [docs/experiments/](docs/experiments/), and a place in the [module board](docs/modules.csv). Modules talk through the [contracts](docs/CONTRACTS.md) (currently 0.22) and import each other only through their public entry point.
-- **Evidence levels.** Every claim in a record says whether it was run (RUN), seen in a browser (BROWSER), read (READ) or checked against a source document (SOURCE). A figure read in an abstract is not a verified figure.
-- **Negative controls.** Tests are trusted only after they were seen failing against deliberately broken code. The controls are in [tests/controls/](tests/controls/) and can be re-run.
-- **Whoever builds does not approve their own work.** Independent review agents audited F3, F4 and F5 (reports summarised in [the audit](docs/AUDIT.md)); their findings were fixed with a test each or listed as open. An agent\'s review is a judgment, not an acceptance.
-- **No MVP.** If time runs short, the last complete layer is delivered and named as such.
-
-AI use is recorded in [docs/RESOURCES_USED.md](docs/RESOURCES_USED.md), including the review agents. The details of the process are in the [orchestration plan](docs/ORCHESTRATION_PLAN.md) and the [method](docs/METHOD.md).
-
-## Run the checks
+You need **Git**, **Node.js 22** and its bundled **npm**, plus a browser. Chromium is the browser used in the recorded walkthroughs; other engines remain unverified.
 
 ```bash
-npm test                          # 435 tests (Node 22, no dependencies)
-python3 scripts/check_docs.py     # consistency of matrices, module board, work orders, links
-npm run package                   # dist/orbita.html
-npm run serve                     # the app over HTTP
-# Browser walkthroughs (development only: Python Playwright and a Chromium; set ORBITA_CHROMIUM)
-python3 tests/walkthrough/g6-browser.py       # packaged file against the served app
-python3 tests/walkthrough/review-browser.py   # review, export and theme, served and packaged
-python3 tests/walkthrough/contrast-browser.py # contrast in every view and theme
-node tests/controls/f5-controls.mjs           # negative controls (others beside it)
+git clone https://github.com/0xnotwired/202611-nasahackathon.git
+cd 202611-nasahackathon
+git switch main
+npm run serve
 ```
 
-The real NASA files are **not** in git. [Restore them and rebuild the local profile](docs/LOCAL_DATA_RESTORE.md) before expecting the real-file checks (`g5-realfiles.test.js`, `g5-real-browser.py`) to run; without the files they say so and skip or exit non-zero, never pass by default.
+Open **http://127.0.0.1:8080**. Stop the server with **Ctrl+C**. No `npm install` is required for the main application: the root package has no dependencies.
 
-## Own implementation
+If port 8080 is occupied, choose another port. For example, in Bash:
 
-**All product functionality must be written by the team. External repositories are consulted only for inspiration, comparison and research.**
+```bash
+PORT=8081 npm run serve
+```
 
-By the user's instruction, in line with the reported rules, do not copy, adapt, port or incorporate code from those repositories, including packages used to implement Órbita features. Earlier integration recommendations are superseded by this rule, even if licenses allow reuse. Do not use AI to reproduce or transform that code either.
+Then open **http://127.0.0.1:8081**. The server binds to this computer's loopback interface; it is a local development server.
 
-Working and provenance rules are in [AGENTS.md](AGENTS.md). AI use must be recorded according to the event's applicable rules. Our own code is licensed under Apache-2.0; see [LICENSE](LICENSE).
+### Build a single file to share
 
-## Documentation and next results
+From the repository directory:
 
-- **[Handoff: what is done and what is left](docs/HANDOFF.md)** and the [continuation prompt for another AI agent](docs/CLAUDE_CONTINUATION_PROMPT.md).
-- [Final proposal, demo and acceptance criteria](docs/FINAL_PROPOSAL.md).
-- [What to improve from the original proposal](docs/PROPOSAL_IMPROVEMENTS.md) and [third academic extension, series B](docs/EXTENDED_RESEARCH_B.md) with its [matrix](docs/RESEARCH_MATRIX_B.csv).
-- [Orchestration plan](docs/ORCHESTRATION_PLAN.md), [contracts between modules](docs/CONTRACTS.md), [work orders](docs/work-orders/) and [module board](docs/modules.csv).
-- [Implementation layers](docs/IMPLEMENTATION_LAYERS.md): what each layer must prove; [method](docs/METHOD.md): how a claim is tested; [experiment records](docs/experiments/E00-foundation-probes.md).
-- [Levels and criteria for each level](docs/AGENT_ROADMAP.md) and [session guide for agents](CLAUDE.md).
-- [Product and scope decisions](docs/PRODUCT.md).
-- [Challenge goals and project criteria](docs/REQUIREMENTS.md).
-- [Roadmap and closing criteria](docs/ROADMAP.md).
-- [Free sources and conceptual references](docs/RESOURCES.md); [resources used, with licenses (delivery list)](docs/RESOURCES_USED.md).
-- [Proposed architecture and repository research](docs/TECHNICAL.md).
+```bash
+npm run package
+```
 
-The next results are understanding the integrated mission situation, completing plan tasks and reviewing changes with applicable procedures and follow-up. Their verification must cover missing data, provenance, consistency across views, task recovery, accessibility and understanding of the next step.
+Open **`dist/orbita.html`** in a browser. You can send that generated file to someone else; they do not need Node.js to open it. It contains the main application, including the fictional demo. Original datasets and the separate Next.js edition are not included. The generated file is ignored by Git, so cloning alone does not create it.
 
-Current implementation and handoff: [CURRENT_STATUS.md](docs/CURRENT_STATUS.md). What is audited, what is open and why: [AUDIT.md](docs/AUDIT.md).
+The packaged app operates locally. Browser storage availability varies, and the page reports when it cannot persist records. Records are **not encrypted by the app**. In the Chromium behavior observed by the project, pages opened through `file://` share storage; a separate copy of the HTML is not a separate data profile. See [storage boundaries](docs/TECHNICAL_README.md#storage-and-trust-boundaries).
 
-To continue elsewhere, clone the repository, create a work branch and read [AGENTS.md](AGENTS.md) and [CLAUDE.md](CLAUDE.md). The branch **final-claude** holds the delivered state of this build.
+### Separate Next.js edition — optional
 
-## License
+The teammate's server edition lives in `frontend/`. Its review/export and theme ideas were implemented in the main app; it has its own backend and does not share the main application's store.
 
-Apache License 2.0. See [LICENSE](LICENSE). Third-party resources and their licenses are listed in [docs/RESOURCES_USED.md](docs/RESOURCES_USED.md).
+```bash
+npm run frontend:install
+npm run frontend:backend
+```
 
-Dataset preparation now includes EDA RR-1 telemetry/radiation and OSD-51/56
-metadata. [The event-specific data review](docs/SPACE_APPS_DATA_REVIEW.md)
-distinguishes verified licenses from event eligibility and lists remaining
-OSDR policy/download redirects. The synthetic demo remains separate from the new optional real-source import workflow; the review does not certify an unbuilt final distribution.
+In a second terminal in the repository directory:
 
-Dataset preparation profiles and current technical limits are documented in
-[DATA_IMPORT_PREPARATION.md](docs/DATA_IMPORT_PREPARATION.md). All180 genetic
-raw files are now acquired and inspected; unresolved unit facts remain
-explicit restrictions on scientific interpretation, not guessed defaults.
+```bash
+npm run frontend:dev
+```
 
-Real-source import: [M21](docs/experiments/M21.md) provides pure CSV adapters
-for CRF, MR079G, MR035G, the verified MR080G test and BUT CGM. With original
-samples available locally, run `python3 scripts/import-real-samples.py` to
-verify custody and load the isolated local IndexedDB profile.
-[Integration evidence](docs/experiments/REAL_IMPORT.md) records3861 exact
-records, restart recovery and duplicate-free reruns. Unknown units remain
-unknown; no clinical interpretation or source-data publication is implied.
+Open **http://localhost:3000**; its backend uses port **4000**. This edition requires its own dependencies and servers. See [frontend integration and setup](frontend/INTEGRATION.md) before extending it.
 
-[Claude Code continuation prompt](docs/CLAUDE_CONTINUATION_PROMPT.md) starts from main and includes local data/profile restoration.
+## Architecture
+
+The browser UI calls domain modules through explicit contracts. Both the served and packaged main application use the same modules; the ground link is simulated inside the application.
+
+```mermaid
+flowchart TD
+    Crew["Crew member"] --> UI["Browser UI: health, habitat, progress, plan and episodes"]
+    UI --> Domain["Domain modules: readings, plans, procedures, episodes and summaries"]
+    Mission["Mission configuration: equipment and link mode"] --> Domain
+    Rules["Rules as data: source, version and review status"] --> Domain
+    Domain --> Core["Record validation and provenance"]
+    Core --> Store["Store interface"]
+    Store --> Demo["Fictional demo: memory"]
+    Store --> Personal["My records: local IndexedDB"]
+    Files["User-selected source CSV"] --> Import["Source-specific importers"]
+    Import --> Cases["NASA cases: separate store, optional local retention"]
+    UI --> Cases
+    Domain --> Export["Local CSV export and structured summaries"]
+    Domain --> Sync["Simulated sharing queue and ground panel"]
+```
+
+`app/ui/base/start.js` composes the services. Domain models are separated from DOM rendering, and record validation preserves subject, origin, method, units and source time. See the [implementation map and boundaries](docs/TECHNICAL_README.md) and [module contracts](docs/CONTRACTS.md).
+
+## NASA research and real datasets
+
+The integrated journey uses **explicitly fictional data** so unrelated studies are never presented as one astronaut's history. **My records** starts empty and requires the user to state the origin of their entries. **NASA cases** imports research files into a separate viewer.
+
+| Source | Current integration |
+|---|---|
+| NASA CRF Daily Vitals | CSV adapter and viewer, preserving unknown units and source-time limitations. |
+| NASA MR079G, MR035G and MR080G | Strength, densitometry and aerobic-assessment samples; MR080G is restricted to its verified campaign/subject/date/test. |
+| PhysioNet BUT CGM | Continuous glucose CSV adapter and viewer; its attribution requirements are retained. Event eligibility is provisional pending the organizers' response. |
+| OSD-51 / OSD-56 | Measurement archives acquired and structurally inspected; no omics adapter in the application yet. |
+| Other prepared source profiles | Research and preparation are documented; they are not all imported or displayed by the app. |
+
+Original research files are **not stored in Git** or included in the single-file package. To reproduce real-file checks, follow [local data restoration](docs/LOCAL_DATA_RESTORE.md). A clone does not contain an existing IndexedDB profile or the previously imported records.
+
+The [academic base](docs/ACADEMIC_BASE.md) and [applied research](docs/APPLIED_RESEARCH.md) explain the design evidence, including preparation for procedures, physical adaptation, sleep and environmental context. Ground analogs remain labeled as ground analogs; unknown units and time zones are never guessed.
+
+[Dataset citations](docs/DATASET_CITATIONS.md) · [Required attributions](docs/DATA_ATTRIBUTIONS.md) · [Event-specific data review](docs/SPACE_APPS_DATA_REVIEW.md)
+
+## What has been verified
+
+The implementation covers **26 modules across F0–F6**, including eleven application views, local persistence, procedures, episodes, source-specific import, export and single-file packaging. F1 was accepted by the user; later gates have agent review evidence but still require human acceptance.
+
+Checks rerun on the integrated `main` baseline on November 16, 2026:
+
+| Check | Observed result |
+|---|---|
+| `npm test` | 435 tests: **427 passed, 8 skipped, 0 failed** in this environment. |
+| `python3 scripts/check_docs.py` | Documentation consistency and relative links passed. |
+| `npm run package` | Generated `dist/orbita.html` from 63 modules. |
+
+Historical browser walkthroughs and negative controls are recorded in [the experiments](docs/experiments/) and [audit](docs/AUDIT.md). They cover Chromium, not universal browser compatibility or clinical effectiveness. Reproduction commands and browser prerequisites are in the [Technical README](docs/TECHNICAL_README.md#verification).
+
+## Current boundaries
+
+Órbita demonstrates a health-information and action-follow-up workflow. It has no validated diagnostic or treatment engine, generative AI, connected medical devices, real ground communication or application-level encryption. Its fictional demo rule must not be used for care.
+
+The volunteer usability study, human acceptance of later gates, other browser engines and screen-reader testing remain open. A damaged stored record has no in-app repair path. Some research units remain unconfirmed, and omics imports and larger-scale storage need further work. These limits and the remaining decisions are listed in the [handoff](docs/HANDOFF.md#4-what-is-left-in-priority-order).
+
+## Explore and contribute
+
+- [Technical README](docs/TECHNICAL_README.md): implementation, data boundaries and verification.
+- [Current status](docs/CURRENT_STATUS.md) and [audit](docs/AUDIT.md): evidence and open work; read the latest addenda.
+- [Product proposal](docs/FINAL_PROPOSAL.md): the design and its research basis; proposed features are not completion claims.
+- [AGENTS.md](AGENTS.md): contribution rules. Start a work branch from current `main`.
+
+`demo/` contains historical design mockups, not the current product. The main application's entry point is **`app/index.html`**, served or packaged using the commands above.
+
+## License and acknowledgments
+
+Órbita's original code is licensed under **[Apache-2.0](LICENSE)**. NASA and other research sources retain their own terms and required citations; the code license does not replace dataset conditions. See [resources used and licenses](docs/RESOURCES_USED.md) and [dataset attributions](docs/DATA_ATTRIBUTIONS.md).
+
+Built by the team with AI-assisted development and documented experiments. Research references inform the design; they do not constitute NASA endorsement or clinical validation of Órbita.
