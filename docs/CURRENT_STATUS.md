@@ -1,63 +1,28 @@
 # Current implementation and handoff state
 
-Verified November15,2026. This is the consolidated current-state index;
-AGENTS.md retains instruction authority, CONTRACTS.md defines interfaces,
-and modules.csv records module status. Historical experiment runs and older
-acquisition manifests remain evidence of their recorded time, not competing
-current-state summaries.
+Verified November 16, 2026. This is the consolidated current-state index; AGENTS.md retains instruction authority, CONTRACTS.md defines interfaces, modules.csv records module status and [AUDIT.md](AUDIT.md) lists, layer by layer, what is open and why. Historical experiment runs and older acquisition manifests remain evidence of their recorded time, not competing current-state summaries.
 
-## Branch, modules and next work
+## Branch and state
 
-Continue from GitHub branch **main**. PR#3 (634a489) already integrated f2,
-including implementation177c03e and documentatione51f830. The user explicitly
-requested main as the continuation base. Create a feature/module branch
-(e.g. mod/f2-claude) from current origin/main for new development. Always inspect current HEAD
-and git status rather than assuming a remembered hash or clean checkout.
-The english and f2 branches retain prior work; do not reset or overwrite
-them. Parallel work should use distinct working branches.
+The delivered state is on the GitHub branch **final-claude**, built on mod/f2-claude (which was never pushed) from the integrated `main`. Always inspect the current HEAD and `git status` instead of assuming a remembered hash. `main`, `english`, `f2` and `claude` keep earlier work; do not reset or overwrite them.
 
-- M00 and M01–M05 are implemented and independently reviewed; G0/G1 accepted
-  by the user, F1 closed.
-- M21 was explicitly advanced by user instruction and is implemented/reviewed.
-  This does not close F2–F5 or implement the later product views.
-- F2 built on mod/f2-claude (local commits, not pushed): M06 readings, M07 base
-  interface, M08–M12 views, shared view kit, data-source selector, M22 view.
-  Records M06–M12 and G2 are in docs/experiments/. Statuses in modules.csv are
-  still `pending`: independent review of M08–M12 and acceptance of G2 are for a
-  person. G2 evidence: 230 Node tests; g2.test.js; g2-browser.py (Chromium only).
-  F3 built on the same branch (user-authorized): M13 procedures, M14 plan and the
-  My plan and On board views (M15), records M13–M15 and G3, contract 0.13.
-  271 Node tests; g3.test.js; g3-browser.py (Chromium only). Statuses still
-  `pending`. Next: independent review of M08–M15, then person acceptance of G2/G3.
-  Minimal versions added on the user's request: procedure registry and editor (M13/M15),
-  privacy (M19), simulated sync and ground panel (M24); contract 0.14 and IndexedDB
-  schema v2 (an existing profile is upgraded on its next open and keeps its data).
-  Minimal F4 added on request: episode (M16), copilot (M17, no clinical rule shipped), summary
-  (M18) and the "I feel different" view (M20); contract 0.15. 419 Node tests; g3-extras-browser.py and
-  g4-browser.py. G5 (NASA cases) checked on top of all views: `g5.test.js` and `g5-browser.py` (real BUT CGM file when present). F6: `npm run package` writes `dist/orbita.html` (one file, 59 modules, a content security policy that forbids remote loads); `g6-browser.py` compares it with the served app and records requests. Not done: G6-W3's independent review and G6-W4 (people). The summary text is not transmitted (only records).
-- Contract version 0.22; current record schema2, with unchanged legacy1 readers.
+- Contract version 0.22; record schema 2 with unchanged legacy 1 readers; IndexedDB schema v3 (a v1 or v2 profile is upgraded on its next open and keeps its data).
+- 26 modules (M00–M25). Every module is `pending` in modules.csv except those the user accepted earlier (M00–M05, M21): independent review by agents happened for F3, F4 and F5 and is summarised in AUDIT.md; **no layer after F1 has been accepted by a person**.
+- 419 Node tests (`npm test`), `check_docs.py` OK, and browser walkthroughs for every gate (Chromium only, no screen reader, no second browser engine).
 
-## What actually runs
+## What runs
 
-The product has original domain modules, memory/IndexedDB storage, a
-16-record deterministic synthetic scenario and a minimal HTTP module shell.
-The standalone HTML mockups are design/demonstration artifacts, not the
-implemented modular product UI. No clinical thresholds, generative copilot,
-real-device integration, encryption, real sync or deployment is implied.
+The modular product: `npm run serve` serves it over HTTP; `npm run package` writes `dist/orbita.html`, one file that opens from `file://` and makes no network request. Views: My health, Adaptation, Habitat, My progress, My day, My plan, On board, I feel different, NASA cases, Review and export, Ground panel (simulated sync). Data sources: a synthetic demo (fictional, in memory) and "My records" (IndexedDB; recording stays off until the person states where their entries come from). NASA files load only in "NASA cases", in a store of their own; a person may keep a file on the device (opt-in, not encrypted).
 
-M21 exposes pure synchronous importCRF, importAdaptation and importGlucose.
-Supported selected source profiles: CRF Campaign3, MR079G, MR035G, the exact
-verified MR080G test, and BUT CGM1.0.0. They retain source identities, original
-numeric values/absence, unit uncertainty and source clock precision, exclude
-clinical comments, reject malformed rows and do not write a database.
+The copilot ships **no clinical rule**. One fictional rule with status `demo` exists for the synthetic source only, so the suggestion path can be seen working; a person can load a rules file, and the screen says the app cannot verify a rule's declared review status.
 
-The separate development command `python3 scripts/import-real-samples.py`
-verified original-file custody and persisted3861 records in a dedicated
-local Chromium profile/database: CRF791, MR079G12, MR035G10, MR080G32,
-BUT CGM3016. Independent rerun inserted0 and retained3861; restart readback
-compared all records exactly.226 nonempty excluded CRF comment cells were
-counted without retaining their content. There is no product import screen.
-This profile is separate from synthetic data and the shared browser session.
+The teammate's Next.js frontend lives in `frontend/` as a separate server edition ([how it relates](../frontend/INTEGRATION.md)); its useful parts were ported into the main app as M25.
+
+The standalone HTML mockups under `demo/` are design artifacts, not the product UI. No clinical thresholds, generative model, real-device integration, encryption, real sync or deployment is implied.
+
+## Open, in one place
+
+Real guidance rules (nobody has supplied any); the volunteer test (G6-W4); other browsers and screen readers; units for CRF and MR035G and the immune denominators; omics adapters; MR080G beyond its one verified test; PhysioNet use is provisional under the user's decision, not an organizer answer; the teammate's backend does not read the main app's store; acceptance of every gate after G1 by a person. The reasons and the evidence are in [AUDIT.md](AUDIT.md) and in each experiment record's "Not verified".
 
 ## Datasets, evidence and remaining limits
 
@@ -91,15 +56,11 @@ Product views, final archive/media review and M23 packaging are pending.
 ```bash
 npm test
 python3 scripts/check_docs.py
-python3 tests/walkthrough/g0-browser.py
-python3 tests/walkthrough/g1-browser.py
+npm run package && python3 tests/walkthrough/g6-browser.py
+python3 tests/walkthrough/g5-real-browser.py      # needs data/originals (outside git)
 ```
 
-Current suite:100 passed,0 failed,0 skipped; docs/diff checks pass. Chromium156
-verified HTTP modules, real IndexedDB persistence/restart, profile isolation
-and explicit storage failure paths. File-origin CORS control remains unverified
-because managed policy blocks navigation before CORS. These observations are
-platform-specific, not clinical or universal-browser validation.
+Browser scripts need Python Playwright and a Chromium (`ORBITA_CHROMIUM`); their findings are platform-specific, not clinical or universal-browser validation. File-origin CORS remains unverified because the managed policy blocks navigation before CORS.
 
 For real import, originals and preinstalled development Chromium/Playwright
 must be available. Use [local data restoration](LOCAL_DATA_RESTORE.md).

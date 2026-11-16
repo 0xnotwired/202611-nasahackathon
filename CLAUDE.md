@@ -87,11 +87,16 @@ frontend/                      a teammate's separate Next.js prototype with its 
 
 ## Where to pick up — current handoff
 
-Read [docs/CURRENT_STATUS.md](docs/CURRENT_STATUS.md), inspect git status/HEAD,
-and work on a separate branch such as mod/f2-claude. F2 (M06–M12, M22) and F3 (M13–M15) are
-built with records and G2/G3 walkthroughs, but not independently reviewed or
-accepted; statuses stay `pending`. 406 Node tests pass (`npm test`; a bare `node --test` also finds frontend/'s TypeScript tests). `npm run package` builds dist/orbita.html. `frontend/` is a teammate's separate Next.js prototype (see frontend/INTEGRATION.md). The store is IndexedDB schema v2 (a profile is upgraded on open). Run node --test and
-python3 scripts/check_docs.py; browser scripts need ORBITA_CHROMIUM.
+Read [docs/CURRENT_STATUS.md](docs/CURRENT_STATUS.md) and [docs/AUDIT.md](docs/AUDIT.md), inspect git
+status/HEAD, and work on a separate branch. The delivered state is the branch **final-claude**.
+F1 is accepted by the user; F2–F6 are built with records and gate walkthroughs, independently
+reviewed by agents (F3, F4, F5; the state of the integrated review G6-W3 is in docs/experiments/G6.md) and **not accepted by a
+person**: statuses stay `pending`. 419 Node tests pass (`npm test`; a bare `node --test` also finds
+frontend/'s TypeScript tests, so use the npm script). `npm run package` builds dist/orbita.html.
+`frontend/` is a teammate's separate Next.js edition (see frontend/INTEGRATION.md); its useful parts
+were ported as M25. The store is IndexedDB schema v3 (a profile is upgraded on open). Negative
+controls are in tests/controls/. Run node --test and python3 scripts/check_docs.py; browser scripts
+need ORBITA_CHROMIUM.
 Original datasets, local IndexedDB profile and source-data reports are not
 restored by Git. Use [docs/LOCAL_DATA_RESTORE.md](docs/LOCAL_DATA_RESTORE.md),
 verify hashes and rerun scripts/import-real-samples.py before claiming real

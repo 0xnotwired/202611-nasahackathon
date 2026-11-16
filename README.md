@@ -55,29 +55,32 @@ Every piece of guidance must keep its source, version and conditions of use. Spe
 
 The proposed integrated demo would show the same episode under two mission configurations: with and without the required equipment. Behavior must change visibly while keeping the follow-up. This feature is pending; its usefulness would be evaluated against metrics and static instructions. NASA already researches autonomous guides such as AMOS: we do not claim a world first.
 
-## Try the current mockup
+## Try it
 
-1. Download [demo/orbita.html](demo/orbita.html) with **Download raw file** on GitHub.
-2. Open the file in a current browser.
-3. Explore the body and the charts, select **I feel different** and complete the check-in with fictional data.
-4. Open **My progress** and prepare a TXT summary.
+Órbita exists in three forms, from the simplest to open to the most complete:
 
-[demo/final-product-vision.html](demo/final-product-vision.html) shows how Órbita would look with the plan's 25 modules built, including the aerobic capacity tracking proposed by Iván. It is a visualization for the team, with synthetic data for four fictional crew members: it is not product code and does not replace the modules in `app/`.
+1. **One file, no installation.** Build it with `npm run package` and double-click `dist/orbita.html`. It is a single self-contained page that makes no network request (checked in Chromium). Records are kept in the browser if it allows IndexedDB; the page says on screen when it does not.
+2. **The same app served locally.** `npm run serve` serves `app/` over HTTP at a loopback address. This is the form most of the tests drive.
+3. **The teammate's server edition.** `frontend/` is a Next.js app with its own Node backend for the aerobic-capacity follow-up ([how it relates to the rest](frontend/INTEGRATION.md)). It needs a Node server, so it cannot be inside the single file; what was useful in it was brought into the main app (the review and export view and the manual theme).
 
-No installation, server or account is needed. The interface is self-contained and the walkthrough works offline; external links to NASA require a connection. Saving and restoring depend on the storage the browser allows. Sharing the HTML does not share the records stored in another browser.
+The original single-file mockup, [demo/orbita.html](demo/orbita.html), is kept as the design reference and is not modified. [demo/final-product-vision.html](demo/final-product-vision.html) is a visualization for the team, not product code.
 
-[Instructions and scope of the checks](docs/DEMO_README.md).
+Everything you can open starts on **synthetic, fictional data**. "My records" is a separate source that starts empty; there you say where your entries come from (terrestrial, ground analog or flight) before anything can be recorded, and nothing is assumed. NASA data goes in "NASA cases", apart from every other view.
 
-### Actual project status
+## What is built
 
-| Available | Pending implementation |
-|---|---|
-| HTML mockup with synthetic data, interactive body and charts. | Integration of health, physical adaptation, habitat and a shared plan. |
-| Guided check-in, local demo storage and TXT summary. | Procedures adapted to mission resources and integrated follow-up of results. |
-| Product definition, roadmap and targeted academic review. | Sensor connectors, sync and a final persistence architecture. |
-| Build plan in 25 modules, with contracts and work orders. | Later domain modules and product views: `app/` contains M00 plus M01–M05; the rest are placeholders. |
+The product is built in layers, each with a gate that says what it must prove ([layers](docs/IMPLEMENTATION_LAYERS.md), [status by layer and what is still open](docs/AUDIT.md)). Everything below is **built and tested by the team's agents and reviewed by independent agents, but not accepted**: module statuses in [docs/modules.csv](docs/modules.csv) stay `pending` until a person accepts each gate.
 
-The mockup mainly shows the initial check-in. It has no sensor integration, loaded NASA data, medical communication, AI model or validated clinical protocols. Use only fictional information in the demo. Choosing NASA sources does not imply certification or endorsement of the tool.
+| Layer | What the person can do | Evidence |
+|---|---|---|
+| F1 data core | Records with three states (recorded, confirmed nothing new, not recorded), origin, source clock and unit status; memory and IndexedDB stores; a synthetic scenario | accepted by the user (G0, G1) |
+| F2 situation | My health, Adaptation, Habitat, My progress, My day: every value with its method, time and origin, "not recorded" never shown as "nothing new" | built, reviewed by an agent, G2 walkthrough |
+| F3 plan and procedures | My plan (tasks, repeating exams, undo, results linked afterwards) and On board (procedures with equipment checks, preparation, steps that record a value, retirement); concurrent writers are safe across tabs | built, independent agent review with fixes, G3 |
+| F4 episodes | "I feel different": an episode with what was recorded, what is known and what is missing before any suggestion; a copilot that only suggests from a rule that carries a source, version and review status (none is shipped for real use); a summary for the ground; simulated sync | built, independent agent review with fixes, G4 |
+| F5 NASA cases | CRF, MR079G, MR035G, MR080G and BUT CGM files can be loaded in a viewer separate from every other view, optionally kept on the device | built, independent agent review (findings listed in [the audit](docs/AUDIT.md)), G5 |
+| F6 closing | One packaged file; a review and export view; a manual theme | packaging checked against the served app (G6-W1, W2); the state of the integrated adversarial review (G6-W3) and of the volunteer test (G6-W4) is in [G6](docs/experiments/G6.md) |
+
+What it deliberately does not do: it has no clinical rule, threshold or diagnosis, no generative model, no real network sync, no sensors and no encryption. A suggestion appears only from a rule that someone supplies with its source, and the screen says the app cannot verify a rule\'s review status. Data from NASA studies is never presented as an astronaut\'s own. See [the central rule](CLAUDE.md#the-central-rule).
 
 ## Offline operation and scalability
 
@@ -119,14 +122,31 @@ Studies, participants, missions, methods and frequencies are kept separate unles
 
 ## How it is built
 
-M00 and the F1 data core (M01–M05) are implemented and independently reviewed; later modules remain placeholders. Further modules are built with AI agents under human review.
+The product was built with AI agents under human direction, in the open, with the checks written down:
 
-- **25 modules in 7 phases.** Each phase delivers something the astronaut can use: save records without losing their origin, see their situation, complete a procedure, close an episode.
-- **One module, one agent, one folder.** Modules communicate through [contracts](docs/CONTRACTS.md) fixed in advance, and each agent receives a [work order](docs/work-orders/) with its acceptance criteria.
-- **Whoever builds does not approve their own work.** Another agent reviews by running it, and a person approves each phase.
-- **No MVP.** If time runs short, the last complete phase is delivered and named as such.
+- **Layers and modules.** 26 modules in 7 phases, each with a [work order](docs/work-orders/) (predictions written before the code), a record of what was run in [docs/experiments/](docs/experiments/), and a place in the [module board](docs/modules.csv). Modules talk through the [contracts](docs/CONTRACTS.md) (currently 0.22) and import each other only through their public entry point.
+- **Evidence levels.** Every claim in a record says whether it was run (RUN), seen in a browser (BROWSER), read (READ) or checked against a source document (SOURCE). A figure read in an abstract is not a verified figure.
+- **Negative controls.** Tests are trusted only after they were seen failing against deliberately broken code. The controls are in [tests/controls/](tests/controls/) and can be re-run.
+- **Whoever builds does not approve their own work.** Independent review agents audited F3, F4 and F5 (reports summarised in [the audit](docs/AUDIT.md)); their findings were fixed with a test each or listed as open. An agent\'s review is a judgment, not an acceptance.
+- **No MVP.** If time runs short, the last complete layer is delivered and named as such.
 
-The details are in the [orchestration plan](docs/ORCHESTRATION_PLAN.md) and each module's status in [docs/modules.csv](docs/modules.csv). The proposed stack (HTML, CSS and JavaScript with no dependencies) awaits the team's confirmation.
+AI use is recorded in [docs/RESOURCES_USED.md](docs/RESOURCES_USED.md), including the review agents. The details of the process are in the [orchestration plan](docs/ORCHESTRATION_PLAN.md) and the [method](docs/METHOD.md).
+
+## Run the checks
+
+```bash
+npm test                          # 419 tests (Node 22, no dependencies)
+python3 scripts/check_docs.py     # consistency of matrices, module board, work orders, links
+npm run package                   # dist/orbita.html
+npm run serve                     # the app over HTTP
+# Browser walkthroughs (development only: Python Playwright and a Chromium; set ORBITA_CHROMIUM)
+python3 tests/walkthrough/g6-browser.py       # packaged file against the served app
+python3 tests/walkthrough/review-browser.py   # review, export and theme, served and packaged
+python3 tests/walkthrough/contrast-browser.py # contrast in every view and theme
+node tests/controls/f5-controls.mjs           # negative controls (others beside it)
+```
+
+The real NASA files are **not** in git. [Restore them and rebuild the local profile](docs/LOCAL_DATA_RESTORE.md) before expecting the real-file checks (`g5-realfiles.test.js`, `g5-real-browser.py`) to run; without the files they say so and skip or exit non-zero, never pass by default.
 
 ## Own implementation
 
@@ -151,24 +171,9 @@ Working and provenance rules are in [AGENTS.md](AGENTS.md). AI use must be recor
 
 The next results are understanding the integrated mission situation, completing plan tasks and reviewing changes with applicable procedures and follow-up. Their verification must cover missing data, provenance, consistency across views, task recovery, accessibility and understanding of the next step.
 
-Current implementation and next steps: [CURRENT_STATUS.md](docs/CURRENT_STATUS.md).
-M00/M01–M05 and the user-advanced M21 CSV importers are implemented/reviewed;
-100 tests pass. G0/G1 accepted; F2 views remain pending. The real-data workflow
-verified3861 records in an isolated local IndexedDB profile, while the synthetic
-scenario remains separate. No product import screen or clinical validation is
-claimed. See [import evidence](docs/experiments/REAL_IMPORT.md).
+Current implementation and handoff: [CURRENT_STATUS.md](docs/CURRENT_STATUS.md). What is audited, what is open and why: [AUDIT.md](docs/AUDIT.md).
 
-```bash
-npm test
-python3 scripts/check_docs.py
-npm run serve
-```
-
-To continue elsewhere, clone main, create a work branch such as mod/f2-claude and read AGENTS.md/CLAUDE.md.
-[Restore originals and rebuild IndexedDB](docs/LOCAL_DATA_RESTORE.md): neither
-raw datasets nor browser state is in Git. Source profiles, unresolved units,
-licenses and provisional PhysioNet use are recorded in the current-state index.
-Do not assume local import/browser verification happened on a new machine.
+To continue elsewhere, clone the repository, create a work branch and read [AGENTS.md](AGENTS.md) and [CLAUDE.md](CLAUDE.md). The branch **final-claude** holds the delivered state of this build.
 
 ## License
 
