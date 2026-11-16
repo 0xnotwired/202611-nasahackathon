@@ -58,8 +58,8 @@ try:
               page.get_attribute('nav a[href="#/nasa-cases"]', 'aria-current') == 'page' and 'not available yet' not in page.locator('#view').inner_text().lower())
         check('notice keeps real data apart from the synthetic demo', 'kept apart from the synthetic demo' in page.locator('#view-body').inner_text())
         options = page.eval_on_selector_all('#nc-source option', 'els => els.map(e => [e.value, e.disabled, e.textContent])')
-        check('X1: CRF is listed but not selectable; the four supported sources are', [o[0] for o in options if not o[1]] == ['BUT_CGM', 'MR079G', 'MR035G', 'MR080G'] and any(o[0] == 'CRF' and o[1] for o in options), str(options))
-        check('X1: the reason CRF is not offered is on screen', 'unconfirmed' in page.locator('#view-body').inner_text())
+        check('X1: omics is listed but not selectable; the five supported sources are', [o[0] for o in options if not o[1]] == ['BUT_CGM', 'MR079G', 'MR035G', 'MR080G', 'CRF'] and any(o[0] == 'OMICS' and o[1] for o in options), str(options))
+        check('X1: the reason omics is not offered is on screen', 'no adapter reads them' in page.locator('#view-body').inner_text())
 
         # Keyboard: the whole form is reachable in order and every stop shows a visible outline.
         page.focus('#nc-source')
@@ -79,7 +79,7 @@ try:
         page.click('#nc-load')
         page.wait_for_function('document.body.innerText.includes("so it was not read")', timeout=15000)
         check('X11: a file over the limit is refused with a message and File.text() is never called',
-              'larger than 5 MiB' in page.locator('#view-body').inner_text() and page.evaluate('window.__textCalls') == 0 and page.locator('.card').count() == 0, f"calls={page.evaluate('window.__textCalls')}")
+              'larger than 5 MiB' in page.locator('#view-body').inner_text() and page.evaluate('window.__textCalls') == 0 and page.locator('#view-body .card').count() == 0, f"calls={page.evaluate('window.__textCalls')}")
 
         # An invalid file lists its bad rows by row, reason and field, never with cell text.
         bad = 'Timestamp;Glycemia\n2100-01-01 08:00:00;5.5\nnot-a-date;5.6\n2100-01-01 08:10:00;abc\n'

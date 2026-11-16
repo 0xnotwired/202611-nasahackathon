@@ -20,6 +20,7 @@ export function mount(element, viewModel, actions) {
     draw();
     const back = focusId && doc.getElementById(focusId);
     if (back) back.focus();
+    else { const note = doc.querySelector('[role="status"], [role="alert"]'); if (note) { note.setAttribute('tabindex', '-1'); note.focus(); } } // the control is gone (for example the keep button): the message takes the focus
   }
 
   function loader() {
@@ -55,6 +56,8 @@ export function mount(element, viewModel, actions) {
       ['DOI', file.doi ?? 'not given'], ['Licence', file.license]];
     const parts = [h(doc, 'h4', {id: `nc-file-${index}`}, file.name), h(doc, 'dl', {}, ...rows.flatMap(([term, value]) => [h(doc, 'dt', {}, term), h(doc, 'dd', {}, value)]))];
     parts.push(h(doc, 'p', {class: 'legend'}, 'Citation:'), ...file.citation.map(text => h(doc, 'p', {class: 'citation'}, text)));
+    if (file.caveats && file.caveats.length) parts.push(h(doc, 'p', {class: 'legend'}, 'What this source does not tell us:'), h(doc, 'ul', {class: 'caveats'}, ...file.caveats.map(text => h(doc, 'li', {}, text))));
+    if (file.unread_columns && file.unread_columns.length) parts.push(h(doc, 'p', {class: 'legend'}, `Columns of the file that were not read: ${file.unread_columns.join(', ')}.`));
     if (file.error_text) parts.push(h(doc, 'p', {class: 'notice notice-error', role: 'alert'}, `${file.error_label ?? 'Problem'}: ${file.error_text}`));
     if (file.rejected.length) {
       const table = accessibleTable({caption: `${file.rejected.length} rejected rows in ${file.name} (row numbers count the header as row 1; the cell text is not shown)`,
@@ -62,6 +65,12 @@ export function mount(element, viewModel, actions) {
       parts.push(renderTable(doc, table));
     }
     if (file.skipped) parts.push(h(doc, 'p', {class: 'legend'}, `${file.skipped} cells were left out on purpose (free text is never imported).`));
+    if (file.kept) parts.push(h(doc, 'p', {class: 'notice notice-info'}, 'Kept on this device (not encrypted), in a store of its own.'));
+    else if (current.keep && current.keep.available && file.records && file.file_key) {
+      const keep = h(doc, 'button', {type: 'button', id: `nc-keep-${index}`}, 'Keep on this device');
+      keep.addEventListener('click', () => apply(current.interactions.keep(file.id), `nc-keep-${index}`));
+      parts.push(keep);
+    }
     return h(doc, 'section', {class: 'card', 'aria-labelledby': `nc-file-${index}`}, ...parts);
   }
 
@@ -105,6 +114,14 @@ export function mount(element, viewModel, actions) {
     if (current.message) parts.push(h(doc, 'p', {class: `notice notice-${current.message.kind === 'error' ? 'error' : 'info'}`, role: current.message.kind === 'error' ? 'alert' : 'status'}, current.message.text));
     parts.push(loader());
     if (current.files.length) parts.push(h(doc, 'section', {'aria-labelledby': 'nc-files-title'}, h(doc, 'h3', {id: 'nc-files-title'}, 'Study cards'), ...current.files.map(fileCard)));
+    if (current.keep && !current.keep.available && current.keep.unavailable_reason) parts.push(h(doc, 'p', {class: 'notice notice-info'}, current.keep.unavailable_reason));
+    if (current.keep && current.keep.available && current.files.some(file => file.kept)) {
+      const confirm = h(doc, 'input', {type: 'checkbox', id: 'nc-remove-confirm'});
+      const remove = h(doc, 'button', {type: 'button', id: 'nc-remove-kept'}, 'Remove every kept case from this device');
+      remove.addEventListener('click', () => apply(current.interactions.removeKept({confirmed: confirm.checked}), 'nc-remove-kept'));
+      parts.push(h(doc, 'section', {class: 'card', 'aria-labelledby': 'nc-kept-title'}, h(doc, 'h3', {id: 'nc-kept-title'}, 'Kept on this device'), h(doc, 'p', {class: 'legend'}, 'These cases were saved in this browser by you. Removing deletes them from this device; a case can be loaded and kept again from its file.'),
+        h(doc, 'div', {class: 'field'}, confirm, ' ', h(doc, 'label', {for: 'nc-remove-confirm'}, 'I want to delete every kept case')), remove));
+    }
     const pick = chooser(); if (pick) parts.push(pick);
     if (current.panels.length) parts.push(...current.panels.map(panel)); else parts.push(h(doc, 'p', {class: 'notice notice-info'}, current.empty_reason));
     element.replaceChildren(...parts);

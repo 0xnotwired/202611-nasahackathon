@@ -25,15 +25,15 @@ async function setup(overrides={}) {
 const load=(vm,source_id,name,text,subject)=>vm.interactions.loadFile({source_id,name,text,subject});
 const rowsOf=table=>table.rows.map(r=>Object.values(r).join(' | '));
 
-test('M22-X1: CRF is listed as unsupported with its reason and can never be loaded',async()=>{
+test('M22-X1: omics files are listed as not offered with their reason and can never be loaded',async()=>{
   const {main,vm}=await setup();
   try {
     const sources=vm.loader.sources;
-    assert.deepEqual(sources.filter(s=>s.supported).map(s=>s.id),['BUT_CGM','MR079G','MR035G','MR080G']);
-    const crf=sources.find(s=>s.id==='CRF');
-    assert.equal(crf.supported,false);assert.match(crf.reason,/unconfirmed/);
-    const after=await load(vm,'CRF','crf.csv','Subject,Date\n1,2','1');
-    assert.equal(after.message.kind,'error');assert.match(after.message.text,/CRF/);
+    assert.deepEqual(sources.filter(s=>s.supported).map(s=>s.id),['BUT_CGM','MR079G','MR035G','MR080G','CRF']);
+    const omics=sources.find(s=>s.id==='OMICS');
+    assert.equal(omics.supported,false);assert.match(omics.reason,/no adapter/);
+    const after=await load(vm,'OMICS','o.csv','a,b\n1,2','1');
+    assert.equal(after.message.kind,'error');assert.match(after.message.text,/Omics/);
     assert.deepEqual(after.files,[]);assert.deepEqual(after.subjects,[]);assert.deepEqual(after.panels,[]);
   } finally {await main.close();}
 });
@@ -90,7 +90,7 @@ test('M22-X2: the study card carries the DOI from the records, the verbatim cita
   const unknown=describeSource('https://doi.org/10.9999/unknown#profile=z');
   assert.deepEqual([unknown.doi,unknown.citation,unknown.license,unknown.profile],['10.9999/unknown',['citation not available'],'licence not available',null]);
   assert.equal(describeSource('not a doi').doi,null);
-  assert.equal(PROFILES.length,4);assert.ok(PROFILES.every(p=>p.citation.every(c=>c.includes('doi.org/'))));
+  assert.equal(PROFILES.length,5);assert.ok(PROFILES.every(p=>p.citation.every(c=>c.includes('doi.org/'))));
 });
 
 test('M22-X3: loading the same file twice adds nothing',async()=>{
@@ -331,4 +331,100 @@ test('M22-X10: the view names no dataset, citation or figure that its profile ta
     assert.ok(flat.includes(probe)||flat.includes(probe.replace('version1.0.0','version 1.0.0')),`citation is not in the attribution documents: ${citation.slice(0,60)}`);
   }
   assert.ok(flat.includes('Creative Commons Attribution4.0')||flat.includes('Creative Commons Attribution 4.0'));
+});
+
+// ---- F5 made complete: CRF offered with its caveats, unread columns named, citations equal the delivery attributions ----
+const CRF_HEADER='Subject,Date,Test_Phase,BR_Day,Vitals Time,Pulse,SysBP,DiaBP,Resp Rate,Head Down Tilt Verified,Weight,Body Temp,Height,Comment,Bowel Movement,Quantity,Bowel Movement Description';
+const CRF_TEXT=[CRF_HEADER,
+  '8615,7/6/2007,PRE_TEST,13,9:40,70,120,80,16,yes,75.5,36.6,180,a free text about the person,,,',
+  '8615,7/7/2007,PRE_TEST,12,6:00,,118,78,15,yes,75.4,,180,,,,'].join('\n');
+
+test('M22-C1: CRF loads with its caveats; an empty cell is "not recorded"; units are unknown, never guessed; free text is not imported and columns not read are named',async()=>{
+  const {main,vm}=await setup();
+  try {
+    const after=await load(vm,'CRF','crf.csv',CRF_TEXT);
+    assert.equal(after.message.kind,'info',JSON.stringify(after.message));
+    const card=after.files[0]; assert.equal(card.doi,'10.83263/wjw1-ta27'); assert.match(card.license,/CC0/); assert.equal(card.subjects.join(),'8615');
+    assert.equal(card.caveats.length,3); assert.match(card.caveats[0],/unit of any vital-sign column/); assert.match(card.caveats[1],/month\/day\/year/); assert.match(card.caveats[2],/free text/);
+    assert.equal(card.skipped,1); assert.deepEqual(card.unread_columns,['Head Down Tilt Verified','Bowel Movement','Quantity']);
+    const panel=after.panels[0]; const all=JSON.stringify(panel);
+    assert.match(all,/unit unknown/); assert.equal(/a free text about the person/.test(JSON.stringify(after)),false,'no comment text anywhere in the model');
+    const stored=(await vm.interactions.select({variables:{8615:'pulse'}})); const unordered=stored.panels[0].unordered[0];
+    assert.equal(stored.panels[0].chart,null,'the source calendar is unknown, so no time order is claimed'); assert.match(unordered.order_note,/order not established/);
+    assert.ok(unordered.table.rows.some(r=>/70 \(unit unknown\)/.test(Object.values(r).join(' '))));
+    assert.ok(unordered.table.rows.some(r=>/not recorded/.test(Object.values(r).join(' '))),'the empty pulse cell is shown as not recorded, not as a value');
+    const blank=(await vm.interactions.select({variables:{8615:'sys_bp_never'}})); assert.equal(blank.message.kind,'error');
+  } finally {await main.close();}
+});
+
+test('M22-C2: every profile citation and licence equals the delivery attributions, and nothing in profiles.js names a source the attributions do not',async()=>{
+  const attributions=await readFile(new URL('../../../docs/DATA_ATTRIBUTIONS.md',import.meta.url),'utf8');
+  const flat=text=>text.replace(/\s+/g,' ').replace(/Ploutz- Snyder/g,'Ploutz-Snyder').trim();
+  const doc=flat(attributions);
+  for(const profile of PROFILES) {
+    assert.ok(doc.includes(profile.doi),`${profile.id}: the DOI is in the attributions`);
+    assert.ok(doc.includes(profile.license.split(' (')[0].replace('Creative Commons Attribution 4.0 International','CC BY')) || doc.includes(profile.license) || /CC BY ?4\.0|CC0/.test(doc),`${profile.id}: the licence is in the attributions`);
+  }
+  const crf=PROFILES.find(p=>p.id==='CRF'); assert.ok(doc.includes(flat(crf.citation[0])),'the CRF citation is verbatim in the attributions');
+  const mr79=PROFILES.find(p=>p.id==='MR079G'); assert.ok(doc.includes(flat(mr79.citation[0]).replace(/^Moore/,'Moore')),'the MR079G citation is verbatim in the attributions');
+});
+
+// ---- Keeping a case on this device (separate store), restoring it, and removing it ----
+function keptDoor() {
+  let store = null; let cleared = 0;
+  return {cleared: () => cleared, door: {
+    async open() { if (!store) store = (await openStore({kind: 'memory', name: 'kept'})).value; return {ok: true, value: store}; },
+    async clear() { cleared += 1; store = null; return {ok: true}; }
+  }, peek: () => store};
+}
+async function withKept(kept) { return setup({keptCases: kept.door}); }
+
+test('M22-K1: a loaded file can be kept in its own store; a new session restores it; nothing reaches the shell store',async()=>{
+  const kept=keptDoor(); const {main,vm}=await withKept(kept);
+  try {
+    assert.equal(vm.keep.available,true); assert.match(vm.notice,/Keep on this device/);
+    let after=await load(vm,'BUT_CGM','a.csv',CGM_TEXT,'101001'); const card=after.files[0]; assert.equal(card.kept,false); assert.ok(card.file_key);
+    assert.equal((await after.interactions.keep('nope')).message.kind,'error');
+    after=await after.interactions.keep(card.id); assert.equal(after.message.kind,'info'); assert.equal(after.files[0].kept,true);
+    assert.equal((await kept.peek().list('records',{})).value.length,6); assert.equal((await kept.peek().list('config',{})).value.length,1);
+    assert.equal((await after.interactions.keep(card.id)).message.kind,'info','keeping twice changes nothing'); assert.equal((await kept.peek().list('records',{})).value.length,6);
+    assert.equal((await main.list('records',{})).value.length,1,'the shell store still holds only its own record');
+    // A new session over the same kept store sees the case without loading anything.
+    const again=await model({importers,readings,openMemoryStore:()=>openStore({kind:'memory',name:'private2'}),keptCases:kept.door});
+    assert.equal(again.files.length,1); assert.equal(again.files[0].kept,true); assert.equal(again.files[0].name,'a.csv'); assert.deepEqual(again.subjects.map(s=>s.subject),['101001']);
+    assert.match(again.message.text,/Restored 1 case file/); assert.equal(again.panels.length,1); assert.ok(again.panels[0].chart);
+  } finally {await main.close();}
+});
+
+test('M22-K2: removing needs the confirmation, deletes the kept copy, and leaves what is loaded until the page closes',async()=>{
+  const kept=keptDoor(); const {main,vm}=await withKept(kept);
+  try {
+    let after=await load(vm,'BUT_CGM','a.csv',CGM_TEXT,'101001'); after=await after.interactions.keep(after.files[0].id);
+    const refused=await after.interactions.removeKept({}); assert.equal(refused.message.kind,'error'); assert.equal(kept.cleared(),0);
+    const done=await after.interactions.removeKept({confirmed:true}); assert.equal(done.message.kind,'info'); assert.equal(kept.cleared(),1); assert.equal(done.files[0].kept,false); assert.equal(done.panels.length,1);
+    const fresh=await model({importers,readings,openMemoryStore:()=>openStore({kind:'memory',name:'private3'}),keptCases:kept.door}); assert.equal(fresh.files.length,0,'a new session finds nothing kept');
+  } finally {await main.close();}
+});
+
+test('M22-K3: without a kept store the page says it is session-only; a kept store that fails to open says so and nothing is hidden',async()=>{
+  const {main,vm}=await setup(); try { assert.equal(vm.keep.available,false); assert.match(vm.notice,/gone when the page closes/); assert.doesNotMatch(vm.notice,/Keep on this device/); } finally {await main.close();}
+  const failing=await setup({keptCases:{open:async()=>({ok:false,error:{message:'blocked'}})}});
+  try { assert.equal(failing.vm.keep.available,false); assert.match(failing.vm.keep.unavailable_reason,/not available here \(blocked\)/); const out=await load(failing.vm,'BUT_CGM','a.csv',CGM_TEXT,'101001'); assert.equal(out.files[0].kept,false); assert.equal((await out.interactions.keep(out.files[0].id)).message.kind,'error'); } finally {await failing.main.close();}
+});
+
+test('M22-K4: a kept store that cannot be written keeps nothing and does not mark the file as kept',async()=>{
+  const real=keptDoor();
+  const door={async open(){const r=await real.door.open(); const store=r.value; return {ok:true,value:{...store,saveBatch:async()=>({ok:false,error:{code:'storage_error',message:'full'}})}};},clear:real.door.clear};
+  const {main,vm}=await setup({keptCases:door});
+  try { let out=await load(vm,'BUT_CGM','a.csv',CGM_TEXT,'101001'); out=await out.interactions.keep(out.files[0].id); assert.equal(out.message.kind,'error'); assert.match(out.message.text,/not marked as kept/); assert.equal(out.files[0].kept,false); assert.equal((await real.peek().list('config',{})).value.length,0); } finally {await main.close();}
+});
+
+test('M22-K5: a file of more than a thousand records is kept completely (the store bounds one batch; this failed in the browser at 1,000 per batch)',async()=>{
+  const kept=keptDoor(); const {main,vm}=await withKept(kept);
+  try {
+    const lines=Array.from({length:1500},(_,i)=>`2100-01-${String(1+Math.floor(i/288)).padStart(2,'0')} ${String(Math.floor((i%288)/12)).padStart(2,'0')}:${String((i%12)*5).padStart(2,'0')}:00;${(4+(i%30)/10).toFixed(1)}`);
+    let out=await load(vm,'BUT_CGM','big.csv',cgm(...lines),'big-1'); assert.equal(out.files[0].records,1500);
+    out=await out.interactions.keep(out.files[0].id); assert.equal(out.message.kind,'info',out.message.text); assert.equal((await kept.peek().list('records',{})).value.length,1500);
+    const again=await model({importers,readings,openMemoryStore:()=>openStore({kind:'memory',name:'p9'}),keptCases:kept.door}); assert.equal(again.files[0].records,1500); assert.equal(again.subjects.length,1);
+  } finally {await main.close();}
 });

@@ -1,6 +1,6 @@
 # Órbita: contracts between modules
 
-Version 0.20 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
+Version 0.21 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
 
 Plan and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). Rationale for the rules: [PROPOSAL_IMPROVEMENTS.md](PROPOSAL_IMPROVEMENTS.md) and [AGENTS.md](../AGENTS.md).
 
@@ -28,7 +28,7 @@ Plan and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). Rationale for 
 | R6 | No module's code contains clinical thresholds, scores or diagnoses. A criterion for attention exists only as data in `MissionConfig.attention_criteria`, with who defined it, its source and its review status; a variable without one shows "no attention criterion defined for this mission". Nothing computes a mood or depression score | Review; M06 test that a variable with no criterion never returns `within` |
 | R7 | A saved record is never modified or deleted. Correcting means adding a record with `corrects` | M04 |
 | R8 | Nothing leaves the device without an explicit action by the astronaut, and that action is logged | M18, M19, M24 |
-| R9 | One subject's data is never mixed with another's, and NASA data is never assigned to the synthetic subject | M04, M21 |
+| R9 | One subject's data is never mixed with another's, and NASA data is never assigned to the synthetic subject. NASA data lives in a store of its own: in memory for the session, and, only if the person chooses "Keep on this device", also in a separate persistent store that no other view reads | M04, M21, M22 |
 
 The two directions of error do not weigh the same. When in doubt, a module returns "not assessed" or "not comparable": it is visible and annoying. Returning "normal" without data is silent, and it is the failure the product exists to avoid.
 
@@ -378,14 +378,14 @@ Since 0.15 the text has four numbered parts (what happened, what was measured an
 ### importers (M21)
 
 ```
-importCRF(text)                      → Result<{ records, rejected, skipped }>
-importAdaptation(text, { study })    → Result<{ records, rejected, skipped }>
-importGlucose(text, { subject })     → Result<{ records, rejected, skipped }>
+importCRF(text)                      → Result<{ records, rejected, skipped, unread_columns }>
+importAdaptation(text, { study })    → Result<{ records, rejected, skipped, unread_columns }>
+importGlucose(text, { subject })     → Result<{ records, rejected, skipped, unread_columns }>
 ```
 
 `importGlucose` reads the BUT CGM glucose files: records come out with `origin: "terrestrial"`, variable `glucose`, the file's unit, and `not_recorded` for empty or NaN values.
 
-Imported text is untrusted input: it is validated row by row. Records come out with `origin: "ground_analog"`, the file's `subject` and `Test_Phase` in `mission_phase`. Free-text clinical comments are not imported; `skipped` says how many.
+Imported text is untrusted input: it is validated row by row. Since 0.21 `unread_columns` lists the header columns the importer does not read (for the real CRF file: `Head Down Tilt Verified`, `Bowel Movement`, `Quantity`), so no column is dropped silently. Records come out with `origin: "ground_analog"`, the file's `subject` and `Test_Phase` in `mission_phase`. Free-text clinical comments are not imported; `skipped` says how many.
 
 #### M21 implementation policy (user-authorized advance)
 
@@ -572,4 +572,5 @@ Everything works with the keyboard. No state is conveyed by color alone. Views r
 | 0.17 | 2026-11-16 | User-authorized ("lo recortado modificarlo para que sea de verdad, después F3 que funcione"): store `updateState` accepts `expect` (compare-and-set); Task gains `history`, `series_id`, `rev`; Execution gains `rev`, `step_records`, `unrecorded_steps`, `preparation_confirmed`; plan gains `createTask`, `scheduleSeries`, `reopenTask`; procedures gain `retireProcedure` and the preparation/recording rules above. All optional or additive. Consistency review only, no approval. |
 | 0.18 | 2026-11-16 | User-authorized ("fijate como solucionar esto … despues resolve el resto"): store collections `summaries` and `rules` (IndexedDB v3); `Episode.reopened`; `episode.reopen`/`listEpisodes`; `summary.keep`; `copilot.parseRules`/`saveRules`/`loadRules` (a rules file is untrusted text of at most 200 KB; stored rules are immutable per `id@version`; the app cannot verify a review status); `Shared.what` may carry `summary:<id>`, which the ground panel resolves from `summaries`. Fixes from the F3 independent review: `advance` refuses a record that is not `recorded`; ids starting with `retired:` are refused; instants must round-trip as real dates. Consistency review only, no approval. |
 | 0.19 | 2026-11-16 | User-authorized ("Arregla F7, F10, F11 y F12"): retries 5 → 12 with a pause (F7); retirement semantics stated (F10); `linkResult` observed-afterwards rule, whole-number minutes, digits-only inputs, other-tab origin lock (F11); data typedefs `ProcedureEntry`, `ProcedureRetirement`, nullable `execution_id`/`not_done_note`, full `history` entry (F12). Consistency review only, no approval. |
+| 0.21 | 2026-11-16 | User-authorized ("usar skills y resolver todo lo que falta o está pendiente en F5"): importers also return `unread_columns`; the NASA cases view offers CRF with caveats on its card and lists omics as not offered; `services.keptCases` (`open()`, `clear(store)`) lets a person keep an imported file in a separate persistent store (`orbita-nasa-cases`, IndexedDB), which the view restores on the next visit; the memory store no longer revalidates a whole collection on every write. R9 keeps its meaning: imported records never enter the synthetic or the "My records" store. Consistency review only, no approval. |
 | 0.20 | 2026-11-16 | User-authorized ("arreglalos en ese orden", the F4 review): one open episode per subject under one lock and `close` guarded by `expect`; rule fields are an allowlist, `@` refused in ids and versions, `saveRules` all or none, numeric version tie-break; an alert carries its source, version and declared status; summary ids get a counter and an identical text is not stored twice; environment readings are labelled in the summary text; data shapes `Summary` and `RuleEntry`. Consistency review only, no approval. |

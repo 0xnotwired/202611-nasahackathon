@@ -33,13 +33,24 @@ export const PROFILES = Object.freeze([
     importer: 'importAdaptation', options: Object.freeze({study: 'MR080G'}), needs_subject: false, accepts: 'the verified MR080G test file (other MR080G profiles are refused)',
     citation: Object.freeze(['Principal Investigator: Moore, Alan D., Jr.; Technical Assistant to Principal Investigator: Wilson, Cassie A.; Principal Investigator: Ploutz- Snyder, Lori; Technical Assistant to Principal Investigator: Everett-Downs, Meghan (2026). Aerobic Capacity (Flight Analog) [Dataset]. Ames Research Center. https://doi.org/10.83263/w056-8t76']),
     license: 'CC0-1.0', sampling: null
+  }),
+  Object.freeze({
+    id: 'CRF', label: 'CRF Daily Vitals (NASA, bed-rest case report form)', doi: '10.83263/wjw1-ta27',
+    importer: 'importCRF', needs_subject: false, accepts: 'the CRF daily-vitals CSV; free-text columns are not imported',
+    citation: Object.freeze(['Meck, Janice Fritsch- Yelle; Bridgeford, Jeffrey S.; Paloski, William H.; Cromwell, Ronita L. (2026). Case Report Form [Dataset]. Ames Research Center. https://doi.org/10.83263/wjw1-ta27']),
+    license: 'CC0-1.0', sampling: null,
+    caveats: Object.freeze([
+      'The source does not state the unit of any vital-sign column (pulse, pressures, respiration rate, weight, temperature, height). Values are shown exactly as written with "(unit unknown)"; no unit is guessed.',
+      'Dates are read as month/day/year because the second component runs above 12 in this file and consecutive days increase in it; no data dictionary confirms it. The time zone is not established and nothing is converted.',
+      'The Comment and Bowel Movement Description columns are free text about a person and are not imported; their count is shown on the card.'
+    ])
   })
 ]);
 
 /** Listed so nobody wonders where it went; never loadable. */
 export const UNSUPPORTED = Object.freeze([
-  Object.freeze({id: 'CRF', label: 'CRF Daily Vitals (NASA)',
-    reason: 'Not offered: the units of its vital-sign columns and its date handling are unconfirmed by the source, so its values cannot be shown as measurements.'})
+  Object.freeze({id: 'OMICS', label: 'Omics files (OSDR genomics and similar)',
+    reason: 'Not offered: these files were acquired and inspected, but no adapter reads them yet, so nothing from them is shown.'})
 ]);
 
 export const profileById = id => PROFILES.find(profile => profile.id === id) ?? null;

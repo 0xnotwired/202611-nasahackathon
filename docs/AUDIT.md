@@ -78,3 +78,5 @@ F0–F6 each have code, tests, negative controls and a browser walk, and none of
 3. **Review:** one independent reviewer over M08–M24 and G2–G6 with fresh context, using the records' "Not verified" lines as the checklist.
 4. **Person-only:** the 6–8 volunteer test; acceptance of gates; moving module statuses.
 5. **Cut line if time runs short** (the plan's own rule): name the layer reached, do not present F6 as tested with people, and say plainly that the demo gives no clinical guidance.
+
+**F5 after the fixes (2026-11-16).** Done: CRF offered with caveats; unread columns named; whole-file viewer comparison for BUT CGM and row-by-row importer comparison for all five real files; a separate, opt-in persistent store for imported cases; the quadratic memory-store write; citations checked against the delivery attributions. Still open and why: MR080G accepts one combination only; CRF/MR035G units and immune denominators unconfirmed (no dictionary); omics has no adapter; 10,000-record bound; PhysioNet provisional; no second browser or screen reader; the IndexedDB backend still validates per write. Independent review of F5: see G5 addendum 2.

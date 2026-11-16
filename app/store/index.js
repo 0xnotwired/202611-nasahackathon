@@ -98,7 +98,9 @@ function memoryBackend() {
   const collections=new Map(COLLECTIONS.map(name=>[name,new Map()]));
   return {
     async transact(collection,write,operation) {
-      const loaded=load(collection,[...collections.get(collection).values()]);if(!loaded.ok)return loaded;
+      // Everything held here was validated when it was written, so it is not validated again on every call (that made loading N records cost O(N^2)).
+      // The operation works on a copy of the map: a refused write leaves the stored map untouched.
+      const loaded={ok:true,value:new Map(collections.get(collection))};
       const outcome=operation(loaded.value);if(!outcome.ok)return outcome;
       if(write)collections.set(collection,loaded.value);
       return outcome;

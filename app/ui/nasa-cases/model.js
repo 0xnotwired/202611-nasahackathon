@@ -1,7 +1,7 @@
 // NASA cases: explore real imported records apart from the synthetic scenario. No DOM here.
 // Rules: imported data lives only in a private in-memory store (R9); every card and panel names its study,
 // the origin of its own records and its subject (R4); one subject is one panel, never overlaid on another;
-// nothing is converted to UTC or given an age; CRF is not offered; no citation is invented.
+// nothing is converted to UTC or given an age; CRF is offered with its unit and date caveats on the card; no citation is invented.
 import {lineChart, originLabel, accessibleTable, stateLabel} from '../base/index.js';
 import {PROFILES, UNSUPPORTED, profileById, describeSource} from './profiles.js';
 
@@ -10,7 +10,11 @@ const BATCH = 256;        // records per store write
 const MAX_TEXT = 512;     // bound on names and subject text
 const MAX_FILES = 50;     // bound on file cards kept in one session
 const MAX_FILE_CHARS = 5 * 1024 * 1024;
-const NOTICE = 'Real data from NASA bed-rest studies (ground analogs) and from terrestrial volunteers, kept apart from the synthetic demo. Nothing loaded here is saved, shared or shown in other views, and it is gone when the page closes.';
+const NOTICE_SESSION = 'Real data from NASA bed-rest studies (ground analogs) and from terrestrial volunteers, kept apart from the synthetic demo. Nothing loaded here is saved, shared or shown in other views, and it is gone when the page closes.';
+const NOTICE_KEEP = 'Real data from NASA bed-rest studies (ground analogs) and from terrestrial volunteers, kept apart from the synthetic demo. Nothing loaded here is shared or shown in other views. It is gone when the page closes unless you choose "Keep on this device" for a file: that saves its records in this browser, in a store of their own, not encrypted.';
+const KEEP_BATCH = 256;       // records per write to the kept store (the store bounds the size of one batch; 1000 was refused as invalid_field in the browser run)
+const fileKeyOf = record => String(record.source).split(';row=')[0]; // every record of one file shares this (it carries the file's hash)
+const CARD_FIELDS = ['name', 'source_id', 'study', 'origin_text', 'subjects', 'records', 'rejected', 'skipped', 'unread_columns', 'doi', 'citation', 'license', 'caveats', 'subject_note', 'error_label', 'status', 'error_text', 'file_key'];
 
 const isText = value => typeof value === 'string' && value.length > 0 && value.length <= MAX_TEXT;
 const plain = value => value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -123,7 +127,7 @@ async function buildViewModel(services, session, note) {
     variables: counts(entry.variables, 'variable'), phases: counts(entry.phases, 'phase')}));
   const panels = [];
   for (const subject of session.selection.subjects) if (summaries.has(subject)) panels.push(await buildPanel(services, session, records, summaries.get(subject), session.selection));
-  return {state: 'ready', title: 'NASA cases', notice: NOTICE, loader: loaderModel(), files: session.files.map(file => ({...file})), subjects,
+  return {state: 'ready', title: 'NASA cases', notice: session.kept ? NOTICE_KEEP : NOTICE_SESSION, keep: {available: session.kept !== null, unavailable_reason: session.kept_reason ?? null}, loader: loaderModel(), files: session.files.map(file => ({...file})), subjects,
     selection: {subjects: [...session.selection.subjects], variables: Object.fromEntries(session.selection.variables), day: session.selection.day},
     limits: {max_file_bytes: MAX_FILE_CHARS}, panels, empty_reason: panels.length ? null : (session.files.length ? 'No subject is selected. Choose one to see its series.' : 'No file loaded yet. Choose a verified source and a file below.'),
     message: note ?? null, interactions: interactions(services, session)};
@@ -151,10 +155,11 @@ async function loadFile(services, session, input) {
   if (!result || result.ok !== true) {
     const error = result && result.error ? result.error : {code: 'import_failed', message: 'the importer refused this file'};
     session.files.push({id, name, source_id: profile.id, study: profile.label, origin_text: 'no records were loaded', subjects: [], records: 0, rejected: [], skipped: 0,
-      doi: profile.doi, citation: [...profile.citation], license: profile.license, subject_note: 'No subject was loaded.', error_label: 'Refused as a whole', status: 'refused', error_text: `${error.code}: ${error.message}`});
+      doi: profile.doi, citation: [...profile.citation], license: profile.license, caveats: [...(profile.caveats ?? [])], subject_note: 'No subject was loaded.', error_label: 'Refused as a whole', status: 'refused', error_text: `${error.code}: ${error.message}`});
     return message('error', `${name} was refused as a whole and nothing was loaded: ${error.code}.`);
   }
   const {records, rejected, skipped} = result.value;
+  const unread = Array.isArray(result.value.unread_columns) ? result.value.unread_columns.map(String).slice(0, 50) : [];
   const known = await session.store.list('records', {});
   const existing = new Set(known.ok ? known.value.map(record => record.id) : []);
   if (profile.needs_subject && records.length && known.ok) {
@@ -182,14 +187,67 @@ async function loadFile(services, session, input) {
   const subjects = [...new Set(keptRecords.map(record => record.subject))];
   const source = describeSource(keptRecords.length ? keptRecords[0].source : undefined);
   session.files.push({id, name, source_id: profile.id, study: profile.label, origin_text: originText(new Set(keptRecords.map(record => record.origin))), subjects, records: kept,
-    rejected: rejected.map(row => ({row: row.row, code: row.code, field: row.field, text: `row ${row.row}: ${row.code} (${row.field})`})), skipped: skipped.length,
-    doi: source.doi ?? profile.doi, citation: [...(source.profile ? source.citation : profile.citation)], license: source.profile ? source.license : profile.license,
+    rejected: rejected.map(row => ({row: row.row, code: row.code, field: row.field, text: `row ${row.row}: ${row.code} (${row.field})`})), skipped: skipped.length, unread_columns: unread, file_key: keptRecords.length ? fileKeyOf(keptRecords[0]) : null, kept: false,
+    doi: source.doi ?? profile.doi, citation: [...(source.profile ? source.citation : profile.citation)], license: source.profile ? source.license : profile.license, caveats: [...(profile.caveats ?? [])],
     subject_note: profile.needs_subject ? 'The subject identifier was typed by you; the file carries none.' : 'The subject identifier comes from the file.',
     error_label: partial ? 'Only partly loaded' : null, status: partial ? 'partial' : rejected.length ? (records.length ? 'loaded_with_rejections' : 'all_rows_rejected') : 'loaded',
     error_text: partial ? `only ${kept} of ${records.length} records were kept (${failure})` : null});
   if (subjects.length) { session.selection.subjects = subjects.slice(0, MAX_SUBJECTS); session.selection.variables = new Map(); session.selection.day = null; }
   if (partial) return message('error', `Only ${kept} of ${records.length} records from ${name} could be kept (${failure}). The file is only partly loaded.`);
   return message('info', `Loaded ${records.length} records from ${name}${rejected.length ? `; ${rejected.length} rows were rejected (listed on its card)` : ''}.`);
+}
+
+/** Opens the separate kept store, when the page offers one, and puts what it holds back into this session. Failure is said, never hidden. */
+async function restoreKept(services, session) {
+  const door = own(services, 'keptCases');
+  if (!plain(door) || typeof own(door, 'open') !== 'function') return null;
+  let opened; try { opened = await door.open(); } catch { opened = null; }
+  if (!opened || opened.ok !== true) { session.kept_reason = `Keeping a case on this device is not available here${opened && opened.error ? ` (${String(opened.error.message).slice(0, 120)})` : ''}.`; return null; }
+  session.kept = {store: opened.value};
+  const records = await opened.value.list('records', {}); const cards = await opened.value.list('config', {});
+  if (!records.ok || !cards.ok) { session.kept = null; session.kept_reason = 'The cases kept on this device could not be read; nothing was restored.'; return message('error', session.kept_reason); }
+  for (let start = 0; start < records.value.length; start += BATCH) { const saved = await session.store.saveBatch('records', records.value.slice(start, start + BATCH)); if (!saved.ok) return message('error', `Only part of the kept cases could be restored (${saved.error.code}).`); }
+  for (const entry of cards.value.filter(item => typeof item.id === 'string' && item.id.startsWith('nasa-file:') && plain(item.card)).sort((a, b) => (a.id < b.id ? -1 : 1)))
+    session.files.push({...entry.card, id: `file-${session.files.length + 1}`, kept: true});
+  clearCache(session);
+  const subjects = [...new Set(records.value.map(record => record.subject))];
+  if (subjects.length) session.selection.subjects = subjects.slice(0, MAX_SUBJECTS);
+  return session.files.length ? message('info', `Restored ${session.files.length} case file(s) kept on this device.`) : null;
+}
+
+async function keepFile(session, fileId) {
+  if (!session.kept) return message('error', session.kept_reason ?? 'Keeping a case on this device is not available here.');
+  const card = session.files.find(file => file.id === fileId);
+  if (!card) return message('error', 'Choose one of the file cards.');
+  if (!card.file_key || !card.records) return message('error', 'This file has no records to keep.');
+  if (card.kept) return message('info', 'This file is already kept on this device.');
+  const all = await session.store.list('records', {}); if (!all.ok) return message('error', 'The loaded records could not be read; nothing was kept.');
+  const mine = all.value.filter(record => fileKeyOf(record) === card.file_key);
+  const there = await session.kept.store.list('records', {}); if (!there.ok) return message('error', 'The kept store could not be read; nothing was kept.');
+  const have = new Set(there.value.map(record => record.id)); const fresh = mine.filter(record => !have.has(record.id));
+  let kept = 0;
+  for (let start = 0; start < fresh.length; start += KEEP_BATCH) {
+    const saved = await session.kept.store.saveBatch('records', fresh.slice(start, start + KEEP_BATCH));
+    if (!saved.ok) return message('error', `Only ${kept} of ${fresh.length} records could be kept (${saved.error.code}${saved.error.field ? `: ${saved.error.field}` : ""}); the file is not marked as kept. Try again to finish it.`);
+    kept += Math.min(KEEP_BATCH, fresh.length - start);
+  }
+  const entry = {id: `nasa-file:${card.file_key}`, schema_version: 2, card: Object.fromEntries(CARD_FIELDS.map(key => [key, card[key] ?? null]))};
+  const stored = await session.kept.store.get('config', entry.id);
+  if (!stored.ok) { const saved = await session.kept.store.save('config', entry); if (!saved.ok) return message('error', `The records were kept but the file card could not be (${saved.error.code}); try again.`); }
+  card.kept = true;
+  return message('info', `Kept ${card.name} on this device (${mine.length} records, not encrypted). It will be here when you open this page again.`);
+}
+
+async function removeKept(services, session, input) {
+  if (!session.kept) return message('error', session.kept_reason ?? 'Nothing is kept on this device.');
+  if (!plain(input) || own(input, 'confirmed') !== true) return message('error', 'Not removed: confirm that you want to delete every kept case from this device.');
+  const door = own(services, 'keptCases');
+  if (typeof own(door, 'clear') !== 'function') return message('error', 'Removing kept cases is not available here.');
+  let cleared; try { cleared = await door.clear(session.kept.store); } catch { cleared = null; }
+  if (!cleared || cleared.ok !== true) return message('error', `The kept cases could not be removed${cleared && cleared.error ? ` (${String(cleared.error.message).slice(0, 120)})` : ''}.`);
+  const reopened = await door.open(); session.kept = reopened && reopened.ok === true ? {store: reopened.value} : null; if (!session.kept) session.kept_reason = 'Keeping a case on this device is not available after the removal; reload the page.';
+  for (const card of session.files) card.kept = false;
+  return message('info', 'Every kept case was deleted from this device. What is loaded now stays until you close the page.');
 }
 
 async function select(services, session, input) {
@@ -238,7 +296,9 @@ function interactions(services, session) {
   };
   return {
     loadFile: input => safe(async () => buildViewModel(services, session, await loadFile(services, session, input))),
-    select: input => safe(async () => buildViewModel(services, session, await select(services, session, input)))
+    select: input => safe(async () => buildViewModel(services, session, await select(services, session, input))),
+    keep: fileId => safe(async () => buildViewModel(services, session, await keepFile(session, fileId))),
+    removeKept: input => safe(async () => buildViewModel(services, session, await removeKept(services, session, input)))
   };
 }
 
@@ -249,6 +309,7 @@ export async function model(services) {
   let opened;
   try { opened = await services.openMemoryStore(); } catch { opened = null; }
   if (!opened || opened.ok !== true) return errorModel(`NASA cases cannot start: its private store did not open${opened && opened.error ? ` (${opened.error.message})` : ''}.`);
-  const session = {store: opened.value, files: [], selection: {subjects: [], variables: new Map(), day: null}, cache: {records: null, series: new Map()}};
-  return buildViewModel(services, session, null);
+  const session = {store: opened.value, files: [], selection: {subjects: [], variables: new Map(), day: null}, cache: {records: null, series: new Map()}, kept: null};
+  const restored = await restoreKept(services, session);
+  return buildViewModel(services, session, restored);
 }
