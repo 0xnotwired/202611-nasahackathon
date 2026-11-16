@@ -25,7 +25,7 @@ test('G0-W1: direct runners reject every placeholder and accept the core referen
 test('G0-W3: documentation checks pass and missing experiment is detected',async()=>{
   const green=run('python3',['scripts/check_docs.py']);
   assert.equal(green.error,undefined); assert.equal(green.status,0,green.stdout+green.stderr);
-  assert.match(green.stdout,/OK: 2 consistent matrices; 25 modules/);
+  assert.match(green.stdout,/OK: 2 consistent matrices; 26 modules/);
   const temp=await mkdtemp(join(tmpdir(),'orbita-g0-docs-'));
   try {
     // Copy only documentation inputs. No .git, credentials, data or dependencies.
@@ -33,6 +33,9 @@ test('G0-W3: documentation checks pass and missing experiment is detected',async
     await cp(join(root,'demo'),join(temp,'demo'),{recursive:true});
     await cp(join(root,'scripts'),join(temp,'scripts'),{recursive:true});
     for(const name of ['README.md','AGENTS.md','CLAUDE.md','LICENSE']) await cp(join(root,name),join(temp,name));
+    // Files and folders that documents link to (not dependencies): the teammate's integration note and the negative controls.
+    await mkdir(join(temp,'frontend'),{recursive:true}); await cp(join(root,'frontend','INTEGRATION.md'),join(temp,'frontend','INTEGRATION.md'));
+    await cp(join(root,'tests','controls'),join(temp,'tests','controls'),{recursive:true});
     // AGENTS now links to the user-authorized local skill snapshot. Copy only
     // linked documentation inputs; never include private agent configuration.
     for(const name of ['.agents/SKILLS_SOURCE.json','.agents/skills/README.md','.agents/skills/red-team/README.md']) {
@@ -44,9 +47,12 @@ test('G0-W3: documentation checks pass and missing experiment is detected',async
     assert.equal(control.status,0,control.stdout+control.stderr);
     const boardPath=join(temp,'docs/modules.csv');
     const board=await readFile(boardPath,'utf8');
-    const chosen=board.split('\n').find(line=>/^M\d\d,/.test(line)&&line.endsWith(',pending')&&!existsSync(join(temp,'docs/experiments',line.split(',')[0]+'.md')));
-    assert.ok(chosen,'control needs an unimplemented module with no experiment record');
+    // Any pending module will do: its record is removed from the temporary copy first, so the control does not depend on how far the project has got.
+    const chosen=board.split('\n').find(line=>/^M\d\d,/.test(line)&&line.endsWith(',pending'));
+    assert.ok(chosen,'control needs a pending module');
     const id=chosen.split(',')[0];
+    await rm(join(temp,'docs/experiments',id+'.md'),{force:true});
+    assert.equal(existsSync(join(temp,'docs/experiments',id+'.md')),false);
     const mutated=board.replace(chosen,chosen.replace(/,pending$/,',in_review'));
     assert.notEqual(mutated,board);
     await writeFile(boardPath,mutated);

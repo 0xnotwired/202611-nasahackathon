@@ -1,0 +1,30 @@
+name: Órbita app
+
+# The root application (vanilla ES modules, no dependencies): its Node tests and the documentation consistency check.
+# It does not run the browser walks (they need Chromium; see docs/CURRENT_STATUS.md) and ignores frontend/, which has its own workflows.
+on:
+  push:
+    branches: [main]
+    paths: ["app/**", "tests/**", "scripts/**", "docs/**", "*.md", "package.json", ".github/workflows/app.yml"]
+  pull_request:
+    paths: ["app/**", "tests/**", "scripts/**", "docs/**", "*.md", "package.json", ".github/workflows/app.yml"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: app-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
+      - run: python3 scripts/check_docs.py
+      - run: node scripts/package.mjs

@@ -1,5 +1,5 @@
 /**
- * Contract version 0.8. Authority: docs/CONTRACTS.md.
+ * Contract version 0.22. Authority: docs/CONTRACTS.md.
  * Documentation only: no runtime validation or module logic lives here.
  * Every persisted object additionally carries schema_version (section 3),
  * represented by Persisted<T>; nested criteria are not separately persisted.
@@ -83,10 +83,17 @@
  * @property {string} subject
  * @property {'blocked'|'in_progress'|'interrupted'|'completed'|'could_not'} state
  * @property {number} current_step
+ * @property {number} step_count
  * @property {string} started
  * @property {string} updated
  * @property {string[]} difficulties
  * @property {string[]} records
+ * @property {{reason:string,step:number,at:string|null}[]} interruptions
+ * @property {string[]} [missing]
+ * @property {number} [rev]
+ * @property {(string|null)[]} [step_records]
+ * @property {number[]} [unrecorded_steps]
+ * @property {boolean} [preparation_confirmed]
  */
 
 /**
@@ -98,8 +105,58 @@
  * @property {string} description
  * @property {string} assigned_by
  * @property {'pending'|'done'|'not_done'} completion
- * @property {string} [execution_id]
+ * @property {string|null} [execution_id]
  * @property {string[]} result_ids
+ * @property {{reason:string}|null} [not_done_note]
+ * @property {string} [scheduled_at]
+ * @property {number} [planned_minutes]
+ * @property {{completion:string,at:(string|null),reason?:string,note?:{reason:string},execution_id?:string}[]} [history]
+ * @property {string} [series_id]
+ * @property {number} [rev]
+ */
+
+/**
+ * The stored text of a summary. Immutable.
+ * @typedef {Object} Summary
+ * @property {string} id
+ * @property {number} schema_version
+ * @property {string} subject
+ * @property {string} episode_id
+ * @property {string} text
+ * @property {string[]} origins
+ * @property {string} generated
+ */
+
+/**
+ * A stored guidance rule. Immutable per `id@version`; its review status is the file's claim, not verified.
+ * @typedef {Object} RuleEntry
+ * @property {string} id
+ * @property {number} schema_version
+ * @property {string} saved
+ * @property {{id:string,when:{recorded_variable:string},suggestion:string,source:string,version:string,review_status:'demo'|'draft'|'reviewed',alert?:string}} rule
+ */
+
+/**
+ * A procedure as the registry stores it: one immutable entry per `id@version`.
+ * @typedef {Object} ProcedureEntry
+ * @property {string} id  "<procedure id>@<version>"
+ * @property {number} schema_version
+ * @property {string} published  instant of publication
+ * @property {string} procedure_id
+ * @property {string} version
+ * @property {Procedure} procedure
+ */
+
+/**
+ * The retirement of one version: a separate immutable entry; the version stays readable.
+ * @typedef {Object} ProcedureRetirement
+ * @property {string} id  "retired:<procedure id>@<version>"
+ * @property {number} schema_version
+ * @property {'retirement'} kind
+ * @property {string} procedure_id
+ * @property {string} version
+ * @property {string} retired  instant of retirement
+ * @property {string} reason
  */
 
 /**
@@ -113,6 +170,7 @@
  * @property {string[]} record_ids
  * @property {string[]} task_ids
  * @property {boolean} alert_issued
+ * @property {{previous_closed:(string|boolean),at:(string|null),reason:string}[]} [reopened]
  */
 
 /**
@@ -132,9 +190,9 @@
  * @property {string} subject
  * @property {string[]|string} what
  * @property {string} created
- * @property {string} sent
+ * @property {string} [sent]
  * @property {string} [received]
  * @property {'queued'|'in_transit'|'received'} state
  */
 
-export const CONTRACT_VERSION = "0.8";
+export const CONTRACT_VERSION = "0.22";

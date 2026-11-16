@@ -48,9 +48,10 @@
 /** @typedef {{
  * series:(store:Store,query:SeriesQuery)=>Promise<{points:unknown[],gaps:unknown[],n:number,non_comparable_groups:unknown[]}>,
  * latest:(store:Store,query:{subject:string,variable:string},context:{clock:()=>string})=>Promise<{record:Record|null,age_days:number|null}>,
- * baseline:(store:Store,query:{subject:string,variable:string,to:string})=>Promise<{n:number,from:string,to:string}>,
- * environment:(store:Store,query:{place:string,interval:{from:string,to:string}})=>Promise<{records:Record[],coverage:{from:string,to:string,sensors:string[]}}>,
- * cumulative:(store:Store,query:SeriesQuery)=>Promise<{total:number|null,unit:string,n:number,gaps:unknown[]}>,
+ * baseline:(store:Store,query:{subject:string,variable:string,to:string})=>Promise<{n:number,from:string|null,to:string|null,excluded_non_comparable:number}>,
+ * environment:(store:Store,query:{place:string,interval:{from:string,to:string}})=>Promise<{records:Record[],coverage:{from:string|null,to:string|null,sensors:string[],segments:{from:string,to:string}[]}}>,
+ * cumulative:(store:Store,query:SeriesQuery)=>Promise<{total:number|null,unit:string|null,n:number,gaps:number}>,
+ * seriesBySourceTime:(store:Store,query:{subject:string,variable:string,scope?:string})=>Promise<{points:unknown[],gaps:unknown[],n:number,non_comparable_groups:unknown[],clock:{scope:string,calendar:string,precision:string,timezone:null}|null,other_clocks:unknown[],utc_records:number}>,
  * attention:(record:Record,config:MissionConfig)=>Attention
  * }} Readings */
 /** @typedef {{
@@ -102,6 +103,7 @@
  * stateLabel:(record:Record)=>unknown, originLabel:(origin:string)=>unknown,
  * valueWithContext:(record:Record)=>unknown, accessibleTable:Function, lineChart:Function,
  * dataStateBadge:(record:Record,context:{clock:()=>string})=>unknown,
- * attentionBadge:(result:Attention)=>unknown
+ * attentionBadge:(result:Attention)=>unknown,
+ * renderChart:(doc:Document,model:object)=>Element, renderTable:(doc:Document,model:object)=>Element, renderBadge:(doc:Document,badge:object)=>Element
  * }} BaseUI */
 export {};

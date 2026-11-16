@@ -1,0 +1,32 @@
+name: Frontend API compatibility
+
+on:
+  push:
+    branches: [main]
+    paths: ["frontend/contracts/**", "frontend/backend/**", "frontend/src/features/health-monitoring/schemas.ts", "frontend/src/features/health-monitoring/data/**", "frontend/src/lib/api/**", "frontend/package*.json", ".github/workflows/frontend-contracts.yml"]
+  pull_request:
+    paths: ["frontend/contracts/**", "frontend/backend/**", "frontend/src/features/health-monitoring/schemas.ts", "frontend/src/features/health-monitoring/data/**", "frontend/src/lib/api/**", "frontend/package*.json", ".github/workflows/frontend-contracts.yml"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: frontend-contracts-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compatibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: frontend/.nvmrc
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci --ignore-scripts
+      - run: npm run test:contracts

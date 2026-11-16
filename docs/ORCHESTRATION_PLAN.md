@@ -116,6 +116,7 @@ Levels and their checklists are in [AGENT_ROADMAP.md](AGENT_ROADMAP.md).
 | M19 | Privacy | `app/privacy/` | M01, M04 | [M19](work-orders/M19-privacy.md) |
 | M20 | I feel different view | `app/ui/i-feel-different/` | M03, M07, M16, M17, M18 | [M20](work-orders/M20-ui-i-feel-different.md) |
 | M24 | Simulated sync and ground panel | `app/sync/`, `app/ui/ground/` | M07, M18, M19 | [M24](work-orders/M24-simulated-sync.md) |
+| M25 | Review and export (the teammate's follow-up and export, brought in) | `app/export/`, `app/ui/review/` | M01, M06, M07 | [M25](work-orders/M25-review-export.md) |
 | M21 | NASA importers | `app/importers/` | M01, M04 | [M21](work-orders/M21-importers.md) |
 | M22 | NASA cases view | `app/ui/nasa-cases/` | M06, M07, M21 | [M22](work-orders/M22-ui-nasa-cases.md) |
 | M23 | Packaging | `scripts/package.mjs` | M20 | [M23](work-orders/M23-packaging.md) |

@@ -1,9 +1,8 @@
-// M00 placeholder. Replace within the owning module; no product logic.
-const unavailable = () => ({ok:false,error:{code:"not_implemented",message:"ui/base is not implemented"}});
-export function stateLabel(...args) { return unavailable(); }
-export function originLabel(...args) { return unavailable(); }
-export function valueWithContext(...args) { return unavailable(); }
-export function accessibleTable(...args) { return unavailable(); }
-export function lineChart(...args) { return unavailable(); }
-export function dataStateBadge(...args) { return unavailable(); }
-export function attentionBadge(...args) { return unavailable(); }
+// M07 base interface: the seven components every view uses, so the same data looks the same everywhere.
+// The shell model, drawing and composition live in sibling files; this index exports only the contract surface.
+export {stateLabel, originLabel, valueWithContext, dataStateBadge, attentionBadge} from './labels.js';
+export {accessibleTable, lineChart} from './chart.js';
+// DOM renderers, so a view never imports a file inside this module. Drawing only; models stay in the components above.
+export {renderChart, renderTable, renderBadge, renderEntry, renderSection} from './dom.js';
+// Shared model helpers for the views, so one record becomes the same entry everywhere (contract 0.12).
+export * as viewKit from './viewkit.js';

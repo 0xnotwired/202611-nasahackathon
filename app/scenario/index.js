@@ -91,5 +91,9 @@ export function generateScenario(options) {
     procedure_id:procedures[0].id,description:'Team demo: complete the fictional recording walkthrough.',
     assigned_by:'team_defined',completion:'pending',result_ids:[]
   }];
-  return {config,records,tasks,procedures};
+  // Fictional guidance rules for the synthetic demo only. They carry no clinical content: they exist so the suggestion path can be seen working.
+  // Source and review status say what they are; a real rule would come from a reviewed source and is never written here.
+  const rules=[{id:'demo-rule-fatigue',when:{recorded_variable:'fatigue'},suggestion:'Team demo, fictional rule: it exists only to show how a suggestion appears on this screen. It is not guidance and says nothing about health.',
+    source:'team demo (fictional rule, no clinical source)',version:'demo-1',review_status:'demo'}];
+  return {config,records,tasks,procedures,rules};
 }

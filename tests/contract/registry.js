@@ -29,9 +29,13 @@ export const allContracts = [
 
 // The orchestrator promotes entries as reviewed module implementations land.
 // Keep definitions and explicit export surfaces; retire only placeholder checks.
-export const implementedNames = ['core','mission','catalogs','store','scenario','importers'];
-export const contracts = allContracts.filter(entry => !implementedNames.includes(entry.name));
+export const implementedNames = ['core','mission','catalogs','store','scenario','importers','readings','procedures','plan','privacy','sync','episode','copilot','summary','ui/base'];
+// A view cannot satisfy checkView without a DOM, so implemented views are checked separately (export surface and an
+// answering model); their drawing is checked in a browser by the module's own script.
+export const implementedViewNames = ['ui/my-health', 'ui/adaptation', 'ui/habitat', 'ui/my-progress', 'ui/my-day', 'ui/my-plan', 'ui/on-board', 'ui/ground', 'ui/i-feel-different', 'ui/nasa-cases'];
+export const contracts = allContracts.filter(entry => !implementedNames.includes(entry.name) && !implementedViewNames.includes(entry.name));
 export const implementedContracts = allContracts.filter(entry => implementedNames.includes(entry.name));
+export const implementedViews = allContracts.filter(entry => implementedViewNames.includes(entry.name));
 
 // Explicit contract surface. Do not derive this from Object.keys(implementation):
 // that would silently accept a removed export. Undefined component output shapes
@@ -42,16 +46,16 @@ export const expectedExports = {
   catalogs: 'observations variables equipment sources',
   store: 'openStore',
   scenario: 'generateScenario',
-  readings: 'series latest baseline environment cumulative attention',
-  procedures: 'validateProcedure availability start advance interrupt resume finish',
-  plan: 'tasksFor progress mark linkResult',
+  readings: 'series latest baseline environment cumulative attention seriesBySourceTime',
+  procedures: 'validateProcedure availability start advance interrupt resume finish publishProcedure listProcedures getProcedure retireProcedure',
+  plan: 'tasksFor progress mark linkResult createTask scheduleSeries reopenTask',
   privacy: 'createSession logShared sharedLog',
-  episode: 'open situation link close',
-  copilot: 'card',
-  summary: 'generate',
+  episode: 'open situation link close issueAlert reopen listEpisodes',
+  copilot: 'card validateRules parseRules saveRules loadRules',
+  summary: 'generate keep',
   importers: 'importCRF importAdaptation importGlucose',
-  sync: 'createLink enqueue advance received',
-  'ui/base': 'stateLabel originLabel valueWithContext accessibleTable lineChart dataStateBadge attentionBadge',
+  sync: 'createLink enqueue advance received deliveries',
+  'ui/base': 'stateLabel originLabel valueWithContext accessibleTable lineChart dataStateBadge attentionBadge renderChart renderTable renderBadge renderEntry renderSection viewKit',
   'ui/my-health': 'model mount',
   'ui/adaptation': 'model mount',
   'ui/habitat': 'model mount',

@@ -28,6 +28,7 @@ try:
         page.on('pageerror', lambda error: errors.append(str(error)))
         response = page.goto(url)
         assert response.status == 200
+        page.wait_for_selector('html[data-modules="loaded"]', timeout=15000)  # waits for the loader; the default view is now built, so load alone is not enough
         assert page.locator('html').get_attribute('data-modules') == 'loaded'
         expected_version = re.search(r'^Version ([0-9.]+)', (ROOT / 'docs/CONTRACTS.md').read_text(), re.M).group(1)
         assert f'contracts {expected_version}' in page.locator('#status').inner_text()

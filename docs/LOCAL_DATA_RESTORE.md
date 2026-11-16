@@ -80,8 +80,38 @@ origin/port. It is not the shared browser or an implemented product import UI.
 If that port is busy, investigate without deleting unrelated data or killing
 another process. Never copy LevelDB files from a live browser profile.
 
-On another OS/missing tools, first inspect the runtime instructions and report
-what is available; /usr/bin/chromium is the currently verified executable.
+## Browser executable
+
+The script reads the environment variable `ORBITA_CHROMIUM` and defaults to
+`/usr/bin/chromium` when it is unset or empty. Both browser launches (import
+and restart readback) use that one path. Before any source or database work the
+script resolves it (following symlinks) and fails with a named error if the
+target is missing, is not a regular file or is not executable. It never searches
+for another browser and does not create symlinks.
+
+Check the real path on your machine instead of assuming it. On the runtime
+verified on November 15, 2026, `/opt/pw-browsers/chromium` was a symlink to the
+executable, not a directory:
+
+```bash
+readlink -f /opt/pw-browsers/chromium
+# /opt/pw-browsers/chromium-1243/chrome-linux64/chrome
+ORBITA_CHROMIUM="$(readlink -f /opt/pw-browsers/chromium)" python3 scripts/import-real-samples.py
+```
+
+Python Playwright must be importable by the `python3` that runs the script. If
+it is not installed, a virtual environment outside the repository works
+without touching the system Python; use the Playwright version of the Node
+installation if one exists, then run the script with that environment's
+`python3` (or set `PYTHONPATH` to its `site-packages`). The product itself needs
+none of this. Playwright and Chromium are development tools only.
+
+On another OS or with missing tools, first inspect the runtime instructions and
+report what is available. Observed on November 15, 2026 with
+`ORBITA_CHROMIUM` set to the Chrome for Testing 153.0.8010.12 executable above:
+a first run on an empty profile inserted3861, restart readback was exact, and
+a second run inserted0 and retained3861. That is one runtime, not a claim
+about other browsers or platforms.
 The Node suite and synthetic scenario do not require these original samples.
 
 ## Optional genomic originals
@@ -96,3 +126,7 @@ Current M21 does not import genomic arrays into the health-record store.
 
 All source licenses/citations remain applicable. Do not git-add ignored
 originals or browser state merely to make another machine look restored.
+
+## IndexedDB schema version
+
+Since contract 0.14 the store opens IndexedDB at schema version 2 (it adds the `procedures` collection). A profile created at version 1, such as one restored by `scripts/import-real-samples.py`, is upgraded the first time it is opened and keeps its records; an older build cannot open a version 2 profile (it reports a version error rather than reading it).

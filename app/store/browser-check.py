@@ -35,7 +35,7 @@ try:
         # Corrupt via raw IndexedDB, outside the product's public write boundary.
         corruption=page.evaluate('''async()=>{
           const m=await import('/store/index.js');
-          const db=await new Promise((resolve,reject)=>{const r=indexedDB.open('m04-persistent',1);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});
+          const db=await new Promise((resolve,reject)=>{const r=indexedDB.open('m04-persistent');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});
           await new Promise((resolve,reject)=>{const tx=db.transaction('records','readwrite');tx.objectStore('records').put({id:'future',schema_version:3});tx.oncomplete=resolve;tx.onabort=()=>reject(tx.error);});db.close();
           const opened=await m.openStore({kind:'indexeddb',name:'m04-persistent'});if(!opened.ok)throw Error(JSON.stringify(opened));
           const result=await opened.value.get('records','future');const listed=await opened.value.list('records',{});await opened.value.close();

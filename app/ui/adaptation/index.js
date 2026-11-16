@@ -1,4 +1,2 @@
-// M00 placeholder. Replace within the owning module; no product logic.
-const unavailable = () => ({ok:false,error:{code:"not_implemented",message:"ui/adaptation is not implemented"}});
-export function mount(...args) { return unavailable(); }
-export async function model(...args) { return unavailable(); }
+export {model} from './model.js';
+export {mount} from './view.js';

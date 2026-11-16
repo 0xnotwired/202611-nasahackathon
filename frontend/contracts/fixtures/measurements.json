@@ -1,0 +1,106 @@
+{
+  "data": [
+    {
+      "id": "m-01",
+      "schema_version": 2,
+      "origin": "synthetic",
+      "source": "simulator",
+      "mission_phase": "mission",
+      "type": "measurement",
+      "state": "recorded",
+      "value": 72,
+      "variable": "pulse",
+      "unit": "bpm",
+      "method": "simulator",
+      "time": "2026-11-15T08:00:00Z",
+      "subject": "astro-01"
+    },
+    {
+      "id": "m-02",
+      "schema_version": 2,
+      "origin": "synthetic",
+      "source": "simulator",
+      "mission_phase": "mission",
+      "type": "measurement",
+      "state": "recorded",
+      "value": 98,
+      "variable": "oxygen_saturation",
+      "unit": "%",
+      "method": "simulator",
+      "time": "2026-11-15T08:00:00Z",
+      "subject": "astro-01"
+    },
+    {
+      "id": "m-03",
+      "schema_version": 2,
+      "origin": "synthetic",
+      "source": "simulator",
+      "mission_phase": "mission",
+      "type": "measurement",
+      "state": "recorded",
+      "value": 36.6,
+      "variable": "temperature",
+      "unit": "°C",
+      "method": "simulator",
+      "time": "2026-11-15T08:00:00Z",
+      "subject": "astro-01"
+    },
+    {
+      "id": "m-04",
+      "schema_version": 2,
+      "origin": "synthetic",
+      "source": "simulator",
+      "mission_phase": "mission",
+      "type": "measurement",
+      "state": "recorded",
+      "value": 7.2,
+      "variable": "sleep_hours",
+      "unit": "h",
+      "method": "instrument_estimate",
+      "time": "2026-11-15T06:00:00Z",
+      "subject": "astro-01"
+    },
+    {
+      "id": "m-05",
+      "schema_version": 2,
+      "origin": "synthetic",
+      "source": "simulator",
+      "mission_phase": "mission",
+      "type": "measurement",
+      "state": "recorded",
+      "value": 75,
+      "variable": "pulse",
+      "unit": "bpm",
+      "method": "simulator",
+      "time": "2026-11-14T08:00:00Z",
+      "subject": "astro-01"
+    }
+  ],
+  "metrics": [
+    {
+      "code": "pulse",
+      "label": "Pulse",
+      "unit": "bpm"
+    },
+    {
+      "code": "oxygen_saturation",
+      "label": "Oxygen saturation",
+      "unit": "%"
+    },
+    {
+      "code": "temperature",
+      "label": "Body temperature",
+      "unit": "°C"
+    },
+    {
+      "code": "sleep_hours",
+      "label": "Sleep duration",
+      "unit": "h"
+    }
+  ],
+  "meta": {
+    "contractVersion": "0.2",
+    "dataKind": "synthetic",
+    "clinicalValidation": "pending"
+  }
+}

@@ -228,7 +228,7 @@ Do not invent build, test or benchmark commands or clinical results. The mockup 
 Commands verified for F1:
 
 ```bash
-node --test
+npm test
 python3 scripts/check_docs.py
 python3 tests/walkthrough/g1-browser.py
 python3 tests/walkthrough/g0-browser.py
@@ -241,7 +241,7 @@ development-only Playwright/Chromium to verify actual HTTP/IndexedDB behavior.
 
 It checks that the research matrices match their documents, that every module has its work order and the work order lists experiment ids, that owned paths do not overlap, that dependencies respect phases and waves, that a module in review or integrated has a complete experiment record, and that relative links resolve. It does not check figures, whether sources say what is claimed, whether code respects owned paths, whether a prediction was written before the code, or whether an evidence level is honest.
 
-`node --test` now runs the F1 domain/foundation/gate tests without dependency installation. It does not validate clinical content or the future product views. Node has no DOM: anything that is drawn is checked with a manual browser script, and the report says "not verified in a browser" when that was not done.
+Use `npm test`, not a bare `node --test`: from the root, a bare run also finds the TypeScript tests of `frontend/`, which need their own install (`frontend/INTEGRATION.md`). `npm test` now runs the F1 domain/foundation/gate tests without dependency installation. It does not validate clinical content or the future product views. Node has no DOM: anything that is drawn is checked with a manual browser script, and the report says "not verified in a browser" when that was not done.
 
 Every test is seen failing against broken code before trusting that it passes. A test that never failed proves nothing.
 

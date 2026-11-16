@@ -15,6 +15,8 @@ How to read the "License source" columns: it says what was actually read in this
 
 None (decision D2). The product is the team's own code, licensed under Apache-2.0 (see [../LICENSE](../LICENSE)). Browser features (IndexedDB, SVG, ES modules) are the platform, not third-party code.
 
+**Exception, by the user's decision of 2026-11-15 and only inside `frontend/`:** the teammate's Next.js edition has its own dependencies (Next.js 16, React 19, Zod, lucide-react, Tailwind, TypeScript, ESLint; see `frontend/package.json` and its lockfiles; licenses are those of each package and were not re-read here). They are not part of the main app, of `dist/orbita.html` or of the root `package.json`, which still has none. The teammate's own code in `frontend/` is team code; its useful parts were re-implemented in the main app as module M25, not copied across.
+
 ## 2. Development tools (not distributed inside the product)
 
 | Tool | Version seen | Used for | License | License source | Note |
@@ -57,6 +59,8 @@ XState, Open mHealth, Open MCT, AMOS, LHC-Forms, CQL Execution and Medplum were 
 ## 5. AI assistance
 
 Claude (Anthropic), used through Claude Code, wrote the documentation and scripts in this repository and is the intended author of the product modules under the work orders. It is recorded in three places: the `Co-Authored-By` line of every commit, the handoff log in [AGENT_ROADMAP.md](AGENT_ROADMAP.md), and the module's experiment record. Nothing in this list claims a human review that those records do not show. Agents are forbidden to reproduce or transform code from other projects (AGENTS.md).
+
+From 2026-11-15 to 2026-11-16 a Claude Code session (model recorded per commit in its `Co-Authored-By` line) built F2–F6, the M25 review and export module, the audit and these documents on the branch mod/f2-claude, delivered as final-claude. Separate Claude subagents, which did not write the code, performed read-only independent reviews of F3, F4 and F5 and, as the last step, an integrated adversarial review of every layer (G6-W3, see G6.md for its state); their reports are summarised in [AUDIT.md](AUDIT.md) and the experiment records. A review by an AI agent is a judgment, not an acceptance. Python Playwright was installed into the session with pip to run the browser walkthroughs (development only; nothing is distributed).
 
 OpenAI Codex also authored M00–M05 and the G0/G1 walkthroughs in the
 cloud session on November 15, 2026, with a separate Codex agent performing

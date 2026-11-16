@@ -1,6 +1,6 @@
 # Órbita: contracts between modules
 
-Version 0.8 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
+Version 0.22 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
 
 Plan and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). Rationale for the rules: [PROPOSAL_IMPROVEMENTS.md](PROPOSAL_IMPROVEMENTS.md) and [AGENTS.md](../AGENTS.md).
 
@@ -28,7 +28,7 @@ Plan and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). Rationale for 
 | R6 | No module's code contains clinical thresholds, scores or diagnoses. A criterion for attention exists only as data in `MissionConfig.attention_criteria`, with who defined it, its source and its review status; a variable without one shows "no attention criterion defined for this mission". Nothing computes a mood or depression score | Review; M06 test that a variable with no criterion never returns `within` |
 | R7 | A saved record is never modified or deleted. Correcting means adding a record with `corrects` | M04 |
 | R8 | Nothing leaves the device without an explicit action by the astronaut, and that action is logged | M18, M19, M24 |
-| R9 | One subject's data is never mixed with another's, and NASA data is never assigned to the synthetic subject | M04, M21 |
+| R9 | One subject's data is never mixed with another's, and NASA data is never assigned to the synthetic subject. NASA data lives in a store of its own: in memory for the session, and, only if the person chooses "Keep on this device", also in a separate persistent store that no other view reads | M04, M21, M22 |
 
 The two directions of error do not weigh the same. When in doubt, a module returns "not assessed" or "not comparable": it is visible and annoying. Returning "normal" without data is silent, and it is the failure the product exists to avoid.
 
@@ -81,12 +81,38 @@ Procedure
   source, review_status draft | demo | reviewed
   documented_alternative  id of another procedure, optional; never inferred
 
+Summary
+  id              "<episodeId>:<instant>", with "~<n>" when the instant repeats (stored summary text, added 0.18)
+  schema_version, subject, episode_id, text, origins, generated
+
+RuleEntry
+  id              "<rule id>@<version>" (stored guidance rule, added 0.18)
+  schema_version, saved
+  rule            { id, when, suggestion, source, version, review_status, alert? }; the app does not verify review_status
+
+ProcedureEntry
+  id              "<procedure id>@<version>" (registry entry, added 0.19)
+  schema_version, published, procedure_id, version
+  procedure       the Procedure above, unchanged
+
+ProcedureRetirement
+  id              "retired:<procedure id>@<version>" (registry entry, added 0.19)
+  schema_version, procedure_id, version, retired, reason
+  kind            retirement
+
 Execution
   id, procedure_id, procedure_version, subject
   state           blocked | in_progress | interrupted | completed | could_not
   current_step, started, updated
   difficulties    list of structured texts
   records         ids of the Records produced
+  step_count      number of steps of the version it started with (added 0.13)
+  interruptions   list of { reason, step, at|null } (added 0.13)
+  missing?        equipment ids, only on a blocked execution (added 0.13)
+  rev?            whole number, +1 on each change; the guard of concurrent writers (added 0.17)
+  step_records?   per step, the variable it must record or null (copied from the version at start; added 0.17)
+  unrecorded_steps? indexes of steps finished with an explicit "nothing recorded" (added 0.17)
+  preparation_confirmed? true when the person confirmed every preparation check before starting (added 0.17)
 
 Task
   id, subject, day, procedure_id?, description
@@ -94,12 +120,19 @@ Task
   completion      pending | done | not_done
   execution_id?   link to what was done
   result_ids      links to what was observed afterwards
+  not_done_note?  { reason } only on a not_done task (added 0.13)
+  scheduled_at?   ISO8601 UTC instant the task is planned for (added 0.16; `day` stays the date key)
+  planned_minutes? positive number of minutes planned (added 0.16)
+  history?        list of { completion, at, reason? }: every undo of a mark, in order (added 0.17)
+  series_id?      shared by the tasks of one periodic series (added 0.17)
+  rev?            whole number, +1 on each change; the guard of concurrent writers (added 0.17)
 
 Episode
   id, subject, opened, closed?
   observation_id      the Record that started it
   execution_ids, record_ids, task_ids
   alert_issued        boolean
+  reopened?           list of { previous_closed, at|null, reason }: every reopening of a closed episode (added 0.18)
 
 Shared
   id, subject, time, what (ids or "summary:<id>"), with, channel
@@ -109,7 +142,7 @@ Delivery
   shared_id           the Shared entry that originated it
   subject, what
   created             when the content was generated
-  sent                when it left the queue
+  sent?               when it left the queue; absent while queued (0.14)
   received?           when the ground received it; absent if it did not arrive
   state               queued | in_transit | received
 ```
@@ -199,11 +232,12 @@ Store
   get(collection, id)               → Promise<Result<object>>
   list(collection, filter)          → Promise<Result<object[]>>   filter by equality and time range
   saveBatch(collection, objects)    → Promise<Result<n>>          all or nothing
-  updateState(collection, id, changes) → only for Execution, Task, Episode and Delivery
+  updateState(collection, id, changes, { expect? }) → only for Execution, Task, Episode and Delivery.
+      `expect` is { field: string|number|boolean|null }: the change applies only if the stored object still has those values (null = absent), checked in the same transaction as the write; otherwise `conflict` (added 0.17)
   close()                           → Promise<void>
 ```
 
-Collections: `records`, `executions`, `tasks`, `episodes`, `shared`, `deliveries`, `config`. `records` and `shared` do not allow `updateState` (R7). If IndexedDB is missing, `openStore` with `"indexeddb"` returns an error; the caller decides to use `"memory"` and shows it.
+Collections: `records`, `executions`, `tasks`, `episodes`, `shared`, `deliveries`, `config`, `procedures` (added 0.14), `summaries` and `rules` (added 0.18, IndexedDB schema v3; both immutable; an upgrade from v2 keeps the data). `summaries` holds `{ id: "<episodeId>:<instant>", subject, episode_id, text, origins, generated }`; `rules` holds `{ id: "<ruleId>@<version>", saved, rule }`. `procedures` is immutable like `records`: `updateState` is refused. The IndexedDB schema is version 2 since 0.14: opening a version 1 database upgrades it by creating the missing collection and keeps its data (BROWSER-checked in `tests/walkthrough/g3-extras-browser.py`). `records` and `shared` do not allow `updateState` (R7). If IndexedDB is missing, `openStore` with `"indexeddb"` returns an error; the caller decides to use `"memory"` and shows it.
 
 ### scenario (M05)
 
@@ -221,11 +255,21 @@ series(store, { subject, variable, from, to })
 latest(store, { subject, variable }, { clock })
    → { record | null, age_days | null }
 baseline(store, { subject, variable, to })
-   → { n, from, to }                       how many measurements exist; no judgment
+   → { n, from, to, excluded_non_comparable }
+        n: how many comparable recorded values exist before `to`; no judgment.
+        from, to: earliest and latest time of those values (null when n is 0).
+        excluded_non_comparable: how many recorded values were left out because their
+        method or unit differs, or their unit is unknown (0 when none).
 environment(store, { place, interval })
-   → { records, coverage: { from, to, sensors } }
+   → { records, coverage: { from, to, sensors, segments } }
+        segments: the merged intervals actually measured inside the asked interval, so a
+        hole between two sensor windows is never reported as continuous coverage.
+        from, to: first start and last end of the segments (null when there are none).
 cumulative(store, { subject, variable, from, to })
    → { total | null, unit, n, gaps }       total is null if there is no data at all
+seriesBySourceTime(store, { subject, variable, scope? })
+   → { points, gaps, n, non_comparable_groups, clock, other_clocks, utc_records }
+        for records that carry only a source time (time: null); see below
 attention(record, config)
    → { status: "within" | "outside" | "no_criterion" | "not_assessed", criterion?, reason? }
 ```
@@ -233,6 +277,12 @@ attention(record, config)
 `attention` only compares against a criterion present in the configuration. `not_recorded`, `confirmed_none`, a missing value or a different unit give `not_assessed` with the reason; no criterion gives `no_criterion`. It never returns `within` without a criterion.
 
 `readings` does not decide what is normal. It returns data and how much supports it.
+
+`environment` also takes optional `subject` and `variable`. With records of several variables and no `variable`, `coverage.segments` is `[]` and `coverage.segments_note` says why: cover is never claimed across variables. Query bounds must be UTC instants (text ending in `Z`).
+
+A foreseen failure returns `{ ok: false, error: { code, field?, message } }` instead of the plain object, so a caller checks `ok === false` first. Records that carry only a source time (`time: null`) make `series`, `latest`, `baseline` and `cumulative` return `unresolved_time`: no UTC placement or age is invented for them. `cumulative` returns `not_comparable` rather than a partial total when the records in range differ in method or unit.
+
+`seriesBySourceTime` is the series for records with `time: null`, which the UTC queries refuse. It has the same `points`, `gaps`, `n` and `non_comparable_groups` as `series`, and takes no range. A source clock is `scope` + `calendar` + `precision`; ordering and day counting happen only inside one clock, and nothing is converted to UTC or given an age. Points carry `time: null` and `source_time`, the source's own text, and `day` is a source day, not a UTC date. `clock` is `{ scope, calendar, precision, timezone: null }` for the clock that was used, or `null` when no clock can be ordered. The primary clock has the most measured values (then the most records, then the key), unless the optional `scope` selects among clocks with that scope. `gaps` cover the days between that clock's first and last record. Every other clock is listed in `other_clocks` as `{ scope, calendar, precision, n, orderable }`; clocks are never merged. A clock with `calendar: "unknown"` is never ordered or placed on a day: it appears in `other_clocks` with `orderable: false` and `records`, the stored records themselves, sorted by id only for stable output, so no order is claimed. `utc_records` counts the records with a UTC time that were left out. Unit-unknown values are never points; they come back in `non_comparable_groups`. A source clock spanning more than 3650 days returns `range_too_large`.
 
 ### procedures (M13)
 
@@ -248,6 +298,23 @@ finish(store, executionId, { state: "completed" | "could_not", difficulties })
 
 With missing equipment, `start` returns a `blocked` execution with its `missing` list. `alternative_id` only appears if the procedure declares it.
 
+Since 0.13: `advance`, `interrupt`, `resume` and `finish` accept an optional `clock` in their options; `updated` changes only when one is given, so no time is invented. `advance` stops at the last step (`no_more_steps`); `finish` as `completed` needs every step done (`steps_remaining`) and is allowed only from `in_progress`; `could_not` from `in_progress` or `interrupted`. A `blocked` execution is stored and allows no transition. `advance({ record })` links a record id only if it exists and belongs to the execution's subject. Each execution is changed by one caller at a time.
+
+Since 0.17: `start(..., { preparation_confirmed })` refuses (`preparation_not_confirmed`) a procedure with preparation checks unless the caller says the person confirmed them; `advance` on a step that declares `records` needs `{ record }` of that variable (`wrong_variable` otherwise) or an explicit `{ no_record: true }` (kept in `unrecorded_steps`), else `record_required`; `retireProcedure(store, id, version, { clock, reason }) → Result` stores an immutable retirement entry: `listProcedures` no longer offers that version, `{ all: true }` still returns it, executions keep reading it. Executions are changed with the same `rev` guard as tasks. Retiring the latest version makes the previous version that is not retired the one offered (`listProcedures`); the screen names that version in its message; with none left, nothing is offered. A retired version stays readable through `{ all: true }`.
+
+Registry (added 0.14): `publishProcedure(store, procedure, { clock }) → Result<Procedure>` stores one immutable entry per `id@version` (neither may contain `@`) and refuses a second publication of the same version (`version_exists`); `listProcedures(store, { all? }) → Result<Procedure[]>` gives the latest published version of each procedure, or every version with `all`; `getProcedure(store, id, version) → Result<Procedure>` gives that exact version. A stored entry that cannot be read is an error (`corrupt_procedure`), never skipped. Executions are read against `getProcedure(store, procedure_id, procedure_version)`.
+
+### export (M25, added 0.22)
+
+```
+recordsToCsv(records)  → Result<string>   // BOM, CRLF, fixed COLUMNS; no record dropped, reordered or rounded
+csvCell(value, { numeric? }) → string      // a text cell that starts with = + - @ tab or CR gets a leading apostrophe; numbers do not
+safeFileName(...parts) → string            // letters, digits, dashes and one ".csv"
+COLUMNS = id subject type state variable value unit unit_status method time_utc source_time_raw source_time_calendar source_time_scope source_time_precision origin source mission_phase place sensor corrects note
+```
+
+A value is written only for `state: recorded` and a number; an absent state has no value and no unit. `time_utc` is empty when the record has only the source's own clock, which is written in the `source_time_*` columns and never converted. `services.exporter` carries this module to the views. The `review` view (`app/ui/review/`) prepares a review text for a specialist on the device (nothing is sent), compares two values only when `core.areComparable` accepts them and their origins are equal, groups by one method, and downloads the CSV of the series or of all the subject's records. The shell also offers a theme (automatic, light, dark); the choice is a per-viewer convenience kept in `localStorage`.
+
 ### plan (M14)
 
 ```
@@ -257,6 +324,10 @@ mark(store, taskId, { completion, execution_id?, note? })      → Result<Task>
 linkResult(store, taskId, recordId)                            → Result<Task>
 ```
 
+Since 0.17: `createTask(store, { subject, description, scheduled_at, planned_minutes, procedure_id?, assigned_by? }, { newId })` (`assigned_by` defaults to `self`; minutes are required, never assumed); `scheduleSeries(store, { ...task, first_scheduled_at, every_days, count }, { newId })` creates `count` tasks (2–52) exactly `every_days` (1–365) apart with one `series_id`, all or none; `reopenTask(store, taskId, { reason, clock? })` returns a marked task to `pending`, clears `execution_id` and `not_done_note`, keeps `result_ids` and appends the undo with its reason to `history`; `mark` also appends to `history`. A `history` entry is `{ completion, at|null, reason?, note?, execution_id? }`; `at` is the clock's instant, or null when none was given. A retirement entry in the registry is `{ id: "retired:<id>@<version>", kind: "retirement", procedure_id, version, retired, reason }`, and ids starting with `retired:` are refused. Contention: a change retries up to 12 times with a short growing pause before it reports `conflict`. `linkResult` needs the value to have an established `time` not before the task's `scheduled_at` (or the start of its `day`): `time_not_established` or `observed_before` otherwise. `planned_minutes` is a whole number of minutes, 1 to 1440. Writers no longer queue in one process: each change reads the task, decides, writes with `expect: { rev }` and reads again on `conflict` (up to 5 tries), so it holds across tabs.
+
+Since 0.13: `mark` accepts `done` or `not_done` only and only on a `pending` task (`already_marked` otherwise); `note` is `{ reason }` and belongs to `not_done`; `execution_id` must exist, belong to the task's subject and procedure, and for `done` be `completed`. `linkResult` accepts only a `recorded` Record of the same subject, never changes `completion`, and ignores a repeated link. `tasksFor` returns stored tasks of that day only and reports a corrupt task instead of dropping it. Concurrent changes: see 0.17 above.
+
 ### privacy (M19)
 
 ```
@@ -265,6 +336,8 @@ Session.unlock(), .active(), .close()
 logShared(store, { subject, what, with, channel }, { clock, newId }) → Result<Shared>
 sharedLog(store, { subject })      → Result<Shared[]>
 ```
+
+`logShared` takes an optional `session` in its context: when given, it must be active (`session_locked` otherwise). The `Shared` entry it writes has `schema_version: 1`, and the log has no edit and no delete.
 
 An active session does not ask to unlock again. This module does not encrypt and must not claim to protect data on disk.
 
@@ -276,7 +349,11 @@ situation(store, episodeId, config, { clock })
    → { you_recorded, we_know, missing, you_can, happened, next }
 link(store, episodeId, { execution_id?, record_id?, task_id? })
 close(store, episodeId)
+reopen(store, episodeId, { reason, clock? })   → Result<Episode>   (added 0.18; `open` and `reopen` of one subject share one lock, so one episode of a subject is open at a time within a process; `open` refuses with `another_episode_open`; `close` writes with `expect` on `closed`)
+listEpisodes(store, { subject })               → Result<{ id, opened, closed, is_closed, observation_id, reopened }[]>   (added 0.18)
 ```
+
+Since 0.15: `open` reads the observation back from the store and needs a **recorded** observation of the same subject. `situation` returns the six parts as plain lists (empty ones allowed) plus `why_empty` (a text for each empty part) and `alert_issued`; a failure is `{ ok: false, error }`. `we_know` holds the newest recorded measurement or exam of the subject, and environment readings only from the observation's own `place` (none when it states no place); `missing` lists `{ kind: "not_recorded", variable }`, `{ kind: "equipment", item, needed_by }` and `{ kind: "time_not_established", count }`; `you_can` lists the published procedures with `available`, `missing` and `alternative_id`; `happened` keeps each linked execution's own state; `next` lists linked pending tasks. `link` needs the item to exist and belong to the subject, and an open episode (`episode_closed`). `close(store, id, { clock? })` writes `closed` as the clock's instant, or `true` when no clock is given (no time is invented). `issueAlert(store, id) → Result<{ issued, episode }>` turns `alert_issued` true once; a second call returns `issued: false` and changes nothing. Each episode is changed by one caller at a time.
 
 `situation` assembles the six parts of the episode. `missing` includes whatever is `not_recorded` and the missing equipment. `you_can` lists procedures with their `availability`.
 
@@ -284,9 +361,16 @@ close(store, episodeId)
 
 ```
 card(situation, config, rules)
+parseRules(text) → Result<Rule[]>   (added 0.18)
+saveRules(store, rules, { clock }) → Result<Rule[]>
+loadRules(store) → Result<Rule[]>
    → { data, gaps, suggestion | null, no_guidance: boolean,
        not_assessed, alert: { text } | null }
 ```
+
+Since 0.20: a rule accepts only the fields id, when, suggestion, source, version, review_status and alert; `id` (at most 100 characters) and `version` (at most 50) must not contain `@`; a card's `alert` is `{ text, rule_id, source, version, review_status }`; `saveRules` writes all or none; `loadRules` breaks a tie in `saved` by version in numeric order. A review status is what the rule's file declares: the app cannot verify it, and the screen says so beside every suggestion and alert, `reviewed` included.
+
+Since 0.15: `validateRules(rules) → Result<Rule[]>`. A rule is data: `{ id, when: { recorded_variable }, suggestion, source, version, review_status: demo | draft | reviewed, alert? }`; one without a source (or version, or review status) is rejected, and `card` leaves it out and says so in `not_assessed`. A rule matches only a variable the person recorded; nothing is compared with a limit. `suggestion` is `{ rule_id, text, source, version, review_status }`; `alert` is `{ text }` only when the applicable rule has an `alert` text and the situation's `alert_issued` is not true. The module ships no rule.
 
 Pure function. `data` and `gaps` come first. If no rule applies, `suggestion` is `null` and `no_guidance` is `true`. Every suggestion carries `source`, `version` and `review_status`. `alert` is `null` if the episode already issued one. The `rules` are data; the module ships no clinical rule.
 
@@ -294,22 +378,25 @@ Pure function. `data` and `gaps` come first. If no rule applies, `suggestion` is
 
 ```
 generate(store, episodeId, config, { clock })
+keep(store, episodeId, config, { clock }) → Result<{ id, text, origins, pending_send, saved }>   (added 0.18)
    → Result<{ id, text, origins, pending_send: boolean }>
 ```
+
+Since 0.15 the text has four numbered parts (what happened, what was measured and how, what is missing, what is being asked), one `Origin:` block per origin present, the three record states in their own words ("not recorded", "confirmed nothing new"), values with their unit or "(unit unknown)", and no free-text notes. `pending_send` is true unless the link is `real_time`. `generate` stores and shares nothing. Since 0.18 `keep` also stores the text, immutably, in `summaries` under `<episodeId>:<instant>` (a counter `~2`, `~3` when the clock gives the same instant and the text differs; an identical text is not stored twice), and the "I feel different" view shares the episode's records plus `summary:<id>` of the newest summary. The text is free of record notes, but it does include what the person typed as a difficulty of an execution and the description of a pending task linked to the episode; the person sees the whole text before sharing. Environment readings are labelled "environment reading at <place>, not a personal measurement".
 
 `generate` sends nothing. The text separates synthetic, analog and flight data, and distinguishes the three record states. With `communication: "delayed"` the text stands on its own: what happened, what was measured and how, what is missing, what is being asked. Sharing goes through `privacy.logShared`.
 
 ### importers (M21)
 
 ```
-importCRF(text)                      → Result<{ records, rejected, skipped }>
-importAdaptation(text, { study })    → Result<{ records, rejected, skipped }>
-importGlucose(text, { subject })     → Result<{ records, rejected, skipped }>
+importCRF(text)                      → Result<{ records, rejected, skipped, unread_columns }>
+importAdaptation(text, { study })    → Result<{ records, rejected, skipped, unread_columns }>
+importGlucose(text, { subject })     → Result<{ records, rejected, skipped, unread_columns }>
 ```
 
 `importGlucose` reads the BUT CGM glucose files: records come out with `origin: "terrestrial"`, variable `glucose`, the file's unit, and `not_recorded` for empty or NaN values.
 
-Imported text is untrusted input: it is validated row by row. Records come out with `origin: "ground_analog"`, the file's `subject` and `Test_Phase` in `mission_phase`. Free-text clinical comments are not imported; `skipped` says how many.
+Imported text is untrusted input: it is validated row by row. Since 0.21 `unread_columns` lists the header columns the importer does not read (for the real CRF file: `Head Down Tilt Verified`, `Bowel Movement`, `Quantity`), so no column is dropped silently. Records come out with `origin: "ground_analog"`, the file's `subject` and `Test_Phase` in `mission_phase`. Free-text clinical comments are not imported; `skipped` says how many.
 
 #### M21 implementation policy (user-authorized advance)
 
@@ -375,6 +462,8 @@ enqueue(store, sharedId, { clock, newId })     → Result<Delivery>
 advance(store, link, { clock })                → Result<Delivery[]>   delivers what is due according to the mode
 received(store, { subject? })                  → Result<Delivery[]>   what the ground panel sees
 ```
+
+Since 0.14: `createLink` throws a `TypeError` on invalid options (it is called once, where the application is assembled) and a `delayed` link needs `delay_ms`; `Link.mode()`, `Link.delay_ms()` and `Link.setMode(mode, delay_ms?) → Result` (a bad mode or a missing delay changes nothing). `enqueue` returns the existing delivery when the same `Shared` entry is enqueued again. `deliveries(store, { subject? }) → Result<Delivery[]>` lists every delivery in any state (what a sender still has queued or in transit); `received` lists only the received ones. A queued delivery has no `sent` yet. With `real_time`, `advance` receives what is queued; with `delayed`, a queued delivery becomes `in_transit` (with `sent`) and is received when the injected clock reaches `sent + delay_ms` (`>=`); with `no_link` nothing moves and nothing is lost.
 
 Simulated: there is no network and no server. Only what already went through `privacy.logShared` can be enqueued; nothing leaves without that action. A delivery handed over twice is received once (by `id`). `received` does not include anyone who sent nothing, and the ground view shows "nothing sent" instead of an invented status. The user interface is labeled "simulated sync". A real server will implement these same functions.
 
@@ -457,6 +546,12 @@ M07 delivers the components every view uses, so the same data looks the same eve
 - `dataStateBadge(record, { clock })`: color plus text for the state of the data — current, old, not recorded, confirmed nothing new, not comparable. Color never means "normal".
 - `attentionBadge(result)`: shows the output of `readings.attention` with the criterion's `defined_by`, source and review status; `no_criterion` and `not_assessed` read as such. "demo" reads as such.
 - Change from the personal baseline is shown as text with how many measurements support it, never as a color judgment.
+- `renderChart(doc, chartModel)`, `renderTable(doc, tableModel)` and `renderBadge(doc, badge)`: DOM renderers for the models above, exported so that a view never imports a file inside this module. They build elements with `textContent` and `setAttribute` only; record text is never parsed as markup. `renderTable` returns the table inside a keyboard-reachable, named region (`role="region"`, `tabindex="0"`, `aria-label` equal to the caption) so that a wide table scrolls inside itself instead of widening the page.
+
+- `renderEntry(doc, entry)` and `renderSection(doc, section)`: DOM renderers for one record as a list item and for one view section (`{ id, title, state?, text?, note?, entries?, charts?, tables? }`); a section that is not available, empty or in error says so in words.
+- `viewKit`: pure model helpers shared by every view. `recordEntry(record, { clock, label?, variable? })` turns one record into the one entry every view shows (value text equal to `valueWithContext`; an absent or invalid record is the absent entry, "not recorded", never "nothing new"); `contextOf(services)` checks what a view needs and names what is missing; `textsOf(model)` and `keysOf(model)` list every string and key of a model, for tests that scan whole screens.
+
+`services` also carries `readings`, `importers` (M21), `catalogs`, `core`, `plan`, `subject`, `data_source`, `writable`, `record_origin`, `flags` and `openMemoryStore()`, which opens a private memory store. The shell offers two data sources: a synthetic demo (fictional scenario records in a memory store, with a clock fixed at the scenario's "now") and "My records" (the persistent store, where recording is not available in F2). Every view names its source. A view that handles imported real data (M22) keeps it in that private store and never writes it to `services.store`.
 
 Everything works with the keyboard. No state is conveyed by color alone. Views receive `services` as a parameter and do not import `store`.
 
@@ -477,3 +572,17 @@ Everything works with the keyboard. No state is conveyed by color alone. Views r
 | 0.7 | 2026-11-15 | User-requested source-date model: schema2 preserves unknown-zone/date-only/shifted times and explicit unknown units; legacy1 unchanged; scoped comparison and explicit UTC-query errors | M01–M07 and future import consumers |
 
 | 0.8 | 2026-11-15 | User-authorized M21 advance: deterministic source CSV adapters, bounded reports/rows, source-time and unknown-unit policy; selected adaptation profiles; no implicit persistence | M21, store/import consumers |
+| 0.9 | 2026-11-15 | User-authorized after M06 delivery: `readings.baseline` gains `excluded_non_comparable`, `readings.environment` coverage gains `segments`; the readings failure shape (`{ ok:false, error }`), `unresolved_time` and `not_comparable` are documented. Additive: existing fields keep their meaning | M06, M07 and every future readings consumer |
+| 0.10 | 2026-11-15 | User-authorized: `readings.seriesBySourceTime` reads records that carry only a source time without inventing UTC or ages; clocks are never merged and an unknown calendar is listed unordered with its records. `lineChart` labels source days and keeps undrawn values in its table | M06, M07; every view over imported data (M08, M09, M11, M22) |
+| 0.11 | 2026-11-15 | User-authorized with the M22 advance: `ui/base` also exports the DOM renderers `renderChart`, `renderTable`, `renderBadge`; services carry `importers` and `openMemoryStore`. M22 (NASA cases) is implemented ahead of its phase; this does not close F5 | M07, M22; every view that draws charts or tables |
+| 0.12 | 2026-11-15 | User-authorized with the start of F2 (M08–M12): `ui/base` also exports `renderEntry`, `renderSection` and `viewKit`; services carry the data-source fields and the `catalogs`, `core` and `plan` collaborators; the shell offers a synthetic demo source and "My records" | M07, M08–M12 |
+| 0.13 | 2026-11-15 | User-authorized with the start of F3 (M13–M15): optional `clock` in the procedure transitions; Execution gains `step_count`, `interruptions` and `missing`; Task gains `not_done_note`; the rules of `mark`, `linkResult` and `finish` above; services may carry `procedures` and `procedure_list`; `ui/my-plan` and `ui/on-board` are implemented. Consistency review only, no approval. |
+| 0.14 | 2026-11-15 | User-authorized ("agrega versiones mínimas"): `procedures` collection and IndexedDB schema v2 with an upgrade; the procedure registry (`publishProcedure`, `listProcedures`, `getProcedure`); `privacy` (`createSession`, `logShared`, `sharedLog`) and `sync` (`createLink`, `enqueue`, `advance`, `received`, `deliveries`) implemented as above; `Delivery.sent` optional; `ui/ground` implemented; the On board editor. Consistency review only, no approval. |
+| 0.15 | 2026-11-15 | User-authorized ("versiones mínimas de F4"): `episode`, `copilot` and `summary` implemented as above (`issueAlert` and `validateRules` added); services may carry `episode`, `copilot`, `summary` and `rules`; `ui/i-feel-different` implemented. Consistency review only, no approval. |
+| 0.16 | 2026-11-15 | User-authorized with the incorporation of the teammate's frontend ("usar nuestro modelo de datos, incorporando lo que él usa"): `Task` gains optional `scheduled_at` and `planned_minutes`, which its exercise plan needs. Optional, so earlier tasks stay valid. Consistency review only, no approval. |
+| 0.17 | 2026-11-16 | User-authorized ("lo recortado modificarlo para que sea de verdad, después F3 que funcione"): store `updateState` accepts `expect` (compare-and-set); Task gains `history`, `series_id`, `rev`; Execution gains `rev`, `step_records`, `unrecorded_steps`, `preparation_confirmed`; plan gains `createTask`, `scheduleSeries`, `reopenTask`; procedures gain `retireProcedure` and the preparation/recording rules above. All optional or additive. Consistency review only, no approval. |
+| 0.18 | 2026-11-16 | User-authorized ("fijate como solucionar esto … despues resolve el resto"): store collections `summaries` and `rules` (IndexedDB v3); `Episode.reopened`; `episode.reopen`/`listEpisodes`; `summary.keep`; `copilot.parseRules`/`saveRules`/`loadRules` (a rules file is untrusted text of at most 200 KB; stored rules are immutable per `id@version`; the app cannot verify a review status); `Shared.what` may carry `summary:<id>`, which the ground panel resolves from `summaries`. Fixes from the F3 independent review: `advance` refuses a record that is not `recorded`; ids starting with `retired:` are refused; instants must round-trip as real dates. Consistency review only, no approval. |
+| 0.19 | 2026-11-16 | User-authorized ("Arregla F7, F10, F11 y F12"): retries 5 → 12 with a pause (F7); retirement semantics stated (F10); `linkResult` observed-afterwards rule, whole-number minutes, digits-only inputs, other-tab origin lock (F11); data typedefs `ProcedureEntry`, `ProcedureRetirement`, nullable `execution_id`/`not_done_note`, full `history` entry (F12). Consistency review only, no approval. |
+| 0.22 | 2026-11-16 | User-authorized ("agregar lo de mi compañero lo que sirva … hay que combinarlos"): module M25 `export` and view `review` (Review and export), `services.exporter`, a manual theme in the shell. The teammate's Next.js frontend stays a separate deliverable (INTEGRATION.md); what was useful in it was brought into this app. Consistency review only, no approval. |
+| 0.21 | 2026-11-16 | User-authorized ("usar skills y resolver todo lo que falta o está pendiente en F5"): importers also return `unread_columns`; the NASA cases view offers CRF with caveats on its card and lists omics as not offered; `services.keptCases` (`open()`, `clear(store)`) lets a person keep an imported file in a separate persistent store (`orbita-nasa-cases`, IndexedDB), which the view restores on the next visit; the memory store no longer revalidates a whole collection on every write. R9 keeps its meaning: imported records never enter the synthetic or the "My records" store. Consistency review only, no approval. |
+| 0.20 | 2026-11-16 | User-authorized ("arreglalos en ese orden", the F4 review): one open episode per subject under one lock and `close` guarded by `expect`; rule fields are an allowlist, `@` refused in ids and versions, `saveRules` all or none, numeric version tie-break; an alert carries its source, version and declared status; summary ids get a counter and an identical text is not stored twice; environment readings are labelled in the summary text; data shapes `Summary` and `RuleEntry`. Consistency review only, no approval. |

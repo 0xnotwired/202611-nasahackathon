@@ -79,7 +79,8 @@ function prepare(input,profile,subject){
   if(invalid){reject('invalid_field',invalid);continue;}
   records.push(...staged);
  }
- return {ok:true,value:{records,rejected,skipped}};
+  // Columns of the file that this importer does not read are named, never dropped silently.
+ return {ok:true,value:{records,rejected,skipped,unread_columns:headers.filter(h=>!allowed.has(h))}};
 }
 /** Pure import: original numeric values, unknown units explicit, no database write. */
 export function importCRF(text){return prepare(text,'CRF');}
