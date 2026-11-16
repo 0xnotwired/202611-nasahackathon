@@ -67,7 +67,7 @@ export function mount(element, viewModel, actions) {
     if (file.skipped) parts.push(h(doc, 'p', {class: 'legend'}, `${file.skipped} cells were left out on purpose (free text is never imported).`));
     if (file.kept) parts.push(h(doc, 'p', {class: 'notice notice-info'}, 'Kept on this device (not encrypted), in a store of its own.'));
     else if (current.keep && current.keep.available && file.records && file.file_key) {
-      const keep = h(doc, 'button', {type: 'button', id: `nc-keep-${index}`}, 'Keep on this device');
+      const keep = h(doc, 'button', {type: 'button', id: `nc-keep-${index}`, 'aria-label': `Keep ${file.name} on this device`}, 'Keep on this device');
       keep.addEventListener('click', () => apply(current.interactions.keep(file.id), `nc-keep-${index}`));
       parts.push(keep);
     }
@@ -115,7 +115,7 @@ export function mount(element, viewModel, actions) {
     parts.push(loader());
     if (current.files.length) parts.push(h(doc, 'section', {'aria-labelledby': 'nc-files-title'}, h(doc, 'h3', {id: 'nc-files-title'}, 'Study cards'), ...current.files.map(fileCard)));
     if (current.keep && !current.keep.available && current.keep.unavailable_reason) parts.push(h(doc, 'p', {class: 'notice notice-info'}, current.keep.unavailable_reason));
-    if (current.keep && current.keep.available && current.files.some(file => file.kept)) {
+    if (current.keep && current.keep.removable && (current.keep.unreadable || current.files.some(file => file.kept))) {
       const confirm = h(doc, 'input', {type: 'checkbox', id: 'nc-remove-confirm'});
       const remove = h(doc, 'button', {type: 'button', id: 'nc-remove-kept'}, 'Remove every kept case from this device');
       remove.addEventListener('click', () => apply(current.interactions.removeKept({confirmed: confirm.checked}), 'nc-remove-kept'));

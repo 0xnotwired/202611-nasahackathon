@@ -63,7 +63,7 @@ const keptCases = {
   },
   async clear(store) {
     try { store.close(); } catch { /* already closed */ }
-    keptStore = null;
+    keptStore = null; // closed either way: the next open() makes a fresh connection (the caller reopens when the deletion fails)
     return new Promise(resolve => {
       let request; try { request = indexedDB.deleteDatabase(KEPT_DB); } catch { resolve({ok: false, error: {message: 'IndexedDB is unavailable'}}); return; }
       request.onsuccess = () => resolve({ok: true}); request.onerror = () => resolve({ok: false, error: {message: 'the database could not be deleted'}}); request.onblocked = () => resolve({ok: false, error: {message: 'another tab of this page still has it open'}});

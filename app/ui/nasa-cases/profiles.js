@@ -42,7 +42,8 @@ export const PROFILES = Object.freeze([
     caveats: Object.freeze([
       'The source does not state the unit of any vital-sign column (pulse, pressures, respiration rate, weight, temperature, height). Values are shown exactly as written with "(unit unknown)"; no unit is guessed.',
       'Dates are read as month/day/year because the second component runs above 12 in this file and consecutive days increase in it; no data dictionary confirms it. The time zone is not established and nothing is converted.',
-      'The Comment and Bowel Movement Description columns are free text about a person and are not imported; their count is shown on the card.'
+      'The Comment and Bowel Movement Description columns are free text about a person and are not imported; their count is shown on the card.',
+      'The file has no Campaign column: the importer labels its source clock "Campaign3" (from the dataset listing it was obtained from), which is an assumption of this app, not a field of the file.'
     ])
   })
 ]);

@@ -12,7 +12,7 @@ The eight full NLSP study cards were consulted through the public API used by th
 User-authorized M21 advance now imports selected CRF, MR079G, MR035G,
 MR080G and BUT CGM CSVs.3861 records were saved/reopened exactly in an
 isolated local IndexedDB profile; independent repeat inserted0 and preserved
-all records.226 excluded nonempty CRF free-text cells are counted without
+all records.13 excluded CRF free-text cells (3 in Comment, 10 in Bowel Movement Description; 213 more cells hold the missing-value token NA and are not free text) are counted without
 copying contents. All100 Node tests and G0/G1 browser checks pass.
 See [module evidence](experiments/M21.md), [local persistence](experiments/REAL_IMPORT.md)
 and [primary-paper unit findings](SOURCE_PAPER_UNITS.md). Source units that
@@ -226,7 +226,7 @@ Test_Phase/BR_Day. No authoritative UTC offset was established; BUT CGM also
 shifts calendar dates per participant. Do not append Z, choose a timezone from
 location, infer original DST from shifted dates, or align subjects by their
 shifted calendar dates. This earlier UTC-only restriction is superseded by schema2 preservation
-above; UTC conversion still requires evidence. M21 remains unimplemented. CRF comments remain excluded from public imports.
+above; UTC conversion still requires evidence. (Historical: M21 has been implemented since 2026-11-15.) CRF comments remain excluded from public imports.
 
 Remaining external evidence: CRF's sample-specific unit dictionary and the
 original timestamp/timezone conventions. They cannot be reconstructed

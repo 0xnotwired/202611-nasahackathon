@@ -7,7 +7,8 @@ import {existsSync, readFileSync} from 'node:fs';
 import {importCRF, importAdaptation, importGlucose} from '../../app/importers/index.js';
 
 const ROOT = new URL('../../data/originals/', import.meta.url);
-const missing = value => ['', 'NA', 'N/A', 'NAN'].includes((value ?? '').trim().toUpperCase());
+// The reader's own, narrower rule: only an empty cell or the literal NA is missing in these files (checked by reading them). The importer also accepts N/A and NAN; a wrong extra token cannot hide behind this reader.
+const missing = value => ['', 'NA'].includes((value ?? '').trim());
 function readRows(text, delimiter) {
   const lines = text.replace(/^﻿/, '').split(/\r?\n/).filter(line => line.length);
   assert.equal(lines.some(line => line.includes('"')), false, 'the naive reader needs files without quoted cells');
@@ -39,6 +40,20 @@ for (const [name, file, delimiter, run, columns] of CASES) {
     assert.equal(records.filter(r => r.state === 'not_recorded' && r.value === 0).length, 0, 'an empty cell is never a zero');
   });
 }
+const crfPath = new URL('CRF-daily-vitals.csv', ROOT);
+test('G5-R3 CRF: the free-text count is the number of cells with real text, not the token NA (independent count)', {skip: existsSync(crfPath) ? false : 'CRF-daily-vitals.csv is not on this machine'}, () => {
+  const text = readFileSync(crfPath, 'utf8'); const rows = readRows(text, ',');
+  const real = rows.flatMap(row => ['Comment', 'Bowel Movement Description'].map(column => row[column])).filter(value => !missing(value)).length;
+  assert.ok(real > 0, 'the file has some real free text, so this test can fail'); assert.equal(importCRF(text).value.skipped.length, real);
+});
+
+test('G5-R4 CRF and MR079G: the source clock of every record is the file\'s own date read as month/day/year (independent parse)', {skip: existsSync(crfPath) ? false : 'CRF-daily-vitals.csv is not on this machine'}, () => {
+  const text = readFileSync(crfPath, 'utf8'); const rows = readRows(text, ','); const out = importCRF(text).value.records; const per = 7;
+  rows.forEach((row, r) => { const [m, d, y] = row.Date.split('/').map(Number); const [h, min] = row['Vitals Time'].split(':').map(Number);
+    const expected = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}T${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
+    for (let c = 0; c < per; c += 1) assert.equal(out[r * per + c].source_time.value, expected, `row ${r + 2}`); });
+});
+
 test('G5-R2: the comparison itself fails on a file whose cell the importer would change (negative control)', () => {
   const text = 'Timestamp;Glycemia\n2139-03-02 12:22:17;3.7\n2139-03-02 12:27:17;\n';
   const records = compare(importGlucose(text, {subject: 's'}), readRows(text, ';'), ['Glycemia']); assert.equal(records[1].state, 'not_recorded');

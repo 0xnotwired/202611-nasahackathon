@@ -15,6 +15,11 @@ const M=[
  ['F5-g: a file is marked kept although nothing was written','N',NM,[["  const mine = all.value.filter(record => fileKeyOf(record) === card.file_key);","  const mine = all.value.filter(record => fileKeyOf(record) === card.file_key); if (mine.length) { card.kept = true; }"]]],
  ['F5-h: an empty cell becomes a rejected row instead of not recorded','R',II,[["const raw=row[column],absent=missing(raw);","const raw=row[column],absent=false&&missing(raw);"]]],
  ['F5-i: the importer reads the wrong column for pulse','R',II,[["const CRF_COLUMNS=['Pulse','SysBP',","const CRF_COLUMNS=['SysBP','Pulse',"]]],
+ ['F5r-F1: NA counted as free text','I',II,[["if(row[column]?.trim()&&!missing(row[column]))skipped.push","if(row[column]?.trim())skipped.push"]]],
+ ['F5r-F2a: a kept card is trusted as it is','N',NM,[["const card = cleanCard(entry.card); if (card) good.push(card); else bad += 1;","const card = entry.card; if (card) good.push(card); else bad += 1;"]]],
+ ['F5r-F2b: an unreadable kept store cannot be removed','N',NM,[["session.kept.unreadable = true; session.kept_reason","session.kept = null; session.kept_reason"]]],
+ ['F5r-F3: records without a card come back bare','N',NM,[["for (const [key, list] of orphans) good.push(orphanCard(key, list));",""]]],
+ ['F5r-F4: kept flags never refreshed','N',NM,[["async function refreshKept(services, session) {\n  if (!session.kept || session.kept.unreadable) return;","async function refreshKept(services, session) {\n  return;"]]],
 ];
 const only=process.argv[2];let bad=0;
 for(const [label,tk,file,edits] of M){

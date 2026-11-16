@@ -84,7 +84,7 @@ try:
         load('CRF', CRF)
         text = page.locator('#view').inner_text()
         check('C1: the CRF card shows its three caveats', 'What this source does not tell us' in text and 'unit of any vital-sign column' in text and 'month/day/year' in text and 'free text about a person' in text)
-        check('C2: columns not read and the free-text count are named', 'Head Down Tilt Verified' in text and '226 cells were left out on purpose' in text)
+        check('C2: columns not read and the free-text count are named', 'Head Down Tilt Verified' in text and '13 cells were left out on purpose' in text)
         comments = [l.split(',')[13] if len(l.split(',')) > 13 else '' for l in CRF.read_text(encoding='utf-8-sig').splitlines()[1:]]
         sample = next((c for c in comments if len(c.strip()) > 12), None)
         check('C3: no comment text from the file is on the page', sample is None or sample.strip() not in text, sample)
@@ -109,8 +109,16 @@ try:
         first_table = page.eval_on_selector_all('.chart-block .data-table tbody tr', 'els => els.map(e => Array.from(e.children).map(c => c.textContent))')
         # (3) keep, reload, restore
         keeps = page.locator('button[id^="nc-keep-"]'); check('K1: each file card offers "Keep on this device"', keeps.count() >= 2)
+        labels = [keeps.nth(i).get_attribute('aria-label') for i in range(keeps.count())]
+        check('K1a: each keep button is named by its file (a screen reader can tell them apart)', len(set(labels)) == len(labels) and any('CRF-daily-vitals.csv' in l for l in labels) and any('101001_CGM.csv' in l for l in labels), labels)
         keeps.nth(1).click(); page.wait_for_function('document.querySelector("[role=status], [role=alert]") && /Kept |Only |could not/.test(document.querySelector("[role=status], [role=alert]").textContent)', timeout=90000)
         check('K2: the message says how many records were kept and that they are not encrypted', '3016 records, not encrypted' in page.locator('#view').inner_text(), page.locator('[role=status], [role=alert]').first.inner_text())
+        IDB_JS = '''async () => { const names = (await indexedDB.databases()).map(d => d.name).sort();
+          const count = name => new Promise(res => { const q = indexedDB.open(name); q.onsuccess = () => { const db = q.result; if (!db.objectStoreNames.contains('records')) { db.close(); res(null); return; }
+            const g = db.transaction('records').objectStore('records').getAll(); g.onsuccess = () => { res({n: g.result.length, nasa: g.result.filter(r => String(r.source).includes('10.13026')).length}); db.close(); }; }; q.onerror = () => res(null); });
+          return {names, kept: await count('orbita-nasa-cases'), mine: await count('orbita')}; }'''
+        idb = page.evaluate(IDB_JS)
+        check('K2a: the kept case is in its own database and not in the one of "My records"', 'orbita-nasa-cases' in idb['names'] and idb['kept'] and idb['kept']['nasa'] == 3016 and (idb['mine'] is None or idb['mine']['nasa'] == 0), idb)
         boot(); after_keep = read_views()
         for view in VIEWS: check(f'K3: {view} of the synthetic subject reads the same after keeping a real case', after_keep[view] == before[view])
         open_cases(); page.wait_for_timeout(800)
@@ -123,6 +131,8 @@ try:
         page.click('#nc-remove-kept'); page.wait_for_function('document.querySelector("#view").textContent.includes("Not removed")', timeout=10000)
         check('R1: removing without the confirmation is refused', page.locator('[role="alert"]').count() >= 1)
         page.check('#nc-remove-confirm'); page.click('#nc-remove-kept'); page.wait_for_function('document.querySelector("#view").textContent.includes("deleted from this device")', timeout=15000)
+        after = page.evaluate(IDB_JS)
+        check('R1a: removal emptied the kept database and left the one of "My records" alone', (after['kept'] is None or after['kept']['n'] == 0) and after['mine'] == idb['mine'], after)
         boot(); open_cases(); page.wait_for_timeout(800)
         check('R2: after the removal and a reload nothing is kept', '101001_CGM.csv' not in page.locator('#view').inner_text() and page.locator('button[id^="nc-keep-"]').count() == 0)
         boot(); after_remove = read_views()
