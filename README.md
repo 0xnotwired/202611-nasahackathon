@@ -2,6 +2,8 @@
 
 **From “I feel different” to a documented next step, with the equipment available on your mission.**
 
+Developed by **Team Astra Vitae · Argentina**.
+
 NASA Space Apps Challenge 2026 · [Create Health Monitoring Software for Astronauts on Space Missions](https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/) · [Technical README](docs/TECHNICAL_README.md) · [Sources and licenses](docs/RESOURCES_USED.md)
 
 ## Summary
@@ -197,8 +199,16 @@ The volunteer usability study, human acceptance of later gates, other browser en
 
 `demo/` contains historical design mockups, not the current product. The main application's entry point is **`app/index.html`**, served or packaged using the commands above.
 
+## Team — Astra Vitae, Argentina
+
+- Ivan Enzo Sarapura
+- Ariel Duarte
+- Samuel Efrain Ramos
+- Isis Alexandra Vargas Paredes
+- Jennifer Gómez
+
 ## License and acknowledgments
 
 Órbita's original code is licensed under **[Apache-2.0](LICENSE)**. NASA and other research sources retain their own terms and required citations; the code license does not replace dataset conditions. See [resources used and licenses](docs/RESOURCES_USED.md) and [dataset attributions](docs/DATA_ATTRIBUTIONS.md).
 
-Built by the team with AI-assisted development and documented experiments. Research references inform the design; they do not constitute NASA endorsement or clinical validation of Órbita.
+Built by Team Astra Vitae with AI-assisted development and documented experiments. Research references inform the design; they do not constitute NASA endorsement or clinical validation of Órbita.
