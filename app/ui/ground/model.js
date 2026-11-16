@@ -29,15 +29,16 @@ function syncLink(ctx) {
 
 async function deliveryEntry(ctx, d) {
   const ids = Array.isArray(d.what) ? d.what : [];
-  const items = [];
+  const items = []; const summaries = [];
   for (const id of ids) {
+    if (typeof id === 'string' && id.startsWith('summary:')) { const s = await ctx.store.get('summaries', id.slice(8)); summaries.push(s.ok && s.value.subject === d.subject ? {id: s.value.id, text: s.value.text} : {id: id.slice(8), text: null}); continue; }
     const found = await ctx.store.get('records', id);
     items.push(found.ok && found.value.subject === d.subject ? recordEntry(found.value, {clock: ctx.clock}) : {...recordEntry(null, {variable: id, label: id}), value_text: 'record not found in this data source', text: `${id}: record not found in this data source`});
   }
   const hours = Math.floor((ctx.now_ms - Date.parse(d.created)) / HOUR_MS);
   return {kind: 'delivery', id: d.id, state: d.state, state_text: {queued: 'queued: waiting for the link', in_transit: 'in transit', received: 'received by the ground panel'}[d.state] ?? d.state,
     created_text: d.created, sent_text: d.sent ?? 'not sent yet', received_text: d.received ?? 'not received yet', age_text: hours < 1 ? 'Data created less than 1 h ago' : `Data created ${hours} h ago`,
-    what_text: Array.isArray(d.what) ? `${d.what.length} ${d.what.length === 1 ? 'record' : 'records'}` : String(d.what), items};
+    what_text: Array.isArray(d.what) ? `${items.length} ${items.length === 1 ? 'record' : 'records'}${summaries.length ? ` and ${summaries.length} summary` : ''}` : String(d.what), items, summaries};
 }
 
 async function choicesOf(ctx) {

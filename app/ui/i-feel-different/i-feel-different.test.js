@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {model} from './model.js';
+import {model as groundModel} from '../ground/model.js';
 import {viewKit} from '../base/index.js';
 import {makeServices, scenario, SUBJECT, FORBIDDEN_WORDS, SCORE_KEYS, DAY} from '../../../tests/walkthrough/fixtures.js';
 
@@ -92,4 +93,27 @@ test('M20-R2: a rule marked demo or draft shows its suggestion with a caution; a
     if (caution) assert.match(sug.caution, /not reviewed guidance/);
   }
   const none = await (await model(await makeServices(), {})).interactions.open('fatigue'); assert.equal(none.sections.find(s => s.id === 'suggestion').suggestion, null);
+});
+
+test('M20-R3: the generated summary is saved, shared by id with the episode records, and the ground panel reads its text', async () => {
+  const services = await makeServices({config: scenario.config[0]}); let vm = await (await model(services, {})).interactions.open('fatigue');
+  const noSummary = await vm.interactions.shareWithGround({confirmed: true}); assert.match(noSummary.message.text, /records only/);
+  vm = await vm.interactions.generateSummary(); assert.match(vm.message.text, /saved on this device/);
+  const kept = (await services.store.list('summaries', {})).value; assert.equal(kept.length, 1); assert.equal(kept[0].text, vm.summary.text);
+  await vm.interactions.shareWithGround({confirmed: true});
+  const shared = (await services.store.list('shared', {})).value; const last = shared[shared.length - 1]; assert.ok(last.what.includes(`summary:${kept[0].id}`));
+  const ground = await groundModel(services, {}); const text = JSON.stringify(ground);
+  assert.ok(text.includes('Episode summary'), 'the ground panel carries the summary text'); assert.match(text, /and 1 summary/);
+});
+
+test('M20-R4: rules loaded from a file are stored, listed with their status and used by the card; a bad file loads nothing', async () => {
+  const services = await makeServices(); let vm = await model(services, {});
+  assert.equal(vm.sections.find(s => s.id === 'rules').items.length, 0); assert.match(vm.sections.find(s => s.id === 'rules').text, /No rule is loaded/);
+  const good = JSON.stringify([{id: 'f1', when: {recorded_variable: 'headache'}, suggestion: 'Fictional file rule.', source: 'test file (fictional)', version: 'f-1', review_status: 'draft'}]);
+  vm = await vm.interactions.loadRules(good); assert.equal(vm.message.kind, 'info'); assert.equal(vm.sections.find(s => s.id === 'rules').items.length, 1);
+  vm = await vm.interactions.open('headache'); const sug = vm.sections.find(s => s.id === 'suggestion').suggestion;
+  assert.equal(sug.text, 'Fictional file rule.'); assert.match(sug.caution, /not reviewed guidance/);
+  for (const bad of ['{', JSON.stringify([{id: 'x'}]), 'x'.repeat(200 * 1024 + 1)]) { const out = await vm.interactions.loadRules(bad); assert.equal(out.message.kind, 'error', bad.slice(0, 20)); }
+  assert.equal((await services.store.list('rules', {})).value.length, 1);
+  const mine = await makeServices({writable: false}); const rv = await model(mine, {}); assert.equal((await rv.interactions.loadRules(good)).message.kind, 'info', 'a rules file is not personal data, so a read-only source can load it');
 });

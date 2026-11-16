@@ -57,6 +57,7 @@ export function mount(element, viewModel) {
   function deliveryCard(d) {
     return el('li', {class: 'entry', 'data-state': d.state}, el('strong', {class: 'entry-label'}, `Delivery of ${d.what_text}`), el('div', {class: 'legend'}, d.state_text),
       el('div', {class: 'legend'}, `Created ${d.created_text} · sent ${d.sent_text} · received ${d.received_text}`), el('div', {class: 'legend'}, d.age_text),
+      ...(d.summaries ?? []).map(sm => el('div', {class: 'summary-block'}, el('h4', {}, 'Summary text'), sm.text === null ? el('p', {class: 'notice notice-warning'}, 'The summary text is not in this data source.') : el('pre', {class: 'summary-text', tabindex: '0', 'aria-label': 'Summary text, scrollable'}, sm.text))),
       el('ul', {class: 'entries'}, ...d.items.map(item => renderEntry(doc, item))));
   }
   const listCard = section => (section.state === 'ready' ? el('section', {class: 'card', 'aria-labelledby': `sec-${section.id}`}, el('h3', {id: `sec-${section.id}`}, section.title), section.note ? el('p', {class: 'legend'}, section.note) : null, el('ul', {class: 'entries'}, ...section.entries.map(deliveryCard))) : renderSection(doc, section));

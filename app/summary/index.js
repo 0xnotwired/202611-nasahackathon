@@ -16,6 +16,19 @@ function valueWords(r) {
 }
 const line = r => `- ${r.variable ?? 'value'}: ${valueWords(r)} · method ${r.method ?? 'not stated'} · ${r.time ?? 'time not established'}`;
 
+/**
+ * keep(store, episodeId, config, { clock }) → Result<{ id, text, origins, pending_send, saved }>. Generates the summary and stores its text, immutably, in `summaries`,
+ * so the text can be shared and read later by id. Nothing is sent. The stored object holds the text exactly as generated; it is never edited.
+ */
+export async function keep(store, episodeId, config, context) {
+  const made = await generate(store, episodeId, config, context);
+  if (!made.ok) return made;
+  if (typeof store.save !== 'function') return fail('invalid_store', 'store', 'A store with save() is required');
+  const episode = (await store.get('episodes', episodeId)).value;
+  const saved = await store.save('summaries', {id: made.value.id, schema_version: 2, subject: episode.subject, episode_id: episodeId, text: made.value.text, origins: made.value.origins, generated: made.value.id.slice(episodeId.length + 1)});
+  return saved.ok ? {ok: true, value: {...made.value, saved: true}} : saved;
+}
+
 /** generate(store, episodeId, config, { clock }) → Result<{ id, text, origins, pending_send }>. Reads only; nothing is sent. */
 export async function generate(store, episodeId, config, context) {
   if (!isPlain(store) || typeof store.get !== 'function') return fail('invalid_store', 'store', 'A store with get() is required');

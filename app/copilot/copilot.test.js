@@ -44,3 +44,25 @@ test('M17-X1: a card needs a situation; the first of several applicable rules wi
   for (const bad of [null, undefined, 'x', {}]) assert.equal(m.card(bad, config, [toy()]).no_guidance, true);
   assert.equal(m.card(situation(), config, undefined).no_guidance, true); assert.equal(m.card(situation(), null, [toy()]).no_guidance, false);
 });
+
+// ---- Rules as data: parse, store, load ----
+import {openStore} from '../store/index.js';
+const R = (extra = {}) => ({id: 'r1', when: {recorded_variable: 'fatigue'}, suggestion: 'Fictional.', source: 'team demo (fictional)', version: 'v1', review_status: 'demo', ...extra});
+const clock = () => '2026-11-16T10:00:00.000Z';
+const mem = async () => (await openStore({kind: 'memory', name: `cp-${Math.random()}`})).value;
+
+test('M17-R1: parseRules reads a file as untrusted text: size, JSON, shape and sources are checked', () => {
+  assert.equal(m.parseRules(JSON.stringify([R()])).ok, true); assert.equal(m.parseRules(JSON.stringify({rules: [R()]})).ok, true);
+  for (const bad of [7, undefined, '{', 'null', '"x"', JSON.stringify([R({source: ''})]), JSON.stringify([R({review_status: 'approved'})]), JSON.stringify([R(), R()]), JSON.stringify([{...R(), extra_when: 1, when: {recorded_variable: 'a', limit: 5}}]), 'x'.repeat(200 * 1024 + 1)])
+    assert.equal(m.parseRules(bad).ok, false, String(bad).slice(0, 30));
+  assert.equal(m.parseRules('x'.repeat(200 * 1024 + 1)).error.code, 'too_large');
+});
+
+test('M17-R2: stored rules are immutable per id@version; a changed rule needs a new version; load gives the newest per id', async () => {
+  const store = await mem();
+  assert.equal((await m.saveRules(store, [R()], {clock})).ok, true); assert.equal((await m.saveRules(store, [R()], {clock})).ok, true, 'the same content again is accepted');
+  const clash = await m.saveRules(store, [R({suggestion: 'Changed.'})], {clock}); assert.equal(clash.error.code, 'version_exists'); assert.equal((await m.loadRules(store)).value[0].suggestion, 'Fictional.');
+  await m.saveRules(store, [R({version: 'v2', suggestion: 'Newer.'})], {clock: () => '2026-11-16T11:00:00.000Z'}); assert.equal((await m.loadRules(store)).value[0].suggestion, 'Newer.');
+  assert.equal((await m.saveRules(store, [R({id: 'r2', source: ''})], {clock})).ok, false); assert.equal((await m.saveRules(store, [R({id: 'r3'})], {clock: () => 'noon'})).error.code, 'invalid_clock');
+  assert.equal((await m.loadRules({})).ok, false);
+});

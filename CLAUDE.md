@@ -89,7 +89,7 @@ frontend/                      a teammate's separate Next.js prototype with its 
 Read [docs/CURRENT_STATUS.md](docs/CURRENT_STATUS.md), inspect git status/HEAD,
 and work on a separate branch such as mod/f2-claude. F2 (M06–M12, M22) and F3 (M13–M15) are
 built with records and G2/G3 walkthroughs, but not independently reviewed or
-accepted; statuses stay `pending`. 371 Node tests pass (`npm test`; a bare `node --test` also finds frontend/'s TypeScript tests). `npm run package` builds dist/orbita.html. `frontend/` is a teammate's separate Next.js prototype (see frontend/INTEGRATION.md). The store is IndexedDB schema v2 (a profile is upgraded on open). Run node --test and
+accepted; statuses stay `pending`. 375 Node tests pass (`npm test`; a bare `node --test` also finds frontend/'s TypeScript tests). `npm run package` builds dist/orbita.html. `frontend/` is a teammate's separate Next.js prototype (see frontend/INTEGRATION.md). The store is IndexedDB schema v2 (a profile is upgraded on open). Run node --test and
 python3 scripts/check_docs.py; browser scripts need ORBITA_CHROMIUM.
 Original datasets, local IndexedDB profile and source-data reports are not
 restored by Git. Use [docs/LOCAL_DATA_RESTORE.md](docs/LOCAL_DATA_RESTORE.md),

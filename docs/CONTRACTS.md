@@ -1,6 +1,6 @@
 # Órbita: contracts between modules
 
-Version 0.17 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
+Version 0.18 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
 
 Plan and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). Rationale for the rules: [PROPOSAL_IMPROVEMENTS.md](PROPOSAL_IMPROVEMENTS.md) and [AGENTS.md](../AGENTS.md).
 
@@ -113,6 +113,7 @@ Episode
   observation_id      the Record that started it
   execution_ids, record_ids, task_ids
   alert_issued        boolean
+  reopened?           list of { previous_closed, at|null, reason }: every reopening of a closed episode (added 0.18)
 
 Shared
   id, subject, time, what (ids or "summary:<id>"), with, channel
@@ -217,7 +218,7 @@ Store
   close()                           → Promise<void>
 ```
 
-Collections: `records`, `executions`, `tasks`, `episodes`, `shared`, `deliveries`, `config`, `procedures` (added 0.14). `procedures` is immutable like `records`: `updateState` is refused. The IndexedDB schema is version 2 since 0.14: opening a version 1 database upgrades it by creating the missing collection and keeps its data (BROWSER-checked in `tests/walkthrough/g3-extras-browser.py`). `records` and `shared` do not allow `updateState` (R7). If IndexedDB is missing, `openStore` with `"indexeddb"` returns an error; the caller decides to use `"memory"` and shows it.
+Collections: `records`, `executions`, `tasks`, `episodes`, `shared`, `deliveries`, `config`, `procedures` (added 0.14), `summaries` and `rules` (added 0.18, IndexedDB schema v3; both immutable; an upgrade from v2 keeps the data). `summaries` holds `{ id: "<episodeId>:<instant>", subject, episode_id, text, origins, generated }`; `rules` holds `{ id: "<ruleId>@<version>", saved, rule }`. `procedures` is immutable like `records`: `updateState` is refused. The IndexedDB schema is version 2 since 0.14: opening a version 1 database upgrades it by creating the missing collection and keeps its data (BROWSER-checked in `tests/walkthrough/g3-extras-browser.py`). `records` and `shared` do not allow `updateState` (R7). If IndexedDB is missing, `openStore` with `"indexeddb"` returns an error; the caller decides to use `"memory"` and shows it.
 
 ### scenario (M05)
 
@@ -318,6 +319,8 @@ situation(store, episodeId, config, { clock })
    → { you_recorded, we_know, missing, you_can, happened, next }
 link(store, episodeId, { execution_id?, record_id?, task_id? })
 close(store, episodeId)
+reopen(store, episodeId, { reason, clock? })   → Result<Episode>   (added 0.18)
+listEpisodes(store, { subject })               → Result<{ id, opened, closed, is_closed, observation_id, reopened }[]>   (added 0.18)
 ```
 
 Since 0.15: `open` reads the observation back from the store and needs a **recorded** observation of the same subject. `situation` returns the six parts as plain lists (empty ones allowed) plus `why_empty` (a text for each empty part) and `alert_issued`; a failure is `{ ok: false, error }`. `we_know` holds the newest recorded measurement or exam of the subject, and environment readings only from the observation's own `place` (none when it states no place); `missing` lists `{ kind: "not_recorded", variable }`, `{ kind: "equipment", item, needed_by }` and `{ kind: "time_not_established", count }`; `you_can` lists the published procedures with `available`, `missing` and `alternative_id`; `happened` keeps each linked execution's own state; `next` lists linked pending tasks. `link` needs the item to exist and belong to the subject, and an open episode (`episode_closed`). `close(store, id, { clock? })` writes `closed` as the clock's instant, or `true` when no clock is given (no time is invented). `issueAlert(store, id) → Result<{ issued, episode }>` turns `alert_issued` true once; a second call returns `issued: false` and changes nothing. Each episode is changed by one caller at a time.
@@ -328,6 +331,9 @@ Since 0.15: `open` reads the observation back from the store and needs a **recor
 
 ```
 card(situation, config, rules)
+parseRules(text) → Result<Rule[]>   (added 0.18)
+saveRules(store, rules, { clock }) → Result<Rule[]>
+loadRules(store) → Result<Rule[]>
    → { data, gaps, suggestion | null, no_guidance: boolean,
        not_assessed, alert: { text } | null }
 ```
@@ -340,6 +346,7 @@ Pure function. `data` and `gaps` come first. If no rule applies, `suggestion` is
 
 ```
 generate(store, episodeId, config, { clock })
+keep(store, episodeId, config, { clock }) → Result<{ id, text, origins, pending_send, saved }>   (added 0.18)
    → Result<{ id, text, origins, pending_send: boolean }>
 ```
 
@@ -540,5 +547,6 @@ Everything works with the keyboard. No state is conveyed by color alone. Views r
 | 0.13 | 2026-11-15 | User-authorized with the start of F3 (M13–M15): optional `clock` in the procedure transitions; Execution gains `step_count`, `interruptions` and `missing`; Task gains `not_done_note`; the rules of `mark`, `linkResult` and `finish` above; services may carry `procedures` and `procedure_list`; `ui/my-plan` and `ui/on-board` are implemented. Consistency review only, no approval. |
 | 0.14 | 2026-11-15 | User-authorized ("agrega versiones mínimas"): `procedures` collection and IndexedDB schema v2 with an upgrade; the procedure registry (`publishProcedure`, `listProcedures`, `getProcedure`); `privacy` (`createSession`, `logShared`, `sharedLog`) and `sync` (`createLink`, `enqueue`, `advance`, `received`, `deliveries`) implemented as above; `Delivery.sent` optional; `ui/ground` implemented; the On board editor. Consistency review only, no approval. |
 | 0.15 | 2026-11-15 | User-authorized ("versiones mínimas de F4"): `episode`, `copilot` and `summary` implemented as above (`issueAlert` and `validateRules` added); services may carry `episode`, `copilot`, `summary` and `rules`; `ui/i-feel-different` implemented. Consistency review only, no approval. |
+| 0.18 | 2026-11-16 | User-authorized ("fijate como solucionar esto … despues resolve el resto"): store collections `summaries` and `rules` (IndexedDB v3); `Episode.reopened`; `episode.reopen`/`listEpisodes`; `summary.keep`; `copilot.parseRules`/`saveRules`/`loadRules` (a rules file is untrusted text of at most 200 KB; stored rules are immutable per `id@version`; the app cannot verify a review status); `Shared.what` may carry `summary:<id>`, which the ground panel resolves from `summaries`. Fixes from the F3 independent review: `advance` refuses a record that is not `recorded`; ids starting with `retired:` are refused; instants must round-trip as real dates. Consistency review only, no approval. |
 | 0.17 | 2026-11-16 | User-authorized ("lo recortado modificarlo para que sea de verdad, después F3 que funcione"): store `updateState` accepts `expect` (compare-and-set); Task gains `history`, `series_id`, `rev`; Execution gains `rev`, `step_records`, `unrecorded_steps`, `preparation_confirmed`; plan gains `createTask`, `scheduleSeries`, `reopenTask`; procedures gain `retireProcedure` and the preparation/recording rules above. All optional or additive. Consistency review only, no approval. |
 | 0.16 | 2026-11-15 | User-authorized with the incorporation of the teammate's frontend ("usar nuestro modelo de datos, incorporando lo que él usa"): `Task` gains optional `scheduled_at` and `planned_minutes`, which its exercise plan needs. Optional, so earlier tasks stay valid. Consistency review only, no approval. |

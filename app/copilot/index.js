@@ -31,6 +31,45 @@ export function validateRules(rules) {
   return {ok: true, value: structuredClone(rules)};
 }
 
+const MAX_BYTES = 200 * 1024;
+const failed = (code, field, message) => ({ok: false, error: {code, field, message}});
+
+/**
+ * parseRules(text) → Result<Rule[]>. Reads a rules file: JSON text of at most 200 KB holding a list, or { rules: [...] }. Nothing is trusted: it is parsed and
+ * validated here, and a rule without a source, a version or a review status is refused. The app cannot verify that a rule was reviewed; it keeps what the file says.
+ */
+export function parseRules(text) {
+  if (typeof text !== 'string') return failed('invalid_rules', 'text', 'The rules file must be text');
+  if (text.length > MAX_BYTES) return failed('too_large', 'text', 'The rules file is larger than 200 KB');
+  let data; try { data = JSON.parse(text); } catch { return failed('invalid_rules', 'text', 'The file is not valid JSON'); }
+  return validateRules(isPlain(data) && Array.isArray(data.rules) ? data.rules : data);
+}
+
+/** saveRules(store, rules, { clock }) → Result<Rule[]>: stores each rule immutably as `id@version`; a stored id@version is never replaced (a changed rule needs a new version). */
+export async function saveRules(store, rules, context) {
+  if (!isPlain(store) || typeof store.save !== 'function' || typeof store.get !== 'function') return failed('invalid_store', 'store', 'A store with get() and save() is required');
+  const checked = validateRules(rules); if (!checked.ok) return checked;
+  if (!isPlain(context) || typeof context.clock !== 'function') return failed('invalid_context', 'clock', 'A clock is required');
+  let saved; try { saved = context.clock(); } catch { saved = undefined; }
+  if (typeof saved !== 'string' || Number.isNaN(Date.parse(saved))) return failed('invalid_clock', 'clock', 'The clock did not return an instant');
+  for (const rule of checked.value) {
+    const id = `${rule.id}@${rule.version}`;
+    const found = await store.get('rules', id);
+    if (found.ok) { if (JSON.stringify(found.value.rule) === JSON.stringify(rule)) continue; return failed('version_exists', 'version', `Rule ${rule.id.slice(0, 40)} version ${rule.version.slice(0, 20)} already exists with other content; publish a new version`); }
+    const out = await store.save('rules', {id, schema_version: 2, saved, rule}); if (!out.ok) return out;
+  }
+  return {ok: true, value: checked.value};
+}
+
+/** loadRules(store) → Result<Rule[]>: for each rule id, the most recently saved version. */
+export async function loadRules(store) {
+  if (!isPlain(store) || typeof store.list !== 'function') return failed('invalid_store', 'store', 'A store with list() is required');
+  const listed = await store.list('rules', {}); if (!listed.ok) return listed;
+  const newest = new Map();
+  for (const item of listed.value) if (isPlain(item) && isPlain(item.rule) && (!newest.has(item.rule.id) || item.saved > newest.get(item.rule.id).saved || (item.saved === newest.get(item.rule.id).saved && item.id > newest.get(item.rule.id).id))) newest.set(item.rule.id, item);
+  return {ok: true, value: [...newest.values()].map(item => item.rule).sort((a, b) => (a.id < b.id ? -1 : 1))};
+}
+
 /** card(situation, config, rules) → { data, gaps, suggestion|null, no_guidance, not_assessed, alert|null }. Data and gaps come first. */
 export function card(situation, config, rules) {
   const s = isPlain(situation) ? situation : {};

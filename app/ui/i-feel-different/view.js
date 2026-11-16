@@ -70,6 +70,21 @@ export function mount(element, viewModel) {
   }
 
   const reopenReasons = new Map();
+  const MAX_RULES_BYTES = 200 * 1024;
+  function rulesCard(section) {
+    const input = el('input', {id: 'feel-rules-file', type: 'file', accept: 'application/json,.json'});
+    const b = el('button', {type: 'button', id: 'feel-rules-load'}, 'Load rules from the file');
+    b.addEventListener('click', async () => {
+      const file = input.files && input.files[0];
+      if (!file) return apply(Promise.resolve({...current, message: {kind: 'error', text: 'Rules not loaded: choose a JSON file first.'}}), b.id);
+      if (file.size > MAX_RULES_BYTES) return apply(Promise.resolve({...current, message: {kind: 'error', text: 'Rules not loaded: the file is larger than 200 KB.'}}), b.id); // checked before the file is read
+      let text; try { text = await file.text(); } catch { return apply(Promise.resolve({...current, message: {kind: 'error', text: 'Rules not loaded: the file could not be read.'}}), b.id); }
+      return apply(current.interactions.loadRules(text), b.id);
+    });
+    return el('section', {class: 'card', 'aria-labelledby': 'sec-rules'}, el('h3', {id: 'sec-rules'}, section.title), el('p', {class: 'legend'}, section.note),
+      section.text ? el('p', {class: 'notice notice-info'}, section.text) : null, section.items.length ? el('ul', {class: 'entries'}, ...section.items.map(item => el('li', {class: 'entry'}, item.text))) : null,
+      el('div', {class: 'field'}, el('label', {for: 'feel-rules-file'}, 'Rules file (JSON, up to 200 KB)'), input), b);
+  }
   function historyCard(section) {
     const rows = section.items.map(item => {
       const why = el('input', {id: `feel-reopen-why-${item.id}`, type: 'text', maxlength: '500', autocomplete: 'off'}); why.value = reopenReasons.get(item.id) ?? ''; why.addEventListener('input', () => reopenReasons.set(item.id, why.value));
@@ -88,6 +103,7 @@ export function mount(element, viewModel) {
       else if (section.id === 'suggestion') parts.push(suggestion(section));
       else if (section.id === 'link') parts.push(linkCard(section));
       else if (section.id === 'history' && section.state === 'ready') parts.push(historyCard(section));
+      else if (section.id === 'rules') parts.push(rulesCard(section));
       else if (section.id === 'summary') continue;
       else parts.push(renderSection(doc, section));
     }
