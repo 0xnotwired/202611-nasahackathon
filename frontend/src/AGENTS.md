@@ -1,8 +1,8 @@
-# Frontend de Órbita
+# Órbita Frontend
 
-- `src/` pertenece al frontend. La API independiente vive en `../backend/`.
-- Acceder a datos a través de `features/health-monitoring/data/service.ts`.
-- Los mocks de esta carpeta permiten desarrollar sin iniciar el backend.
-- No importar código, seeds ni configuración de `../backend/`.
-- `../contracts/` es compartido. Coordinar cualquier cambio de estructura con backend.
-- La integración se activa con `.env.local`, sin cambiar pantallas.
+- `src/` belongs to the frontend. The independent API lives in `../backend/`.
+- Access data through `features/health-monitoring/data/service.ts`.
+- The mocks in this folder allow development without starting the backend.
+- Do not import code, seeds or configuration from `../backend/`.
+- `../contracts/` is shared. Coordinate any structural change with the backend.
+- Integration is enabled with `.env.local`, without changing screens.

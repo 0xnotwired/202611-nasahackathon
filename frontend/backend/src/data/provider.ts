@@ -4,17 +4,24 @@ import type {
   MeasurementsResponse,
   MissionData,
   MissionResponse,
+  OrbitaRecord,
   ResponseMeta,
 } from "../../../contracts/models.ts";
 
 const meta: ResponseMeta = {
-  contractVersion: "0.1",
+  contractVersion: "0.2",
   dataKind: "synthetic",
   clinicalValidation: "pending",
 };
 
-// Punto de extensión del backend: sustituir esta fuente por simulación/procesamiento.
-// No importar fixtures, componentes ni configuración de /src (frontend).
+// Backend extension point: replace this source with simulation or processing.
+// Do not import fixtures, components or configuration from /src (the frontend).
+// The seed holds records in the main app's schema 2; the contract tests validate every response against the shared schemas.
+const measurements = seed.measurements as unknown as OrbitaRecord[];
+const missions = seed.missions as unknown as Record<string, MissionData>;
+const instant = (record: OrbitaRecord) =>
+  record.time === null ? Number.NEGATIVE_INFINITY : Date.parse(record.time);
+
 export function listAstronauts(): AstronautsResponse {
   return structuredClone({ data: seed.astronauts, meta });
 }
@@ -22,10 +29,9 @@ export function listAstronauts(): AstronautsResponse {
 export function getMeasurements(id: string): MeasurementsResponse | null {
   if (!seed.astronauts.some((astronaut) => astronaut.id === id)) return null;
   return structuredClone({
-    data: seed.measurements
-      .filter((row) => row.astronautId === id)
-      .map((row) => ({ ...row, source: "simulator" as const }))
-      .toSorted((a, b) => Date.parse(b.recordedAt) - Date.parse(a.recordedAt)),
+    data: measurements
+      .filter((record) => record.subject === id)
+      .toSorted((a, b) => instant(b) - instant(a)),
     metrics: seed.metrics,
     meta,
   });
@@ -33,9 +39,8 @@ export function getMeasurements(id: string): MeasurementsResponse | null {
 
 export function getMission(id: string): MissionResponse | null {
   if (!seed.astronauts.some((astronaut) => astronaut.id === id)) return null;
-  const missions: Record<string, MissionData> = seed.missions;
   return structuredClone({
-    data: missions[id] ?? { evaluations: [], sessions: [] },
+    data: missions[id] ?? { records: [], tasks: [] },
     meta,
   });
 }

@@ -1,299 +1,299 @@
-# Análisis del frontend y dirección de rediseño para seguimiento en misión
+# Frontend analysis and redesign direction for in-mission follow-up
 
-Fecha: 15 de noviembre de 2026. Rama revisada: `frontend`.
-Estado: propuesta de diseño; no modifica la aplicación ni sus cálculos.
+Date: November 15, 2026. Branch reviewed: `frontend`.
+Status: design proposal; it does not modify the application or its calculations.
 
-## 1. Conclusión
+## 1. Conclusion
 
-La base funcional sirve para un panel longitudinal, pero su composición presenta
-el seguimiento como un producto de bienestar: bienvenida, promesa, ilustración,
-tarjetas y llamadas repetidas a preparar una revisión. La información de medida
-aparece después de esa presentación.
+The functional base works for a longitudinal panel, but its composition presents
+follow-up as a wellness product: welcome, promise, illustration,
+cards and repeated calls to prepare a review. The measurement information
+appears after that presentation.
 
-La nueva dirección debe ser **una estación de seguimiento aeróbico personal**:
-identificar a la persona, reconocer el alcance temporal de los datos, inspeccionar
-las mediciones, comprobar comparabilidad y registrar una observación.
-La identidad debe proceder de esa precisión y de una composición consistente.
+The new direction must be **a personal aerobic follow-up station**:
+identify the person, recognize the time scope of the data, inspect
+the measurements, check comparability and record an observation.
+The identity must come from that precision and from a consistent composition.
 
-Sobriedad no equivale a reducir tamaños, suprimir explicaciones o llenar la pantalla
-de cifras. Tampoco basta con oscurecerla. El astronauta debe poder leerla y recuperar
-el contexto con pocas acciones, incluso tras semanas sin utilizar una vista.
+Sobriety does not mean reducing sizes, removing explanations or filling the screen
+with figures. Nor is it enough to darken it. The astronaut must be able to read it and recover
+the context in few actions, even after weeks without using a view.
 
-## 2. Alcance y evidencia
+## 2. Scope and evidence
 
-Se revisaron el shell, el explorador aeróbico, su gráfico, los cálculos descriptivos,
-los estilos, el borrador local de revisión y la investigación previa. Se inspeccionó
-la captura de escritorio conservada de la implementación anterior y se contrastó
-con el código actual. No se realizaron nuevas pruebas con usuarios ni mediciones
-físicas de un dispositivo de misión. Las observaciones de usabilidad son hipótesis
-fundamentadas, pendientes de validación.
+The shell, the aerobic explorer, its chart, the descriptive calculations,
+the styles, the local review draft and the previous research were reviewed. The preserved
+desktop screenshot of the previous implementation was inspected and compared
+with the current code. No new tests with users or physical measurements
+of a mission device were carried out. The usability observations are grounded
+hypotheses, pending validation.
 
-Se consultaron `frontend-design`, `ui-ux-pro-max`, `web-design-guidelines` y la guía
-`respect-os-text-scale` de Modern Web Guidance. Los resultados locales sobre
-legibilidad aportaron contraste e interlineado; no constituyen una guía espacial.
+`frontend-design`, `ui-ux-pro-max`, `web-design-guidelines` and the
+`respect-os-text-scale` guide of Modern Web Guidance were consulted. The local results on
+legibility contributed contrast and line spacing; they are not a spatial guide.
 
-### Referencias de factores humanos
+### Human factors references
 
-La ficha oficial identifica NASA-STD-3001 Vol. 2, revisión F, aprobada el 14/07/2026.
-En §§10.4.2.1–10.4.2.4 aborda presentación simultánea de información crítica,
-redundancia del color, unidades consistentes y legibilidad en condiciones de uso.
-Son referencias para el razonamiento de diseño; esta revisión no demuestra
-cumplimiento ni certifica el prototipo. Las tareas críticas y los requisitos
-aplicables necesitan un análisis específico del sistema y de la misión.
+The official record identifies NASA-STD-3001 Vol. 2, revision F, approved on 07/14/2026.
+In §§10.4.2.1–10.4.2.4 it addresses simultaneous presentation of critical information,
+color redundancy, consistent units and legibility under conditions of use.
+They are references for design reasoning; this review does not demonstrate
+compliance nor certify the prototype. The critical tasks and the applicable
+requirements need a specific analysis of the system and the mission.
 
-Fuentes: [ficha oficial](https://standards.nasa.gov/node/237),
-[revisión F, pp. 207–209](https://standards.nasa.gov/system/files/tmp/NASA-STD-3001%20Vol%202%20Rev%20F.pdf).
+Sources: [official record](https://standards.nasa.gov/node/237),
+[revision F, pp. 207–209](https://standards.nasa.gov/system/files/tmp/NASA-STD-3001%20Vol%202%20Rev%20F.pdf).
 
-El [Human Integration Design Handbook, §10.6](https://www.nasa.gov/wp-content/uploads/2023/03/human-integration-design-handbook-revision-1.pdf)
-plantea seleccionar información a partir de las tareas y verificar la propuesta
-mediante escenarios de uso. Lo aplicaría aquí separando consulta personal,
-revisión del especialista y exploración del dataset.
+The [Human Integration Design Handbook, §10.6](https://www.nasa.gov/wp-content/uploads/2023/03/human-integration-design-handbook-revision-1.pdf)
+proposes selecting information based on tasks and verifying the proposal
+through usage scenarios. I would apply it here by separating personal consultation,
+specialist review and dataset exploration.
 
-## 3. Hallazgos priorizados
+## 3. Prioritized findings
 
-Las prioridades indican impacto esperado en el rediseño, no severidad clínica.
+The priorities indicate expected impact on the redesign, not clinical severity.
 
-| Prioridad | Localización | Hallazgo | Cambio propuesto |
+| Priority | Location | Finding | Proposed change |
 | --- | --- | --- | --- |
-| Alta | `aerobic-overview.tsx:90` | Título y bienvenida expresivos, poco específicos de la tarea | Título «Seguimiento aeróbico» y contexto de persona/fecha |
-| Alta | `aerobic-overview.tsx:112`, `aerobic.css:181` | Banner orbital, mínimo de 218 px, sin información necesaria para comparar | Retirar el banner y colocar el gráfico inmediatamente después del resumen compacto |
-| Alta | `aerobic-overview.tsx:274`, `aerobic-overview.tsx:382` | La dirección se repite y recibe gran protagonismo | Una sola lectura próxima al gráfico, con período, n y alcance |
-| Alta | `aerobic.ts:82` | Cualquier pendiente distinta de cero numérico tiene dirección; no existe umbral de relevancia | Separar signo matemático, magnitud y relevancia no evaluada; evitar apariencia de veredicto |
-| Alta | `trajectory-chart.tsx:43` | El eje Y cambia según ventana y referencia | Escala de inspección estable por persona/indicador/unidad, con modo automático explícito |
-| Alta | `aerobic-overview.tsx:59` | El período se ancla en la última visita disponible | Mostrar fecha de corte y antigüedad por separado; no sugerir actualidad por el filtro «3 meses» |
-| Alta | `aerobic.css:1326` | Ejes de 11 px y unidades/notas de 11–12 px en la capa efectiva de estilos | Aumentar legibilidad y usar unidades relativas; validar al ampliar texto |
-| Media | `aerobic-overview.tsx:467` | El historial está cerrado en la vista inicial | Mostrar las evaluaciones recientes y mantener acceso al registro completo |
-| Media | `dashboard.tsx:200` | Las vistas inicial e historial montan el mismo explorador con diferencias pequeñas | Una navegación con tareas distintas, sin duplicar pantallas |
-| Media | `aerobic-overview.tsx:56`, `dashboard.tsx:202` | Ventana y visita seleccionada son estado local; cambiar de vista remonta el explorador | Conservar período, referencia y visita en URL o estado de navegación compartido |
-| Media | `dashboard.tsx:155` | El selector de escenarios comparte contexto con el selector de persona | Herramienta de demostración secundaria, separada y explícitamente identificada |
-| Media | `aerobic-overview.tsx:409`, `aerobic-overview.tsx:453` | Varias invitaciones equivalentes a preparar una revisión | Una acción contextual «Preparar revisión» |
-| Media | `use-demo-journal.ts:45`, `followup-view.tsx:123` | El resumen preparado es una copia guardada, que puede corresponder a datos anteriores | Mostrar fecha de preparación y contexto de esa copia; ofrecer regenerarla sin perder la pregunta |
-| Media | `trajectory-chart.tsx:188` | Seleccionar un punto lo representa como círculo, aunque su método se codificó como cuadrado | Conservar forma y método al seleccionar; utilizar un anillo como énfasis adicional |
-| Baja | `dashboard.tsx:112`, `dashboard.tsx:225` | Eslogan lateral y cierre de hackathon compiten con el contenido operativo | Marca pequeña; información del proyecto en «Acerca de» |
+| High | `aerobic-overview.tsx:90` | Expressive title and welcome, not specific to the task | Title «Aerobic follow-up» and person/date context |
+| High | `aerobic-overview.tsx:112`, `aerobic.css:181` | Orbital banner, minimum 218 px, with no information needed to compare | Remove the banner and place the chart immediately after the compact summary |
+| High | `aerobic-overview.tsx:274`, `aerobic-overview.tsx:382` | The direction is repeated and given great prominence | A single reading near the chart, with period, n and scope |
+| High | `aerobic.ts:82` | Any slope other than numeric zero has a direction; there is no relevance threshold | Separate mathematical sign, magnitude and relevance not assessed; avoid the appearance of a verdict |
+| High | `trajectory-chart.tsx:43` | The Y axis changes with window and reference | Stable inspection scale per person/indicator/unit, with an explicit automatic mode |
+| High | `aerobic-overview.tsx:59` | The period is anchored to the last available visit | Show cutoff date and age separately; do not suggest currency through the «3 months» filter |
+| High | `aerobic.css:1326` | 11 px axes and 11–12 px units/notes in the effective style layer | Increase legibility and use relative units; validate when enlarging text |
+| Medium | `aerobic-overview.tsx:467` | The history is closed in the initial view | Show recent assessments and keep access to the full record |
+| Medium | `dashboard.tsx:200` | The initial and history views mount the same explorer with small differences | One navigation with distinct tasks, without duplicating screens |
+| Medium | `aerobic-overview.tsx:56`, `dashboard.tsx:202` | Window and selected visit are local state; switching views remounts the explorer | Keep period, reference and visit in the URL or shared navigation state |
+| Medium | `dashboard.tsx:155` | The scenario selector shares context with the person selector | Secondary demonstration tool, separate and explicitly identified |
+| Medium | `aerobic-overview.tsx:409`, `aerobic-overview.tsx:453` | Several equivalent invitations to prepare a review | One contextual «Prepare review» action |
+| Medium | `use-demo-journal.ts:45`, `followup-view.tsx:123` | The prepared summary is a saved copy that may correspond to earlier data | Show preparation date and context of that copy; offer to regenerate it without losing the question |
+| Medium | `trajectory-chart.tsx:188` | Selecting a point renders it as a circle, although its method was encoded as a square | Keep shape and method on selection; use a ring as additional emphasis |
+| Low | `dashboard.tsx:112`, `dashboard.tsx:225` | Side slogan and hackathon closing compete with the operational content | Small brand; project information under «About» |
 
-Localizaciones relativas a `src/features/health-monitoring/`:
-[explorador](../../src/features/health-monitoring/components/aerobic-overview.tsx),
+Locations relative to `src/features/health-monitoring/`:
+[explorer](../../src/features/health-monitoring/components/aerobic-overview.tsx),
 [shell](../../src/features/health-monitoring/components/dashboard.tsx),
-[gráfico](../../src/features/health-monitoring/components/trajectory-chart.tsx),
-[estilos](../../src/features/health-monitoring/components/aerobic.css),
-[cálculos](../../src/features/health-monitoring/aerobic.ts),
-[borrador](../../src/features/health-monitoring/components/use-demo-journal.ts),
-[revisión](../../src/features/health-monitoring/components/followup-view.tsx).
+[chart](../../src/features/health-monitoring/components/trajectory-chart.tsx),
+[styles](../../src/features/health-monitoring/components/aerobic.css),
+[calculations](../../src/features/health-monitoring/aerobic.ts),
+[draft](../../src/features/health-monitoring/components/use-demo-journal.ts),
+[review](../../src/features/health-monitoring/components/followup-view.tsx).
 
-### Qué conservar
+### What to keep
 
-- Historial individual, referencia elegida y fechas reales.
-- Diferencias entre ausencia de visita y resultado faltante.
-- Cortes gráficos y bloqueo de cálculos ante unidades o métodos diferentes.
-- Tabla semántica, controles nativos, navegación por teclado y estados vacíos.
-- Origen simulado explícito y separación de actividad y capacidad aeróbica.
-- Preparación local del resumen sin afirmar que fue enviado.
-- Servicio de datos como frontera y separación entre frontend, backend y contratos.
+- Individual history, chosen reference and real dates.
+- Differences between absence of a visit and a missing result.
+- Chart breaks and blocking of calculations for different units or methods.
+- Semantic table, native controls, keyboard navigation and empty states.
+- Explicit simulated origin and separation of activity and aerobic capacity.
+- Local preparation of the summary without claiming it was sent.
+- Data service as boundary and separation between frontend, backend and contracts.
 
-## 4. Tareas que deben organizar la interfaz
+## 4. Tasks that should organize the interface
 
-| Tarea | Pregunta del astronauta | Información necesaria |
+| Task | Astronaut's question | Information needed |
 | --- | --- | --- |
-| Consulta de seguimiento | ¿Cuál es el último resultado y de cuándo es? | Valor, unidad, fecha/hora UTC y método |
-| Comparación | ¿Qué cambió respecto de la visita elegida? | Referencia explícita, diferencia y motivo de comparabilidad |
-| Revisión longitudinal | ¿Qué ocurrió durante varios meses? | Gráfico, visitas, huecos, segmentos y fechas |
-| Inspección | ¿Qué respalda este punto o esta lectura? | Ficha de evaluación, fuente disponible e IDs incluidos |
-| Registro | ¿Qué observación quiero conservar? | Nota vinculada al contexto y estado de guardado |
-| Preparación de revisión | ¿Qué información voy a compartir? | Resumen fechado, alcance y estado real de exportación/envío |
+| Follow-up consultation | What is the latest result and from when is it? | Value, unit, UTC date/time and method |
+| Comparison | What changed with respect to the chosen visit? | Explicit reference, difference and reason for comparability |
+| Longitudinal review | What happened over several months? | Chart, visits, gaps, segments and dates |
+| Inspection | What supports this point or this reading? | Assessment card, available source and included IDs |
+| Logging | What observation do I want to keep? | Note linked to the context and saved state |
+| Review preparation | What information am I going to share? | Dated summary, scope and real export/sending state |
 
-La pantalla es de seguimiento periódico. Una medición mensual no describe el estado
-en este instante. La comparación tampoco constituye un sistema de alarmas.
+The screen is for periodic follow-up. A monthly measurement does not describe the state
+at this instant. Comparison is not an alarm system either.
 
-## 5. Arquitectura propuesta
+## 5. Proposed architecture
 
-Una barra compacta de identidad y contexto, navegación discreta y contenido alineado
-a la izquierda. El centro de gravedad visual es el gráfico con su inspección.
+A compact identity and context bar, discreet navigation and left-aligned
+content. The visual center of gravity is the chart with its inspection.
 
 ```text
-Órbita / Seguimiento aeróbico          Tripulante: Vega   [Simulación]
-Datos hasta: fecha/hora UTC            Guardado: estado disponible
+Órbita / Aerobic follow-up              Crew member: Vega   [Simulation]
+Data up to: UTC date/time              Saved: available state
 
-Seguimiento | Evaluaciones | Actividad | Revisión
+Follow-up | Assessments | Activity | Review
 
-Período [3 m] [6 m] [12 m] [Todo]       Referencia [fecha / método]
-Fechas efectivas: inicio — fin         [Exportar período]
+Period [3 m] [6 m] [12 m] [All]         Reference [date / method]
+Effective dates: start — end           [Export period]
 
-Última evaluación       Cambio vs. referencia       Resultados disponibles
-valor + unidad + fecha  diferencia / no comparable   n de N visitas
+Latest assessment       Change vs. reference        Available results
+value + unit + date     difference / not comparable  n of N visits
 
-Evolución de VO₂pico                     Evaluación seleccionada
-[gráfico principal por fechas]          fecha / valor / unidad / método
-[referencia / métodos / huecos]         [Anterior] [Siguiente]
+Peak VO₂ evolution                       Selected assessment
+[main chart by date]                     date / value / unit / method
+[reference / methods / gaps]             [Previous] [Next]
 
-Lectura del período: dirección, magnitud y n. Relevancia no evaluada.
-[Detalle del cálculo]
+Period reading: direction, magnitude and n. Relevance not assessed.
+[Calculation detail]
 
-Evaluaciones recientes / historial       Observación del usuario
-[tabla vinculada al gráfico]             [Registrar observación]
+Recent assessments / history             User observation
+[table linked to the chart]              [Record observation]
 ```
 
-Este esquema es una propuesta, no una pantalla ya implementada. «Guardado» debe
-referirse al borrador local existente; el sistema aún no informa sincronización.
+This layout is a proposal, not an already implemented screen. «Saved» must
+refer to the existing local draft; the system does not yet report sync.
 
-En escritorio, resumen y gráfico deben quedar visibles en el primer viewport de
-referencia de 1440 × 900 a escala estándar. En móvil, ordenar contexto, último dato,
-comparación y gráfico; detalles e historial conservan acceso explícito. No ocultar
-la fecha o el método para encajar más cifras.
+On desktop, summary and chart must be visible in the first reference viewport of
+1440 × 900 at standard scale. On mobile, order context, latest data,
+comparison and chart; details and history keep explicit access. Do not hide
+the date or the method to fit more figures.
 
-### Navegación
+### Navigation
 
-- **Seguimiento:** resumen longitudinal y lectura del período.
-- **Evaluaciones:** registro, selección y detalle de una evaluación.
-- **Actividad:** sesiones registradas con su propio alcance temporal.
-- **Revisión:** nota, pregunta y copia preparada para exportar.
+- **Follow-up:** longitudinal summary and reading of the period.
+- **Assessments:** record, selection and detail of an assessment.
+- **Activity:** recorded sessions with their own time scope.
+- **Review:** note, question and copy prepared for export.
 
-La exploración de MR080G corresponde al contexto de investigación y procedencia.
-Puede quedar en una ficha técnica secundaria. Los jueces pueden acceder a esa
-explicación sin que el astronauta deba recorrerla en cada consulta.
+The exploration of MR080G belongs to the research and provenance context.
+It can stay in a secondary technical card. Judges can access that
+explanation without the astronaut having to go through it on every consultation.
 
-## 6. Sistema visual propuesto
+## 6. Proposed visual system
 
-Los valores siguientes son decisiones iniciales del proyecto, no colores oficiales
-ni requisitos de una agencia.
+The following values are initial project decisions, not official colors
+nor requirements of an agency.
 
-| Función | Propuesta |
+| Function | Proposal |
 | --- | --- |
-| Fondo de trabajo | `#eef1f4` |
-| Superficie | `#ffffff` |
-| Texto principal | `#1d2935` |
-| Texto secundario | `#475569` |
-| Divisores | `#cbd5df` |
-| Selección y trayectoria principal | `#245c86` |
+| Work background | `#eef1f4` |
+| Surface | `#ffffff` |
+| Main text | `#1d2935` |
+| Secondary text | `#475569` |
+| Dividers | `#cbd5df` |
+| Selection and main trajectory | `#245c86` |
 
-- Una fuente sans serif local, de formas claras y con alternativas del sistema.
-  Cifras tabulares para resultados; monoespaciada solo donde facilite leer IDs.
-- Cuerpo de referencia de 1 rem; etiquetas y metadatos entre 0,875 y 1 rem como
-  punto de partida. Encabezados de sección de aproximadamente 1,125 rem.
-  Validar en el dispositivo objetivo; no equiparar píxeles CSS con tamaño físico.
-- Interlineado sin unidad. Contenedores que crezcan al ampliar texto. Tamaño raíz
-  respetado; zoom disponible. Evaluar progresivamente `text-scale` con fallback
-  de zoom normal en navegadores que no lo admitan.
-- Radios discretos, aproximadamente 4–6 px; separadores para agrupar funciones.
-  Sombras solo cuando expresen superposición. Reducir los iconos que repiten texto.
-- Mantener claro/oscuro; ambos deben conservar jerarquía, contraste y símbolos.
-  Un tema oscuro no acredita adecuación para misión.
-- Color para selección, series y estados diferenciados. Toda condición debe tener
-  texto o forma. No asignar rojo a un descenso o verde a un ascenso por defecto.
-- Sin planetas decorativos, brillo, animación ambiental, gamificación ni puntaje
-  agregado de salud. Una representación anatómica solo tendría sentido con una
-  tarea y un dato que la justifiquen.
+- A local sans serif font, with clear shapes and system alternatives.
+  Tabular figures for results; monospaced only where it makes reading IDs easier.
+- Reference body of 1 rem; labels and metadata between 0.875 and 1 rem as a
+  starting point. Section headings of approximately 1.125 rem.
+  Validate on the target device; do not equate CSS pixels with physical size.
+- Unitless line height. Containers that grow when text is enlarged. Root size
+  respected; zoom available. Progressively evaluate `text-scale` with a fallback
+  to normal zoom in browsers that do not support it.
+- Discreet radii, approximately 4–6 px; separators to group functions.
+  Shadows only when they express overlap. Reduce the icons that repeat text.
+- Keep light/dark; both must keep hierarchy, contrast and symbols.
+  A dark theme does not establish suitability for a mission.
+- Color for selection, series and differentiated states. Every condition must have
+  text or shape. Do not assign red to a decrease or green to an increase by default.
+- No decorative planets, glow, ambient animation, gamification or aggregate health
+  score. An anatomical representation would only make sense with a
+  task and a datum that justify it.
 
-## 7. Lenguaje propuesto
+## 7. Proposed language
 
-| Actual | Propuesta |
+| Current | Proposal |
 | --- | --- |
-| Mi perspectiva | Seguimiento |
-| Tu capacidad, en perspectiva | Seguimiento aeróbico |
-| Tu recorrido importa tanto como el último dato | Retirar el bloque |
-| Tu trayectoria aeróbica | Evolución de VO₂pico |
-| La lectura de tus datos | Resumen del período |
-| El registro detrás de la trayectoria | Evaluaciones |
-| Una revisión con perspectiva | Revisión |
-| Tu historia, conectada | Retirar el eslogan |
-| Explorar historial | Ver evaluaciones |
+| My perspective | Follow-up |
+| Your capacity, in perspective | Aerobic follow-up |
+| Your journey matters as much as the latest datum | Remove the block |
+| Your aerobic trajectory | Peak VO₂ evolution |
+| The reading of your data | Period summary |
+| The record behind the trajectory | Assessments |
+| A review with perspective | Review |
+| Your story, connected | Remove the slogan |
+| Explore history | View assessments |
 
-Usar verbos explícitos: seleccionar referencia, registrar observación, preparar
-revisión y exportar período. El texto puede ser claro y humano sin promesas ni
-motivación comercial. Mantener un vocabulario consistente en navegación, tabla,
-exportación y borrador.
+Use explicit verbs: select reference, record observation, prepare
+review and export period. The text can be clear and human without promises or
+commercial motivation. Keep a consistent vocabulary in navigation, table,
+export and draft.
 
-## 8. Lectura de datos y confianza
+## 8. Data reading and trust
 
-### Actualidad
+### Currency
 
-Separar fecha de evaluación, fecha de corte de datos y fecha de preparación del
-resumen. Una última visita sin resultado no debe borrar silenciosamente el último
-resultado válido: presentar ambos conceptos con sus fechas.
+Separate assessment date, data cutoff date and summary preparation date. A last
+visit without a result must not silently erase the last valid result:
+present both concepts with their dates.
 
-La etiqueta de antigüedad puede expresar tiempo transcurrido. Clasificar una visita
-como vencida exige disponer de un calendario acordado; no inventarlo. No mostrar
-«En línea», «Sincronizado», «Nominal» o un día de misión sin datos que lo respalden.
+The age label can express elapsed time. Classifying a visit as overdue
+requires an agreed calendar; do not invent one. Do not show
+«Online», «Synced», «Nominal» or a mission day without data to back it up.
 
-### Comparaciones y escalas
+### Comparisons and scales
 
-Conservar referencia, período y evaluación al navegar y volver. Diferenciar el
-cambio contra una referencia fija de la dirección del período seleccionado.
-Para el gráfico, proponer una escala inicial estable basada en el historial
-compatible disponible y una opción explícita de autoescala. No implica empezar
-siempre en cero ni establecer un rango fisiológico normal. Una actualización que
-requiera ampliar el rango debe ser perceptible.
+Keep reference, period and assessment when navigating and returning. Differentiate
+the change against a fixed reference from the direction of the selected period.
+For the chart, propose a stable initial scale based on the available compatible
+history and an explicit auto-scale option. It does not imply always starting
+at zero nor establishing a normal physiological range. An update that
+requires expanding the range must be noticeable.
 
-Separar los segmentos de métodos distintos con marcas y leyenda específicas. Evitar
-que la selección elimine el símbolo del método. Los objetivos táctiles cercanos
-requieren comprobar solapamiento; conservar flechas y tabla como alternativas.
+Separate the segments of different methods with specific marks and legend. Prevent
+selection from removing the method's symbol. Nearby touch targets
+require an overlap check; keep arrows and table as alternatives.
 
-### Tendencias
+### Trends
 
-Dar una sola lectura del período. Acompañarla de número de resultados, fechas y
-método de cálculo. Evitar que una pendiente minúscula parezca un hallazgo relevante
-por su tamaño tipográfico o color. No sustituirla por «Estable» usando una tolerancia
-inventada. La definición de estabilidad, cambio relevante e incertidumbre requiere
-acuerdo de datos y criterio médico.
+Give a single reading of the period. Accompany it with number of results, dates and
+calculation method. Prevent a tiny slope from looking like a relevant finding
+because of its typographic size or color. Do not replace it with «Stable» using an
+invented tolerance. The definition of stability, relevant change and uncertainty requires
+agreement on data and medical judgment.
 
-### Simulación y procedencia
+### Simulation and provenance
 
-Mantener una identificación persistente de simulación y acceso a sus límites.
-Separar el selector de escenarios del contexto de usuario. Simplificar los avisos
-repetidos sin ocultar el origen ficticio. La ficha de cada resultado debe mostrar
-solo la procedencia que realmente se conoce.
+Keep a persistent identification of simulation and access to its limits.
+Separate the scenario selector from the user context. Simplify the repeated
+notices without hiding the fictional origin. The card of each result must show
+only the provenance that is actually known.
 
-## 9. Implementación posterior y límites de alcance
+## 9. Later implementation and scope limits
 
-1. Reorganizar jerarquía y textos: retirar banner, eslóganes y acciones duplicadas;
-   adelantar gráfico y fecha. No requiere cambios de API.
-2. Unificar tokens, tipografía y superficies. Consolidar las reglas actuales de
-   `globals.css` y `aerobic.css` antes de añadir más sobrescrituras.
-3. Resolver escala, selección, leyendas, conservación del contexto y acceso a tabla.
-   Mantener los cálculos existentes hasta especificar un cambio separado y probarlo.
-4. Diferenciar fecha de última visita, último resultado y copia de revisión.
-5. Evaluar con escenarios: recuperación, variación pequeña, descenso, faltantes,
-   cambio de método, historial vacío y dato antiguo.
+1. Reorganize hierarchy and texts: remove banner, slogans and duplicated actions;
+   move chart and date forward. It requires no API changes.
+2. Unify tokens, typography and surfaces. Consolidate the current rules of
+   `globals.css` and `aerobic.css` before adding more overrides.
+3. Resolve scale, selection, legends, preservation of context and access to the table.
+   Keep the existing calculations until a separate change is specified and tested.
+4. Differentiate last visit date, last result and review copy.
+5. Evaluate with scenarios: recovery, small variation, decline, missing values,
+   method change, empty history and old data.
 
-No se necesita un cambio de stack ni añadir una biblioteca gráfica por motivos
-estéticos. Next.js, Tailwind, componentes existentes y SVG permiten esta dirección.
-Un componente de shadcn sería útil si resuelve una interacción concreta.
+No change of stack nor adding a chart library for aesthetic reasons is needed.
+Next.js, Tailwind, existing components and SVG allow this direction.
+A shadcn component would be useful if it solves a concrete interaction.
 
-La simulación ya permite demostrar la mayor parte del rediseño. Dispositivo,
-protocolo versionado, calidad, sincronización, calendario de pruebas o fecha de
-inicio de misión necesitan campos acordados con backend. No incorporarlos como
-campos aparentes con valores inventados para dar sensación de completitud.
+The simulation already allows demonstrating most of the redesign. Device,
+versioned protocol, quality, sync, test calendar or mission
+start date need fields agreed with the backend. Do not incorporate them as
+apparent fields with invented values to give a feeling of completeness.
 
-Para una misión prolongada quedan pendientes requisitos reales de funcionamiento
-sin conexión, persistencia, recuperación, acceso y privacidad. El borrador local
-actual no demuestra esas capacidades. Deben especificarse como trabajo de producto
-posterior, sin bloquear el rediseño visual del prototipo.
+For a prolonged mission, real requirements for offline operation,
+persistence, recovery, access and privacy remain pending. The current local draft
+does not demonstrate those capabilities. They must be specified as later product work,
+without blocking the visual redesign of the prototype.
 
-## 10. Criterios de aceptación del próximo diseño
+## 10. Acceptance criteria for the next design
 
-- La primera pantalla de escritorio muestra persona, fecha, resultado, referencia
-  y gráfico; no contiene un bloque promocional.
-- Valor, unidad y fecha se leen juntos, también con zoom y tema oscuro.
-- Hay un único resumen del período y un único acceso principal a preparar revisión.
-- El usuario distingue «última visita sin resultado» de «último resultado válido».
-- Cambiar de ventana conserva la referencia e indica qué eje está usando el gráfico.
-- Volver de actividad o revisión conserva ventana y evaluación seleccionada.
-- Se puede verificar la lectura con la tabla y reconocer un cambio de método sin
-  depender del color.
-- Una copia preparada conserva fecha/contexto y no aparenta actualizarse sola.
-- En 320 CSS px y al ampliar texto, sigue disponible todo el contenido; la tabla
-  puede tener desplazamiento propio cuando la estructura lo requiere.
-- Se opera con teclado, los controles próximos no se bloquean entre sí y el foco
-  no queda oculto por barras o paneles.
-- La evaluación con usuarios registra tiempo, errores de interpretación y acciones
-  necesarias para comparar visitas; no se da por aprobada solo por su apariencia.
+- The first desktop screen shows person, date, result, reference
+  and chart; it contains no promotional block.
+- Value, unit and date are read together, also with zoom and dark theme.
+- There is a single period summary and a single main access to prepare a review.
+- The user distinguishes «last visit without a result» from «last valid result».
+- Changing the window keeps the reference and indicates which axis the chart is using.
+- Returning from activity or review keeps the selected window and assessment.
+- The reading can be verified with the table and a method change recognized without
+  depending on color.
+- A prepared copy keeps date/context and does not appear to update itself.
+- At 320 CSS px and when enlarging text, all content remains available; the table
+  can have its own scrolling when the structure requires it.
+- It works with a keyboard, nearby controls do not block each other and the focus
+  is not hidden by bars or panels.
+- The evaluation with users records time, interpretation errors and actions
+  needed to compare visits; it is not considered approved just for its appearance.
 
-Faltan por confirmar dispositivo, distancia de lectura, iluminación, idioma de
-operación y tareas críticas. Estas variables condicionan la validación final.
+Device, reading distance, lighting, operating language and critical tasks
+remain to be confirmed. These variables condition the final validation.
 
-## Referencias complementarias
+## Complementary references
 
 - [Web Interface Guidelines](https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/main/command.md):
-  controles semánticos, foco, números tabulares y conservación del estado en URL.
-- Modern Web Guidance, `respect-os-text-scale`: tipografía relativa y ampliación
-  sin pérdida de información; consultado localmente, sin cambios de código.
-- [Investigación previa del proyecto](../research/aerobic-dashboard-research.md).
+  semantic controls, focus, tabular numbers and state preservation in the URL.
+- Modern Web Guidance, `respect-os-text-scale`: relative typography and enlargement
+  without loss of information; consulted locally, with no code changes.
+- [Previous project research](../research/aerobic-dashboard-research.md).

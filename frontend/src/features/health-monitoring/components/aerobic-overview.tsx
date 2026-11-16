@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { Download, ChevronLeft, ChevronRight } from "lucide-react";
-import type { Astronaut, MeasurementsResponse } from "../schemas";
+import type { Astronaut } from "../schemas";
+import type { MeasurementsView } from "../mission";
 import type { DemoMission } from "../mission";
 import { formatDate, formatTimestamp, numberFormat } from "../mission";
 import {
@@ -46,7 +47,7 @@ export function AerobicOverview({
   mission: DemoMission;
   journal: DemoJournal;
   update: (patch: Partial<DemoJournal>) => void;
-  measurements: MeasurementsResponse;
+  measurements: MeasurementsView;
   context: HistoryContext;
   onContext: (patch: Partial<HistoryContext>) => void;
   href: (view: string) => string;
@@ -110,18 +111,18 @@ export function AerobicOverview({
     <div className="aerobic-workspace">
       <div className="page-heading">
         <div>
-          <h1 id="contenido" tabIndex={-1}>
-            {expanded ? "Evaluaciones aeróbicas" : "Seguimiento aeróbico"}
+          <h1 id="content" tabIndex={-1}>
+            {expanded ? "Aerobic assessments" : "Aerobic follow-up"}
           </h1>
           <p>
             {expanded
-              ? "Registro del período y detalle de cada evaluación."
-              : "VO₂pico relativo · pruebas periódicas, sin criterio de desempeño configurado"}
+              ? "Record of the period and detail of each assessment."
+              : "Relative peak VO₂ · periodic tests, no performance criterion configured"}
           </p>
         </div>
         <div className="page-actions">
-          <Link className="button primary" href={href("seguimiento")}>
-            Preparar revisión
+          <Link className="button primary" href={href("followup")}>
+            Prepare review
           </Link>
           <button
             className="button secondary"
@@ -129,16 +130,16 @@ export function AerobicOverview({
             disabled={!evaluations.length}
           >
             <Download size={16} aria-hidden="true" />
-            Exportar período
+            Export period
           </button>
         </div>
       </div>
       <section
         className="history-controls"
-        aria-label="Filtros de evaluaciones"
+        aria-label="Assessment filters"
       >
         <div className="period-control">
-          <span id="period-label">Período del historial</span>
+          <span id="period-label">History period</span>
           <div
             className="period-buttons"
             role="group"
@@ -151,13 +152,13 @@ export function AerobicOverview({
                 aria-pressed={period === context.period}
                 onClick={() => onContext({ period, evaluation: "" })}
               >
-                {period ? `${period} meses` : "Todo"}
+                {period ? `${period} months` : "All"}
               </button>
             ))}
           </div>
         </div>
         <label htmlFor="aerobic-reference">
-          Referencia
+          Reference
           <select
             id="aerobic-reference"
             value={context.reference}
@@ -167,13 +168,13 @@ export function AerobicOverview({
             {mission.evaluations.map((item) => (
               <option key={item.id} value={item.id}>
                 {formatDate(item.recordedAt)}
-                {item.value === null ? " · sin resultado" : ""}
+                {item.value === null ? " · no result" : ""}
               </option>
             ))}
           </select>
         </label>
         <label htmlFor="protocol-group">
-          Grupo de cálculo
+          Calculation group
           <select
             id="protocol-group"
             value={context.group ?? ""}
@@ -181,7 +182,7 @@ export function AerobicOverview({
               onContext({ group: event.target.value || undefined })
             }
           >
-            <option value="">Todos los protocolos</option>
+            <option value="">All protocols</option>
             {groups.map((method) => (
               <option key={method} value={method}>
                 {method}
@@ -192,32 +193,32 @@ export function AerobicOverview({
         <p className="effective-period">
           {evaluations.length ? (
             <>
-              <span>Fechas efectivas</span>
+              <span>Effective dates</span>
               <strong>
                 {formatDate(evaluations[0].recordedAt)} —{" "}
                 {formatDate(evaluations.at(-1)!.recordedAt)}
               </strong>
             </>
           ) : (
-            "Sin fechas disponibles"
+            "No dates available"
           )}
-          <small>Ventana anclada en la última visita registrada</small>
+          <small>Window anchored to the latest recorded visit</small>
         </p>
       </section>
       <p className="eligibility-note" role="status">
-        {included.length} pruebas en el grupo de cálculo · {excluded} fuera del
-        grupo, conservadas en el registro.{" "}
+        {included.length} tests in the calculation group · {excluded} outside the
+        group, kept in the record.{" "}
         {groups.length > 1 && !context.group
-          ? "Hay protocolos distintos: seleccioná un grupo para describir su evolución."
-          : "Solo se comparan resultados con contexto compatible."}
+          ? "There are different protocols: select a group to describe its evolution."
+          : "Only results with a compatible context are compared."}
       </p>
       <dl className="measurement-summary">
         <div>
-          <dt>Último resultado disponible</dt>
+          <dt>Latest available result</dt>
           <dd className="summary-value">
             {latestResult
               ? numberFormat.format(latestResult.value!)
-              : "Sin resultado"}
+              : "No result"}
             {latestResult ? (
               <span className="unit">{latestResult.unit}</span>
             ) : null}
@@ -225,17 +226,17 @@ export function AerobicOverview({
           <dd className="summary-detail">
             {latestResult
               ? `${formatTimestamp(latestResult.recordedAt)} · ${ageLabel(latestResult.recordedAt, asOf)}`
-              : "Sin resultados en el período"}
+              : "No results in the period"}
           </dd>
           {latestVisit?.value === null ? (
             <dd className="summary-detail">
-              Última visita: {formatDate(latestVisit.recordedAt)} · sin
-              resultado
+              Latest visit: {formatDate(latestVisit.recordedAt)} · no
+              result
             </dd>
           ) : null}
         </div>
         <div>
-          <dt>Cambio vs. referencia</dt>
+          <dt>Change vs. reference</dt>
           <dd
             className={`summary-value ${comparison.difference === null ? "summary-text" : ""}`}
           >
@@ -248,8 +249,8 @@ export function AerobicOverview({
           </dd>
           <dd className="summary-detail">
             {baseline
-              ? `Referencia: ${formatDate(baseline.recordedAt)}`
-              : "Sin referencia"}
+              ? `Reference: ${formatDate(baseline.recordedAt)}`
+              : "No reference"}
           </dd>
           {comparison.difference === null ? (
             <dd className="summary-detail">{comparison.reason}</dd>
@@ -260,14 +261,14 @@ export function AerobicOverview({
           <dd className="summary-value">
             {valid.length}
             <span className="summary-denominator">
-              / {included.length} pruebas
+              / {included.length} tests
             </span>
           </dd>
           <dd className="summary-detail">
-            {included.length - valid.length} pruebas sin resultado
+            {included.length - valid.length} tests without a result
           </dd>
           <dd className="summary-detail">
-            Métodos y unidades identificados por visita
+            Methods and units identified per visit
           </dd>
         </div>
       </dl>
@@ -276,11 +277,11 @@ export function AerobicOverview({
         <section className="trajectory-panel">
           <div className="panel-heading chart-heading">
             <div>
-              <h2>Evolución de VO₂pico</h2>
-              <p>{unit || "Sin unidad disponible"} · mediciones puntuales</p>
+              <h2>Evolution of peak VO₂</h2>
+              <p>{unit || "No unit available"} · point measurements</p>
             </div>
             <label className="scale-control" htmlFor="scale-selector">
-              Escala vertical
+              Vertical scale
               <select
                 id="scale-selector"
                 value={context.scale}
@@ -288,8 +289,8 @@ export function AerobicOverview({
                   onContext({ scale: event.target.value as ScaleMode })
                 }
               >
-                <option value="history">Historial completo</option>
-                <option value="auto">Ajustar al período</option>
+                <option value="history">Full history</option>
+                <option value="auto">Fit to the period</option>
               </select>
             </label>
           </div>
@@ -306,10 +307,10 @@ export function AerobicOverview({
           <p className="scale-note">
             {domain ? (
               <>
-                Escala{" "}
+                Scale{" "}
                 {context.scale === "history"
-                  ? "del historial"
-                  : "del período y referencia"}
+                  ? "of the history"
+                  : "of the period and reference"}
                 :{" "}
                 <span data-testid="scale-domain">
                   {numberFormat.format(domain.min)}–
@@ -318,7 +319,7 @@ export function AerobicOverview({
                 .{" "}
               </>
             ) : null}
-            Los trazos se interrumpen ante faltantes o cambios de método.
+            The lines break at gaps or changes of method.
           </p>
         </section>
         <section
@@ -326,14 +327,14 @@ export function AerobicOverview({
           aria-labelledby="selected-evaluation-heading"
         >
           <div className="inspector-heading">
-            <h2 id="selected-evaluation-heading">Evaluación seleccionada</h2>
+            <h2 id="selected-evaluation-heading">Selected assessment</h2>
             <span>
               {selectedIndex < 0 ? "0" : selectedIndex + 1} /{" "}
               {evaluations.length}
             </span>
           </div>
           <label className="evaluation-select" htmlFor="evaluation-selector">
-            Fecha de evaluación
+            Assessment date
             <select
               id="evaluation-selector"
               value={selected?.id ?? ""}
@@ -343,7 +344,7 @@ export function AerobicOverview({
               {evaluations.map((item) => (
                 <option key={item.id} value={item.id}>
                   {formatDate(item.recordedAt)}
-                  {item.value === null ? " · sin resultado" : ""}
+                  {item.value === null ? " · no result" : ""}
                 </option>
               ))}
             </select>
@@ -351,7 +352,7 @@ export function AerobicOverview({
           <div className="selected-result" aria-live="polite">
             <strong>
               {selected?.value == null
-                ? "Sin resultado"
+                ? "No result"
                 : numberFormat.format(selected.value)}
             </strong>
             {selected?.value != null ? (
@@ -360,24 +361,24 @@ export function AerobicOverview({
             <p>
               {selected
                 ? formatTimestamp(selected.recordedAt)
-                : "Sin evaluación disponible"}
+                : "No assessment available"}
             </p>
           </div>
           <dl className="evaluation-facts">
             <div>
-              <dt>Método</dt>
+              <dt>Method</dt>
               <dd>{selected?.method ?? "No disponible"}</dd>
             </div>
             <div>
               <dt>Disponibilidad</dt>
               <dd>
                 {selected?.value == null
-                  ? "Resultado no registrado"
-                  : "Resultado disponible"}
+                  ? "Result not recorded"
+                  : "Result available"}
               </dd>
             </div>
             <div>
-              <dt>Cambio vs. referencia</dt>
+              <dt>Change vs. reference</dt>
               <dd>
                 {selectedComparison.difference === null
                   ? selectedComparison.reason
@@ -398,7 +399,7 @@ export function AerobicOverview({
             <button
               type="button"
               className="button secondary"
-              aria-label="Evaluación anterior"
+              aria-label="Previous assessment"
               disabled={selectedIndex <= 0}
               onClick={() => select(evaluations[selectedIndex - 1].id)}
             >
@@ -408,7 +409,7 @@ export function AerobicOverview({
             <button
               type="button"
               className="button secondary"
-              aria-label="Evaluación siguiente"
+              aria-label="Next assessment"
               disabled={
                 selectedIndex < 0 || selectedIndex >= evaluations.length - 1
               }
@@ -423,34 +424,34 @@ export function AerobicOverview({
 
       <section className="period-reading">
         <div>
-          <h2>Resumen del período</h2>
+          <h2>Summary of the period</h2>
           <p>
             <strong>
               {trend.slope === null
                 ? trend.label
-                : `Dirección matemática ${trend.slope > 1e-10 ? "ascendente" : trend.slope < -1e-10 ? "descendente" : "sin cambio neto"}`}
+                : `Mathematical direction: ${trend.slope > 1e-10 ? "ascending" : trend.slope < -1e-10 ? "descending" : "no net change"}`}
             </strong>
             {endpointComparison.difference !== null && valid.length >= 2
-              ? ` · cambio entre extremos disponibles: ${signed(endpointComparison.difference)} ${unit}`
+              ? ` · change between available endpoints: ${signed(endpointComparison.difference)} ${unit}`
               : ""}{" "}
-            · {trend.count} resultados.
+            · {trend.count} results.
           </p>
           <p>
             {trend.slope === null
               ? trend.reason
-              : "La relevancia del cambio no está evaluada. La dirección matemática no determina mejoría, estabilidad ni empeoramiento clínico."}
+              : "The relevance of the change is not assessed. The mathematical direction does not determine clinical improvement, stability or worsening."}
           </p>
           <p>
-            Criterio de desempeño: no configurado. Un descenso numérico no
-            determina falta de aptitud ni mal desempeño.
+            Performance criterion: not configured. A numerical decline does not
+            determine lack of fitness or poor performance.
           </p>
         </div>
         <details>
-          <summary>Detalle del cálculo</summary>
+          <summary>Calculation detail</summary>
           <p>
-            {trend.reason} Los faltantes se excluyen sin completar valores. La
-            diferencia entre extremos y el cambio contra la referencia son
-            comparaciones distintas.
+            {trend.reason} Missing values are excluded without filling them in. The
+            difference between endpoints and the change against the reference are
+            different comparisons.
           </p>
         </details>
       </section>
@@ -461,16 +462,16 @@ export function AerobicOverview({
             <div>
               <h2>
                 {expanded
-                  ? "Registro de evaluaciones"
-                  : "Evaluaciones recientes"}
+                  ? "Assessment record"
+                  : "Recent assessments"}
               </h2>
               <p>
-                La tabla y el gráfico comparten período, referencia y selección.
+                The table and the chart share period, reference and selection.
               </p>
             </div>
             {!expanded ? (
-              <Link className="text-link" href={href("evolucion")}>
-                Ver todas las evaluaciones
+              <Link className="text-link" href={href("evolution")}>
+                View all assessments
               </Link>
             ) : (
               <span className="count-label">{evaluations.length} visitas</span>

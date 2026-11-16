@@ -80,18 +80,18 @@ export function latestValid(evaluations: Evaluation[]) {
 
 export function ageLabel(recordedAt: string, asOf: string) {
   const elapsed = Date.parse(asOf) - Date.parse(recordedAt);
-  if (!Number.isFinite(elapsed)) return "Antigüedad no disponible";
-  if (elapsed < 0) return "Fecha posterior a esta consulta";
+  if (!Number.isFinite(elapsed)) return "Age not available";
+  if (elapsed < 0) return "Date after this query";
   const days = Math.floor(elapsed / 86_400_000);
   return days === 0
-    ? "Registrada en las últimas 24 h"
-    : `Hace ${days} ${days === 1 ? "día" : "días"}`;
+    ? "Recorded in the last 24 h"
+    : `${days} ${days === 1 ? "day" : "days"} ago`;
 }
 
 export const viewNames = {
-  resumen: "Seguimiento",
-  evolucion: "Evaluaciones",
-  ejercicio: "Actividad",
-  seguimiento: "Revisión",
+  summary: "Follow-up",
+  evolution: "Assessments",
+  exercise: "Activity",
+  followup: "Review",
 } as const;
 export type DashboardView = keyof typeof viewNames;

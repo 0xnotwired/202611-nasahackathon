@@ -19,36 +19,36 @@ const messages: Record<
   [string, string]
 > = {
   invalid_source: [
-    "Fuente de datos no válida",
-    "La selección debe ser simulación local o backend, sin parámetros duplicados.",
+    "Invalid data source",
+    "The selection must be local simulation or backend, with no duplicated parameters.",
   ],
   not_configured: [
-    "Backend no configurado",
-    "Todavía no hay un destino de backend válido configurado para esta aplicación. Podés continuar con la simulación local.",
+    "Backend not configured",
+    "No valid backend target is configured for this application yet. You can continue with the local simulation.",
   ],
   unavailable: [
-    "Backend no disponible",
-    "No se pudo completar la lectura. Podés reintentar o volver a la simulación local.",
+    "Backend not available",
+    "The read could not be completed. You can retry or go back to the local simulation.",
   ],
   timeout: [
-    "El backend no respondió a tiempo",
-    "La lectura superó el tiempo de espera. No se reemplazaron sus datos por una simulación.",
+    "The backend did not respond in time",
+    "The read exceeded the time limit. Its data was not replaced by a simulation.",
   ],
   invalid_response: [
-    "Formato de datos no compatible",
-    "La respuesta no permite verificar el contexto esperado. No se presentan valores de esa respuesta.",
+    "Incompatible data format",
+    "The response does not allow the expected context to be verified. No values from that response are shown.",
   ],
   subject_not_found: [
-    "Persona no disponible en esta fuente",
-    "Seleccioná una persona desde el catálogo de esta fuente. Los identificadores no se trasladan entre fuentes.",
+    "Person not available in this source",
+    "Select a person from this source's catalog. Identifiers do not carry over between sources.",
   ],
   empty: [
-    "Sin tripulación disponible",
-    "El catálogo de esta fuente está vacío. No se añadieron personas ficticias para completarlo.",
+    "No crew available",
+    "This source's catalog is empty. No fictional people were added to fill it.",
   ],
   research_pending: [
-    "Lectura de investigación no integrada",
-    "La API actual no ofrece un lector de pruebas de investigación. La fuente real requiere restauración, verificación y un contrato acordado.",
+    "Research read not integrated",
+    "The current API does not offer a reader for research tests. The real source requires restoration, verification and an agreed contract.",
   ],
 };
 
@@ -68,7 +68,7 @@ export function SourceState({
   const [retrying, startRetry] = useTransition();
   const pending = source.pending || retrying;
   useEffect(() => {
-    document.getElementById("contenido")?.focus();
+    document.getElementById("content")?.focus();
   }, [code, mode]);
   const [title, description] = messages[code];
   const mockHref = switchSourceHref(path, "mock", params);
@@ -83,8 +83,8 @@ export function SourceState({
             mode={mode}
             label={
               code === "empty"
-                ? "Datos sintéticos · sin registros"
-                : "Datos no disponibles"
+                ? "Synthetic data · no records"
+                : "Data not available"
             }
             targetHref={switchSourceHref(
               path,
@@ -97,14 +97,14 @@ export function SourceState({
       </header>
       <main className="mission-main" aria-busy={pending} inert={pending}>
         <section className="panel source-state">
-          <h1 id="contenido" tabIndex={-1}>
+          <h1 id="content" tabIndex={-1}>
             {title}
           </h1>
           <p>{description}</p>
           {mode === "api" && code === "empty" ? (
             <p>
-              El contrato 0.1 declara datos sintéticos; la conexión no implica
-              datos reales.
+              The contract declares synthetic data; the connection does not imply
+              real data.
             </p>
           ) : null}
           <div className="page-actions">
@@ -127,11 +127,11 @@ export function SourceState({
             ) : null}
             {code === "subject_not_found" && mode ? (
               <Link className="button primary" href={sourceHref("/", mode)}>
-                Ver catálogo de esta fuente
+                View this source&apos;s catalog
               </Link>
             ) : null}
             <Link className="button secondary" href={mockHref}>
-              Usar simulación local
+              Use local simulation
             </Link>
           </div>
         </section>

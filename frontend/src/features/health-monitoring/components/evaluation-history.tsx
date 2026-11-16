@@ -28,17 +28,17 @@ export function EvaluationHistory({
       <table className="evaluation-table">
         <caption id="evaluation-table-caption">
           {full
-            ? "Evaluaciones del período"
-            : "Evaluaciones recientes del período"}{" "}
-          · {rows.length} de {evaluations.length} visitas · fechas UTC
+            ? "Assessments of the period"
+            : "Recent assessments of the period"}{" "}
+          · {rows.length} of {evaluations.length} visits · UTC dates
         </caption>
         <thead>
           <tr>
-            <th scope="col">Fecha</th>
-            <th scope="col">VO₂pico relativo</th>
-            <th scope="col">Método</th>
-            <th scope="col">Cambio vs. referencia</th>
-            <th scope="col">Selección</th>
+            <th scope="col">Date</th>
+            <th scope="col">Relative peak VO₂</th>
+            <th scope="col">Method</th>
+            <th scope="col">Change vs. reference</th>
+            <th scope="col">Selection</th>
           </tr>
         </thead>
         <tbody>
@@ -54,12 +54,12 @@ export function EvaluationHistory({
                     {formatDate(item.recordedAt)}
                   </time>
                   {reference?.id === item.id ? (
-                    <span className="row-reference">Referencia</span>
+                    <span className="row-reference">Reference</span>
                   ) : null}
                 </th>
                 <td className="numeric">
                   {item.value === null ? (
-                    "Sin resultado"
+                    "No result"
                   ) : (
                     <>
                       {numberFormat.format(item.value)}{" "}
@@ -71,7 +71,7 @@ export function EvaluationHistory({
                   {item.method}
                   {group && group !== item.method ? (
                     <span className="row-reference">
-                      Fuera del grupo de cálculo
+                      Outside the calculation group
                     </span>
                   ) : null}
                 </td>
@@ -94,10 +94,10 @@ export function EvaluationHistory({
                     className="table-select"
                     type="button"
                     aria-pressed={selected === item.id}
-                    aria-label={`Seleccionar evaluación del ${formatDate(item.recordedAt)}`}
+                    aria-label={`Select the assessment of ${formatDate(item.recordedAt)}`}
                     onClick={() => onSelect(item.id)}
                   >
-                    {selected === item.id ? "Seleccionada" : "Seleccionar"}
+                    {selected === item.id ? "Selected" : "Select"}
                   </button>
                 </td>
               </tr>
@@ -106,7 +106,7 @@ export function EvaluationHistory({
         </tbody>
       </table>
       {!rows.length ? (
-        <p className="empty-state">Sin evaluaciones en este período.</p>
+        <p className="empty-state">No assessments in this period.</p>
       ) : null}
     </div>
   );

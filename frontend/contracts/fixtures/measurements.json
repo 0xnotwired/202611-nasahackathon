@@ -2,69 +2,104 @@
   "data": [
     {
       "id": "m-01",
-      "astronautId": "astro-01",
-      "metricCode": "heart_rate",
+      "schema_version": 2,
+      "origin": "synthetic",
+      "source": "simulator",
+      "mission_phase": "mission",
+      "type": "measurement",
+      "state": "recorded",
       "value": 72,
-      "recordedAt": "2026-11-15T08:00:00Z",
-      "source": "simulator"
+      "variable": "pulse",
+      "unit": "bpm",
+      "method": "simulator",
+      "time": "2026-11-15T08:00:00Z",
+      "subject": "astro-01"
     },
     {
       "id": "m-02",
-      "astronautId": "astro-01",
-      "metricCode": "oxygen_saturation",
+      "schema_version": 2,
+      "origin": "synthetic",
+      "source": "simulator",
+      "mission_phase": "mission",
+      "type": "measurement",
+      "state": "recorded",
       "value": 98,
-      "recordedAt": "2026-11-15T08:00:00Z",
-      "source": "simulator"
+      "variable": "oxygen_saturation",
+      "unit": "%",
+      "method": "simulator",
+      "time": "2026-11-15T08:00:00Z",
+      "subject": "astro-01"
     },
     {
       "id": "m-03",
-      "astronautId": "astro-01",
-      "metricCode": "body_temperature",
+      "schema_version": 2,
+      "origin": "synthetic",
+      "source": "simulator",
+      "mission_phase": "mission",
+      "type": "measurement",
+      "state": "recorded",
       "value": 36.6,
-      "recordedAt": "2026-11-15T08:00:00Z",
-      "source": "simulator"
+      "variable": "temperature",
+      "unit": "°C",
+      "method": "simulator",
+      "time": "2026-11-15T08:00:00Z",
+      "subject": "astro-01"
     },
     {
       "id": "m-04",
-      "astronautId": "astro-01",
-      "metricCode": "sleep_duration",
+      "schema_version": 2,
+      "origin": "synthetic",
+      "source": "simulator",
+      "mission_phase": "mission",
+      "type": "measurement",
+      "state": "recorded",
       "value": 7.2,
-      "recordedAt": "2026-11-15T06:00:00Z",
-      "source": "simulator"
+      "variable": "sleep_hours",
+      "unit": "h",
+      "method": "instrument_estimate",
+      "time": "2026-11-15T06:00:00Z",
+      "subject": "astro-01"
     },
     {
       "id": "m-05",
-      "astronautId": "astro-01",
-      "metricCode": "heart_rate",
+      "schema_version": 2,
+      "origin": "synthetic",
+      "source": "simulator",
+      "mission_phase": "mission",
+      "type": "measurement",
+      "state": "recorded",
       "value": 75,
-      "recordedAt": "2026-11-14T08:00:00Z",
-      "source": "simulator"
+      "variable": "pulse",
+      "unit": "bpm",
+      "method": "simulator",
+      "time": "2026-11-14T08:00:00Z",
+      "subject": "astro-01"
     }
   ],
   "metrics": [
     {
-      "code": "heart_rate",
-      "label": "Frecuencia cardíaca",
-      "unit": "lpm"
+      "code": "pulse",
+      "label": "Pulse",
+      "unit": "bpm"
     },
     {
       "code": "oxygen_saturation",
-      "label": "Saturación de oxígeno",
+      "label": "Oxygen saturation",
       "unit": "%"
     },
     {
-      "code": "body_temperature",
-      "label": "Temperatura corporal",
+      "code": "temperature",
+      "label": "Body temperature",
       "unit": "°C"
     },
     {
-      "code": "sleep_duration",
-      "label": "Duración del sueño",
+      "code": "sleep_hours",
+      "label": "Sleep duration",
       "unit": "h"
     }
   ],
   "meta": {
-    "contractVersion": "0.1",
+    "contractVersion": "0.2",
     "dataKind": "synthetic",
     "clinicalValidation": "pending"
   }

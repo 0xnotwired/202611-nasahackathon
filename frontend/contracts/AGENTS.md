@@ -1,10 +1,10 @@
-# Contrato compartido
+# Shared contract
 
-- Esta carpeta es el límite entre frontend y backend; los cambios requieren
-  coordinación de ambos responsables.
-- `models.ts` define tipos de transporte sin dependencias de framework.
-- `schemas.ts` valida las respuestas y mantiene tipos compatibles con models.ts.
-- Exportar `openapi.json` con `npm run contracts:export` desde la raíz después
-  de cambiar esquemas o rutas. El CI comprueba que el export esté actualizado.
-- Mantener ejemplos sintéticos en fixtures/; no usarlos como almacenamiento real.
-- Evitar cambios incompatibles en 0.1; acordar una nueva versión si son necesarios.
+- This folder is the boundary between frontend and backend; changes require
+  coordination between both owners.
+- `models.ts` defines transport types without framework dependencies.
+- `schemas.ts` validates the responses and keeps types compatible with models.ts.
+- Export `openapi.json` with `npm run contracts:export` from the root after
+  changing schemas or routes. CI checks that the export is up to date.
+- Keep synthetic examples in fixtures/; do not use them as real storage.
+- Avoid incompatible changes in 0.1; agree on a new version if they are necessary.

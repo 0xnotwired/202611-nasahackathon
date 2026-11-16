@@ -42,19 +42,19 @@ export function TrajectoryChart({
   if (!valid.length || !domain)
     return (
       <div className="chart-empty">
-        <h3>Sin resultados para representar</h3>
+        <h3>No results to plot</h3>
         <p>
-          Las visitas sin resultado se conservan en el registro de evaluaciones.
+          Visits without a result are kept in the assessment record.
         </p>
       </div>
     );
   if (mixedUnits)
     return (
       <div className="chart-empty">
-        <h3>Unidades no comparables</h3>
+        <h3>Units that cannot be compared</h3>
         <p>
-          Consultá los resultados por evaluación. No se representan unidades
-          diferentes en una escala común.
+          Check the results per assessment. Different units are not plotted
+          on a common scale.
         </p>
       </div>
     );
@@ -109,11 +109,11 @@ export function TrajectoryChart({
           role="img"
           aria-labelledby={`${id}-title ${id}-description`}
         >
-          <title id={`${id}-title`}>Evolución de VO₂pico por fecha</title>
+          <title id={`${id}-title`}>Evolution of peak VO₂ by date</title>
           <desc id={`${id}-description`}>
-            Valores en {unit}. Mediciones puntuales, separadas por método y con
-            huecos conservados. La tabla de evaluaciones contiene los valores y
-            el panel de detalle permite seleccionar cada visita.
+            Values in {unit}. Point measurements, separated by method and with
+            gaps kept. The assessment table contains the values and
+            the detail panel lets you select each visit.
           </desc>
           {ticks.map((tick) => (
             <g key={tick}>
@@ -183,7 +183,7 @@ export function TrajectoryChart({
                       textAnchor="middle"
                       className="trajectory-label missing-label"
                     >
-                      Sin dato
+                      Not recorded
                     </text>
                   </>
                 ) : null}
@@ -271,7 +271,7 @@ export function TrajectoryChart({
                 textAnchor="middle"
                 className="trajectory-label"
               >
-                {new Intl.DateTimeFormat("es", {
+                {new Intl.DateTimeFormat("en", {
                   month: "short",
                   year: "2-digit",
                   timeZone: "UTC",
@@ -283,7 +283,7 @@ export function TrajectoryChart({
           <div
             className="plot-targets"
             role="group"
-            aria-label="Puntos del gráfico"
+            aria-label="Chart points"
           >
             {evaluations.map((item) => (
               <button
@@ -294,7 +294,7 @@ export function TrajectoryChart({
                   top: `${(y(item.value ?? (domain.min + domain.max) / 2) / height) * 100}%`,
                 }}
                 aria-pressed={selected === item.id}
-                aria-label={`Punto del ${formatDate(item.recordedAt)}: ${item.value === null ? "sin resultado" : `${numberFormat.format(item.value)} ${item.unit}`}`}
+                aria-label={`Point of ${formatDate(item.recordedAt)}: ${item.value === null ? "no result" : `${numberFormat.format(item.value)} ${item.unit}`}`}
                 onClick={() => onSelect(item.id)}
               />
             ))}
@@ -318,13 +318,13 @@ export function TrajectoryChart({
           ))}
           <li>
             <i className="legend-reference" aria-hidden="true" />
-            Referencia seleccionada
+            Selected reference
           </li>
         </ul>
         <p>
           {canTarget
-            ? "Seleccioná un punto o utilizá el panel de detalle."
-            : "Utilizá el selector de fecha o las flechas del panel de detalle."}
+            ? "Select a point or use the detail panel."
+            : "Use the date selector or the arrows of the detail panel."}
         </p>
       </figcaption>
     </figure>

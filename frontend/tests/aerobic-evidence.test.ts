@@ -1,10 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { getMockMission } from "../src/features/health-monitoring/data/mission-mock.ts";
-import {
-  projectMission,
-  legacyMissionSchema,
-} from "../src/features/health-monitoring/data/mission-projection.ts";
+import { projectMission } from "../src/features/health-monitoring/data/mission-projection.ts";
+import { missionResponseSchema } from "../src/features/health-monitoring/schemas.ts";
+import { meta } from "./helpers.ts";
 import { compareEvaluations } from "../src/features/health-monitoring/mission.ts";
 import {
   describePeriod,
@@ -22,48 +21,29 @@ import {
   researchCsv,
 } from "../src/features/health-monitoring/research-assessment.ts";
 
-const meta = {
-  contractVersion: "0.1",
-  dataKind: "synthetic",
-  clinicalValidation: "pending",
-} as const;
 const raw = getMockMission("astro-01", "recovery");
 const mission = projectMission(raw, "astro-01", "mock", meta);
 const [a, b] = mission.evaluations;
 
-test("la frontera 0.1 rechaza procedencia desconocida sin degradarla silenciosamente a sintética", () => {
-  assert.ok(legacyMissionSchema.safeParse({ data: raw, meta }).success);
-  const data = {
-    ...raw,
-    evaluations: [
-      {
-        ...raw.evaluations[0],
-        origin: "ground_analog",
-        sourceRecordIds: ["source-1"],
-      },
-    ],
-  };
-  assert.equal(legacyMissionSchema.safeParse({ data, meta }).success, false);
-  assert.equal(
-    legacyMissionSchema.safeParse({
-      data: raw,
-      meta: { ...meta, contractVersion: "2" },
-    }).success,
-    false,
+test("the 0.2 boundary rejects an unknown origin or field instead of quietly degrading it to synthetic", () => {
+  assert.ok(missionResponseSchema.safeParse({ data: raw, meta }).success);
+  const foreign = { ...raw, records: [{ ...raw.records[0], origin: "ground_analog" }] };
+  assert.equal(missionResponseSchema.safeParse({ data: foreign, meta }).success, false, "a record whose origin differs from the declared data kind");
+  const undeclared = { ...raw, records: [{ ...raw.records[0], sourceRecordIds: ["source-1"] }] };
+  assert.equal(missionResponseSchema.safeParse({ data: undeclared, meta }).success, false, "an undeclared field");
+  assert.equal(missionResponseSchema.safeParse({ data: raw, meta: { ...meta, contractVersion: "2" } }).success, false);
+  assert.throws(
+    () => projectMission({ ...raw, records: [raw.records[0], raw.records[0]] }, "astro-01", "mock", meta),
+    /duplicate/,
   );
   assert.throws(
-    () =>
-      projectMission(
-        { ...raw, evaluations: [raw.evaluations[0], raw.evaluations[0]] },
-        "astro-01",
-        "mock",
-        meta,
-      ),
-    /duplicados/,
+    () => projectMission({ ...raw, records: [{ ...raw.records[0], time: null }] }, "astro-01", "mock", meta),
+    /no UTC time/,
+    "a record without a UTC time is refused, not placed at an invented instant",
   );
 });
 
-test("la procedencia limita diferencias y tendencias aun con valores, unidades y métodos iguales", () => {
+test("provenance limits differences and trends even with equal values, units and methods", () => {
   assert.notEqual(compareEvaluations(a, b).difference, null);
   for (const patch of [
     { subject: "other-study:astro-01" },
@@ -89,15 +69,21 @@ test("la procedencia limita diferencias y tendencias aun con valores, unidades y
     );
   }
   assert.equal(compareEvaluations(a, a).difference, null);
+  // The API transport carries the same records, so its evidence is as good as the record says: synthetic records compare.
   const api = projectMission(raw, "astro-01", "api", meta);
-  assert.match(
-    compareEvaluations(...api.evaluations.slice(0, 2)).reason,
-    /no permite verificar/,
+  assert.notEqual(compareEvaluations(...api.evaluations.slice(0, 2)).difference, null);
+  // A record that is neither synthetic nor an import of the main app is not verified, and blocks the comparison.
+  const unverified = projectMission(
+    { ...raw, records: raw.records.map((record) => ({ ...record, origin: "ground_analog" as const, source: "upload" })) },
+    "astro-01",
+    "api",
+    meta,
   );
-  assert.equal(describePeriod(api.evaluations).slope, null);
+  assert.match(compareEvaluations(...unverified.evaluations.slice(0, 2)).reason, /verified/);
+  assert.equal(describePeriod(unverified.evaluations).slope, null);
 });
 
-test("el grupo viaja por URL, conserva excluidos y cambia el contexto de la revisión", () => {
+test("the group travels through the URL, keeps the excluded ones and changes the review context", () => {
   const mixed = projectMission(
     getMockMission("astro-01", "method_change"),
     "astro-01",
@@ -128,7 +114,7 @@ test("el grupo viaja por URL, conserva excluidos y cambia el contexto de la revi
   };
   const person = { id: "astro-01", callsign: "Vega", mission: "demo" };
   const first = buildReview(person, mixed, context, journal).text;
-  assert.match(first, /7 fuera del grupo/);
+  assert.match(first, /7 outside the group/);
   assert.match(first, /method_change-00/); // Excluded records remain in the export annex.
   const changed = {
     ...mixed,
@@ -140,7 +126,7 @@ test("el grupo viaja por URL, conserva excluidos y cambia el contexto de la revi
   assert.notEqual(buildReview(person, changed, context, journal).text, first);
 });
 
-test("cuatro etapas y 32 escalares producen una prueba y un pico explícito, sin tendencia ni edad UTC", () => {
+test("four stages and 32 scalars produce one test and an explicit peak, with no trend or UTC age", () => {
   const p = getSyntheticResearchCase();
   assert.equal(p.assessmentCount, 1);
   assert.equal(p.stageCount, 4);
@@ -160,7 +146,7 @@ test("cuatro etapas y 32 escalares producen una prueba y un pico explícito, sin
   assert.match(csv, /orbita:stage-demo:1:row-3:col-0/);
 });
 
-test("el caso de etapas conserva cero, ausencias y unidades desconocidas sin inventar pico disponible", () => {
+test("the staged case keeps zero, absences and unknown units without inventing an available peak", () => {
   for (const state of ["not_recorded", "confirmed_none"] as const) {
     const input = structuredClone(getSyntheticResearchCase().assessment);
     const peak = input.stages[3].readings[0];
@@ -178,7 +164,7 @@ test("el caso de etapas conserva cero, ausencias y unidades desconocidas sin inv
   assert.equal(projectResearchAssessment(input).peak, null);
 });
 
-test("el lector de investigación rechaza identidad ambigua, duplicación, unidades incorrectas y fuentes reales sin custodia", () => {
+test("the research reader rejects ambiguous identity, duplication, wrong units and real sources without custody", () => {
   const original = getSyntheticResearchCase().assessment;
   const wrongSubject = { ...original, dataset: "other-study" };
   assert.throws(() => projectResearchAssessment(wrongSubject));
@@ -196,12 +182,12 @@ test("el lector de investigación rechaza identidad ambigua, duplicación, unida
   assert.throws(() => projectResearchAssessment(missing));
 });
 
-test("el export conserva valor original y evidencia sin ejecutar fórmulas de etiquetas externas", () => {
+test("the export keeps the original value and evidence without executing formulas from external labels", () => {
   const value = 39.123456789;
   const csv = historyCsv([{ ...a, value }]);
   assert.match(csv, /39\.123456789/);
-  assert.match(csv, /aerobic-presentation\/1/);
-  assert.match(csv, /orbita:authored-demo:1:astro-01/);
+  assert.match(csv, /aerobic-presentation\/2/);
+  assert.match(csv, /orbita:authored-demo:2:astro-01/);
   assert.match(csvCell('=WEBSERVICE("example")'), /^"'/);
   assert.equal(csvCell(-3), '"-3"');
 });

@@ -23,7 +23,7 @@ export async function generateMetadata({
   const view =
     typeof params.view === "string" && views.has(params.view)
       ? (params.view as DashboardView)
-      : "resumen";
+      : "summary";
   return { title: `${viewNames[view]} | Órbita` };
 }
 
@@ -40,7 +40,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
     );
   const mode = source.reader.mode;
   const requestedId = params.astronaut;
-  const view = params.view ?? "resumen";
+  const view = params.view ?? "summary";
   if (typeof view !== "string" || !views.has(view)) notFound();
   if (requestedId !== undefined && typeof requestedId !== "string") notFound();
   const scenario = isScenario(params.scenario) ? params.scenario : "recovery";

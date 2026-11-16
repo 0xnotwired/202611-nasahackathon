@@ -1,7 +1,7 @@
 import type { Evaluation } from "../mission";
 import { numberFormat } from "../mission";
 
-const chartDate = new Intl.DateTimeFormat("es-AR", {
+const chartDate = new Intl.DateTimeFormat("en-US", {
   day: "numeric",
   month: "short",
   timeZone: "UTC",
@@ -16,7 +16,7 @@ export function EvaluationChart({
   if (!points.length)
     return (
       <div className="empty-state">
-        Todavía no hay evaluaciones para representar.
+        There are no assessments to plot yet.
       </div>
     );
   const values = points.map((evaluation) => evaluation.value!);
@@ -38,7 +38,7 @@ export function EvaluationChart({
       <svg
         viewBox="0 0 580 255"
         role="img"
-        aria-label="Evaluaciones aeróbicas simuladas por fecha. Los valores y métodos se detallan en la tabla de esta vista."
+        aria-label="Simulated aerobic assessments by date. The values and methods are detailed in this view's table."
       >
         {[min, (min + max) / 2, max].map((tick) => (
           <g key={tick}>
@@ -107,24 +107,24 @@ export function EvaluationChart({
                 textAnchor="middle"
                 className="chart-tick"
               >
-                Sin dato
+                Not recorded
               </text>
             )}
           </g>
         ))}
       </svg>
       <figcaption>
-        Mediciones puntuales simuladas, sin interpolación. Un cambio de método
-        impide comparar directamente los resultados.
+        Simulated point measurements, no interpolation. A change of method
+        prevents the results from being compared directly.
       </figcaption>
       <div className="chart-legend">
         <span>
           <i className="legend-dot" />
-          Cicloergómetro · demo A
+          Cycle ergometer · demo A
         </span>
         <span>
           <i className="legend-dot alternate" />
-          Cinta · demo B
+          Treadmill · demo B
         </span>
       </div>
     </figure>

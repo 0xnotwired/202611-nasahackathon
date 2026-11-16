@@ -5,20 +5,20 @@ import { handleRequest } from "../src/app.ts";
 const request = (path: string, method = "GET") =>
   handleRequest(new Request(`http://localhost/api/v1${path}`, { method }));
 
-test("health y OpenAPI disponibles sin Next.js", async () => {
-  assert.equal((await request("/health").json()).status, "ok");
+test("health and OpenAPI are available without Next.js", async () => {
+  const health = await request("/health").json();
+  assert.equal(health.status, "ok");
+  assert.equal(health.contractVersion, "0.2");
   assert.equal((await request("/openapi.json").json()).openapi, "3.1.0");
 });
 
-test("no mezcla astronautas y distingue desconocido de historial vacío", async () => {
+test("does not mix astronauts and tells an unknown one from an empty history", async () => {
   const response = request("/astronauts/astro-01/measurements");
   const body = await response.json();
   assert.equal(response.headers.get("Cache-Control"), "no-store");
   assert.ok(body.data.length > 0);
   assert.ok(
-    body.data.every(
-      (row: { astronautId: string }) => row.astronautId === "astro-01",
-    ),
+    body.data.every((record: { subject: string }) => record.subject === "astro-01"),
   );
   assert.deepEqual(
     (await request("/astronauts/astro-03/measurements").json()).data,
@@ -26,25 +26,26 @@ test("no mezcla astronautas y distingue desconocido de historial vacío", async 
   );
   assert.deepEqual(
     (await request("/astronauts/astro-03/mission").json()).data,
-    { evaluations: [], sessions: [] },
+    { records: [], tasks: [] },
   );
   for (const resource of ["measurements", "mission"]) {
-    const missing = request(`/astronauts/desconocido/${resource}`);
+    const missing = request(`/astronauts/unknown/${resource}`);
     assert.equal(missing.status, 404);
     assert.equal((await missing.json()).error.code, "ASTRONAUT_NOT_FOUND");
   }
 });
 
-test("los escenarios conservan valores faltantes y cambio de método", async () => {
+test("the scenarios keep missing values and the change of method, as records", async () => {
   const mission = (await request("/astronauts/astro-02/mission").json()).data;
-  assert.equal(mission.evaluations.at(-1).value, null);
-  assert.notEqual(
-    mission.evaluations[0].method,
-    mission.evaluations.at(-1).method,
-  );
+  const last = mission.records.at(-1);
+  assert.equal(last.state, "not_recorded");
+  assert.equal(Object.hasOwn(last, "value"), false, "a value that is not recorded carries no number");
+  assert.equal(Object.hasOwn(last, "unit"), false);
+  assert.notEqual(mission.records[0].method, last.method);
+  assert.ok(mission.records.every((record: { origin: string }) => record.origin === "synthetic"));
 });
 
-test("no acepta escrituras ni rutas fuera de la API", async () => {
+test("rejects writes and routes outside the API", async () => {
   const blocked = request("/astronauts", "POST");
   assert.equal(blocked.status, 405);
   assert.equal(blocked.headers.get("Allow"), "GET, HEAD");

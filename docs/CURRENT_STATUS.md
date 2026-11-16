@@ -35,7 +35,7 @@ them. Parallel work should use distinct working branches.
   Minimal F4 added on request: episode (M16), copilot (M17, no clinical rule shipped), summary
   (M18) and the "I feel different" view (M20); contract 0.15. 343 Node tests; g3-extras-browser.py and
   g4-browser.py. G5 (NASA cases) checked on top of all views: `g5.test.js` and `g5-browser.py` (real BUT CGM file when present). F6: `npm run package` writes `dist/orbita.html` (one file, 59 modules, a content security policy that forbids remote loads); `g6-browser.py` compares it with the served app and records requests. Not done: G6-W3's independent review and G6-W4 (people). The summary text is not transmitted (only records).
-- Contract version 0.15; current record schema2, with unchanged legacy1 readers.
+- Contract version 0.16; current record schema2, with unchanged legacy1 readers.
 
 ## What actually runs
 
@@ -127,3 +127,7 @@ environment publication are distinct actions requiring task authorization;
 the current task authorizes main integration/documentation publication, not deployment.
 
 Portable agent instructions: [Claude Code continuation prompt](CLAUDE_CONTINUATION_PROMPT.md).
+
+## The teammate's frontend
+
+`frontend/` is a separate Next.js prototype with its own Node backend, translated to English and moved onto the main app's record model (its contract 0.2). See `frontend/INTEGRATION.md` for the decisions, the model comparison and what is still open. Use `npm run frontend:install`, then `npm run frontend:dev` and `npm run frontend:backend`, or `npm run frontend:check`. The main app's `npm test` does not run it.

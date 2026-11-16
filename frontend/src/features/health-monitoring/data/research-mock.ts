@@ -18,8 +18,8 @@ export function getSyntheticResearchCase() {
     subject: "orbita:stage-demo:1:participant-01",
     dataset: "orbita:stage-demo:1",
     origin: "synthetic",
-    protocol: "Cicloergómetro · prueba de etapas ficticia",
-    phase: "Fase ilustrativa; sin asignación a misión real",
+    protocol: "Cycle ergometer · fictional staged test",
+    phase: "Illustrative phase; not assigned to a real mission",
     sourceTime: {
       value: "2026-01-15",
       raw: "01/15/2026",
@@ -30,9 +30,9 @@ export function getSyntheticResearchCase() {
     },
     provenance: {
       source:
-        "Valores escritos para probar la interfaz de Órbita; no son registros NASA.",
+        "Values written to test the Órbita interface; they are not NASA records.",
       citation:
-        "Ejemplo sintético de Órbita, versión 1. Estructura inspirada en las etapas descritas en el análisis MR080G.",
+        "Synthetic Órbita example, version 1. Structure inspired by the stages described in the MR080G analysis.",
       fileSha256: null,
       importProfile: "orbita-authored-stages/1",
       release: "demo-1",

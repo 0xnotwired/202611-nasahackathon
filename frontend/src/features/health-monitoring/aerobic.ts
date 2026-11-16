@@ -3,12 +3,12 @@ import { compareEvaluations } from "./mission.ts";
 import { evidenceReason, projectionVersion } from "./evidence.ts";
 
 export const scenarios = {
-  recovery: "Descenso y recuperación",
-  ascending: "Ascenso con oscilaciones",
-  small_variation: "Variación pequeña",
-  descending: "Descenso con oscilaciones",
-  missing_visits: "Visitas sin resultado",
-  method_change: "Cambio de método",
+  recovery: "Decline and recovery",
+  ascending: "Rise with oscillations",
+  small_variation: "Small variation",
+  descending: "Decline with oscillations",
+  missing_visits: "Visits without a result",
+  method_change: "Change of method",
 } as const;
 export type Scenario = keyof typeof scenarios;
 export function isScenario(value: unknown): value is Scenario {
@@ -34,7 +34,7 @@ export function periodEvaluations(evaluations: Evaluation[], months: number) {
   );
 }
 
-// Descripción matemática del período. No define estabilidad o relevancia clínica.
+// Mathematical description of the period. It does not define stability or clinical relevance.
 export function describePeriod(evaluations: Evaluation[]) {
   const valid = evaluations.filter(
     (item) => item.value !== null && Number.isFinite(item.value),
@@ -57,18 +57,18 @@ export function describePeriod(evaluations: Evaluation[]) {
       count: valid.length,
       reason:
         contextReason ??
-        "El período contiene métodos o unidades diferentes. Revisá cada segmento por separado.",
+        "The period contains different methods or units. Review each segment separately.",
     };
   const distinct = new Set(
     valid.map((item) => item.evidence?.assessmentId ?? item.id),
   ).size;
   if (distinct < 3 || !first || !last)
     return {
-      label: "Datos insuficientes",
+      label: "Insufficient data",
       slope: null,
       count: valid.length,
       reason:
-        "La lectura exploratoria necesita al menos tres resultados comparables. Esta regla del demo no garantiza suficiencia estadística.",
+        "The exploratory reading needs at least three comparable results. This demo rule does not guarantee statistical sufficiency.",
     };
   const days = valid.map(
     (item) =>
@@ -80,20 +80,20 @@ export function describePeriod(evaluations: Evaluation[]) {
   const denominator = days.reduce((sum, day) => sum + (day - meanX) ** 2, 0);
   if (!denominator)
     return {
-      label: "Datos insuficientes",
+      label: "Insufficient data",
       slope: null,
       count: valid.length,
-      reason: "Se necesitan fechas diferentes para describir la evolución.",
+      reason: "Different dates are needed to describe the evolution.",
     };
   const slope =
     valid.reduce(
       (sum, item, index) => sum + (days[index] - meanX) * (item.value! - meanY),
       0,
     ) / denominator;
-  // No hay umbral médico. Solo llamamos sin dirección al cero numérico.
+  // There is no medical threshold. Only a numerical zero is called directionless.
   const label =
     Math.abs(slope) < 1e-10
-      ? "Sin dirección neta"
+      ? "No net direction"
       : slope > 0
         ? "Tendencia ascendente"
         : "Tendencia descendente";
@@ -102,7 +102,7 @@ export function describePeriod(evaluations: Evaluation[]) {
     slope,
     count: valid.length,
     reason:
-      "Dirección de una recta ajustada a las fechas y resultados disponibles. Describe el período; no evalúa relevancia clínica ni predice resultados.",
+      "Direction of a line fitted to the available dates and results. It describes the period; it does not assess clinical relevance or predict results.",
   };
 }
 
@@ -127,26 +127,26 @@ export function historyCsv(evaluations: Evaluation[]) {
   return [
     [
       "id",
-      "fecha_utc",
-      "valor",
-      "unidad",
-      "metodo",
-      "origen",
-      "validacion_clinica",
-      "estado",
-      "cantidad",
-      "papel",
-      "sujeto_contextual",
-      "prueba_id",
-      "calendario",
+      "date_utc",
+      "value",
+      "unit",
+      "method",
+      "origin",
+      "clinical_review",
+      "state",
+      "quantity",
+      "role",
+      "contextual_subject",
+      "assessment_id",
+      "calendar",
       "precision",
-      "zona",
+      "zone",
       "dataset",
-      "fuente",
-      "registros_fuente",
-      "verificacion_tecnica",
-      "version_derivacion",
-      "evidencia_json",
+      "source",
+      "source_records",
+      "technical_verification",
+      "derivation_version",
+      "evidence_json",
     ],
     ...evaluations.map((item) => [
       item.id,

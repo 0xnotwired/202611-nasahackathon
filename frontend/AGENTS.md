@@ -8,24 +8,24 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-## Órbita: alcance actual
+## Órbita: current scope
 
-- El bloque de Next.js anterior corresponde al frontend; trabajar solo en
-  `backend/` no requiere instalar Next.js ni las dependencias raíz.
-- Priorizar frontend con datos ficticios. El contrato y catálogo clínico son
-  provisionales hasta recibir la validación médica.
-- Organizar la funcionalidad en `src/features/health-monitoring`. Los componentes
-  consumen `data/service.ts`; no deben importar fixtures ni URLs de API.
-- Mantener los mocks reproducibles y distinguir `null`, cero y ausencia de registros.
-- No añadir rangos, diagnósticos ni tratamientos inferidos a partir de las muestras.
-- El frontend vive en `src/` y `public/`; el backend independiente en `backend/`.
-  Cada lado tiene package.json, lockfile, configuración y comprobaciones propias.
-- La API de lectura corre en Node.js/TypeScript en el puerto 4000; el frontend
-  Next.js en el 3000. No implementar lógica del backend en `src/app/api/`.
-- El contrato compartido vive en `contracts/`. Coordinar cambios entre ambos
-  responsables y actualizar OpenAPI, ejemplos y pruebas de compatibilidad.
-- No importar código de frontend desde backend ni a la inversa. El único enlace
-  en ejecución es HTTP; los tipos de transporte compartidos no tienen framework.
-- Ver la distribución de archivos y el flujo de ramas en `docs/team-workflow.md`.
-- Usar `npm run check` y `npm run build` como validación. Añadir dependencias solo
-  cuando resuelvan una necesidad presente.
+- The Next.js block above applies to the frontend; working only in
+  `backend/` does not require installing Next.js or the root dependencies.
+- Prioritize the frontend with fictional data. The contract and clinical catalog
+  are provisional until medical validation is received.
+- Organize functionality in `src/features/health-monitoring`. Components
+  consume `data/service.ts`; they must not import fixtures or API URLs.
+- Keep mocks reproducible and distinguish `null`, zero and absence of records.
+- Do not add ranges, diagnoses or treatments inferred from the samples.
+- The frontend lives in `src/` and `public/`; the independent backend in `backend/`.
+  Each side has its own package.json, lockfile, configuration and checks.
+- The read API runs on Node.js/TypeScript on port 4000; the Next.js frontend
+  on 3000. Do not implement backend logic in `src/app/api/`.
+- The shared contract lives in `contracts/`. Coordinate changes between both
+  owners and update OpenAPI, examples and compatibility tests.
+- Do not import frontend code from the backend or the reverse. The only runtime
+  link is HTTP; the shared transport types have no framework.
+- See the file distribution and branch workflow in `docs/team-workflow.md`.
+- Use `npm run check` and `npm run build` as validation. Add dependencies only
+  when they solve a present need.

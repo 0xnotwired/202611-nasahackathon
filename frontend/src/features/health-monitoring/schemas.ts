@@ -1,2 +1,2 @@
-// Adaptador del frontend. El contrato compartido se mantiene en /contracts.
+// Frontend adapter. The shared contract is maintained in /contracts.
 export * from "../../../contracts/schemas.ts";

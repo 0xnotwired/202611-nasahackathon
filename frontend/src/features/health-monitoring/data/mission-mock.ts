@@ -1,4 +1,4 @@
-import type { DemoMission } from "../mission";
+import type { MissionData, OrbitaRecord, PlanTask } from "../../../../contracts/models.ts";
 import type { Scenario } from "../aerobic";
 
 const histories: Record<Scenario, (number | null)[]> = {
@@ -39,75 +39,56 @@ const histories: Record<Scenario, (number | null)[]> = {
   ],
 };
 
-// Escenarios exclusivos del prototipo visual. No constituyen un programa médico.
+// Scenarios exclusive to the visual prototype. They are not a medical program.
+const ERGOMETER = "Cycle ergometer · demo protocol A";
+const TREADMILL = "Treadmill · demo protocol B";
+
+// An evaluation is an exam record; a missing visit is a record that was not recorded, with no number and no unit.
+function evaluation(id: string, subject: string, value: number | null, time: string, method: string): OrbitaRecord {
+  const base = {
+    id, schema_version: 2, type: "exam", variable: "aerobic_capacity", method, time, origin: "synthetic", source: "simulator",
+    mission_phase: "mission", subject,
+  } as const;
+  return value === null ? { ...base, state: "not_recorded" } : { ...base, state: "recorded", value, unit: "mL/kg/min" };
+}
+function session(id: string, subject: string, description: string, scheduledAt: string, minutes: number, done: boolean): PlanTask {
+  return {
+    id, schema_version: 2, subject, day: scheduledAt.slice(0, 10), description, assigned_by: "team_defined",
+    completion: done ? "done" : "pending", result_ids: [], scheduled_at: scheduledAt, planned_minutes: minutes,
+  };
+}
+
 export function getMockMission(
   astronautId: string,
   scenario?: Scenario,
-): DemoMission {
-  if (!["astro-01", "astro-02"].includes(astronautId))
-    return { evaluations: [], sessions: [] };
+): MissionData {
+  if (!["astro-01", "astro-02"].includes(astronautId)) return { records: [], tasks: [] };
   const offset = astronautId === "astro-02" ? 2 : 0;
+  const tasks = [
+    session("session-01", astronautId, "Aerobic session", "2026-11-13T09:00:00Z", 30, true),
+    session("session-02", astronautId, "Strength session", "2026-11-14T09:00:00Z", 25, true),
+    session("session-03", astronautId, "Aerobic session", "2026-11-15T09:00:00Z", 30, false),
+  ];
   if (scenario) {
     return {
-      evaluations: histories[scenario].map((value, index) => ({
-        id: `${scenario}-${index.toString().padStart(2, "0")}`,
-        recordedAt: new Date(Date.UTC(2025, 10 + index, 15, 8)).toISOString(),
-        value: value === null ? null : Number((value + offset).toFixed(1)),
-        unit: "mL/kg/min",
-        method:
-          scenario === "method_change" && index >= 7
-            ? "Cinta · protocolo demo B"
-            : "Cicloergómetro · protocolo demo A",
-      })),
-      sessions: getMockMission(astronautId).sessions,
+      records: histories[scenario].map((value, index) =>
+        evaluation(
+          `${scenario}-${index.toString().padStart(2, "0")}`,
+          astronautId,
+          value === null ? null : Number((value + offset).toFixed(1)),
+          new Date(Date.UTC(2025, 10 + index, 15, 8)).toISOString(),
+          scenario === "method_change" && index >= 7 ? TREADMILL : ERGOMETER,
+        ),
+      ),
+      tasks,
     };
   }
   return {
-    evaluations: [
-      {
-        id: "eval-01",
-        recordedAt: "2026-05-15T08:00:00Z",
-        value: 38.4 + offset,
-        unit: "mL/kg/min",
-        method: "Cicloergómetro · protocolo demo A",
-      },
-      {
-        id: "eval-02",
-        recordedAt: "2026-08-15T08:00:00Z",
-        value: 36.8 + offset,
-        unit: "mL/kg/min",
-        method: "Cicloergómetro · protocolo demo A",
-      },
-      {
-        id: "eval-03",
-        recordedAt: "2026-11-15T08:00:00Z",
-        value: astronautId === "astro-02" ? null : 37.2,
-        unit: "mL/kg/min",
-        method: "Cinta · protocolo demo B",
-      },
+    records: [
+      evaluation("eval-01", astronautId, 38.4 + offset, "2026-05-15T08:00:00Z", ERGOMETER),
+      evaluation("eval-02", astronautId, 36.8 + offset, "2026-08-15T08:00:00Z", ERGOMETER),
+      evaluation("eval-03", astronautId, astronautId === "astro-02" ? null : 37.2, "2026-11-15T08:00:00Z", TREADMILL),
     ],
-    sessions: [
-      {
-        id: "session-01",
-        label: "Sesión aeróbica",
-        scheduledAt: "2026-11-13T09:00:00Z",
-        durationMinutes: 30,
-        completed: true,
-      },
-      {
-        id: "session-02",
-        label: "Sesión de fuerza",
-        scheduledAt: "2026-11-14T09:00:00Z",
-        durationMinutes: 25,
-        completed: true,
-      },
-      {
-        id: "session-03",
-        label: "Sesión aeróbica",
-        scheduledAt: "2026-11-15T09:00:00Z",
-        durationMinutes: 30,
-        completed: false,
-      },
-    ],
+    tasks,
   };
 }

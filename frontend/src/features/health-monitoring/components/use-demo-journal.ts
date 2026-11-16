@@ -69,7 +69,7 @@ export function useDemoJournal(
     );
     if (result.success) journal = result.data;
   } catch {
-    /* Un borrador dañado no bloquea la demostración. */
+    /* A damaged draft does not block the demonstration. */
   }
 
   const update = (patch: Partial<DemoJournal>) => {

@@ -28,21 +28,21 @@ export function ObservationPanel({
   return (
     <section className="observation-panel panel">
       <div className="panel-heading">
-        <h2>Observación del usuario</h2>
+        <h2>User observation</h2>
         <p>
           {target
-            ? `Vinculada a la evaluación del ${formatDate(target.recordedAt)}.`
-            : "Seleccioná una evaluación para registrar contexto."}
+            ? `Linked to the assessment of ${formatDate(target.recordedAt)}.`
+            : "Select an assessment to record context."}
         </p>
       </div>
       {journal.observation ? (
         <div className="saved-observation">
-          <strong>Última observación guardada</strong>
+          <strong>Latest saved observation</strong>
           <p>{journal.observation.text}</p>
           <small>
             {previous
-              ? `Evaluación: ${formatDate(previous.recordedAt)}`
-              : `Evaluación: ${journal.observation.evaluationId}`}{" "}
+              ? `Assessment: ${formatDate(previous.recordedAt)}`
+              : `Assessment: ${journal.observation.evaluationId}`}{" "}
             · {formatTimestamp(journal.observation.recordedAt)}
           </small>
         </div>
@@ -63,13 +63,13 @@ export function ObservationPanel({
         }}
       >
         <label htmlFor="evaluation-observation">
-          Nueva observación
+          New observation
           <textarea
             id="evaluation-observation"
             name="evaluation-observation"
             rows={3}
             maxLength={2000}
-            placeholder="Por ejemplo: condiciones durante la evaluación…"
+            placeholder="For example: conditions during the assessment…"
             value={draft}
             onChange={(event) => {
               update({
@@ -86,21 +86,21 @@ export function ObservationPanel({
           />
         </label>
         <p className="field-help">
-          Guardar reemplaza la última observación local. El borrador se conserva
-          en este navegador, separado por fuente y persona.
+          Saving replaces the latest local observation. The draft is kept
+          in this browser, separated by source and person.
         </p>
         <button
           type="submit"
           className="button secondary"
           disabled={!evaluation || !draft.trim()}
         >
-          Guardar observación
+          Save observation
         </button>
         <p className="save-feedback" role="status">
           {saved
             ? memoryOnly
-              ? "Observación conservada durante esta visita."
-              : "Observación guardada en este navegador."
+              ? "Observation kept during this visit."
+              : "Observation saved in this browser."
             : ""}
         </p>
       </form>

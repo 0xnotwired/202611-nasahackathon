@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useTransition } from "react";
 import { Orbit } from "lucide-react";
-import type { Astronaut, MeasurementsResponse } from "../schemas";
+import type { Astronaut } from "../schemas";
+import type { MeasurementsView } from "../mission";
 import type { DemoMission } from "../mission";
 import { formatTimestamp } from "../mission";
 import { scenarios, type Scenario } from "../aerobic";
@@ -41,7 +42,7 @@ export function Dashboard({
 }: {
   astronauts: Astronaut[];
   astronaut: Astronaut;
-  measurements: MeasurementsResponse;
+  measurements: MeasurementsView;
   mission: DemoMission;
   view: DashboardView;
   context: HistoryContext;
@@ -64,7 +65,7 @@ export function Dashboard({
   useEffect(() => {
     if (previousView.current !== view) {
       previousView.current = view;
-      document.getElementById("contenido")?.focus();
+      document.getElementById("content")?.focus();
     }
   }, [view]);
   const href = (target: string, nextContext = context) => {
@@ -88,14 +89,14 @@ export function Dashboard({
         <div className="header-identity">
           <Link
             className="mission-brand"
-            href={href("resumen")}
-            aria-label="Órbita, seguimiento"
+            href={href("summary")}
+            aria-label="Órbita, follow-up"
           >
             <Orbit size={25} aria-hidden="true" />
             <span>Órbita</span>
           </Link>
           <span className="application-name">
-            Seguimiento de capacidad aeróbica
+            Aerobic capacity follow-up
           </span>
         </div>
         <div className="header-controls">
@@ -109,7 +110,7 @@ export function Dashboard({
       </header>
       <div className="mission-contextbar">
         <label className="crew-control" htmlFor="astronaut-selector">
-          <span>Tripulante</span>
+          <span>Crew member</span>
           <select
             id="astronaut-selector"
             value={astronaut.id}
@@ -137,18 +138,18 @@ export function Dashboard({
           </select>
         </label>
         <div className="mission-context-item">
-          <span>Misión</span>
+          <span>Mission</span>
           <strong>{astronaut.mission}</strong>
         </div>
         <div className="mission-context-item data-cutoff">
-          <span>Evaluaciones hasta</span>
+          <span>Assessments until</span>
           <strong>
-            {latest ? formatTimestamp(latest.recordedAt) : "Sin registros"}
+            {latest ? formatTimestamp(latest.recordedAt) : "No records"}
           </strong>
           <small>
             {latest
               ? ageLabel(latest.recordedAt, asOf)
-              : "Sin fecha de corte disponible"}
+              : "No cutoff date available"}
           </small>
         </div>
       </div>
@@ -164,7 +165,7 @@ export function Dashboard({
             </Link>
           ))}
           <Link href={sourceHref("/investigacion", sourceMode)}>
-            Investigación
+            Research
           </Link>
         </nav>
         <span className="navigation-status" role="status">
@@ -174,12 +175,12 @@ export function Dashboard({
       <main className="mission-main" aria-busy={pending} inert={pending}>
         {memoryOnly ? (
           <p className="storage-notice" role="status">
-            Guardado temporal: el navegador bloqueó el almacenamiento. Los
-            borradores se perderán al cambiar de fuente, persona o recargar.
-            Exportá la revisión antes de salir.
+            Temporary save: the browser blocked storage. Drafts
+            will be lost when you change source or person, or reload.
+            Export the review before leaving.
           </p>
         ) : null}
-        {view === "resumen" || view === "evolucion" ? (
+        {view === "summary" || view === "evolution" ? (
           <AerobicOverview
             astronaut={astronaut}
             mission={mission}
@@ -189,11 +190,11 @@ export function Dashboard({
             context={context}
             onContext={change}
             href={href}
-            expanded={view === "evolucion"}
+            expanded={view === "evolution"}
             asOf={asOf}
             memoryOnly={memoryOnly}
           />
-        ) : view === "ejercicio" ? (
+        ) : view === "exercise" ? (
           <ExerciseView mission={mission} journal={journal} update={update} />
         ) : (
           <FollowupView
@@ -207,15 +208,15 @@ export function Dashboard({
       </main>
       <footer className="mission-footer" inert={sourceNavigation.pending}>
         <p>
-          {originLabels[origin]} · validación médica pendiente · seguimiento sin
-          diagnóstico
+          {originLabels[origin]} · medical validation pending · follow-up without
+          diagnosis
         </p>
         <div className="footer-tools">
           {demoControls ? (
             <details className="demo-configuration">
-              <summary>Configuración de demostración</summary>
+              <summary>Demonstration settings</summary>
               <label htmlFor="scenario-selector">
-                Escenario de datos
+                Data scenario
                 <select
                   id="scenario-selector"
                   value={scenario}
@@ -243,29 +244,29 @@ export function Dashboard({
                 </select>
               </label>
               <p>
-                Perfiles ilustrativos para revisar el comportamiento del panel.
-                No son modelos de respuesta fisiológica.
+                Illustrative profiles to review the panel&apos;s behavior.
+                They are not physiological response models.
               </p>
             </details>
           ) : null}
           <details className="about-system">
-            <summary>Procedencia y alcance</summary>
+            <summary>Provenance and scope</summary>
             <p>
-              Órbita es un prototipo de NASA Space Apps 2026. Los valores y
-              protocolos del historial son ficticios. Research aporta la
-              estructura de visitas y comparabilidad; los registros PRE/POST de
-              MR080G no forman un historial mensual individual.
+              Órbita is a NASA Space Apps 2026 prototype. The values and
+              protocols in the history are fictional. Research provides the
+              structure of visits and comparability; the PRE/POST records of
+              MR080G do not form an individual monthly history.
             </p>
             <p>
-              Los resúmenes y observaciones se conservan en este navegador. No
-              se confirma sincronización ni envío a un especialista.
+              Summaries and observations are kept in this browser. Synchronization
+              or sending to a specialist is not confirmed.
             </p>
             <a
               href="https://ntrs.nasa.gov/citations/20140003748"
               target="_blank"
               rel="noreferrer"
             >
-              Referencia de investigación de NASA
+              NASA research reference
             </a>
           </details>
         </div>

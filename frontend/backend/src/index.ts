@@ -6,7 +6,7 @@ if (!Number.isInteger(port) || port < 1 || port > 65535)
   throw new Error("PORT debe ser un entero entre 1 y 65535.");
 const server = createApiServer();
 server.on("error", (error) => {
-  console.error(`No se pudo iniciar el backend: ${error.message}`);
+  console.error(`The backend could not start: ${error.message}`);
   process.exitCode = 1;
 });
 server.listen(port, host, () =>

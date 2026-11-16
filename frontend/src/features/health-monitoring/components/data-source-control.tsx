@@ -14,7 +14,7 @@ export function DataSourceControl({
   targetHref: string;
 }) {
   const { pending, navigate } = useSourceNavigation();
-  const target = mode === "mock" ? "backend" : "simulación local";
+  const target = mode === "mock" ? "backend" : "local simulation";
   const url = new URL(targetHref, "http://internal");
   return (
     <form
@@ -38,13 +38,13 @@ export function DataSourceControl({
         <ArrowLeftRight size={16} aria-hidden="true" />
         <span>
           <strong>{label}</strong>
-          <small>Fuente: {mode ? sourceNames[mode] : "Sin determinar"}</small>
+          <small>Source: {mode ? sourceNames[mode] : "Undetermined"}</small>
         </span>
-        <span className="sr-only">Cambiar a {target}</span>
+        <span className="sr-only">Switch to {target}</span>
       </button>
       {pending ? (
         <span className="source-progress" aria-hidden="true">
-          Cambiando fuente…
+          Changing source…
         </span>
       ) : null}
     </form>

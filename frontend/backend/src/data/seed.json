@@ -3,218 +3,355 @@
     {
       "id": "astro-01",
       "callsign": "Vega",
-      "role": "Comandante",
+      "role": "Commander",
       "mission": "Órbita Demo"
     },
     {
       "id": "astro-02",
       "callsign": "Lyra",
-      "role": "Especialista de misión",
+      "role": "Mission specialist",
       "mission": "Órbita Demo"
     },
     {
       "id": "astro-03",
       "callsign": "Atlas",
-      "role": "Ingeniería de vuelo",
+      "role": "Flight engineering",
       "mission": "Órbita Demo"
     }
   ],
   "metrics": [
     {
-      "code": "heart_rate",
-      "label": "Frecuencia cardíaca",
-      "unit": "lpm"
+      "code": "pulse",
+      "label": "Pulse",
+      "unit": "bpm"
     },
     {
       "code": "oxygen_saturation",
-      "label": "Saturación de oxígeno",
+      "label": "Oxygen saturation",
       "unit": "%"
     },
     {
-      "code": "body_temperature",
-      "label": "Temperatura corporal",
+      "code": "temperature",
+      "label": "Body temperature",
       "unit": "°C"
     },
     {
-      "code": "sleep_duration",
-      "label": "Duración del sueño",
+      "code": "sleep_hours",
+      "label": "Sleep duration",
       "unit": "h"
     }
   ],
   "measurements": [
     {
       "id": "m-01",
-      "astronautId": "astro-01",
-      "metricCode": "heart_rate",
+      "schema_version": 2,
+      "origin": "synthetic",
+      "source": "simulator",
+      "mission_phase": "mission",
+      "type": "measurement",
+      "state": "recorded",
       "value": 72,
-      "recordedAt": "2026-11-15T08:00:00Z",
-      "source": "simulator"
+      "variable": "pulse",
+      "unit": "bpm",
+      "method": "simulator",
+      "time": "2026-11-15T08:00:00Z",
+      "subject": "astro-01"
     },
     {
       "id": "m-02",
-      "astronautId": "astro-01",
-      "metricCode": "oxygen_saturation",
+      "schema_version": 2,
+      "origin": "synthetic",
+      "source": "simulator",
+      "mission_phase": "mission",
+      "type": "measurement",
+      "state": "recorded",
       "value": 98,
-      "recordedAt": "2026-11-15T08:00:00Z",
-      "source": "simulator"
+      "variable": "oxygen_saturation",
+      "unit": "%",
+      "method": "simulator",
+      "time": "2026-11-15T08:00:00Z",
+      "subject": "astro-01"
     },
     {
       "id": "m-03",
-      "astronautId": "astro-01",
-      "metricCode": "body_temperature",
+      "schema_version": 2,
+      "origin": "synthetic",
+      "source": "simulator",
+      "mission_phase": "mission",
+      "type": "measurement",
+      "state": "recorded",
       "value": 36.6,
-      "recordedAt": "2026-11-15T08:00:00Z",
-      "source": "simulator"
+      "variable": "temperature",
+      "unit": "°C",
+      "method": "simulator",
+      "time": "2026-11-15T08:00:00Z",
+      "subject": "astro-01"
     },
     {
       "id": "m-04",
-      "astronautId": "astro-01",
-      "metricCode": "sleep_duration",
+      "schema_version": 2,
+      "origin": "synthetic",
+      "source": "simulator",
+      "mission_phase": "mission",
+      "type": "measurement",
+      "state": "recorded",
       "value": 7.2,
-      "recordedAt": "2026-11-15T06:00:00Z",
-      "source": "simulator"
+      "variable": "sleep_hours",
+      "unit": "h",
+      "method": "instrument_estimate",
+      "time": "2026-11-15T06:00:00Z",
+      "subject": "astro-01"
     },
     {
       "id": "m-05",
-      "astronautId": "astro-01",
-      "metricCode": "heart_rate",
+      "schema_version": 2,
+      "origin": "synthetic",
+      "source": "simulator",
+      "mission_phase": "mission",
+      "type": "measurement",
+      "state": "recorded",
       "value": 75,
-      "recordedAt": "2026-11-14T08:00:00Z",
-      "source": "simulator"
+      "variable": "pulse",
+      "unit": "bpm",
+      "method": "simulator",
+      "time": "2026-11-14T08:00:00Z",
+      "subject": "astro-01"
     },
     {
       "id": "m-06",
-      "astronautId": "astro-02",
-      "metricCode": "heart_rate",
+      "schema_version": 2,
+      "origin": "synthetic",
+      "source": "simulator",
+      "mission_phase": "mission",
+      "type": "measurement",
+      "state": "recorded",
       "value": 68,
-      "recordedAt": "2026-11-15T08:00:00Z",
-      "source": "simulator"
+      "variable": "pulse",
+      "unit": "bpm",
+      "method": "simulator",
+      "time": "2026-11-15T08:00:00Z",
+      "subject": "astro-02"
     },
     {
       "id": "m-07",
-      "astronautId": "astro-02",
-      "metricCode": "oxygen_saturation",
+      "schema_version": 2,
+      "origin": "synthetic",
+      "source": "simulator",
+      "mission_phase": "mission",
+      "type": "measurement",
+      "state": "recorded",
       "value": 97,
-      "recordedAt": "2026-11-15T08:00:00Z",
-      "source": "simulator"
+      "variable": "oxygen_saturation",
+      "unit": "%",
+      "method": "simulator",
+      "time": "2026-11-15T08:00:00Z",
+      "subject": "astro-02"
     },
     {
       "id": "m-08",
-      "astronautId": "astro-02",
-      "metricCode": "body_temperature",
-      "value": null,
-      "recordedAt": "2026-11-15T08:00:00Z",
-      "source": "simulator"
+      "schema_version": 2,
+      "origin": "synthetic",
+      "source": "simulator",
+      "mission_phase": "mission",
+      "type": "measurement",
+      "state": "not_recorded",
+      "variable": "temperature",
+      "method": "simulator",
+      "time": "2026-11-15T08:00:00Z",
+      "subject": "astro-02"
     },
     {
       "id": "m-09",
-      "astronautId": "astro-02",
-      "metricCode": "sleep_duration",
+      "schema_version": 2,
+      "origin": "synthetic",
+      "source": "simulator",
+      "mission_phase": "mission",
+      "type": "measurement",
+      "state": "recorded",
       "value": 6.8,
-      "recordedAt": "2026-11-15T06:00:00Z",
-      "source": "simulator"
+      "variable": "sleep_hours",
+      "unit": "h",
+      "method": "instrument_estimate",
+      "time": "2026-11-15T06:00:00Z",
+      "subject": "astro-02"
     }
   ],
   "missions": {
     "astro-01": {
-      "evaluations": [
+      "records": [
         {
           "id": "eval-01",
-          "recordedAt": "2026-05-15T08:00:00Z",
+          "schema_version": 2,
+          "origin": "synthetic",
+          "source": "simulator",
+          "mission_phase": "mission",
+          "type": "exam",
+          "state": "recorded",
           "value": 38.4,
+          "variable": "aerobic_capacity",
           "unit": "mL/kg/min",
-          "method": "Cicloergómetro · protocolo demo A"
+          "method": "Cycle ergometer · demo protocol A",
+          "time": "2026-05-15T08:00:00Z",
+          "subject": "astro-01"
         },
         {
           "id": "eval-02",
-          "recordedAt": "2026-08-15T08:00:00Z",
+          "schema_version": 2,
+          "origin": "synthetic",
+          "source": "simulator",
+          "mission_phase": "mission",
+          "type": "exam",
+          "state": "recorded",
           "value": 36.8,
+          "variable": "aerobic_capacity",
           "unit": "mL/kg/min",
-          "method": "Cicloergómetro · protocolo demo A"
+          "method": "Cycle ergometer · demo protocol A",
+          "time": "2026-08-15T08:00:00Z",
+          "subject": "astro-01"
         },
         {
           "id": "eval-03",
-          "recordedAt": "2026-11-15T08:00:00Z",
+          "schema_version": 2,
+          "origin": "synthetic",
+          "source": "simulator",
+          "mission_phase": "mission",
+          "type": "exam",
+          "state": "recorded",
           "value": 37.2,
+          "variable": "aerobic_capacity",
           "unit": "mL/kg/min",
-          "method": "Cinta · protocolo demo B"
+          "method": "Treadmill · demo protocol B",
+          "time": "2026-11-15T08:00:00Z",
+          "subject": "astro-01"
         }
       ],
-      "sessions": [
+      "tasks": [
         {
           "id": "session-01",
-          "label": "Sesión aeróbica",
-          "scheduledAt": "2026-11-13T09:00:00Z",
-          "durationMinutes": 30,
-          "completed": true
+          "schema_version": 2,
+          "subject": "astro-01",
+          "day": "2026-11-13",
+          "description": "Aerobic session",
+          "assigned_by": "team_defined",
+          "completion": "done",
+          "result_ids": [],
+          "scheduled_at": "2026-11-13T09:00:00Z",
+          "planned_minutes": 30
         },
         {
           "id": "session-02",
-          "label": "Sesión de fuerza",
-          "scheduledAt": "2026-11-14T09:00:00Z",
-          "durationMinutes": 25,
-          "completed": true
+          "schema_version": 2,
+          "subject": "astro-01",
+          "day": "2026-11-14",
+          "description": "Strength session",
+          "assigned_by": "team_defined",
+          "completion": "done",
+          "result_ids": [],
+          "scheduled_at": "2026-11-14T09:00:00Z",
+          "planned_minutes": 25
         },
         {
           "id": "session-03",
-          "label": "Sesión aeróbica",
-          "scheduledAt": "2026-11-15T09:00:00Z",
-          "durationMinutes": 30,
-          "completed": false
+          "schema_version": 2,
+          "subject": "astro-01",
+          "day": "2026-11-15",
+          "description": "Aerobic session",
+          "assigned_by": "team_defined",
+          "completion": "pending",
+          "result_ids": [],
+          "scheduled_at": "2026-11-15T09:00:00Z",
+          "planned_minutes": 30
         }
       ]
     },
     "astro-02": {
-      "evaluations": [
+      "records": [
         {
           "id": "eval-01",
-          "recordedAt": "2026-05-15T08:00:00Z",
+          "schema_version": 2,
+          "origin": "synthetic",
+          "source": "simulator",
+          "mission_phase": "mission",
+          "type": "exam",
+          "state": "recorded",
           "value": 40.4,
+          "variable": "aerobic_capacity",
           "unit": "mL/kg/min",
-          "method": "Cicloergómetro · protocolo demo A"
+          "method": "Cycle ergometer · demo protocol A",
+          "time": "2026-05-15T08:00:00Z",
+          "subject": "astro-02"
         },
         {
           "id": "eval-02",
-          "recordedAt": "2026-08-15T08:00:00Z",
+          "schema_version": 2,
+          "origin": "synthetic",
+          "source": "simulator",
+          "mission_phase": "mission",
+          "type": "exam",
+          "state": "recorded",
           "value": 38.8,
+          "variable": "aerobic_capacity",
           "unit": "mL/kg/min",
-          "method": "Cicloergómetro · protocolo demo A"
+          "method": "Cycle ergometer · demo protocol A",
+          "time": "2026-08-15T08:00:00Z",
+          "subject": "astro-02"
         },
         {
           "id": "eval-03",
-          "recordedAt": "2026-11-15T08:00:00Z",
-          "value": null,
-          "unit": "mL/kg/min",
-          "method": "Cinta · protocolo demo B"
+          "schema_version": 2,
+          "origin": "synthetic",
+          "source": "simulator",
+          "mission_phase": "mission",
+          "type": "exam",
+          "state": "not_recorded",
+          "variable": "aerobic_capacity",
+          "method": "Treadmill · demo protocol B",
+          "time": "2026-11-15T08:00:00Z",
+          "subject": "astro-02"
         }
       ],
-      "sessions": [
+      "tasks": [
         {
           "id": "session-01",
-          "label": "Sesión aeróbica",
-          "scheduledAt": "2026-11-13T09:00:00Z",
-          "durationMinutes": 30,
-          "completed": true
+          "schema_version": 2,
+          "subject": "astro-02",
+          "day": "2026-11-13",
+          "description": "Aerobic session",
+          "assigned_by": "team_defined",
+          "completion": "done",
+          "result_ids": [],
+          "scheduled_at": "2026-11-13T09:00:00Z",
+          "planned_minutes": 30
         },
         {
           "id": "session-02",
-          "label": "Sesión de fuerza",
-          "scheduledAt": "2026-11-14T09:00:00Z",
-          "durationMinutes": 25,
-          "completed": true
+          "schema_version": 2,
+          "subject": "astro-02",
+          "day": "2026-11-14",
+          "description": "Strength session",
+          "assigned_by": "team_defined",
+          "completion": "done",
+          "result_ids": [],
+          "scheduled_at": "2026-11-14T09:00:00Z",
+          "planned_minutes": 25
         },
         {
           "id": "session-03",
-          "label": "Sesión aeróbica",
-          "scheduledAt": "2026-11-15T09:00:00Z",
-          "durationMinutes": 30,
-          "completed": false
+          "schema_version": 2,
+          "subject": "astro-02",
+          "day": "2026-11-15",
+          "description": "Aerobic session",
+          "assigned_by": "team_defined",
+          "completion": "pending",
+          "result_ids": [],
+          "scheduled_at": "2026-11-15T09:00:00Z",
+          "planned_minutes": 30
         }
       ]
     },
     "astro-03": {
-      "evaluations": [],
-      "sessions": []
+      "records": [],
+      "tasks": []
     }
   }
 }

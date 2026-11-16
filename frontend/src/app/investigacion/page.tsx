@@ -22,8 +22,8 @@ import { DataSourceControl } from "@/features/health-monitoring/components/data-
 import { SourceContent } from "@/features/health-monitoring/components/source-navigation";
 import { SourceState } from "@/features/health-monitoring/components/source-state";
 
-export const metadata: Metadata = { title: "Casos de investigación | Órbita" };
-const technicalNumber = new Intl.NumberFormat("es-AR", {
+export const metadata: Metadata = { title: "Research cases | Órbita" };
+const technicalNumber = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 3,
 });
 
@@ -61,7 +61,7 @@ export default async function ResearchPage({
             Órbita
           </Link>
           <span className="application-name">
-            Exploración de pruebas aeróbicas
+            Exploration of aerobic tests
           </span>
         </div>
         <div className="header-controls">
@@ -70,7 +70,7 @@ export default async function ResearchPage({
             label={
               assessment
                 ? originLabels[assessment.origin]
-                : "Datos no disponibles"
+                : "Data not available"
             }
             targetHref={switchSourceHref("/investigacion", "api", params)}
           />
@@ -78,36 +78,36 @@ export default async function ResearchPage({
         </div>
       </header>
       <div className="navigation-row">
-        <nav className="mission-navigation" aria-label="Contexto de datos">
-          <Link href={sourceHref("/", mode)}>Seguimiento personal</Link>
+        <nav className="mission-navigation" aria-label="Data context">
+          <Link href={sourceHref("/", mode)}>Personal follow-up</Link>
           <Link href={sourceHref("/investigacion", mode)} aria-current="page">
-            Investigación
+            Research
           </Link>
         </nav>
       </div>
       <SourceContent className="mission-main research-workspace">
         <div className="page-heading">
           <div>
-            <h1 id="contenido" tabIndex={-1}>
-              Casos de investigación
+            <h1 id="content" tabIndex={-1}>
+              Research cases
             </h1>
             <p>
-              Detalle de una prueba y sus etapas. Separado del historial del
-              tripulante.
+              Detail of a test and its stages. Separate from the crew
+              member&apos;s history.
             </p>
           </div>
           <span className="mode-label">
             {assessment
               ? originLabels[assessment.origin]
-              : "Fuente real no disponible"}
+              : "Real source not available"}
           </span>
         </div>
-        <nav className="research-switch" aria-label="Fuente del caso">
+        <nav className="research-switch" aria-label="Case source">
           <Link
             href={sourceHref("/investigacion", mode)}
             aria-current={!assessment ? "page" : undefined}
           >
-            Disponibilidad de MR080G
+            MR080G availability
           </Link>
           <Link
             href={sourceHref(
@@ -117,7 +117,7 @@ export default async function ResearchPage({
             )}
             aria-current={assessment ? "page" : undefined}
           >
-            Ejemplo sintético de etapas
+            Synthetic stage example
           </Link>
         </nav>
         {!projection || !assessment ? (
@@ -127,51 +127,51 @@ export default async function ResearchPage({
               aria-labelledby="source-status"
             >
               <h2 id="source-status">
-                MR080G · pendiente de fuente verificable
+                MR080G · pending a verifiable source
               </h2>
               <p>
-                El análisis de main identifica una prueba de cicloergómetro de
-                Campaign 3C, participante contextual 7772, con cuatro etapas y
-                ocho variables por etapa. El código y el manifiesto de
-                importación no contienen los originales ni restauran el perfil
-                local de datos.
+                The main analysis identifies a cycle ergometer test of
+                Campaign 3C, contextual participant 7772, with four stages and
+                eight variables per stage. The import code and the manifest
+                do not contain the originals or restore the local data
+                profile.
               </p>
               <dl className="research-facts">
                 <div>
-                  <dt>Mediciones reales disponibles aquí</dt>
-                  <dd>0 · no se presentan valores de participantes</dd>
+                  <dt>Real measurements available here</dt>
+                  <dd>0 · no participant values are shown</dd>
                 </div>
                 <div>
-                  <dt>Agrupamiento esperado según el análisis</dt>
-                  <dd>1 prueba · 4 etapas · 32 registros fuente</dd>
+                  <dt>Grouping expected by the analysis</dt>
+                  <dd>1 test · 4 stages · 32 source records</dd>
                 </div>
                 <div>
                   <dt>Base temporal reportada</dt>
                   <dd>
-                    2006-05-07 · precisión de día · calendario y zona sin
-                    confirmar
+                    2006-05-07 · day precision · calendar and zone not
+                    confirmed
                   </dd>
                 </div>
                 <div>
-                  <dt>Comparación longitudinal</dt>
+                  <dt>Longitudinal comparison</dt>
                   <dd>
-                    No habilitada: una prueba y base temporal sin resolver
+                    Not enabled: one test and an unresolved time basis
                   </dd>
                 </div>
               </dl>
-              <h3>Para habilitar la lectura real</h3>
+              <h3>To enable the real read</h3>
               <ol>
                 <li>
-                  Restaurar el original y verificar su hash con el manifiesto
-                  del responsable de datos.
+                  Restore the original and verify its hash against the manifest
+                  of the data owner.
                 </li>
                 <li>
-                  Agrupar las cuatro etapas en una prueba, conservando unidades,
-                  identidad contextual e IDs fuente.
+                  Group the four stages into one test, keeping units,
+                  contextual identity and source IDs.
                 </li>
                 <li>
-                  Acordar la respuesta versionada con backend y validar la
-                  proyección antes de mostrarla.
+                  Agree the versioned response with the backend and validate the
+                  projection before showing it.
                 </li>
               </ol>
               <a
@@ -179,28 +179,28 @@ export default async function ResearchPage({
                 target="_blank"
                 rel="noreferrer"
               >
-                Referencia del dataset MR080G
+                Reference of the MR080G dataset
               </a>
             </section>
             <p className="eligibility-note">
-              El ejemplo sintético permite revisar la interfaz de etapas. Sus
-              números son ficticios y no reemplazan la fuente ausente.
+              The synthetic example lets you review the stage interface. Its
+              numbers are fictional and do not replace the missing source.
             </p>
           </>
         ) : (
           <>
             <section
               className="research-context panel"
-              aria-label="Contexto de la prueba"
+              aria-label="Test context"
             >
               <div className="panel-heading inline-heading">
                 <div>
-                  <h2>Prueba de etapas · ejemplo sintético</h2>
+                  <h2>Staged test · synthetic example</h2>
                   <p>{assessment.protocol}</p>
                 </div>
                 <DownloadData
                   text={researchCsv(projection)}
-                  filename="orbita-prueba-etapas-sintetica.csv"
+                  filename="orbita-staged-test-synthetic.csv"
                 />
               </div>
               <dl className="research-facts">
@@ -211,16 +211,16 @@ export default async function ResearchPage({
                   </dd>
                 </div>
                 <div>
-                  <dt>Fecha fuente</dt>
+                  <dt>Source date</dt>
                   <dd>
-                    {assessment.sourceTime.value} · precisión de día · sin zona
-                    horaria
+                    {assessment.sourceTime.value} · day precision · no time
+                    zone
                   </dd>
                 </div>
                 <div>
-                  <dt>Calendario</dt>
+                  <dt>Calendar</dt>
                   <dd>
-                    Sin confirmar · sin antigüedad UTC ni alineación con misión
+                    Not confirmed · no UTC age or alignment with the mission
                   </dd>
                 </div>
                 <div>
@@ -234,15 +234,15 @@ export default async function ResearchPage({
                 <dt>Pruebas disponibles</dt>
                 <dd className="summary-value">
                   {projection.assessmentCount}
-                  <span className="unit">prueba</span>
+                  <span className="unit">test</span>
                 </dd>
                 <dd className="summary-detail">
-                  {projection.stageCount} etapas ·{" "}
+                  {projection.stageCount} stages ·{" "}
                   {projection.sourceRecordCount} registros fuente
                 </dd>
               </div>
               <div>
-                <dt>VO₂pico relativo reportado · simulado</dt>
+                <dt>Reported relative peak VO₂ · simulated</dt>
                 <dd className="summary-value">
                   {projection.peak
                     ? numberFormat.format(projection.peak.value!)
@@ -250,14 +250,14 @@ export default async function ResearchPage({
                   <span className="unit">{projection.peak?.unit}</span>
                 </dd>
                 <dd className="summary-detail">
-                  Selección explícita de Peak AVG; no máximo calculado
+                  Explicit selection of Peak AVG; not a calculated maximum
                 </dd>
               </div>
               <div>
-                <dt>Evolución longitudinal</dt>
-                <dd className="summary-value summary-text">No evaluable</dd>
+                <dt>Longitudinal evolution</dt>
+                <dd className="summary-value summary-text">Not evaluable</dd>
                 <dd className="summary-detail">
-                  Las cuatro etapas pertenecen a una sola prueba
+                  The four stages belong to a single test
                 </dd>
               </div>
             </dl>
@@ -266,10 +266,10 @@ export default async function ResearchPage({
               aria-labelledby="stage-heading"
             >
               <div className="panel-heading">
-                <h2 id="stage-heading">Perfil de etapas de una prueba</h2>
+                <h2 id="stage-heading">Stage profile of a test</h2>
                 <p>
-                  Orden de la fuente, sin eje de tiempo. Peak AVG no tiene una
-                  potencia asignada.
+                  Source order, no time axis. Peak AVG has no assigned
+                  power.
                 </p>
               </div>
               <div
@@ -280,12 +280,12 @@ export default async function ResearchPage({
               >
                 <table className="evaluation-table">
                   <caption id="stage-caption">
-                    Datos íntegramente sintéticos · 1 prueba, 4 etapas, 32
-                    registros · unidades por cantidad
+                    Entirely synthetic data · 1 test, 4 stages, 32
+                    records · units per quantity
                   </caption>
                   <thead>
                     <tr>
-                      <th scope="col">Etapa fuente</th>
+                      <th scope="col">Source stage</th>
                       {variableOrder.map((key) => (
                         <th scope="col" key={key}>
                           {researchVariables[key].label}
@@ -304,7 +304,7 @@ export default async function ResearchPage({
                           {stage.label}
                           {stage.role === "source_reported_peak" ? (
                             <span className="row-reference">
-                              Pico reportado · simulado
+                              Reported peak · simulated
                             </span>
                           ) : null}
                         </th>
@@ -317,7 +317,7 @@ export default async function ResearchPage({
                               {r?.value == null
                                 ? "No registrado"
                                 : r.unitStatus === "unknown"
-                                  ? `${technicalNumber.format(r.value)} · unidad desconocida`
+                                  ? `${technicalNumber.format(r.value)} · unit unknown`
                                   : technicalNumber.format(r.value)}
                             </td>
                           );
@@ -328,29 +328,29 @@ export default async function ResearchPage({
                 </table>
               </div>
               <p className="scale-note">
-                FEO₂ es fracción espirada de oxígeno; no es SpO₂. FC corresponde
-                a la etapa, no al reposo. RER y VE aportan contexto técnico; no
-                califican automáticamente el esfuerzo.
+                FEO₂ is the expired fraction of oxygen; it is not SpO₂. HR belongs
+                to the stage, not to rest. RER and VE give technical context; they do not
+                automatically rate the effort.
               </p>
             </section>
             <section className="period-reading">
               <div>
-                <h2>Condiciones de interpretación</h2>
+                <h2>Conditions of interpretation</h2>
                 {projection.capabilities.reasons.map((reason) => (
                   <p key={reason}>{reason}</p>
                 ))}
                 <p>
-                  Criterio de desempeño no configurado · revisión clínica
-                  pendiente. No se determina aptitud, diagnóstico ni
-                  tratamiento.
+                  Performance criterion not configured · clinical review
+                  pending. No fitness, diagnosis or
+                  treatment is determined.
                 </p>
               </div>
             </section>
             <section className="panel source-availability">
-              <h2>Ficha de procedencia</h2>
+              <h2>Provenance sheet</h2>
               <dl className="research-facts">
                 <div>
-                  <dt>Fuente</dt>
+                  <dt>Source</dt>
                   <dd>{assessment.provenance.source}</dd>
                 </div>
                 <div>
@@ -358,10 +358,10 @@ export default async function ResearchPage({
                   <dd>{assessment.provenance.citation}</dd>
                 </div>
                 <div>
-                  <dt>Verificación técnica</dt>
+                  <dt>Technical verification</dt>
                   <dd>
-                    Demostración escrita · sin archivo original ni hash de
-                    importación
+                    Written demonstration · no original file or import
+                    hash
                   </dd>
                 </div>
                 <div>
@@ -372,20 +372,20 @@ export default async function ResearchPage({
                   </dd>
                 </div>
                 <div>
-                  <dt>Proyección</dt>
+                  <dt>Projection</dt>
                   <dd>{projection.version}</dd>
                 </div>
                 <div>
-                  <dt>Precisión de presentación</dt>
+                  <dt>Presentation precision</dt>
                   <dd>
-                    Hasta tres decimales en la tabla y uno en el resumen; no
-                    expresan incertidumbre instrumental. El CSV conserva valores
-                    originales, IDs, filas, columnas y estados.
+                    Up to three decimals in the table and one in the summary; they do not
+                    express instrument uncertainty. The CSV keeps the original values,
+                    IDs, rows, columns and states.
                   </dd>
                 </div>
               </dl>
               <details className="evidence-details">
-                <summary>Identificadores de los registros por etapa</summary>
+                <summary>Record identifiers per stage</summary>
                 {assessment.stages.map((stage) => (
                   <p key={stage.id}>
                     <strong>{stage.label}</strong>
@@ -400,8 +400,8 @@ export default async function ResearchPage({
       </SourceContent>
       <footer className="mission-footer">
         <p>
-          Órbita · prototipo de investigación · sin validación para uso médico u
-          operativo
+          Órbita · research prototype · no validation for medical or
+          operational use
         </p>
       </footer>
     </div>

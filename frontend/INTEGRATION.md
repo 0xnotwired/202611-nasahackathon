@@ -1,44 +1,56 @@
-# Frontend by a teammate: provenance, review and how it relates to the rest
+# Frontend by a teammate: provenance, decisions and how it relates to the rest
 
 ## What this folder is
 
-A Next.js 16 / React 19 / TypeScript frontend with its own Node backend (`backend/`) and shared contract (`contracts/`), built by a teammate
-on a separate, older copy of the repository and delivered as a zip with no git history. It is incorporated **as a subtree** so none of the
-root files (`README.md`, `AGENTS.md`, `.gitignore`, `package.json`, the four paths that collide) is replaced. Its content is unchanged from the zip
-except for this file. It tracks aerobic capacity (VO2peak) with synthetic data and simulated sync-free local state.
+A Next.js 16 / React 19 / TypeScript frontend with its own Node backend (`backend/`) and shared contract (`contracts/`), built by a teammate on a
+separate, older copy of the repository and delivered as a zip with no git history. It tracks aerobic capacity (peak VO₂) with synthetic data.
+It lives in this subfolder so no root file (`README.md`, `AGENTS.md`, `.gitignore`, `package.json`) is replaced.
+
+## Decisions made when it was incorporated (the user's instructions, 2026-11-15)
+
+| Topic | Decision | Done |
+|---|---|---|
+| Language | Everything in English: UI, tests, code comments, READMEs, docs, config comments, the figure script | Yes. The rendered text of every view, its attributes and the page titles were scanned. The only Spanish left is the route name `/investigacion` and the names of source documents |
+| Dependencies | Approved, for this subfolder only (Next, React, Zod, Tailwind and the rest of its lockfiles) | Installed with `--ignore-scripts`; the main app still adds none |
+| Node server | Incorporated: the backend (`backend/`, port 4000) and the Next.js server (port 3000) | Root scripts: `npm run frontend:install`, `frontend:dev`, `frontend:backend`, `frontend:check`, `frontend:build` |
+| Workflows | Moved to the repository root with a `frontend-` prefix, paths under `frontend/`, their own concurrency groups; the root app has its own `app.yml` | Yes (`.github/workflows/`); the copies under `frontend/.github/workflows` were removed |
+| Sources | Fine as they are | The research notes still carry no reading levels (FT / AB / S); no figure in them counts as verified |
+| Data model | **The main app's schema 2 is the data model** (see below) | Yes, contract 0.2 of the frontend |
+
+## Data model: ours or his?
+
+Compared field by field, the main app's `Record` is the stronger model, so the frontend now reads it and derives its own presentation types from it.
+
+| | His contract 0.1 | The main app's schema 2 |
+|---|---|---|
+| A value that was not measured | `value: null` (cannot say "not recorded" from "confirmed nothing new") | `state`: `recorded`, `confirmed_none`, `not_recorded`; an absent state carries no value or unit |
+| Origin of a value | one `dataKind` for the whole response | `origin` on every record (synthetic, ground analog, terrestrial, flight, cell culture) |
+| Unit | always a string | a string, or `unit: null` with `unit_status: unknown`, never guessed |
+| Time | `recordedAt` always a UTC instant | `time` or `null` with the source's own `source_time` (calendar, scope) |
+| Person | `astronautId` | `subject`, with the rule that records of two subjects are never mixed |
+| Method, source, phase | `method` on evaluations only; `source` was one of three words | `method`, `source` and `mission_phase` on every record |
+
+What was **incorporated from his work** into ours or kept:
+- His `Evidence` object (origin, unit status, clock, calendar, time scope, protocol, verification) is kept, but it is now **derived from each record** instead of assumed. Before, it declared the unit known, the clock UTC and the calendar original for every row because the 0.1 contract could not say otherwise.
+- His comparability rules (different method, unit, protocol, origin or time basis block a difference) are kept as they are.
+- His exercise sessions needed a planned time and duration, which our `Task` did not have: the main app's contract 0.16 gained the optional `scheduled_at` and `planned_minutes`.
+- His four demo metrics now use our variable ids: `pulse`, `temperature`, `sleep_hours`. **`oxygen_saturation` is not in our catalog** and cannot be added without a source, so the frontend keeps it as its own metric and says so in `data/mock.ts`.
+- His "research case" (stages and readings with `state`, unit and time precision) already mirrors our record concepts; it keeps its own structure and was only translated.
+
+What the new contract refuses (tested): a not-recorded value with a number, a recorded value with no unit, a guessed unknown unit, a record with neither a UTC time nor the source's time, an unknown state or origin, an undeclared field, a record whose origin differs from the declared data kind, duplicate ids, a task without `scheduled_at` and `planned_minutes`. A record with no UTC time cannot be placed on a timeline: the screen shows an invalid-response state instead of inventing an instant.
 
 ## Where the authority is
 
-The root `AGENTS.md` wins over `frontend/AGENTS.md` and over every nested `AGENTS.md` here. The teammate's rules are compatible with it
-(no ranges, no diagnoses, `null` is not zero is not absence); where they would differ, the root file decides. The Next.js block at the top of
-`frontend/AGENTS.md` is generated by `next dev` and is left as it is.
+The root `AGENTS.md` wins over `frontend/AGENTS.md` and over every nested `AGENTS.md` here. The teammate's rules are compatible with it. The Next.js block at the top of `frontend/AGENTS.md` is generated by `next dev` and stays as it is.
 
-## What was run (isolated copy, `npm ci --ignore-scripts`)
+## What was run
 
-| Check | Result |
-|---|---|
-| `npm run check` (ESLint, TypeScript, 32 tests) | passes |
-| `npm run test:contracts` (3 tests) | passes |
-| `npm --prefix backend run check` (4 tests) | passes |
-| `npm run build` | passes; routes `/` and `/investigacion` are dynamic (server-rendered) |
-| Served build in Chromium at 1200 px and 320 px | no console error, no request outside its own server, no horizontal scroll |
-| Search of the code and the rendered text for clinical thresholds, scores and reassuring words | none found; this is a search, not a proof |
+`npm run check` (ESLint, TypeScript, 33 tests), `npm run test:contracts` (5), `npm --prefix backend run check` (4) and `npm run build`, all passing in `frontend/`. The served build was read in Chromium at 1200 px and 320 px on every view, with no console error from the app, no request outside its own server and no horizontal scroll. The main app's `npm test` does not run these (it names its folders explicitly).
 
-Nothing in the root repository imports anything from here, and nothing here imports from the root. Our `node --test` and `check_docs.py` are unchanged by it.
+## Open
 
-## Review findings (for the team to decide; nothing was edited)
-
-1. **Language.** The UI, README, AGENTS and docs are in Spanish; the repository rule (and the hackathon) is English. Either translate or the user grants an exception. Not translated here.
-2. **Different stack and data model.** `contracts/models.ts` (astronauts, measurements, evaluations, sessions) is not our `Record` (three states, origins, subjects). The two do not share code. Its handling of absence and of incompatible methods or units ("No comparable") matches our rules R1 and R3 in spirit; it was not checked against R4 (origin on every value) or R9 field by field.
-3. **Dependencies.** Next, React, Zod, Tailwind and others; they live only under `frontend/` with their own lockfiles. The main app adds no dependency without named approval: the user's request to incorporate this folder is the approval for this subtree only.
-4. **Delivery.** It needs a Node server. It cannot be packaged into the single `dist/orbita.html` of F6, and G6's "no network request" claim does not cover it.
-5. **Sources.** The UI links two external sources and `docs/research/aerobic-dashboard-research.md` (374 lines) carries no reading level (FT / AB / S), so no figure or claim in it counts as verified until someone opens the originals.
-6. **CI.** `frontend/.github/workflows/*.yml` are inert here (GitHub reads only the root `.github`). Enabling them needs their paths changed and a team decision.
-7. **Layout defect seen.** At 1200 px the last header of the recent-evaluations table ("Cambio vs. referencia") is clipped.
-8. **Not verified.** Keyboard and screen-reader use, contrast, the API mode against the backend (only the mock mode was served), behaviour on other browsers.
-
-## Ways to use it (the team's choice)
-
-- Keep it as a separate prototype and demonstrate it beside the served app, saying which is which.
-- Move ideas into `app/ui/` (its design tokens, the evaluation chart and the period summary wording) as small, tested changes.
-- Map `contracts/` onto our `Record` before any real integration; that is a contract change and goes through the orchestrator.
+1. **Delivery.** It needs a Node server (dynamic routes). It cannot be packaged into the single `dist/orbita.html` of F6, and G6's "no network request" claim does not cover it.
+2. **The two apps are not connected.** The frontend serves its own seed (`backend/src/data/seed.json`), not the main app's store. Connecting them means the backend reading the main app's records, which is a design decision.
+3. **Spanish route.** `/investigacion` was left as the URL; renaming it needs a redirect for anyone with the old link.
+4. **Not verified.** Keyboard and screen-reader use, contrast, the API mode against the backend in a browser (only the mock mode was served), other browsers, a security audit of the dependencies. The old design analyses in `docs/` still describe the 0.1 shapes (`evaluations`, `recordedAt`) as history.
+5. **A visual defect seen earlier:** at 1200 px the last header of the recent-assessments table is clipped.

@@ -7,6 +7,11 @@
   "scripts": {
     "test": "node --test \"app/**/*.test.js\" \"tests/**/*.test.js\"",
     "serve": "node scripts/serve.mjs",
-    "package": "node scripts/package.mjs"
+    "package": "node scripts/package.mjs",
+    "frontend:install": "npm --prefix frontend ci --ignore-scripts && npm --prefix frontend/backend ci --ignore-scripts",
+    "frontend:dev": "npm --prefix frontend run dev",
+    "frontend:backend": "npm --prefix frontend/backend run dev",
+    "frontend:check": "npm --prefix frontend run check && npm --prefix frontend run test:contracts && npm --prefix frontend/backend run check",
+    "frontend:build": "npm --prefix frontend run build"
   }
 }

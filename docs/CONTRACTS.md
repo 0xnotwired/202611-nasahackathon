@@ -1,6 +1,6 @@
 # Órbita: contracts between modules
 
-Version 0.15 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
+Version 0.16 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
 
 Plan and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). Rationale for the rules: [PROPOSAL_IMPROVEMENTS.md](PROPOSAL_IMPROVEMENTS.md) and [AGENTS.md](../AGENTS.md).
 
@@ -98,6 +98,8 @@ Task
   execution_id?   link to what was done
   result_ids      links to what was observed afterwards
   not_done_note?  { reason } only on a not_done task (added 0.13)
+  scheduled_at?   ISO8601 UTC instant the task is planned for (added 0.16; `day` stays the date key)
+  planned_minutes? positive number of minutes planned (added 0.16)
 
 Episode
   id, subject, opened, closed?
@@ -526,3 +528,4 @@ Everything works with the keyboard. No state is conveyed by color alone. Views r
 | 0.13 | 2026-11-15 | User-authorized with the start of F3 (M13–M15): optional `clock` in the procedure transitions; Execution gains `step_count`, `interruptions` and `missing`; Task gains `not_done_note`; the rules of `mark`, `linkResult` and `finish` above; services may carry `procedures` and `procedure_list`; `ui/my-plan` and `ui/on-board` are implemented. Consistency review only, no approval. |
 | 0.14 | 2026-11-15 | User-authorized ("agrega versiones mínimas"): `procedures` collection and IndexedDB schema v2 with an upgrade; the procedure registry (`publishProcedure`, `listProcedures`, `getProcedure`); `privacy` (`createSession`, `logShared`, `sharedLog`) and `sync` (`createLink`, `enqueue`, `advance`, `received`, `deliveries`) implemented as above; `Delivery.sent` optional; `ui/ground` implemented; the On board editor. Consistency review only, no approval. |
 | 0.15 | 2026-11-15 | User-authorized ("versiones mínimas de F4"): `episode`, `copilot` and `summary` implemented as above (`issueAlert` and `validateRules` added); services may carry `episode`, `copilot`, `summary` and `rules`; `ui/i-feel-different` implemented. Consistency review only, no approval. |
+| 0.16 | 2026-11-15 | User-authorized with the incorporation of the teammate's frontend ("usar nuestro modelo de datos, incorporando lo que él usa"): `Task` gains optional `scheduled_at` and `planned_minutes`, which its exercise plan needs. Optional, so earlier tasks stay valid. Consistency review only, no approval. |

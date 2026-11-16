@@ -5,19 +5,19 @@ export function EvaluationEvidence({ evaluation }: { evaluation: Evaluation }) {
   const evidence = evaluation.evidence;
   return (
     <details className="evidence-details">
-      <summary>Procedencia y límites de esta prueba</summary>
+      <summary>Provenance and limits of this test</summary>
       <dl className="evaluation-facts">
         <div>
-          <dt>Cantidad</dt>
+          <dt>Quantity</dt>
           <dd>
-            VO₂pico relativo · resultado de pico{" "}
+            Relative peak VO₂ · peak result{" "}
             {evidence?.origin === "synthetic"
-              ? "simulado"
-              : "sin verificación de fuente"}
+              ? "simulated"
+              : "without source verification"}
           </dd>
         </div>
         <div>
-          <dt>Valor sin redondeo</dt>
+          <dt>Unrounded value</dt>
           <dd>
             {evaluation.value === null
               ? "No registrado"
@@ -29,11 +29,11 @@ export function EvaluationEvidence({ evaluation }: { evaluation: Evaluation }) {
           <dd>
             {evidence
               ? originLabels[evidence.origin]
-              : "Sin procedencia verificable"}
+              : "No verifiable provenance"}
           </dd>
         </div>
         <div>
-          <dt>Fuente</dt>
+          <dt>Source</dt>
           <dd>{evidence?.source ?? "No disponible"}</dd>
         </div>
         <div>
@@ -43,45 +43,45 @@ export function EvaluationEvidence({ evaluation }: { evaluation: Evaluation }) {
           </dd>
         </div>
         <div>
-          <dt>Prueba y registros fuente</dt>
+          <dt>Test and source records</dt>
           <dd>
             <code>{evidence?.assessmentId ?? evaluation.id}</code>
             <br />
             {evidence?.sourceRecordIds.join("; ") ??
-              "Sin identificadores fuente"}
+              "No source identifiers"}
           </dd>
         </div>
         <div>
-          <dt>Base temporal</dt>
+          <dt>Time basis</dt>
           <dd>
-            UTC · precisión de segundo ·{" "}
+            UTC · second precision ·{" "}
             {evidence?.verification === "demo"
-              ? "calendario definido por el escenario"
-              : "fecha del contrato 0.1; contexto de origen sin verificar"}
+              ? "calendar defined by the scenario"
+              : "time and calendar as stated by the record; source context not verified"}
           </dd>
         </div>
         <div>
-          <dt>Verificación técnica</dt>
+          <dt>Technical verification</dt>
           <dd>
             {evidence?.verification === "demo"
-              ? "Escenario reproducible; sin validación fisiológica"
-              : "Procedencia por prueba no verificable en la API 0.1"}
+              ? "Reproducible scenario; no physiological validation"
+              : "Provenance of the record is not verified"}
           </dd>
         </div>
         <div>
-          <dt>Revisión clínica</dt>
-          <dd>Pendiente · criterio de desempeño no configurado</dd>
+          <dt>Clinical review</dt>
+          <dd>Pending · performance criterion not configured</dd>
         </div>
         <div>
-          <dt>Proyección</dt>
+          <dt>Projection</dt>
           <dd>
-            <code>{evidence?.derivationVersion ?? "Sin versión"}</code>
+            <code>{evidence?.derivationVersion ?? "No version"}</code>
           </dd>
         </div>
       </dl>
       <p>
-        La presentación redondea a un decimal; eso no expresa la incertidumbre
-        del instrumento.
+        The presentation rounds to one decimal; that does not express the
+        instrument&apos;s uncertainty.
       </p>
     </details>
   );

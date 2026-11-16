@@ -6,7 +6,7 @@ export const researchVariables = {
   relative_vo2: { label: "VO₂ relativo", unit: "mL/kg/min" },
   absolute_vo2: { label: "VO₂ absoluto", unit: "L/min" },
   vco2: { label: "VCO₂", unit: "L/min" },
-  heart_rate: { label: "FC de etapa", unit: "bpm" },
+  heart_rate: { label: "Stage heart rate", unit: "bpm" },
   rer: { label: "RER", unit: "1" },
   ventilation: { label: "VE (BTPS)", unit: "L/min" },
   feo2: { label: "FEO₂", unit: "%" },
@@ -34,7 +34,7 @@ const readingSchema = z
       ctx.addIssue({
         code: "custom",
         message:
-          "El estado debe conservar la ausencia; nunca convertirla en cero.",
+          "The state must keep the absence; never turn it into zero.",
       });
     if (
       item.unitStatus === "known" &&
@@ -42,12 +42,12 @@ const readingSchema = z
     )
       ctx.addIssue({
         code: "custom",
-        message: "La unidad no corresponde a la cantidad seleccionada.",
+        message: "The unit does not match the selected quantity.",
       });
     if (item.unitStatus === "unknown" && item.unit !== null)
       ctx.addIssue({
         code: "custom",
-        message: "No atribuir unidades a un dato con unidad desconocida.",
+        message: "Do not attribute units to a value with an unknown unit.",
       });
   });
 
@@ -103,7 +103,7 @@ export const researchAssessmentSchema = z
       ctx.addIssue({
         code: "custom",
         message:
-          "IDs repetidos: la importación no puede duplicar etapas o registros.",
+          "Repeated ids: an import cannot duplicate stages or records.",
       });
     if (
       assessment.stages.filter((stage) => stage.role === "source_reported_peak")
@@ -111,7 +111,7 @@ export const researchAssessmentSchema = z
     )
       ctx.addIssue({
         code: "custom",
-        message: "La selección de pico reportado debe ser inequívoca.",
+        message: "The selection of the reported peak must be unambiguous.",
       });
     for (const stage of assessment.stages)
       if (
@@ -120,12 +120,12 @@ export const researchAssessmentSchema = z
       )
         ctx.addIssue({
           code: "custom",
-          message: "Una etapa no puede repetir la misma cantidad.",
+          message: "A stage cannot repeat the same quantity.",
         });
     if (!assessment.subject.startsWith(`${assessment.dataset}:`))
       ctx.addIssue({
         code: "custom",
-        message: "La identidad debe estar contextualizada por dataset.",
+        message: "Identity must be contextualized by dataset.",
       });
     if (
       assessment.origin !== "synthetic" &&
@@ -135,7 +135,7 @@ export const researchAssessmentSchema = z
       ctx.addIssue({
         code: "custom",
         message:
-          "Una fuente real exige custodia verificable antes de presentarse como importada.",
+          "A real source requires verifiable custody before it is presented as imported.",
       });
     if (
       assessment.origin === "synthetic" &&
@@ -143,7 +143,7 @@ export const researchAssessmentSchema = z
     )
       ctx.addIssue({
         code: "custom",
-        message: "Una demostración no es una importación real verificada.",
+        message: "A demonstration is not a verified real import.",
       });
   });
 export type ResearchAssessment = z.infer<typeof researchAssessmentSchema>;
@@ -171,10 +171,10 @@ export function projectResearchAssessment(input: unknown) {
       longitudinal: false,
       utcAge: false,
       reasons: [
-        "Solo hay una prueba; las etapas no son evaluaciones independientes.",
-        "La fecha fuente tiene precisión de día y no define un instante UTC.",
+        "There is only one test; the stages are not independent assessments.",
+        "The source date has day precision and does not define a UTC instant.",
         ...(assessment.sourceTime.calendar === "unknown"
-          ? ["El calendario de origen no está confirmado."]
+          ? ["The source calendar is not confirmed."]
           : []),
       ],
     },
@@ -187,36 +187,36 @@ export function researchCsv(projection: ResearchProjection) {
   const { assessment: a } = projection;
   return [
     [
-      "prueba_id",
-      "sujeto",
+      "assessment_id",
+      "subject",
       "dataset",
-      "origen",
-      "protocolo",
-      "fase",
-      "etapa",
-      "papel",
-      "cantidad",
-      "valor",
-      "estado",
-      "unidad",
-      "estado_unidad",
-      "fecha_fuente",
-      "fecha_raw",
+      "origin",
+      "protocol",
+      "phase",
+      "stage",
+      "role",
+      "quantity",
+      "value",
+      "state",
+      "unit",
+      "unit_state",
+      "source_date",
+      "raw_date",
       "precision",
-      "calendario",
-      "zona",
-      "ambito_temporal",
-      "registro_id",
-      "fila",
-      "columna",
-      "fuente",
-      "cita",
+      "calendar",
+      "zone",
+      "time_scope",
+      "record_id",
+      "row",
+      "column",
+      "source",
+      "citation",
       "sha256",
-      "perfil_importacion",
+      "import_profile",
       "release",
-      "verificacion_tecnica",
-      "revision_clinica",
-      "version_derivacion",
+      "technical_verification",
+      "clinical_review",
+      "derivation_version",
     ],
     ...a.stages.flatMap((stage) =>
       stage.readings.map((r) => [

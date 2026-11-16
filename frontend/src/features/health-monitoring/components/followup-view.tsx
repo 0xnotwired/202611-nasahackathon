@@ -43,39 +43,39 @@ export function FollowupView({
     <>
       <div className="page-heading">
         <div>
-          <h1 id="contenido" tabIndex={-1}>
-            Revisión
+          <h1 id="content" tabIndex={-1}>
+            Review
           </h1>
           <p>
-            Preparación local del historial seleccionado y las observaciones del
-            usuario.
+            Local preparation of the selected history and the user&apos;s
+            observations.
           </p>
         </div>
         <span className="state-label">
-          {journal.prepared ? "Copia preparada · no enviada" : "Borrador local"}
+          {journal.prepared ? "Copy prepared · not sent" : "Local draft"}
         </span>
       </div>
       <div className="content-grid equal-columns">
         <section className="panel">
           <div className="panel-heading">
-            <h2>Contexto de la revisión</h2>
+            <h2>Review context</h2>
             <p>{current.scope}</p>
           </div>
           <label htmlFor="review-question">
-            Pregunta para el especialista
+            Question for the specialist
             <textarea
               id="review-question"
               name="review-question"
               rows={5}
               maxLength={2000}
-              placeholder="Por ejemplo: revisar la comparabilidad de las últimas evaluaciones…"
+              placeholder="For example: review the comparability of the latest assessments…"
               value={journal.question}
               onChange={(event) => update({ question: event.target.value })}
             />
           </label>
           <p className="field-help">
-            El borrador se conserva en este navegador. Preparar crea una copia
-            del período, la referencia y los registros actuales.
+            The draft is kept in this browser. Prepare creates a copy
+            of the current period, reference and records.
           </p>
           <button
             className="button primary"
@@ -91,20 +91,20 @@ export function FollowupView({
             }
           >
             {journal.prepared
-              ? "Actualizar copia preparada"
-              : "Preparar resumen"}
+              ? "Update prepared copy"
+              : "Prepare summary"}
           </button>
           <p className="save-feedback" role="status">
             {journal.prepared
               ? outdated
-                ? "El contexto actual difiere de la copia preparada."
-                : "Copia preparada con el contexto actual. No se ha enviado."
+                ? "The current context differs from the prepared copy."
+                : "Copy prepared with the current context. It has not been sent."
               : ""}
           </p>
           {outdated ? (
             <p className="notice">
-              La copia conserva sus registros originales. Actualizala para
-              incluir los cambios del período, los datos o las observaciones.
+              The copy keeps its original records. Update it to
+              include the changes in the period, the data or the observations.
             </p>
           ) : null}
         </section>
@@ -125,15 +125,15 @@ export function FollowupView({
                 onClick={download}
               >
                 <Download size={16} aria-hidden="true" />
-                Descargar copia
+                Download copy
               </button>
             ) : null}
           </div>
           {journal.prepared ? (
             <p className="snapshot-scope">
-              Alcance de la copia:{" "}
+              Scope of the copy:{" "}
               {journal.prepared.scope ??
-                "No registrado por la versión anterior"}
+                "Not recorded by the previous version"}
             </p>
           ) : null}
           <pre>{journal.prepared?.text ?? current.text}</pre>

@@ -17,31 +17,31 @@ export function ExerciseView({
     <>
       <div className="page-heading">
         <div>
-          <h1 id="contenido" tabIndex={-1}>
-            Actividad
+          <h1 id="content" tabIndex={-1}>
+            Activity
           </h1>
-          <p>Registro de sesiones y observaciones de actividad.</p>
+          <p>Record of sessions and activity observations.</p>
         </div>
         <span className="badge">
           {readOnly
-            ? "Programa sintético del backend · solo lectura"
-            : "Programa de demostración"}
+            ? "Synthetic program from the backend · read-only"
+            : "Demonstration program"}
         </span>
       </div>
       <div className="notice">
         <Dumbbell size={20} aria-hidden="true" />
         <p>
-          Estas actividades y duraciones son ficticias. La aplicación no
-          prescribe ni modifica programas de ejercicio.
+          These activities and durations are fictional. The application does not
+          prescribe or modify exercise programs.
         </p>
       </div>
       <div className="content-grid equal-columns">
         <section className="panel">
           <div className="panel-heading">
             <div>
-              <h2>Registro de sesiones</h2>
+              <h2>Session record</h2>
               <p>
-                Registro independiente del período seleccionado en evaluaciones.
+                Record independent of the period selected in assessments.
               </p>
             </div>
           </div>
@@ -78,14 +78,14 @@ export function ExerciseView({
                     ) : (
                       <Clock3 size={15} aria-hidden="true" />
                     )}
-                    {done ? "Completada" : "Pendiente"}
+                    {done ? "Completed" : "Pending"}
                   </span>
                 </label>
               );
             })}
             {!mission.sessions.length ? (
               <p className="empty-state">
-                Todavía no hay un programa de demostración para este astronauta.
+                There is no demonstration program for this astronaut yet.
               </p>
             ) : null}
           </div>
@@ -93,28 +93,28 @@ export function ExerciseView({
         <section className="panel">
           <div className="panel-heading">
             <div>
-              <h2>Observación de actividad</h2>
+              <h2>Activity observation</h2>
               <p>
-                Una dificultad o una observación pueden aportar contexto al
-                seguimiento.
+                A difficulty or an observation can add context to the
+                follow-up.
               </p>
             </div>
           </div>
           <label htmlFor="difficulty">
-            Observación del astronauta
+            Astronaut observation
             <textarea
               id="difficulty"
               name="difficulty"
               rows={6}
               maxLength={2000}
-              placeholder="Por ejemplo: interrupción de una sesión y condiciones observadas…"
+              placeholder="For example: an interrupted session and the conditions observed…"
               value={journal.difficulty}
               onChange={(event) => update({ difficulty: event.target.value })}
             />
           </label>
           <p className="field-help">
-            Se conserva como borrador local mientras escribís. No se envía al
-            especialista.
+            It is kept as a local draft while you type. It is not sent to the
+            specialist.
           </p>
         </section>
       </div>

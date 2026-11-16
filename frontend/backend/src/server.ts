@@ -20,7 +20,7 @@ export function createApiServer() {
         JSON.stringify({
           error: {
             code: "INTERNAL_ERROR",
-            message: "No se pudo procesar la solicitud.",
+            message: "The request could not be processed.",
           },
         }),
       );

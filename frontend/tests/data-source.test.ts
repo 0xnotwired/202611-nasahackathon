@@ -36,7 +36,7 @@ const standard: JsonReader = async (url, schema) =>
     ),
   );
 
-test("la fuente se valida por petición y mock funciona aunque la configuración de API esté ausente o sea inválida", () => {
+test("the source is validated per request and the mock works even if the API configuration is missing or invalid", () => {
   assert.deepEqual(resolveDataSource(undefined, {}), {
     ok: true,
     context: { mode: "mock" },
@@ -74,9 +74,9 @@ test("la fuente se valida por petición y mock funciona aunque la configuración
   );
 });
 
-test("cambiar fuente conserva preferencias, limpia identidades y nunca acepta destinos externos", () => {
+test("changing source keeps preferences, clears identities and never accepts external targets", () => {
   const href = switchSourceHref("/", "api", {
-    view: "evolucion",
+    view: "evolution",
     period: "3",
     scale: "auto",
     astronaut: "astro-01",
@@ -87,7 +87,7 @@ test("cambiar fuente conserva preferencias, limpia identidades y nunca acepta de
   });
   const params = new URL(href, "http://internal").searchParams;
   assert.deepEqual(Object.fromEntries(params), {
-    view: "evolucion",
+    view: "evolution",
     period: "3",
     scale: "auto",
     source: "api",
@@ -110,14 +110,14 @@ test("cambiar fuente conserva preferencias, limpia identidades y nunca acepta de
   );
 });
 
-test("dos fuentes concurrentes no comparten proveedor y mock nunca realiza HTTP", async () => {
+test("two concurrent sources do not share a provider and the mock never makes HTTP requests", async () => {
   const paths: string[] = [];
   const api = createReader(apiContext, async (url, schema) => {
     paths.push(url);
     return standard(url, schema);
   });
   const mock = createReader({ mode: "mock" }, async () => {
-    throw new Error("Mock hizo HTTP");
+    throw new Error("The mock made an HTTP request");
   });
   const [demo, remote] = await Promise.all([
     loadDashboard(mock, undefined, "recovery"),
@@ -138,7 +138,7 @@ test("dos fuentes concurrentes no comparten proveedor y mock nunca realiza HTTP"
   assert.ok(paths.every((url) => url.startsWith(apiContext.apiBaseUrl)));
 });
 
-test("catálogo vacío y persona ausente no generan reemplazos ficticios", async () => {
+test("an empty catalog and a missing person generate no fictional replacements", async () => {
   const empty = createReader(apiContext, async (_url, schema) =>
     schema.parse({ ...fixture("astronauts"), data: [] }),
   );
@@ -152,7 +152,7 @@ test("catálogo vacío y persona ausente no generan reemplazos ficticios", async
     assert.equal(missing.error.code, "subject_not_found");
 });
 
-test("errores HTTP, timeout y formato son recuperables y no se convierten en mocks", async () => {
+test("HTTP errors, timeouts and format errors are recoverable and do not turn into mocks", async () => {
   for (const [error, code] of [
     [new ApiError(500), "unavailable"],
     [new TypeError("fetch failed"), "unavailable"],
@@ -183,7 +183,7 @@ test("errores HTTP, timeout y formato son recuperables y no se convierten en moc
     assert.equal(broken.error.code, "invalid_response");
 });
 
-test("un fallo de misión nunca se completa con mock aunque catálogo y mediciones sean válidos", async () => {
+test("a mission failure is never filled in with a mock even if the catalog and measurements are valid", async () => {
   const result = await loadDashboard(
     createReader(apiContext, async (url, schema) => {
       if (url.endsWith("/mission")) throw new ApiError(503);
@@ -194,15 +194,15 @@ test("un fallo de misión nunca se completa con mock aunque catálogo y medicion
   assert.equal(result.status, "error");
 });
 
-test("la lectura rechaza mediciones de otra persona y evaluaciones duplicadas", async () => {
+test("the read rejects measurements of another person and duplicate records", async () => {
   for (const corrupt of ["measurements", "mission"]) {
     const result = await loadDashboard(
       createReader(apiContext, async (url, schema) => {
         if (url.endsWith(`/${corrupt}`)) {
           const payload = fixture(corrupt);
           if (corrupt === "mission")
-            payload.data.evaluations.push(payload.data.evaluations[0]);
-          else payload.data[0].astronautId = "someone-else";
+            payload.data.records.push(payload.data.records[0]);
+          else payload.data[0].subject = "someone-else";
           return schema.parse(payload);
         }
         return standard(url, schema);

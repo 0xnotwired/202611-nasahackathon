@@ -1,165 +1,165 @@
-# Selector de fuente: simulación local y backend
+# Source selector: local simulation and backend
 
-Fecha: 15 de noviembre de 2026. Rama inspeccionada: `frontend`, commit `c5f9882`.
-Estado: análisis y plan de implementación; no activa el selector ni modifica código.
+Date: November 15, 2026. Branch inspected: `frontend`, commit `c5f9882`.
+Status: analysis and implementation plan; it does not enable the selector or modify code.
 
-Seguimiento: [entrega A implementada y alcance de la verificación](data-source-switch-implementation.md).
-La entrega B continúa condicionada al contrato y a la fuente real descritos en este plan.
+Follow-up: [delivery A implemented and scope of verification](data-source-switch-implementation.md).
+Delivery B remains conditional on the contract and the real source described in this plan.
 
-## 1. Decisión propuesta
+## 1. Proposed decision
 
-Convertir la etiqueta superior en un control para alternar entre **simulación local**
-y **backend**, conservando la apariencia sobria actual. Mostrar **Datos reales**
-únicamente cuando la respuesta validada identifique registros reales y su contexto.
+Turn the top label into a control to toggle between **local simulation**
+and **backend**, keeping the current sober appearance. Show **Real data**
+only when the validated response identifies real records and their context.
 
-La interacción solicitada es viable, pero hay tres conceptos diferentes:
+The requested interaction is feasible, but there are three different concepts:
 
-| Concepto | Valores iniciales | Quién lo determina |
+| Concept | Initial values | Who determines it |
 | --- | --- | --- |
-| Fuente seleccionada | Simulación local / Backend | Usuario, dentro de la configuración permitida |
-| Origen efectivo | Sintético / Análogo terrestre / Terrestre / Vuelo / Mixto / Sin determinar | Respuesta validada y registros visibles |
-| Disponibilidad | Cargando / Disponible / Vacío / No configurado / Error | Resultado de la carga |
+| Selected source | Local simulation / Backend | User, within the permitted configuration |
+| Effective origin | Synthetic / Ground analog / Ground / Flight / Mixed / Undetermined | Validated response and visible records |
+| Availability | Loading / Available / Empty / Not configured / Error | Result of the load |
 
-El backend de esta rama devuelve datos sintéticos desde un archivo seed. Conectarlo
-no habilita por sí solo datos reales, sensores en vivo, comparaciones verificadas ni
-persistencia de cambios. La etiqueta expresa evidencia, no la intención del clic.
+The backend on this branch returns synthetic data from a seed file. Connecting it
+does not by itself enable real data, live sensors, verified comparisons or
+persistence of changes. The label expresses evidence, not the intent of the click.
 
-**Entrega A:** selector mock/API completamente funcional con el contrato actual.
-**Entrega B:** origen real, una vez acordada e implementada su respuesta y su lectura.
-No se necesita un framework nuevo, Redux, una API dentro de Next ni un sistema de plugins.
+**Delivery A:** fully functional mock/API selector with the current contract.
+**Delivery B:** real origin, once its response and its reading are agreed on and implemented.
+No new framework, Redux, API inside Next or plugin system is needed.
 
-## 2. Hallazgos del repositorio
+## 2. Repository findings
 
-| Archivo o área | Situación comprobada | Cambio necesario |
+| File or area | Verified situation | Necessary change |
 | --- | --- | --- |
-| `components/dashboard.tsx:87` | La etiqueta es un `span`, no un botón | Control accesible y estado de fuente independiente |
-| `src/lib/env.ts` | `HEALTH_DATA_SOURCE` elige `mock` o `api` globalmente | Conservarlo como valor por defecto; resolver la petición sin modificar `process.env` |
-| `src/app/page.tsx:29–58` | Carga parámetros y astronautas en paralelo antes de conocer una selección de fuente | Resolver fuente primero, luego catálogo y detalle del mismo proveedor |
-| `data/service.ts` | Cada función consulta configuración por su cuenta | Un único contexto/proveedor por carga de pantalla |
-| `data/mission-projection.ts` | API 0.1 validada estrictamente y proyectada como demo no verificable por prueba | Mantener compatibilidad y bloqueos; adaptador separado para una futura versión |
-| `contracts/models.ts`, `contracts/schemas.ts` | `dataKind` solo admite `synthetic` | Acordar un contrato nuevo antes de admitir datos reales |
-| `backend/src/data/provider.ts:10–40` | Catálogo, mediciones y misión proceden de `seed.json` | Hoy solo permite la entrega A |
-| `backend/src/app.ts:44–49` | `/health` informa salud técnica y versión | No usarlo como prueba de existencia de datasets reales |
-| `dashboard-state.ts`, enlaces del dashboard | Conservan filtros, pero no fuente | Propagar un parámetro de fuente en toda navegación |
-| `use-demo-journal.ts:46–48` | Clave `orbita-demo-journal-v1:${astronautId}` | Separar contexto de borradores y copias preparadas |
-| `src/app/error.tsx` | Error genérico con reintento; desaparece el selector | Recuperación que permita volver a simulación desde errores de API |
-| `/investigacion` | Lectura real ausente; ejemplo independiente y sintético | Mantener coherencia de fuente sin convertir ese ejemplo en datos del backend |
-| Textos y exportaciones | Existen referencias fijas a datos ficticios y programa demo | Derivarlas del contexto antes de habilitar registros reales |
+| `components/dashboard.tsx:87` | The label is a `span`, not a button | Accessible control and independent source state |
+| `src/lib/env.ts` | `HEALTH_DATA_SOURCE` chooses `mock` or `api` globally | Keep it as the default value; resolve the request without modifying `process.env` |
+| `src/app/page.tsx:29–58` | Loads parameters and astronauts in parallel before knowing a source selection | Resolve source first, then catalog and detail from the same provider |
+| `data/service.ts` | Each function queries configuration on its own | A single context/provider per screen load |
+| `data/mission-projection.ts` | API 0.1 strictly validated and projected as a demo not verifiable per test | Keep compatibility and blocks; separate adapter for a future version |
+| `contracts/models.ts`, `contracts/schemas.ts` | `dataKind` only admits `synthetic` | Agree on a new contract before admitting real data |
+| `backend/src/data/provider.ts:10–40` | Catalog, measurements and mission come from `seed.json` | Today it only allows delivery A |
+| `backend/src/app.ts:44–49` | `/health` reports technical health and version | Do not use it as proof that real datasets exist |
+| `dashboard-state.ts`, dashboard links | They keep filters, but not source | Propagate a source parameter in all navigation |
+| `use-demo-journal.ts:46–48` | Key `orbita-demo-journal-v1:${astronautId}` | Separate context of drafts and prepared copies |
+| `src/app/error.tsx` | Generic error with retry; the selector disappears | Recovery that allows going back to simulation from API errors |
+| `/investigacion` | Real reading absent; independent and synthetic example | Keep source coherence without turning that example into backend data |
+| Texts and exports | There are fixed references to fictional data and demo program | Derive them from the context before enabling real records |
 
-`getJson` ya utiliza `cache: "no-store"`, un timeout de 8 segundos y validación Zod.
-Las cargas de mediciones y misión ya se hacen en paralelo después de seleccionar
-persona. Esos patrones se conservan.
+`getJson` already uses `cache: "no-store"`, an 8-second timeout and Zod validation.
+The measurement and mission loads are already done in parallel after selecting a
+person. Those patterns are kept.
 
-El árbol estaba limpio al comenzar este análisis. No se hizo fetch, cambio de rama,
-lectura de originales, prueba de disponibilidad de un backend en ejecución ni
-modificación de `backend/` o `contracts/`.
+The tree was clean when this analysis began. No fetch, branch change,
+reading of originals, availability test of a running backend or
+modification of `backend/` or `contracts/` was done.
 
-## 3. Comportamiento del control superior
+## 3. Behavior of the top control
 
-### 3.1 Control de acción, no interruptor de verdad científica
+### 3.1 Action control, not a scientific-truth switch
 
-Mantenerlo arriba a la derecha, junto al tema. Utilizar un `button type="button"`
-estilizado con los tokens existentes. Al activarlo se solicita la otra fuente.
-Un switch ARIA representa encendido/apagado; aquí existe una navegación asíncrona
-que puede fallar, y el origen no es binario. No utilizar `role="switch"` ni cambiar
-`aria-checked` para declarar que los datos ya son reales.
+Keep it at the top right, next to the theme. Use a styled `button type="button"`
+with the existing tokens. Activating it requests the other source.
+An ARIA switch represents on/off; here there is an asynchronous navigation
+that can fail, and the origin is not binary. Do not use `role="switch"` nor change
+`aria-checked` to declare that the data are already real.
 
-El contenido debe permitir distinguir dos fuentes aunque ambas sean sintéticas:
+The content must allow distinguishing two sources even if both are synthetic:
 
 ```text
-Datos sintéticos                 Datos sintéticos
-Fuente: Simulación local         Fuente: Backend
+Synthetic data                  Synthetic data
+Source: Local simulation         Source: Backend
 
-Tras la integración real:
-Datos reales · análogo terrestre
-Fuente: Backend
+After the real integration:
+Real data · ground analog
+Source: Backend
 ```
 
-El texto auxiliar puede colocarse debajo o al lado según el espacio disponible.
-Debe ser perceptible, no existir solo en un tooltip. El nombre accesible incluirá
-el texto visible y la acción de destino, por ejemplo: «Datos sintéticos. Fuente:
-Simulación local. Cambiar a backend». No usar `aria-pressed` con una etiqueta cuyo
-significado cambia entre fuente y origen.
+The auxiliary text can be placed below or beside depending on available space.
+It must be perceivable, not exist only in a tooltip. The accessible name will include
+the visible text and the target action, for example: «Synthetic data. Source:
+Local simulation. Switch to backend». Do not use `aria-pressed` with a label whose
+meaning changes between source and origin.
 
-La parte «Datos reales» puede conservar la denominación pedida, acompañada del origen
-específico. No debe sugerir datos de un astronauta en vuelo si se trata de un análogo
-terrestre. El esquema futuro debe permitir procedencia mixta: si solo una sección
-es real, no rotular todo el panel como real.
+The «Real data» part can keep the requested name, accompanied by the specific
+origin. It must not suggest data from an astronaut in flight if it is a
+ground analog. The future schema must allow mixed provenance: if only one section
+is real, do not label the whole panel as real.
 
-### 3.2 Estados y transiciones
+### 3.2 States and transitions
 
-| Estado | Presentación | Acción permitida |
+| State | Presentation | Permitted action |
 | --- | --- | --- |
-| Simulación cargada | Datos sintéticos · Simulación local | Solicitar backend |
-| Backend sin URL válida | Estado «Backend no configurado» al intentar conectar; sin números atribuidos a esa fuente | Volver a simulación |
-| Transición hacia API | «Conectando con backend…» anunciado como estado | Evitar dobles activaciones mientras se resuelve |
-| API 0.1 cargada | Datos sintéticos · Backend | Volver a simulación |
-| API real futura validada | Datos reales + origen específico · Backend | Volver a simulación |
-| API válida sin registros | Fuente Backend · Sin registros; origen solo si lo declara el envelope válido | Cambiar persona si hay catálogo; volver a simulación |
-| API inaccesible o timeout | Backend no disponible; sin etiqueta de datos reales | Reintentar / Usar simulación local |
-| Respuesta incompatible | Formato de datos no compatible; sin números de esa respuesta | Reintentar / Usar simulación local |
-| Catálogo o secciones de procedencia distinta | Origen mixto o contexto incompatible según contrato | Inspeccionar secciones; bloquear mezclas no acordadas |
+| Simulation loaded | Synthetic data · Local simulation | Request backend |
+| Backend without valid URL | State «Backend not configured» when trying to connect; no numbers attributed to that source | Return to simulation |
+| Transition to API | «Connecting to backend…» announced as a status | Prevent double activations while it resolves |
+| API 0.1 loaded | Synthetic data · Backend | Return to simulation |
+| Future validated real API | Real data + specific origin · Backend | Return to simulation |
+| Valid API without records | Source Backend · No records; origin only if the valid envelope declares it | Change person if there is a catalog; return to simulation |
+| API unreachable or timeout | Backend unavailable; no real-data label | Retry / Use local simulation |
+| Incompatible response | Data format not compatible; no numbers from that response | Retry / Use local simulation |
+| Catalog or sections of different provenance | Mixed origin or incompatible context per contract | Inspect sections; block mixes not agreed on |
 
-Durante la transición, la pantalla anterior puede seguir visible como contenido
-anterior en actualización, pero conserva su etiqueta original y bloquea exportar o
-preparar revisiones hasta resolver la carga. No renombrar los mocks como reales.
-Tras un fallo no mostrar un historial anterior como si perteneciera al backend.
-El error conserva acceso explícito a simulación. No hay fallback automático.
+During the transition, the previous screen can remain visible as content
+previous to the update, but it keeps its original label and blocks exporting or
+preparing reviews until the load is resolved. Do not rename mocks as real.
+After a failure do not show a previous history as if it belonged to the backend.
+The error keeps explicit access to simulation. There is no automatic fallback.
 
-Fuentes de accesibilidad: [MDN, semántica de switch](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/switch_role)
-y Modern Web Guidance `forms`, apartados 1, 2, 5 y 7. La navegación programática se
-contrasta con [Next.js useRouter](https://nextjs.org/docs/app/api-reference/functions/use-router)
-y con la documentación de la versión instalada.
+Accessibility sources: [MDN, switch semantics](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/switch_role)
+and Modern Web Guidance `forms`, sections 1, 2, 5 and 7. Programmatic navigation is
+checked against [Next.js useRouter](https://nextjs.org/docs/app/api-reference/functions/use-router)
+and the documentation of the installed version.
 
-## 4. Arquitectura de selección
+## 4. Selection architecture
 
-### 4.1 URL como estado de navegación
+### 4.1 URL as navigation state
 
-Propuesta: `source=mock|api`. Son identificadores de transporte internos, no
-conclusiones científicas. No usar `source=real` para la API sintética actual.
+Proposal: `source=mock|api`. These are internal transport identifiers, not
+scientific conclusions. Do not use `source=real` for the current synthetic API.
 
-Ejemplos de navegación, no endpoints nuevos:
+Navigation examples, not new endpoints:
 
 ```text
-/?source=mock&view=resumen&scenario=recovery
-/?source=api&view=resumen
+/?source=mock&view=summary&scenario=recovery
+/?source=api&view=summary
 /investigacion?source=mock&example=synthetic
 /investigacion?source=api
 ```
 
-Sin parámetro: utilizar `HEALTH_DATA_SOURCE`, por defecto `mock`. Validar la selección
-en servidor con una lista cerrada. Rechazar parámetros duplicados/arrays o valores
-desconocidos con un estado de solicitud inválida y recuperación a simulación; no
-normalizarlos silenciosamente a un modo distinto. El cliente no puede enviar una
-URL de backend, un nombre de archivo o una ruta de dataset como fuente.
+Without a parameter: use `HEALTH_DATA_SOURCE`, `mock` by default. Validate the selection
+on the server with a closed list. Reject duplicate parameters/arrays or unknown
+values with an invalid-request state and recovery to simulation; do not
+silently normalize them to a different mode. The client cannot send a
+backend URL, a file name or a dataset path as a source.
 
-La URL permite recargar y utilizar atrás/adelante. No almacenar el modo únicamente
-en React ni en localStorage, ni escribir variables de entorno desde el botón.
-Solo la fuente y filtros de navegación forman parte de este mecanismo; no añadir
-notas, valores de salud ni credenciales a los parámetros.
+The URL allows reload and use of back/forward. Do not store the mode only
+in React or in localStorage, nor write environment variables from the button.
+Only the source and navigation filters are part of this mechanism; do not add
+notes, health values or credentials to the parameters.
 
-### 4.2 Configuración privada del servidor
+### 4.2 Private server configuration
 
-Conservar `HEALTH_DATA_SOURCE` como selección inicial y `HEALTH_API_BASE_URL` como
-destino HTTP configurado por el equipo. Tener una URL configura un destino, no
-demuestra que esté conectado o que tenga datos reales. No añadir `NEXT_PUBLIC_`
-a esa URL ni exponerla en los mensajes del navegador.
+Keep `HEALTH_DATA_SOURCE` as the initial selection and `HEALTH_API_BASE_URL` as the
+HTTP target configured by the team. Having a URL configures a target, it does not
+demonstrate that it is connected or has real data. Do not add `NEXT_PUBLIC_`
+to that URL nor expose it in browser messages.
 
-Separar lectura/validación de configuración y disponibilidad del modo solicitado.
-Si falta la URL y se solicita API, devolver `not_configured`; la simulación debe
-seguir siendo accesible, incluso si el valor inicial de entorno era `api`.
-No efectuar fetch cuando la configuración no sea válida. Evitar que el fallo de
-configuración de API inutilice también la salida a mocks.
+Separate reading/validation of configuration and availability of the requested mode.
+If the URL is missing and API is requested, return `not_configured`; simulation must
+remain accessible, even if the initial environment value was `api`.
+Do not fetch when the configuration is not valid. Prevent the API
+configuration failure from also disabling the exit to mocks.
 
-No hace falta un endpoint de capabilities en la entrega A. Si el equipo lo acuerda
-para la entrega B, será un contrato nuevo: no asumir que existe ni utilizar `/health`
-para inferir procedencia, permisos o existencia de pruebas.
+A capabilities endpoint is not needed in delivery A. If the team agrees on it
+for delivery B, it will be a new contract: do not assume it exists nor use `/health`
+to infer provenance, permissions or existence of tests.
 
-### 4.3 Un proveedor por petición
+### 4.3 One provider per request
 
-Crear un contexto de lectura una vez, después de validar la fuente. Pasarlo
-explícitamente a todas las llamadas o capturarlo en una factoría **server-only**.
-La siguiente firma es una propuesta nueva; no existe actualmente:
+Create a read context once, after validating the source. Pass it
+explicitly to all calls or capture it in a **server-only** factory.
+The following signature is a new proposal; it does not currently exist:
 
 ```ts
 type DataSourceMode = "mock" | "api";
@@ -168,301 +168,301 @@ type DataSourceMode = "mock" | "api";
 // }
 ```
 
-Conservar `data/service.ts` como entrada para las páginas. Ni componentes ni backend
-importan fixtures del otro lado. No introducir `src/app/api/` para duplicar la API.
+Keep `data/service.ts` as the entry point for the pages. Neither components nor backend
+import fixtures from the other side. Do not introduce `src/app/api/` to duplicate the API.
 
-Secuencia de carga:
+Load sequence:
 
-1. Leer `searchParams` y configuración; resolver la fuente de esta petición.
-2. Si está indisponible por configuración, devolver el estado recuperable.
-3. Cargar el catálogo del proveedor seleccionado.
-4. Resolver la persona exclusivamente dentro de ese catálogo.
-5. Solicitar mediciones y misión en paralelo al mismo proveedor.
-6. Validar respuestas y coherencia de identidad, versión y procedencia declarada.
-7. Construir el contexto de pantalla y las capacidades de cálculo.
-8. Renderizar fuente efectiva, datos y controles juntos.
+1. Read `searchParams` and configuration; resolve the source for this request.
+2. If unavailable due to configuration, return the recoverable state.
+3. Load the catalog of the selected provider.
+4. Resolve the person exclusively within that catalog.
+5. Request measurements and mission in parallel from the same provider.
+6. Validate responses and consistency of identity, version and declared provenance.
+7. Build the screen context and the calculation capabilities.
+8. Render effective source, data and controls together.
 
-No mezclar catálogo API con misión mock, ni completar una sección ausente de la API
-con fixtures. En entrega A, un fallo de cualquiera de las lecturas requeridas
-produce el estado de error de la carga; no hace falta un sistema de fallos parciales.
-Una respuesta vacía válida se representa como vacío. Un 404 de persona se distingue
-de error de red o de formato. Las fuentes parciales futuras necesitan una regla
-explícita por sección, no una mezcla implícita.
+Do not mix API catalog with mock mission, nor complete a section missing from the API
+with fixtures. In delivery A, a failure of any of the required reads
+produces the load error state; a partial failure system is not needed.
+A valid empty response is represented as empty. A 404 for a person is distinguished
+from a network or format error. Future partial sources need an explicit
+per-section rule, not an implicit mix.
 
-## 5. Navegación, identidad y borradores
+## 5. Navigation, identity and drafts
 
-### 5.1 Cambio de fuente
+### 5.1 Source change
 
-Al alternar, conservar `view`, `period` y `scale`, que describen preferencias de
-visualización. Eliminar `astronaut`, `reference`, `evaluation`, `group` y `scenario`:
-esas selecciones pertenecen al catálogo/historial de origen. Elegir la persona
-inicial desde el nuevo catálogo y anunciar la selección resultante.
+When toggling, keep `view`, `period` and `scale`, which describe display
+preferences. Remove `astronaut`, `reference`, `evaluation`, `group` and `scenario`:
+those selections belong to the catalog/history of origin. Choose the initial
+person from the new catalog and announce the resulting selection.
 
-No asociar Vega con un participante real por compartir código o posición en una
-lista. Una URL antigua con persona que no existe en la fuente conserva el estado
-«persona no disponible en esta fuente», con selector o regreso a su catálogo.
+Do not associate Vega with a real participant for sharing a code or a position in
+a list. An old URL with a person that does not exist in the source keeps the state
+«person not available in this source», with a selector or return to its catalog.
 
-Usar una función común para construir URLs internas con `URLSearchParams`. Copiar
-los patrones existentes de `historyQuery`, pero añadir la fuente en todos los caminos:
-navegación principal, marca, persona, filtros, escenario, investigación y regreso.
-Se propone `router.push` para cambiar fuente y permitir volver con atrás;
-`router.replace` sigue siendo adecuado para filtros. No añadir `refresh()` después
-de cada navegación: la nueva URL ya provoca la lectura de servidor.
+Use a common function to build internal URLs with `URLSearchParams`. Copy
+the existing patterns of `historyQuery`, but add the source in all paths:
+main navigation, brand, person, filters, scenario, research and return.
+`router.push` is proposed to change source and allow going back with back;
+`router.replace` remains suitable for filters. Do not add `refresh()` after
+each navigation: the new URL already triggers the server read.
 
-En investigación, `source` y `example` no pueden contradecirse. Un enlace al ejemplo
-sintético solicita explícitamente `source=mock`; con API seleccionada y sin lector
-real, mostrar «Lectura de investigación no integrada». No usar el ejemplo como fallback.
-El control de fuente debe seguir disponible también en esa ruta y en estados vacíos.
+In research, `source` and `example` cannot contradict each other. A link to the synthetic
+example explicitly requests `source=mock`; with API selected and no real reader,
+show «Research reading not integrated». Do not use the example as a fallback.
+The source control must remain available also on that route and in empty states.
 
-### 5.2 Aislamiento de estado local
+### 5.2 Local state isolation
 
-La clave de React ya no puede ser solo `selected.id`: debe incluir un identificador
-de contexto de datos y persona. Esto reinicia selección y borradores en memoria al
-pasar de mocks a API aunque ambas utilicen `astro-01`.
+The React key can no longer be just `selected.id`: it must include a data-context
+and person identifier. This resets selection and in-memory drafts when
+switching from mocks to API even if both use `astro-01`.
 
-Para la entrega A, conservar la clave actual de los mocks para no perder notas
-existentes y asignar un namespace diferente al backend sintético. Al usar un único
-backend configurado, basta un contexto explícito `api-demo-0.1` separado de `mock`.
-Antes de admitir varios backends o datasets, el contrato/configuración acordados
-deberán proporcionar un identificador estable de fuente, sin exponer su URL privada.
-No migrar automáticamente notas mock a ese contexto.
+For delivery A, keep the current key of the mocks so as not to lose existing
+notes and assign a different namespace to the synthetic backend. With a single configured
+backend, an explicit context `api-demo-0.1` separate from `mock` is enough.
+Before admitting several backends or datasets, the agreed contract/configuration
+must provide a stable source identifier, without exposing its private URL.
+Do not automatically migrate mock notes to that context.
 
-Una copia preparada incluye modo, origen, identidad contextual, versión y fuentes.
-Su exportación conserva el contexto con el que fue preparada. Cambiar de fuente no
-la transforma ni la sobrescribe con otro sujeto. Los borradores sin guardar deben
-guardarse en su contexto o advertir de forma accesible que se perderán antes de una
-salida que los descarte; aplicar la misma regla que a un cambio de persona.
+A prepared copy includes mode, origin, contextual identity, version and sources.
+Its export keeps the context with which it was prepared. Switching source does not
+transform it nor overwrite it with another subject. Unsaved drafts must be
+saved in their context or warn accessibly that they will be lost before an
+exit that discards them; apply the same rule as for a change of person.
 
-En entrega B no heredar automáticamente la persistencia demo en localStorage para
-datos reales. Hasta acordar almacenamiento y ciclo de vida con el equipo, proponer
-vista real de solo lectura con revisión/exportación explícita y sin persistencia
-automática de notas reales en el navegador. Si se autoriza edición local, su memoria
-y retención se diseñan como parte de esa entrega, separadas de la demo.
+In delivery B, do not automatically inherit demo persistence in localStorage for
+real data. Until storage and lifecycle are agreed with the team, propose a
+read-only real view with explicit review/export and no automatic
+persistence of real notes in the browser. If local editing is authorized, its memory
+and retention are designed as part of that delivery, separate from the demo.
 
-Las marcas de actividad demo son cambios locales. La API actual solo admite GET/HEAD:
-no aparentar que un checkbox actualiza una sesión del servidor. En modo API, mostrar
-el estado recibido como lectura, o etiquetar una anotación local si se acuerda esa
-función. No inventar un endpoint de guardado.
+Demo activity marks are local changes. The current API only supports GET/HEAD:
+do not pretend that a checkbox updates a server session. In API mode, show
+the received state as read-only, or label a local annotation if that
+function is agreed on. Do not invent a save endpoint.
 
-## 6. Tratamiento de errores y carga
+## 6. Error and loading handling
 
-Representar los fallos esperados como resultados de carga serializables, por ejemplo:
+Represent the expected failures as serializable load results, for example:
 `not_configured`, `unavailable`, `timeout`, `invalid_response`, `subject_not_found`.
-Son nombres propuestos para frontend, no códigos ya definidos en la API.
+These are proposed names for the frontend, not codes already defined in the API.
 
-La página debe poder presentar un shell mínimo con selector, fuente solicitada,
-explicación y acciones de recuperación aunque falle el catálogo. El proveedor no
-puede depender de tener un astronauta válido para ofrecer «Usar simulación local».
-Mantener `error.tsx` como último recurso para excepciones inesperadas y añadir una
-salida explícita a `source=mock`. La versión instalada documenta `retry()`; no
-sustituirlo por APIs recordadas de otra versión sin revisar la documentación.
+The page must be able to present a minimal shell with selector, requested source,
+explanation and recovery actions even if the catalog fails. The provider cannot
+depend on having a valid astronaut to offer «Use local simulation».
+Keep `error.tsx` as a last resort for unexpected exceptions and add an
+explicit exit to `source=mock`. The installed version documents `retry()`; do not
+replace it with APIs remembered from another version without reviewing the documentation.
 
-Reutilizar timeout y `no-store`. No añadir polling ni prometer tiempo real.
-Una acción «Reintentar» o «Actualizar datos» hace una lectura explícita; mostrar
-la fecha de consulta separada de la fecha de medida. Volver atrás puede recuperar
-una vista del router: no describirla como sincronización continua.
+Reuse timeout and `no-store`. Do not add polling nor promise real time.
+A «Retry» or «Update data» action does an explicit read; show
+the query date separate from the measurement date. Going back can recover
+a router view: do not describe it as continuous synchronization.
 
-Evitar resultados cruzados ante clics rápidos: bloquear cambios repetidos durante
-la transición y verificar que la pantalla comprometida corresponda a su URL/contexto.
-Mantener una única región `role="status"` para carga y resultado, `aria-busy` en el
-área de datos y foco recuperable tras carga/error. No anunciar el panel entero.
+Avoid crossed results on fast clicks: block repeated changes during
+the transition and verify that the committed screen corresponds to its URL/context.
+Keep a single `role="status"` region for loading and result, `aria-busy` on the
+data area and recoverable focus after load/error. Do not announce the entire panel.
 
-## 7. Entrega B: requisitos para mostrar datos reales
+## 7. Delivery B: requirements to show real data
 
-Se coordina con el responsable de backend. No modificar unilateralmente `contracts/`
-ni ampliar el literal `synthetic` y asumir que el resto de la respuesta es suficiente.
+Coordinate with the backend owner. Do not unilaterally modify `contracts/`
+nor extend the `synthetic` literal and assume the rest of the response is sufficient.
 
-La respuesta acordada debe expresar, al menos:
+The agreed response must express, at least:
 
-- Identidad contextual de fuente/dataset, sujeto y prueba.
-- Origen por conjunto y por registro/sección cuando pueda variar.
-- Cantidad, unidad confirmada/desconocida, pico frente a etapa y protocolo.
-- Estado de disponibilidad: cero, ausencia y ningún registro no son equivalentes.
-- Tiempo UTC o fecha fuente, precisión, zona, calendario y ámbito temporal.
-- IDs fuente, cita, release, perfil de importación y evidencia de custodia aplicable.
-- Verificación técnica, revisión clínica y versión de proyección, como estados distintos.
-- Capacidades y motivos de bloqueo; siempre consistentes con los registros.
+- Contextual identity of source/dataset, subject and test.
+- Origin per set and per record/section when it can vary.
+- Quantity, confirmed/unknown unit, peak versus stage and protocol.
+- Availability state: zero, absence and no record are not equivalent.
+- UTC time or source date, precision, zone, calendar and time scope.
+- Source IDs, citation, release, import profile and applicable custody evidence.
+- Technical verification, clinical review and projection version, as distinct states.
+- Capabilities and block reasons; always consistent with the records.
 
-Reutilizar el análisis aeróbico y el modelo de lectura local como punto de discusión,
-no como contrato ya aprobado. La versión nueva requiere modelos, schemas, OpenAPI,
-fixtures y tests de compatibilidad. Mantener el adaptador 0.1 separado mientras se
-necesite, sin transformar una respuesta real en una demo antigua.
+Reuse the aerobic analysis and the local reading model as a discussion point,
+not as an already approved contract. The new version requires models, schemas, OpenAPI,
+fixtures and compatibility tests. Keep the 0.1 adapter separate while it is
+needed, without transforming a real response into an old demo.
 
-Un análogo terrestre de una única prueba puede habilitar inspección real y mantener
-bloqueada la tendencia. La ausencia de calendario o unidades no se resuelve al cambiar
-de fuente. Datos reales no significa validación clínica ni aptitud para misión.
+A ground analog of a single test can enable real inspection and keep the trend
+blocked. The absence of a calendar or units is not resolved by switching
+source. Real data does not mean clinical validation or suitability for a mission.
 
-La etiqueta global se deriva del contexto validado, incluido el caso vacío. No tomar
-la primera evaluación como prueba del origen de todo el panel. Un conjunto mixto se
-identifica como tal y conserva procedencia por sección/registro.
+The global label is derived from the validated context, including the empty case. Do not take
+the first assessment as proof of the origin of the whole panel. A mixed set is
+identified as such and keeps provenance per section/record.
 
-Revisar antes de activar esta entrega: `review.ts`, `historyCsv`, inspector, actividad,
-`about-system`, footer, mediciones adicionales y copias descargadas. Actualmente hay
-textos demo y supuestos UTC que son correctos para 0.1 pero no para toda fuente real.
+Review before enabling this delivery: `review.ts`, `historyCsv`, inspector, activity,
+`about-system`, footer, additional measurements and downloaded copies. Currently there are
+demo texts and UTC assumptions that are correct for 0.1 but not for every real source.
 
-## 8. Plan por fases
+## 8. Plan by phases
 
-### Fase 0 — Descubrimiento y decisiones de diseño
+### Phase 0 — Discovery and design decisions
 
-Entrega de este documento, con verificación de configuración, rutas, schemas,
-persistencia y APIs del Next instalado. Se realizó una revisión documental delegada
-del backend; la síntesis y el plan se confeccionaron sobre esos archivos.
+Delivery of this document, with verification of configuration, routes, schemas,
+persistence and APIs of the installed Next. A delegated documentary review
+of the backend was done; the synthesis and the plan were prepared on those files.
 
-Referencias permitidas: `AGENTS.md`, `contracts/AGENTS.md`, `backend/AGENTS.md`,
-`docs/team-workflow.md`, `docs/api.md`, documentación Next indicada en §11.
-APIs comprobadas: GET/HEAD `/api/v1/astronauts`, `/{id}/measurements` y `/{id}/mission`
-bajo ese catálogo; `/api/v1/health` y `/api/v1/openapi.json` son auxiliares.
+Permitted references: `AGENTS.md`, `contracts/AGENTS.md`, `backend/AGENTS.md`,
+`docs/team-workflow.md`, `docs/api.md`, Next documentation indicated in §11.
+APIs verified: GET/HEAD `/api/v1/astronauts`, `/{id}/measurements` and `/{id}/mission`
+under that catalog; `/api/v1/health` and `/api/v1/openapi.json` are auxiliary.
 
-Aceptación: queda explícito qué permite 0.1 y qué requiere el acuerdo futuro.
-No se da por existente un endpoint de fuentes, de investigación o de escritura.
+Acceptance: it is explicit what 0.1 allows and what requires future agreement.
+No sources, research or write endpoint is assumed to exist.
 
-### Fase 1 — Resolver fuente por petición y centralizar navegación
+### Phase 1 — Resolve source per request and centralize navigation
 
-Archivos previstos: nuevo `data/source-context.ts` o equivalente puro,
-`src/lib/env.ts`, `dashboard-state.ts`, `.env.example` y tests de contexto.
+Planned files: new `data/source-context.ts` or pure equivalent,
+`src/lib/env.ts`, `dashboard-state.ts`, `.env.example` and context tests.
 
-Copiar las validaciones enum de `env.ts` y la serialización de `historyQuery`.
-Implementar resolución explícita, configuración privada y construcción de URLs.
-No incluir la fuente en `HistoryContext` si eso mezcla identidad del proveedor con
-filtros de evaluación: un contexto superior puede contener ambos de forma explícita.
+Copy the enum validations of `env.ts` and the serialization of `historyQuery`.
+Implement explicit resolution, private configuration and URL construction.
+Do not include the source in `HistoryContext` if that mixes provider identity with
+assessment filters: a higher-level context can contain both explicitly.
 
-Verificar: modos válido/ausente/inválido/duplicado, default de entorno, API sin URL,
-limpieza de IDs al cambiar de fuente y conservación del modo al cambiar de vista.
-Guardas: no mutar variables de entorno ni aceptar una URL del usuario como backend.
+Verify: valid/absent/invalid/duplicate modes, environment default, API without URL,
+clearing of IDs when switching source and preservation of the mode when changing view.
+Guards: do not mutate environment variables nor accept a user URL as backend.
 
-### Fase 2 — Proveedor de lectura y resultado de carga coherente
+### Phase 2 — Read provider and consistent load result
 
-Archivos previstos: `data/service.ts`, `src/app/page.tsx`, `data/mission-projection.ts`,
-helper de carga si mejora legibilidad y tests de proveedor.
+Planned files: `data/service.ts`, `src/app/page.tsx`, `data/mission-projection.ts`,
+load helper if it improves readability and provider tests.
 
-Copiar el patrón `getJson` + schema de `service.ts` y el `Promise.all` del detalle.
-Resolver fuente antes de cargar catálogo y usarla en todas las lecturas. Incorporar
-resultado recuperable de errores esperados y contexto efectivo de presentación.
+Copy the `getJson` + schema pattern from `service.ts` and the detail `Promise.all`.
+Resolve the source before loading the catalog and use it in all reads. Incorporate
+a recoverable result for expected errors and effective presentation context.
 
-Verificar: ninguna petición API en modo mock; las tres lecturas usan el mismo modo;
-API 0.1 sigue siendo sintética; 404, vacío, timeout y formato incompatible son distintos.
-Guardas: sin fallback silencioso ni inferencias de procedencia desde `/health`.
+Verify: no API request in mock mode; the three reads use the same mode;
+API 0.1 is still synthetic; 404, empty, timeout and incompatible format are distinct.
+Guards: no silent fallback nor inferences of provenance from `/health`.
 
-### Fase 3 — Control accesible y estados de pantalla
+### Phase 3 — Accessible control and screen states
 
-Archivos previstos: nuevo `components/data-source-control.tsx`, `dashboard.tsx`,
-`aerobic.css`, `page.tsx`, `loading.tsx` y `error.tsx` según el shell elegido.
+Planned files: new `components/data-source-control.tsx`, `dashboard.tsx`,
+`aerobic.css`, `page.tsx`, `loading.tsx` and `error.tsx` depending on the chosen shell.
 
-Copiar botones nativos y `useTransition` existentes, utilizando `router.push` de
-`next/navigation`. Añadir el cambio explícito de fuente y feedback de carga.
-Mantener el origen anterior hasta tener resultado validado; representar fallos con
-acceso a simulación. Foco visible, texto redundante y área activable de 3rem mínimo.
+Copy existing native buttons and `useTransition`, using `router.push` from
+`next/navigation`. Add the explicit source change and loading feedback.
+Keep the previous origin until having a validated result; represent failures with
+access to simulation. Visible focus, redundant text and an activatable area of at least 3rem.
 
-Verificar: teclado Enter/Espacio, foco tras cambio/error, sin duplicar anuncios,
-sin mezclar datos antiguos y etiqueta nueva, control usable sin registros o catálogo.
-Guardas: no fabricar estados ARIA de switch ni bloquear la recuperación de errores.
+Verify: Enter/Space keyboard, focus after change/error, no duplicated announcements,
+no mixing of old data and new label, control usable without records or catalog.
+Guards: do not fabricate ARIA switch states nor block recovery from errors.
 
-### Fase 4 — Aislamiento de borradores y cobertura de todas las rutas
+### Phase 4 — Draft isolation and coverage of all routes
 
-Archivos previstos: `use-demo-journal.ts`, `observation-panel.tsx`, `exercise-view.tsx`,
-`followup-view.tsx`, `review.ts`, `dashboard.tsx`, `/investigacion/page.tsx` y pruebas.
+Planned files: `use-demo-journal.ts`, `observation-panel.tsx`, `exercise-view.tsx`,
+`followup-view.tsx`, `review.ts`, `dashboard.tsx`, `/investigacion/page.tsx` and tests.
 
-Reutilizar la separación actual de observación/preparación y el snapshot inmutable.
-Añadir scope a claves de React y de estado local; conservar borradores mock antiguos.
-Propagar fuente en todos los enlaces y resolver `example` explícitamente.
-Representar sesiones API como lectura y mantener contexto en exportaciones.
+Reuse the current observation/preparation separation and the immutable snapshot.
+Add scope to React and local-state keys; keep old mock drafts.
+Propagate source in all links and resolve `example` explicitly.
+Represent API sessions as read-only and keep context in exports.
 
-Verificar: mismo `astro-01` en ambas fuentes no comparte notas ni copias; las notas
-mock siguen disponibles al volver; ninguna revisión se atribuye al contexto nuevo;
-investigación API sin integración no muestra el ejemplo como fuente real.
-Guardas: sin migración de notas entre fuentes ni aparentar escrituras remotas.
+Verify: the same `astro-01` in both sources does not share notes or copies; mock
+notes remain available on return; no review is attributed to the new context;
+API research without integration does not show the example as a real source.
+Guards: no migration of notes between sources nor pretending remote writes.
 
-### Fase 5 — Verificación y entrega A
+### Phase 5 — Verification and delivery A
 
-Ejecutar `npm run check`, `npm run test:contracts`, `npm run build` y comprobaciones
-en navegador. Con backend disponible, validar su API sintética; para errores usar
-respuestas controladas y casos de prueba. Consultar `docs/api.md` y tests backend
-como referencia, sin modificar su implementación para hacer pasar el frontend.
+Run `npm run check`, `npm run test:contracts`, `npm run build` and browser
+checks. With the backend available, validate its synthetic API; for errors use
+controlled responses and test cases. Consult `docs/api.md` and backend tests
+as a reference, without modifying their implementation to make the frontend pass.
 
-Actualizar `docs/team-workflow.md`, `docs/api.md` y `.env.example` con la selección
-por URL, valor por defecto, configuración privada y comportamiento sin backend.
-Registrar que el selector está operativo pero no hay fuente real conectada.
+Update `docs/team-workflow.md`, `docs/api.md` and `.env.example` with selection
+by URL, default value, private configuration and behavior without a backend.
+Record that the selector is operational but no real source is connected.
 
-Guardas: no dar por pasada una integración con backend real a partir de un fixture
-de prueba; no publicar datos ni introducir nuevas dependencias por este control.
+Guards: do not consider an integration with a real backend passed from a test
+fixture; do not publish data nor introduce new dependencies for this control.
 
-### Fase 6 — Contrato acordado e integración real, entrega B
+### Phase 6 — Agreed contract and real integration, delivery B
 
-Responsabilidad compartida: backend entrega lectura verificable; ambos acuerdan
-`contracts/`; frontend incorpora adaptador y presentación. Referencias: análisis e
-implementación aeróbicos existentes y requisitos de §7.
+Shared responsibility: backend delivers verifiable reading; both agree on
+`contracts/`; frontend incorporates adapter and presentation. References: existing
+aerobic analysis and implementation and requirements of §7.
 
-Verificar con muestra restaurada y custodia comprobada: agrupación de pruebas,
-identidad contextual, ausencia/unidades/reloj, origen y límites en pantalla y CSV.
-Si el original o endpoint aún no existen, conservar disponibilidad pendiente, sin
-declarar completada esta fase ni activar «Datos reales» con un ejemplo sintético.
+Verify with restored sample and verified custody: grouping of tests,
+contextual identity, absence/units/clock, origin and limits on screen and CSV.
+If the original or endpoint does not exist yet, keep availability pending, without
+declaring this phase complete nor enabling «Real data» with a synthetic example.
 
-## 9. Matriz de aceptación
+## 9. Acceptance matrix
 
-| Caso | Resultado requerido |
+| Case | Required result |
 | --- | --- |
-| Inicio sin entorno ni backend | Demo plenamente funcional |
-| Click con backend sin configurar | Estado explicativo y regreso a mocks; ninguna petición a URL inventada |
-| API 0.1 conectada | Datos sintéticos · Fuente Backend |
-| Respuesta real en parser 0.1 | Rechazo de versión/formato; sin degradación a mock |
-| API futura con origen real validado | Etiqueta real + tipo de origen; capacidades según evidencia |
-| API vacía con meta sintética | Sin registros, sigue siendo Backend/sintético |
-| API caída, timeout o JSON inválido | Error recuperable; no aparece historial mock como respuesta API |
-| Persona conocida sin evaluaciones | Estado vacío válido; fuente y selector disponibles |
-| Persona inexistente en esa fuente | Estado de persona no disponible; sin reasignación a Vega |
-| Dos usuarios concurrentes eligen fuentes distintas | Ningún cambio global ni contaminación entre peticiones |
-| IDs iguales en mocks y API | Selecciones, notas, sesiones y revisiones separadas |
-| Copia preparada antes de cambiar | Mantiene fuente y contenido originales |
-| Navegación por filtros, persona y vistas | Conserva source; no vuelve al default por omisión |
-| Cambiar de fuente | Conserva preferencias; limpia identidades y protocolos del origen anterior |
-| Recarga y atrás/adelante | URL y fuente efectiva coherentes |
-| Clics rápidos y cargas demoradas | Último contexto comprometido consistente; sin relabel de contenido anterior |
-| Investigación API sin lector real | Estado pendiente; no fallback al ejemplo |
-| Una prueba real con cuatro etapas | Una prueba; tendencia bloqueada; no cuatro visitas |
-| Origen desconocido o mixto | Sin etiqueta global «Datos reales» injustificada |
-| Fuente cambiada durante exportación/revisión | Acción bloqueada mientras carga; snapshot ligado a fuente efectiva |
-| 320–1440 px, texto 200 %, temas | Control legible y sin desbordamiento de página |
-| Teclado y lector de pantalla | Acción y destino claros; estado anunciado sin depender del color |
+| Start without environment or backend | Fully functional demo |
+| Click with unconfigured backend | Explanatory state and return to mocks; no request to an invented URL |
+| API 0.1 connected | Synthetic data · Source Backend |
+| Real response in parser 0.1 | Rejection of version/format; no degradation to mock |
+| Future API with validated real origin | Real label + type of origin; capabilities according to evidence |
+| Empty API with synthetic meta | No records, remains Backend/synthetic |
+| API down, timeout or invalid JSON | Recoverable error; no mock history appears as an API response |
+| Known person without assessments | Valid empty state; source and selector available |
+| Nonexistent person in that source | Person-not-available state; no reassignment to Vega |
+| Two concurrent users choose different sources | No global change nor contamination between requests |
+| Same IDs in mocks and API | Separate selections, notes, sessions and reviews |
+| Copy prepared before switching | Keeps original source and content |
+| Navigation by filters, person and views | Keeps source; does not revert to the default by omission |
+| Switching source | Keeps preferences; clears identities and protocols of the previous origin |
+| Reload and back/forward | URL and effective source consistent |
+| Fast clicks and delayed loads | Last committed context consistent; no relabel of previous content |
+| API research without real reader | Pending state; no fallback to the example |
+| One real test with four stages | One test; trend blocked; not four visits |
+| Unknown or mixed origin | No unjustified global «Real data» label |
+| Source changed during export/review | Action blocked while loading; snapshot tied to effective source |
+| 320–1440 px, 200% text, themes | Control legible and no page overflow |
+| Keyboard and screen reader | Clear action and target; state announced without depending on color |
 
-## 10. Reparto y secuencia de cambios revisables
+## 10. Distribution and sequence of reviewable changes
 
-Frontend puede completar fases 1–5 con la API 0.1 actual. Backend mantiene su proveedor
-y contrato sin cambios. El responsable de backend puede continuar en su rama sin
-editar componentes ni lockfile raíz. La fase 6 se integra después de acordar la
-respuesta; no exige mezclar ramas completas ni importar el store de navegador de main.
+Frontend can complete phases 1–5 with the current API 0.1. Backend keeps its provider
+and contract unchanged. The backend owner can continue on their branch without
+editing components or the root lockfile. Phase 6 is integrated after agreeing on the
+response; it does not require merging entire branches nor importing main's browser store.
 
-Commits propuestos para la entrega A:
+Proposed commits for delivery A:
 
-1. Contexto de fuente por petición, navegación y tests puros.
-2. Proveedor coherente y errores recuperables.
-3. Control superior, carga y navegación accesible.
-4. Aislamiento de borradores, investigación y revisiones.
-5. Comprobación de integración y documentación de uso.
+1. Per-request source context, navigation and pure tests.
+2. Consistent provider and recoverable errors.
+3. Top control, loading and accessible navigation.
+4. Isolation of drafts, research and reviews.
+5. Integration check and usage documentation.
 
-Cada commit debe dejar tipos y pruebas coherentes; estos bloques pueden agruparse
-si separarlos produce un estado que no compila. No se incluyen cambios especulativos
-de contrato en esos commits.
+Each commit must leave types and tests consistent; these blocks can be grouped
+if separating them produces a state that does not compile. No speculative
+contract changes are included in those commits.
 
-## 11. Documentación técnica para ejecutar el plan
+## 11. Technical documentation to execute the plan
 
-Leer las versiones locales antes de implementar, como exige `AGENTS.md`:
+Read the local versions before implementing, as `AGENTS.md` requires:
 
 - `node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/page.md`:
-  `searchParams` asíncronos y lectura en servidor.
+  asynchronous `searchParams` and server reading.
 - `node_modules/next/dist/docs/01-app/03-api-reference/04-functions/use-router.md`:
-  `push`, `replace`, `refresh` y construcción segura de URLs internas.
+  `push`, `replace`, `refresh` and safe construction of internal URLs.
 - `node_modules/next/dist/docs/01-app/01-getting-started/10-error-handling.md`:
-  resultados para errores esperados frente a excepciones inesperadas.
+  results for expected errors versus unexpected exceptions.
 - `node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/error.md`:
-  recuperación con `retry()` de la versión instalada.
+  recovery with `retry()` of the installed version.
 - `node_modules/next/dist/docs/01-app/02-guides/environment-variables.md`:
-  configuración privada; no convertir el destino API en una variable pública.
-- `src/lib/api/client.ts`, `data/service.ts`, `dashboard-state.ts` y
-  `tests/aerobic-evidence.test.ts`: patrones reales del repositorio.
-- [Preparación aeróbica](aerobic-data-integration-analysis.md) y
-  [entrega previa](aerobic-data-integration-implementation.md): límites de origen,
-  tiempo, comparabilidad y lectura real pendiente.
+  private configuration; do not turn the API target into a public variable.
+- `src/lib/api/client.ts`, `data/service.ts`, `dashboard-state.ts` and
+  `tests/aerobic-evidence.test.ts`: real patterns of the repository.
+- [Aerobic preparation](aerobic-data-integration-analysis.md) and
+  [previous delivery](aerobic-data-integration-implementation.md): limits of origin,
+  time, comparability and pending real reading.
 
-La documentación consultada orienta el plan; en esta entrega no se ejecutaron tests
-de aplicación porque solo se añadió este documento. La verificación completa forma
-parte de las fases de implementación, no de una afirmación sobre código aún inexistente.
+The documentation consulted guides the plan; in this delivery no application tests
+were run because only this document was added. The complete verification is part
+of the implementation phases, not a claim about code that does not yet exist.

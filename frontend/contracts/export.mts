@@ -5,4 +5,4 @@ writeFileSync(
   new URL("./openapi.json", import.meta.url),
   JSON.stringify(buildOpenApi(), null, 2) + "\n",
 );
-console.log("Actualizado contracts/openapi.json");
+console.log("Updated contracts/openapi.json");

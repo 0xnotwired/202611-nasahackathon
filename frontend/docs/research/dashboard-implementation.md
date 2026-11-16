@@ -1,71 +1,71 @@
-# Dashboard aeróbico de Órbita
+# Órbita aerobic dashboard
 
-Implementación basada en [la investigación de interfaces](aerobic-dashboard-research.md).
+Implementation based on [the interface research](aerobic-dashboard-research.md).
 
-## Dirección de diseño
+## Design direction
 
-El panel organiza el seguimiento como una bitácora personal. La trayectoria es el
-contenido principal; la ilustración orbital da identidad sin representar un estado
-médico. Azul profundo `#17354b`, fondo `#f3f6fa`, superficies `#ffffff`, texto
-secundario `#52677d`, trayectoria `#217b70` y divisores `#dce4ed`.
-La versión oscura conserva contraste y diferencia los protocolos por forma y trazo.
-No hay animaciones continuas, ECG decorativos ni puntuación global de salud.
+The panel organizes follow-up as a personal logbook. The trajectory is the
+main content; the orbital illustration gives identity without representing a medical
+state. Deep blue `#17354b`, background `#f3f6fa`, surfaces `#ffffff`, secondary
+text `#52677d`, trajectory `#217b70` and dividers `#dce4ed`.
+The dark version keeps contrast and tells protocols apart by shape and stroke.
+There are no continuous animations, decorative ECGs or global health score.
 
-## Recorrido disponible
+## Available journey
 
-- Mi perspectiva: resumen, evolución interactiva, ficha de visita y lectura explicada.
-- Historial aeróbico: mismo explorador con el registro abierto y acceso a otros datos.
-- Ejercicio y seguimiento: registro de actividad y preparación local de una revisión.
-- Filtros de 3, 6 y 12 meses o historial completo, anclados en la última visita del
-  historial disponible. Un límite de tres meses incluye ambos extremos: puede haber
-  cuatro visitas mensuales. El período efectivo siempre se muestra con fechas.
-- Referencia elegida explícitamente, conservada al cambiar el período, aunque quede
-  fuera de la ventana. Puede seleccionarse la visita más reciente.
-- Exportación CSV limitada al período; incluye unidad, método, origen sintético y
-  validación pendiente. No exporta un diagnóstico ni una tendencia clínica.
-- Tabla accesible con encabezados, desplazamiento por teclado y explicación
-  desplegable de las comparaciones bloqueadas.
+- My perspective: summary, interactive evolution, visit card and explained reading.
+- Aerobic history: the same explorer with the record open and access to other data.
+- Exercise and follow-up: activity logging and local preparation of a review.
+- Filters of 3, 6 and 12 months or full history, anchored to the latest visit of the
+  available history. A three-month limit includes both ends: there can be
+  four monthly visits. The effective period is always shown with dates.
+- Reference chosen explicitly, kept when the period changes, even if it falls
+  outside the window. The most recent visit can be selected.
+- CSV export limited to the period; it includes unit, method, synthetic origin and
+  pending validation. It does not export a diagnosis or a clinical trend.
+- Accessible table with headers, keyboard scrolling and a collapsible explanation
+  of the blocked comparisons.
 
-## Datos e integración
+## Data and integration
 
-Los componentes reciben datos de `data/service.ts`. El servicio activa los seis
-escenarios únicamente en modo mock. En modo API se oculta el selector y se consumen
-las respuestas existentes sin sustituirlas silenciosamente por fixtures.
-No se modifica `backend/`, `contracts/` ni el conjunto de dependencias.
+Components receive data from `data/service.ts`. The service enables the six
+scenarios only in mock mode. In API mode the selector is hidden and the existing
+responses are consumed without silently replacing them with fixtures.
+`backend/`, `contracts/` and the set of dependencies are not modified.
 
-El escenario inicial es descenso y recuperación: trece visitas de noviembre de 2025
-hasta noviembre de 2026. Los seis perfiles reproducen las series de diseño del CSV;
-Lyra usa un desplazamiento ficticio de dos unidades para distinguir personas.
-Atlas conserva el estado vacío para comprobar ausencia de datos.
+The initial scenario is decline and recovery: thirteen visits from November 2025
+to November 2026. The six profiles reproduce the design series of the CSV;
+Lyra uses a fictional offset of two units to tell people apart.
+Atlas keeps the empty state to verify the absence of data.
 
-Los valores son inventados; la unidad mL/kg/min y los protocolos A/B son del demo.
-No resuelven las unidades o condiciones pendientes de MR080G. El apartado
-«Del dataset a tu historia» explica esa separación dentro del propio panel.
+The values are invented; the mL/kg/min unit and the A/B protocols are from the demo.
+They do not resolve the pending units or conditions of MR080G. The section
+«From the dataset to your story» explains that separation within the panel itself.
 
-## Cálculos y representación
+## Calculations and representation
 
-La tendencia es la pendiente de una recta ajustada a días reales. Se exige un mínimo
-exploratorio de tres resultados y coincidencia de unidad y método. No es una prueba
-de significación, diagnóstico, umbral de estabilidad ni predicción. Una pendiente
-minúscula puede tener dirección matemática sin relevancia clínica; el panel no la
-llama mejoría o empeoramiento.
+The trend is the slope of a line fitted to real days. An exploratory minimum
+of three results and a matching unit and method are required. It is not a significance
+test, diagnosis, stability threshold or prediction. A tiny slope
+can have a mathematical direction without clinical relevance; the panel does not
+call it improvement or worsening.
 
-Los faltantes siguen ocupando su visita, se excluyen del ajuste y nunca se vuelven
-cero. Los trazos se interrumpen en faltantes y cambios de método/unidad. Métodos
-nuevos usan otro símbolo y trazo. Unidades diferentes no comparten el gráfico.
-La referencia visual solo se dibuja en segmentos del mismo método y unidad.
-La actividad se presenta separada y conserva su propio alcance temporal.
+Missing values still occupy their visit, are excluded from the fit and never become
+zero. Strokes break at missing values and at method/unit changes. New methods
+use another symbol and stroke. Different units do not share the chart.
+The visual reference is only drawn on segments of the same method and unit.
+Activity is presented separately and keeps its own time scope.
 
-## Verificación reproducible
+## Reproducible verification
 
 ```bash
 npm run check
 npm run build
 ```
 
-`tests/aerobic.test.ts` cubre períodos por fecha, recuperación con cambio de dirección,
-faltantes, métodos y unidades incompatibles, fechas repetidas y exportación.
+`tests/aerobic.test.ts` covers periods by date, recovery with a change of direction,
+missing values, incompatible methods and units, repeated dates and export.
 
-En este entorno Turbopack encontró una restricción al abrir un puerto de su proceso
-interno. Se verificó la compilación alternativa con `npm run build -- --webpack`;
-no se cambió el bundler configurado para el desarrollo.
+In this environment Turbopack hit a restriction when opening a port of its internal
+process. The alternative build was verified with `npm run build -- --webpack`;
+the bundler configured for development was not changed.

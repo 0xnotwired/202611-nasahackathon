@@ -63,7 +63,7 @@ export function switchSourceHref(
   if (path === "/") {
     if (
       typeof query.view === "string" &&
-      ["resumen", "evolucion", "ejercicio", "seguimiento"].includes(query.view)
+      ["summary", "evolution", "exercise", "followup"].includes(query.view)
     )
       next.set("view", query.view);
     if (
@@ -83,6 +83,6 @@ export function journalKey(astronautId: string, mode: DataSourceMode) {
     : `orbita-api-demo-0.1-journal-v1:${astronautId}`;
 }
 export const sourceNames = {
-  mock: "Simulación local",
+  mock: "Local simulation",
   api: "Backend",
 } as const;

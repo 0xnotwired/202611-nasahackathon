@@ -14,7 +14,7 @@ export function ThemeControl() {
       try {
         value = localStorage.getItem(key);
       } catch {
-        /* Sigue el sistema. */
+        /* Follows the system. */
       }
       const next = value === "light" || value === "dark" ? value : "system";
       setTheme(next);
@@ -41,15 +41,15 @@ export function ThemeControl() {
   return (
     <label className="theme-control">
       <Monitor size={16} aria-hidden="true" />
-      <span>Tema</span>
+      <span>Theme</span>
       <select
-        aria-label="Tema"
+        aria-label="Theme"
         value={theme}
         onChange={(event) => change(event.target.value as Theme)}
       >
-        <option value="system">Sistema</option>
-        <option value="light">Claro</option>
-        <option value="dark">Oscuro</option>
+        <option value="system">System</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
       </select>
     </label>
   );

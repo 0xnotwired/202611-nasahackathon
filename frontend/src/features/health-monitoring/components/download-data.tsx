@@ -22,7 +22,7 @@ export function DownloadData({
         setTimeout(() => URL.revokeObjectURL(url), 1000);
       }}
     >
-      Exportar prueba y procedencia
+      Export test and provenance
     </button>
   );
 }

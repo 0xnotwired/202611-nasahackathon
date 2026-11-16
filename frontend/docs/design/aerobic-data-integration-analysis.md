@@ -1,501 +1,500 @@
-# Preparación del dashboard aeróbico para datos de main
+# Preparing the aerobic dashboard for data from main
 
-Fecha: 15 de noviembre de 2026.
-Estado: análisis y propuesta; no implementa integración ni modifica contratos.
+Date: November 15, 2026.
+Status: analysis and proposal; it does not implement integration nor modify contracts.
 
-Seguimiento: [entrega de frontend y pendientes de integración real](aerobic-data-integration-implementation.md).
-El contenido de este análisis conserva la evidencia y el alcance de su inspección original.
+Follow-up: [frontend delivery and pending items for real integration](aerobic-data-integration-implementation.md).
+The content of this analysis keeps the evidence and the scope of its original inspection.
 
-## 1. Recomendación
+## 1. Recommendation
 
-Conservar el frontend actual como presentación y conectar una proyección de datos
-que preserve la semántica del núcleo de `main`. La próxima mejora debe ser la
-**fidelidad de los datos y de sus límites**, además de la apariencia sobria ya lograda.
+Keep the current frontend as the presentation layer and connect a data projection
+that preserves the semantics of the `main` core. The next improvement must be the
+**fidelity of the data and of their limits**, in addition to the sober appearance already achieved.
 
-Hay tres entregas distintas:
+There are three distinct deliveries:
 
-1. Seguimiento personal longitudinal con datos sintéticos identificados.
-2. Exploración de una prueba real de investigación, con etapas y procedencia.
-3. Seguimiento longitudinal real, cuando existan varias evaluaciones comparables
-   del mismo participante y estén resueltas sus condiciones temporales y de medida.
+1. Longitudinal personal follow-up with identified synthetic data.
+2. Exploration of a real research test, with stages and provenance.
+3. Real longitudinal follow-up, once several comparable assessments
+   of the same participant exist and their time and measurement conditions are resolved.
 
-La segunda entrega no demuestra la tercera. Los registros reales seleccionados
-actualmente de MR080G permiten inspeccionar una prueba; no forman doce meses de
-seguimiento de un astronauta.
+The second delivery does not demonstrate the third. The real records currently selected
+from MR080G allow inspecting one test; they do not form twelve months of
+follow-up of an astronaut.
 
-## 2. Alcance verificado
+## 2. Verified scope
 
-Referencias locales inspeccionadas:
+Local references inspected:
 
 - `main`: `e5270c8d0d5c2ef7e54e6b166865e4764d2223c2`.
 - `frontend`: `608dd3e36f74ecaa2cd5dff76b8131b4e0504701`.
-- Los respectivos `origin/main` y `origin/frontend` apuntaban a esos mismos commits
-  en las referencias locales. No se ejecutó fetch; no se afirma actualidad remota.
-- La rama activa era `frontend`, con árbol limpio antes de crear este documento.
+- The respective `origin/main` and `origin/frontend` pointed to those same commits
+  in the local references. No fetch was run; remote currency is not claimed.
+- The active branch was `frontend`, with a clean tree before creating this document.
 
-Se leyeron código, contratos, estado consolidado, manifiestos y órdenes de trabajo.
-Se realizó una comprobación acotada del parser del frontend con un objeto ficticio
-en memoria. No se ejecutaron importaciones, ensayos médicos, pipelines ni pruebas
-completas de `main`. Los recuentos de importación corresponden a sus informes
-versionados, contrastados con el código de selección.
+Code, contracts, consolidated status, manifests and work orders were read.
+A bounded check of the frontend parser was done with a fictional in-memory
+object. No imports, medical trials, pipelines or full tests of
+`main` were run. The import counts correspond to its versioned
+reports, checked against the selection code.
 
-En este workspace no existen `data/originals/` ni `data/local-import-profile/`.
-Clonar el código no restaura el perfil IndexedDB ni los datos originales. No se
-leyeron ni publicaron mediciones originales de participantes.
+In this workspace `data/originals/` and `data/local-import-profile/` do not exist.
+Cloning the code does not restore the IndexedDB profile or the original data. No
+original participant measurements were read or published.
 
-## 3. Qué ofrece cada rama
+## 3. What each branch offers
 
-| Área | main | frontend actual | Implicación |
+| Area | main | current frontend | Implication |
 | --- | --- | --- | --- |
-| Dominio | M01 valida registros, unidades desconocidas y relojes de origen | `Evaluation` contiene ID, fecha UTC, valor, unidad y método | Falta una proyección explícita entre ambos modelos |
-| Identidad | Sujeto, estudio/procedencia y alcance del reloj | Astronautas de demostración | Los sujetos reales necesitan identidad separada y contextualizada |
-| Ausencia | `recorded`, `confirmed_none`, `not_recorded` | Valor numérico o `null` | No convertir los tres estados en un único significado |
-| Persistencia | Memoria e IndexedDB; correcciones mediante nuevos registros | Borradores y copia de revisión en localStorage | Diferentes responsabilidades y garantías |
-| Datos sintéticos | M05 genera 16 registros; capacidad aeróbica sin resultado | Seis perfiles longitudinales con 13 visitas nominales | M05 no reemplaza por sí solo el historial aeróbico del dashboard |
-| Datos reales | M21 importa perfiles concretos de CRF, adaptación y glucosa | Contrato 0.1 declara exclusivamente datos sintéticos | Activar `HEALTH_DATA_SOURCE=api` no habilita datos reales |
-| Consultas | M06 sigue como placeholder | Filtrado, diferencias y pendiente descriptiva locales | Acordar quién produce las lecturas y su contrato |
-| Presentación | M07/M09 y otras vistas pendientes | Dashboard Next.js implementado | La UI existente puede aprovechar el núcleo sin rehacerla por estética |
-| Acceso | Shell HTTP de módulos y perfil local de desarrollo | API Node/TypeScript preliminar de lectura | main no expone directamente los endpoints del frontend |
+| Domain | M01 validates records, unknown units and source clocks | `Evaluation` contains ID, UTC date, value, unit and method | An explicit projection between both models is missing |
+| Identity | Subject, study/provenance and clock scope | Demonstration astronauts | Real subjects need separate and contextualized identity |
+| Absence | `recorded`, `confirmed_none`, `not_recorded` | Numeric value or `null` | Do not collapse the three states into a single meaning |
+| Persistence | Memory and IndexedDB; corrections through new records | Drafts and review copy in localStorage | Different responsibilities and guarantees |
+| Synthetic data | M05 generates 16 records; aerobic capacity without result | Six longitudinal profiles with 13 nominal visits | M05 does not by itself replace the dashboard's aerobic history |
+| Real data | M21 imports specific profiles of CRF, adaptation and glucose | Contract 0.1 declares exclusively synthetic data | Enabling `HEALTH_DATA_SOURCE=api` does not enable real data |
+| Queries | M06 remains a placeholder | Local filtering, differences and descriptive slope | Agree on who produces the readings and their contract |
+| Presentation | M07/M09 and other views pending | Next.js dashboard implemented | The existing UI can leverage the core without redoing it for aesthetics |
+| Access | HTTP module shell and local development profile | Preliminary read Node/TypeScript API | main does not directly expose the frontend's endpoints |
 
-La versión 0.8 del contrato de dominio de `main`, su esquema de registro 2 y el
-contrato HTTP 0.1 del frontend son versiones de cosas distintas. No deben igualarse
-cambiando un número ni suponerse compatibles.
+Version 0.8 of the `main` domain contract, its record schema 2 and the frontend's
+HTTP contract 0.1 are versions of different things. They must not be equated
+by changing a number nor assumed to be compatible.
 
-`mock` frente a `api` solo define cómo se obtienen los datos. No determina si son
-sintéticos, terrestres o de vuelo; la API preliminar también devuelve datos ficticios.
-La procedencia debe viajar con cada resultado y con el contexto de la respuesta.
+`mock` versus `api` only defines how the data are obtained. It does not determine whether they are
+synthetic, ground or flight; the preliminary API also returns fictional data.
+Provenance must travel with each result and with the context of the response.
 
-## 4. Lo que representa realmente MR080G hoy
+## 4. What MR080G actually represents today
 
-El importador actual acepta únicamente un perfil verificado de Campaign 3C, una
-persona, una fecha y una prueba de cicloergómetro concretas. Rechaza otros perfiles
-MR080G para evitar transferir unidades no confirmadas.
+The current importer accepts only one verified profile of Campaign 3C, one
+person, one date and one specific cycle ergometer test. It rejects other MR080G
+profiles to avoid transferring unconfirmed units.
 
-Los informes de resolución vinculan cuatro filas con las etapas:
+The resolution reports link four rows to the stages:
 
 - `50 Watt Av.`
 - `75 Watt Av.`
 - `100 Watt Av.`
 - `Peak AVG`
 
-Cada fila produce ocho registros escalares: HR, VO₂ absoluto, VCO₂, RER,
-VO₂ relativo a masa, VE, FEO₂ y FECO₂.
+Each row produces eight scalar records: HR, absolute VO₂, VCO₂, RER,
+mass-relative VO₂, VE, FEO₂ and FECO₂.
 
-**4 etapas × 8 variables = 32 registros. Es una prueba, no 32 pruebas.**
-Hay cuatro resultados de VO₂ relativo dentro de esa prueba; solo el asociado a
-`Peak AVG` es candidato al resumen pico reportado por la fuente. Seleccionarlo
-requiere un mapeo explícito de etapa y cantidad. No se debe tomar cada registro
-como una visita, ni usar `Math.max` sobre columnas o etapas como definición de pico.
+**4 stages × 8 variables = 32 records. It is one test, not 32 tests.**
+There are four relative VO₂ results within that test; only the one associated with
+`Peak AVG` is a candidate for the peak summary reported by the source. Selecting it
+requires an explicit mapping of stage and quantity. Each record must not be taken
+as a visit, nor use `Math.max` over columns or stages as the definition of peak.
 
-Unidades confirmadas para ese perfil: HR en bpm, VO₂/VCO₂ en L/min, VO₂ relativo
-en mL/kg/min, VE en L/min con condición BTPS, RER adimensional y fracciones espiradas
-en porcentaje. No se generalizan a todos los archivos de MR080G. Tampoco resuelven
-las unidades de CRF o de otros estudios.
+Confirmed units for that profile: HR in bpm, VO₂/VCO₂ in L/min, relative VO₂
+in mL/kg/min, VE in L/min with BTPS condition, RER dimensionless and expired fractions
+in percent. They are not generalized to all MR080G files. Nor do they resolve
+the units of CRF or other studies.
 
-El importador conserva `Stage` dentro de `method`; no entrega todavía un objeto
-estructurado de prueba con etapas. Tampoco convierte las etiquetas de potencia en
-una serie temporal continua. El perfil de M21 no aporta por sí solo una señal
-respiración a respiración ni toda la duración de la sesión.
+The importer keeps `Stage` inside `method`; it does not yet deliver a structured
+test object with stages. Nor does it convert the power labels into a continuous
+time series. The M21 profile does not by itself provide a breath-by-breath signal or the full duration of the session.
 
-### Diccionario mínimo de selección propuesto
+### Proposed minimum selection dictionary
 
-| Campo importado | Contexto exigido | Cantidad de presentación candidata |
+| Imported field | Required context | Candidate presentation quantity |
 | --- | --- | --- |
-| `aerobic_capacity` | Etapa verificada `Peak AVG` | VO₂pico relativo reportado |
-| `VO2` | Misma prueba y etapa verificada `Peak AVG` | VO₂pico absoluto reportado |
-| `aerobic_capacity` o `VO2` | Etapas de carga conocidas | VO₂ de esa etapa, no VO₂pico |
-| `pulse` | Pico o etapa identificados | Frecuencia cardíaca del pico o de esa etapa |
-| `VCO2`, `RER`, `VE`, `FEO2`, `FECO2` | Prueba y etapa conservadas | Cantidades técnicas originales, con sus unidades |
+| `aerobic_capacity` | Verified stage `Peak AVG` | Reported relative peak VO₂ |
+| `VO2` | Same test and verified stage `Peak AVG` | Reported absolute peak VO₂ |
+| `aerobic_capacity` or `VO2` | Known load stages | VO₂ of that stage, not peak VO₂ |
+| `pulse` | Identified peak or stage | Heart rate at the peak or at that stage |
+| `VCO2`, `RER`, `VE`, `FEO2`, `FECO2` | Test and stage preserved | Original technical quantities, with their units |
 
-Este mapeo es una propuesta a revisar contra la fuente. No clasifica esfuerzo
-máximo ni transforma VO₂pico en VO₂máx. No transfiere la unidad de `pulse` en MR080G
-a `Pulse` de CRF.
+This mapping is a proposal to be reviewed against the source. It does not classify maximal
+effort nor turn peak VO₂ into VO₂max. It does not transfer the unit of `pulse` in MR080G
+to `Pulse` in CRF.
 
-### Límite temporal que sigue vigente
+### Time limit that remains in force
 
-Estos registros usan `time: null` y `source_time` con precisión de día, zona
-horaria desconocida y calendario `unknown`. La política actual de M01 bloquea
-comparaciones cuando ese calendario sigue sin resolver.
+These records use `time: null` and `source_time` with day precision, unknown
+time zone and `unknown` calendar. The current M01 policy blocks
+comparisons while that calendar remains unresolved.
 
-Conocer el formato mes/día/año no prueba que la fecha sea un instante UTC ni que
-el calendario no haya sido desplazado para anonimizarlo. Se puede mostrar la fecha
-reportada y su incertidumbre; no añadir medianoche, `Z`, antigüedad exacta o una
-alineación con la misión ficticia.
+Knowing the month/day/year format does not prove that the date is a UTC instant nor that
+the calendar has not been shifted to anonymize it. The reported date and its
+uncertainty can be shown; do not add midnight, `Z`, exact age or an
+alignment with the fictional mission.
 
-### Qué datos conviene priorizar
+### Which data to prioritize
 
-| Fuente | Utilidad aeróbica inicial | Límite actual |
+| Source | Initial aerobic usefulness | Current limit |
 | --- | --- | --- |
-| MR080G seleccionado | Resultado pico reportado y tabla de etapas de una prueba | Una sola prueba; reloj incierto; perfil de importación restringido |
-| Historial sintético del frontend | Recorrido de varios meses, faltantes y cambios de método | Ficticio, sin calibración fisiológica ni validación médica |
-| ACTES | Candidato posterior para detalle de esfuerzo con eje relativo | Su adaptador y contrato de tiempo relativo no están implementados en M21 |
-| CRF | Contexto de signos vitales o masa cuando sus unidades se resuelvan | No sustituye una prueba aeróbica; unidades seleccionadas aún desconocidas |
-| MR079G / MR035G | Otras dimensiones de adaptación física | Fuerza y densidad ósea no equivalen a capacidad aeróbica |
-| BUT CGM | Contexto metabólico de otra parte del producto | No aporta un VO₂pico ni una validación del desempeño aeróbico |
+| Selected MR080G | Reported peak result and stage table of one test | A single test; uncertain clock; restricted import profile |
+| Frontend synthetic history | Multi-month journey, missing values and method changes | Fictional, without physiological calibration or medical validation |
+| ACTES | Later candidate for effort detail with relative axis | Its adapter and relative-time contract are not implemented in M21 |
+| CRF | Context of vital signs or mass when its units are resolved | It does not replace an aerobic test; selected units still unknown |
+| MR079G / MR035G | Other dimensions of physical adaptation | Strength and bone density are not equivalent to aerobic capacity |
+| BUT CGM | Metabolic context of another part of the product | It provides neither a peak VO₂ nor a validation of aerobic performance |
 
-Los informes de `main` documentan 3861 registros importados entre cinco perfiles,
-pero ese total no es un tamaño de muestra de evaluaciones aeróbicas. La existencia
-del código o de un manifiesto no prueba que ese perfil local esté disponible aquí.
+The `main` reports document 3861 records imported across five profiles,
+but that total is not a sample size of aerobic assessments. The existence
+of the code or a manifest does not prove that this local profile is available here.
 
-## 5. Brechas concretas del frontend
+## 5. Concrete frontend gaps
 
-| Prioridad | Localización | Brecha y efecto |
+| Priority | Location | Gap and effect |
 | --- | --- | --- |
-| P0 | `contracts/models.ts:2` | `dataKind` solo admite `synthetic`; no representa procedencia real |
-| P0 | `contracts/models.ts:22` | `Evaluation` no identifica cantidad, persona, prueba, etapa ni registros fuente |
-| P0 | `contracts/schemas.ts` | Fechas obligatoriamente ISO UTC y unidades no vacías impiden preservar incertidumbre de main |
-| P0 | `contracts/schemas.ts` | Los objetos de evaluación eliminan campos adicionales no declarados |
-| P0 | `data/service.ts:22` | `getMission` devuelve solo `response.data`; no transmite los metadatos de misión a la UI |
-| P0 | `mission.ts:8` | Comparar unidad y método no verifica cantidad, identidad contextual, etapa, estado ni reloj |
-| P0 | `aerobic.ts`, `review.ts` | CSV y revisión fijan origen sintético/texto de datos ficticios |
-| P0 | `components/dashboard.tsx` | El encabezado y el pie afirman simulación sin consultar procedencia de la respuesta |
-| P1 | `aerobic.ts:describePeriod` | Cuenta valores, no evaluaciones identificadas; recibir filas de etapas falsearía n |
-| P1 | `dashboard-state.ts` | `Date.parse`, filtros y antigüedad asumen tiempo absoluto conocido |
-| P1 | `components/aerobic-overview.tsx` | La etiqueta VO₂pico es fija, aunque el modelo no declara que el valor sea un pico |
-| P1 | `review.ts` | La copia no conserva un manifiesto de fuentes ni versión de derivación |
-| P1 | `components/trajectory-chart.tsx` | Cortar por método evita algunas mezclas, pero no diferencia todas las causas de no comparabilidad |
+| P0 | `contracts/models.ts:2` | `dataKind` only admits `synthetic`; it does not represent real provenance |
+| P0 | `contracts/models.ts:22` | `Evaluation` does not identify quantity, person, test, stage or source records |
+| P0 | `contracts/schemas.ts` | Mandatory ISO UTC dates and non-empty units prevent preserving main's uncertainty |
+| P0 | `contracts/schemas.ts` | Evaluation objects strip additional undeclared fields |
+| P0 | `data/service.ts:22` | `getMission` returns only `response.data`; it does not transmit the mission metadata to the UI |
+| P0 | `mission.ts:8` | Comparing unit and method does not verify quantity, contextual identity, stage, state or clock |
+| P0 | `aerobic.ts`, `review.ts` | CSV and review fix the synthetic origin/fictional data text |
+| P0 | `components/dashboard.tsx` | The header and footer claim simulation without consulting the provenance of the response |
+| P1 | `aerobic.ts:describePeriod` | Counts values, not identified assessments; receiving stage rows would falsify n |
+| P1 | `dashboard-state.ts` | `Date.parse`, filters and age assume known absolute time |
+| P1 | `components/aerobic-overview.tsx` | The peak VO₂ label is fixed, although the model does not declare that the value is a peak |
+| P1 | `review.ts` | The copy does not keep a source manifest or derivation version |
+| P1 | `components/trajectory-chart.tsx` | Cutting by method avoids some mixes, but does not differentiate all causes of non-comparability |
 
-P0 significa resolver antes de habilitar datos reales. No indica gravedad médica.
+P0 means resolve before enabling real data. It does not indicate medical severity.
 
-### Comprobación del parser
+### Parser check
 
-Se pasó un objeto ficticio compatible con v0.1, añadiendo `origin`, `subjectRef`
-y `sourceRecordIds` a una evaluación. El resultado de `missionResponseSchema.parse`
-retuvo únicamente `id`, `recordedAt`, `value`, `unit` y `method`.
-`originRetained` y `sourceRecordIdsRetained` fueron falsos.
+A fictional object compatible with v0.1 was passed, adding `origin`, `subjectRef`
+and `sourceRecordIds` to an assessment. The result of `missionResponseSchema.parse`
+retained only `id`, `recordedAt`, `value`, `unit` and `method`.
+`originRetained` and `sourceRecordIdsRetained` were false.
 
-Por tanto, un backend que simplemente añada metadatos a la respuesta actual puede
-perderlos al atravesar el parser. La solución debe incluir contrato, esquema,
-servicio y consumidores; no basta con ampliar un tipo TypeScript.
+Therefore, a backend that simply adds metadata to the current response may
+lose it when passing through the parser. The solution must include contract, schema,
+service and consumers; extending a TypeScript type is not enough.
 
-## 6. Qué significa seguir la capacidad o detectar un resultado inferior
+## 6. What it means to follow capacity or detect a lower result
 
-Separar tres cuestiones:
+Separate three questions:
 
-1. **Resultado observado:** el valor es menor o mayor que una referencia comparable.
-2. **Validez de la comparación:** misma persona contextualizada, cantidad, resultado
-   pico/etapa, protocolo, unidad, base temporal y condiciones aceptadas.
-3. **Interpretación de desempeño:** exige criterios de uso y revisión acordados.
-   Una diferencia o pendiente no establece por sí sola «mal desempeño».
+1. **Observed result:** the value is lower or higher than a comparable reference.
+2. **Validity of the comparison:** same contextualized person, quantity, peak/stage
+   result, protocol, unit, time basis and accepted conditions.
+3. **Interpretation of performance:** requires agreed criteria of use and review.
+   A difference or slope does not by itself establish «poor performance».
 
-Texto inicial recomendado: «Resultado menor que la referencia seleccionada», junto
-con diferencia, fechas, unidad y número de evaluaciones. Ante problemas de contexto:
-«Comparación no evaluable: cambió el protocolo» o «Cronología de origen sin resolver».
+Recommended initial text: «Result lower than the selected reference», together
+with difference, dates, unit and number of assessments. For context problems:
+«Comparison not assessable: protocol changed» or «Source chronology unresolved».
 
-No asignar «Estable», «Normal», «Apto» o «Riesgo» mediante tolerancias inventadas.
-La ausencia de criterio se presenta como ausencia de criterio, no como resultado
-favorable. M06 ya prevé `no_criterion` y `not_assessed`; todavía no los implementa.
+Do not assign «Stable», «Normal», «Fit» or «Risk» through invented tolerances.
+The absence of a criterion is presented as absence of a criterion, not as a favorable
+result. M06 already foresees `no_criterion` and `not_assessed`; it does not implement them yet.
 
-### Métricas y uso propuesto
+### Metrics and proposed use
 
-| Medida | Representación | Condición necesaria |
+| Measure | Representation | Necessary condition |
 | --- | --- | --- |
-| VO₂pico relativo, mL/kg/min | Indicador personal principal, si esa es la cantidad documentada | Pico reportado y normalización identificados |
-| VO₂pico absoluto, L/min | Segundo gráfico o selector, con escala propia | Resultado absoluto de la misma prueba, no un valor submáximo cualquiera |
-| Masa asociada, kg | Contexto de la normalización | Medida y unidad confirmadas, con vinculación temporal válida |
-| HR por etapa / pico, bpm | Detalle del esfuerzo y condiciones de comparación | Misma etapa/carga y protocolo donde proceda |
-| Carga/potencia, W | Contexto o resultado secundario cuando esté registrado | Valor explícito de la fuente; no inferir la potencia pico |
-| RER y VE | Detalle técnico de la prueba | Unidad y condiciones conservadas; no puntuación automática de salud |
-| Actividad completada | Registro independiente de sesiones | No tratar completar una sesión como demostrar mejora fisiológica |
+| Relative peak VO₂, mL/kg/min | Main personal indicator, if that is the documented quantity | Reported peak and normalization identified |
+| Absolute peak VO₂, L/min | Second chart or selector, with its own scale | Absolute result of the same test, not any submaximal value |
+| Associated mass, kg | Context of the normalization | Measure and unit confirmed, with valid time linkage |
+| HR by stage / peak, bpm | Effort detail and comparison conditions | Same stage/load and protocol where applicable |
+| Load/power, W | Context or secondary result when recorded | Explicit value from the source; do not infer the peak power |
+| RER and VE | Technical detail of the test | Unit and conditions preserved; no automatic health score |
+| Completed activity | Independent record of sessions | Do not treat completing a session as demonstrating physiological improvement |
 
-VO₂ absoluto y relativo son cantidades distintas. Algebraicamente, un cambio de
-masa puede modificar el cociente relativo sin que aumente el valor absoluto. No
-calcular ese cociente con una masa de unidad desconocida o de otra visita.
+Absolute and relative VO₂ are distinct quantities. Algebraically, a change in
+mass can modify the relative quotient without the absolute value increasing. Do not
+calculate that quotient with a mass of unknown unit or from another visit.
 
-La declaración [ARTP sobre CPET](https://pmc.ncbi.nlm.nih.gov/articles/PMC8593741/)
-explica la importancia de modalidad, protocolo, calidad y esfuerzo para interpretar
-una prueba; también advierte que RER aislado no es un indicador fiable de esfuerzo
-máximo. Esto respalda conservar ese contexto. No se trasladan aquí sus criterios
-clínicos, valores de referencia o instrucciones de ejecución a astronautas.
+The [ARTP statement on CPET](https://pmc.ncbi.nlm.nih.gov/articles/PMC8593741/)
+explains the importance of modality, protocol, quality and effort for interpreting
+a test; it also warns that RER alone is not a reliable indicator of maximal
+effort. This supports preserving that context. Its clinical criteria, reference values
+or execution instructions are not transferred here to astronauts.
 
-Un [resumen de investigación de NASA](https://ntrs.nasa.gov/citations/20140003748)
-describe pruebas de ciclo antes, durante y después del vuelo y resultados modelados
-para un sujeto promedio. Fundamenta la utilidad de observar fases y visitas; sus
-cambios de grupo no son umbrales individuales ni curvas para copiar en la demo.
+A [NASA research summary](https://ntrs.nasa.gov/citations/20140003748)
+describes cycle tests before, during and after flight and results modeled
+for an average subject. It grounds the usefulness of observing phases and visits; its
+group changes are not individual thresholds nor curves to copy in the demo.
 
-## 7. Arquitectura de integración recomendada
+## 7. Recommended integration architecture
 
-Mantener la frontera HTTP acordada con el responsable de backend:
+Keep the HTTP boundary agreed with the backend owner:
 
 ```mermaid
 flowchart LR
-  A[Originales y evidencia de fuente] --> B[Importadores M21]
-  B --> C[Registros canónicos y almacenamiento elegido]
-  C --> D[Agrupación de pruebas y consultas M06]
-  D --> E[Proyección aeróbica versionada]
-  E --> F[API de lectura]
-  F --> G[data/service.ts y validación]
-  G --> H[Modelo de vista]
-  H --> I[Dashboard personal o caso de investigación]
-  S[Escenarios sintéticos reproducibles] --> E
+  A[Originals and source evidence] --> B[M21 importers]
+  B --> C[Canonical records and chosen storage]
+  C --> D[Test grouping and M06 queries]
+  D --> E[Versioned aerobic projection]
+  E --> F[Read API]
+  F --> G[data/service.ts and validation]
+  G --> H[View model]
+  H --> I[Personal dashboard or research case]
+  S[Reproducible synthetic scenarios] --> E
 ```
 
-M06 y la proyección del diagrama son trabajo pendiente. La API Node/TypeScript
-actual es otra base preliminar; el servidor estático de `main` no la sustituye.
-Los importadores puros pueden evaluarse para ejecución en Node; el store IndexedDB
-y el perfil de Chromium no se vuelven legibles por un servidor Node por añadir un
-endpoint. Hay que elegir y reconstruir una fuente de lectura reproducible.
+M06 and the projection in the diagram are pending work. The current Node/TypeScript
+API is another preliminary base; main's static server does not replace it.
+The pure importers can be evaluated for execution in Node; the IndexedDB store
+and the Chromium profile do not become readable by a Node server by adding an
+endpoint. A reproducible read source must be chosen and rebuilt.
 
-Para el alcance inicial bastaría un repositorio de lectura de muestras verificadas,
-con manifiesto de importación y pruebas de correspondencia. No hace falta comenzar
-con sensores, streaming, autenticación avanzada o un sistema de sincronización.
-Los originales no se exponen como carpeta pública del servidor.
+For the initial scope, a read repository of verified samples would suffice,
+with an import manifest and correspondence tests. There is no need to start
+with sensors, streaming, advanced authentication or a sync system.
+The originals are not exposed as a public server folder.
 
-La lógica de selección, agrupación, comparabilidad y criterios debe tener una
-implementación de dominio acordada. La UI conserva formato, interacción y escalas
-visuales. No duplicar gradualmente M06 dentro de cada componente React.
+The selection, grouping, comparability and criteria logic must have an agreed
+domain implementation. The UI keeps format, interaction and visual scales.
+Do not gradually duplicate M06 inside each React component.
 
-### Contrato de transporte
+### Transport contract
 
-Proponer una nueva versión de lectura, por ejemplo `/api/v2/aerobic/...`, conservando
-v1 para la demo mientras se coordina la migración. El nombre exacto está por acordar.
-Las operaciones iniciales pueden limitarse a listar sujetos contextualizados,
-listar sus evaluaciones y consultar el detalle de una prueba.
+Propose a new read version, for example `/api/v2/aerobic/...`, keeping
+v1 for the demo while the migration is coordinated. The exact name is yet to be agreed.
+The initial operations can be limited to listing contextualized subjects,
+listing their assessments and querying the detail of a test.
 
-Separar versión HTTP, versión del dominio, versión de registro y versión de
-proyección. La respuesta debe transportar procedencia y condiciones de reutilización
-sin que el parser las descarte.
+Separate HTTP version, domain version, record version and
+projection version. The response must carry provenance and reuse conditions
+without the parser discarding them.
 
-## 8. Modelo de presentación propuesto
+## 8. Proposed presentation model
 
-No es un cambio aprobado del contrato compartido ni una implementación.
+It is not an approved change to the shared contract nor an implementation.
 
-| Entidad | Campos necesarios |
+| Entity | Necessary fields |
 | --- | --- |
-| Sujeto | ID contextual; código original; dataset/release/cohorte; origen; etiqueta de presentación |
-| Evaluación | ID estable; sujeto; fase del estudio o misión; prueba/protocolo; modalidad; estado de ejecución si se conoce |
-| Tiempo | Variante UTC o fecha/datetime de fuente; precisión; calendario; zona; alcance del reloj; texto original |
-| Resultado | Cantidad explícita; valor o ausencia; unidad conocida/desconocida; pico/etapa; reportado/medido/estimado cuando conste |
-| Etapa | Identificador y etiqueta originales; orden verificado; carga o tiempo solo si están disponibles |
-| Procedencia | Registros fuente; DOI/dataset/release; hash de archivo; fila/columna; perfil de importación; cita/licencia aplicables |
-| Derivación | Regla y versión; IDs incluidos/excluidos; referencia; número de pruebas; período; motivo de bloqueo |
-| Capacidades | Puede inspeccionarse, compararse, usar cronología, calcular antigüedad o tendencia; razones explícitas |
+| Subject | Contextual ID; original code; dataset/release/cohort; origin; presentation label |
+| Assessment | Stable ID; subject; study or mission phase; test/protocol; modality; execution state if known |
+| Time | UTC variant or source date/datetime; precision; calendar; zone; clock scope; original text |
+| Result | Explicit quantity; value or absence; known/unknown unit; peak/stage; reported/measured/estimated when recorded |
+| Stage | Original identifier and label; verified order; load or time only if available |
+| Provenance | Source records; DOI/dataset/release; file hash; row/column; import profile; applicable citation/license |
+| Derivation | Rule and version; included/excluded IDs; reference; number of tests; period; block reason |
+| Capabilities | Can be inspected, compared, use chronology, compute age or trend; explicit reasons |
 
-El sujeto se identifica por estudio/release/cohorte y código, no solo por el número
-original. Nunca se reutiliza el ID de Vega para un participante real.
-`source_time.scope` y `source` aportan evidencia, pero no conviene reconstruir toda
-la identidad mediante parsing informal de strings en componentes.
+The subject is identified by study/release/cohort and code, not just by the original
+number. The ID of Vega is never reused for a real participant.
+`source_time.scope` and `source` provide evidence, but it is not advisable to rebuild the entire
+identity through informal string parsing in components.
 
-El ensamblador de evaluaciones debe agrupar las variables y etapas de una misma
-prueba sin confundir archivos complementarios con nuevas visitas. Su regla queda
-versionada. El resultado pico conserva los IDs exactos usados para seleccionarlo.
+The assessment assembler must group the variables and stages of the same
+test without confusing complementary files with new visits. Its rule is
+versioned. The peak result keeps the exact IDs used to select it.
 
-La incertidumbre temporal y la de unidad son independientes. Tiempo relativo de
-sesión puede ser una futura variante, pero ACTES no se habilita hasta definirla y
-probarla: no se fuerza dentro del contrato UTC actual.
+Time uncertainty and unit uncertainty are independent. Relative session
+time can be a future variant, but ACTES is not enabled until it is defined and
+tested: it is not forced into the current UTC contract.
 
-El consumidor debe comprobar que los `subjectRef` de las evaluaciones coincidan
-con el sujeto solicitado. Hoy `getMeasurements` comprueba `astronautId`, mientras
-que `getMission` no puede hacerlo porque sus evaluaciones carecen de identidad de
-sujeto. El filtrado en el servidor y esta comprobación en la frontera se complementan.
+The consumer must check that the `subjectRef` of the assessments matches
+the requested subject. Today `getMeasurements` checks `astronautId`, while
+`getMission` cannot do so because its assessments lack subject identity.
+Server-side filtering and this check at the boundary complement each other.
 
-No identificar «dato real» con «criterio clínico validado». Son dimensiones separadas:
-procedencia, verificación técnica, calidad de medición y revisión de la interpretación.
-No inventar metadatos de dispositivo o calidad que el archivo no declara.
+Do not equate «real data» with «validated clinical criterion». They are separate dimensions:
+provenance, technical verification, measurement quality and review of the interpretation.
+Do not invent device or quality metadata that the file does not declare.
 
-## 9. Reglas antes de producir un cálculo
+## 9. Rules before producing a calculation
 
-1. Validar estructura y versión; preservar los campos exigidos por el contrato.
-2. Seleccionar sujeto contextual y estudio; comprobar origen y alcance de fuente.
-3. Exigir resultado numérico disponible para cálculos; ausencia no es cero.
-4. Comprobar cantidad: VO₂ relativo no es VO₂ absoluto, fracción espirada no es SpO₂,
-   pulso durante una etapa no equivale a pulso de reposo.
-5. Seleccionar la misma clase de resultado: pico con pico o etapa comparable con etapa.
-6. Verificar unidad, modalidad y protocolo con la política acordada; un nombre parecido
-   no prueba equivalencia y un string diferente puede necesitar revisión explícita.
-7. Verificar la base temporal. Calendario desconocido bloquea el cálculo según main.
-8. Aplicar exclusiones de calidad solo cuando existan condiciones y motivos documentados.
-9. Calcular diferencia pareada o resumen del segmento elegible, conservando sus IDs.
-10. Aplicar un criterio de desempeño únicamente si está configurado, es aplicable y
-    conserva autor, fuente, versión y estado de revisión.
+1. Validate structure and version; preserve the fields required by the contract.
+2. Select contextual subject and study; check origin and source scope.
+3. Require an available numeric result for calculations; absence is not zero.
+4. Check quantity: relative VO₂ is not absolute VO₂, expired fraction is not SpO₂,
+   pulse during a stage is not equivalent to resting pulse.
+5. Select the same class of result: peak with peak or comparable stage with stage.
+6. Verify unit, modality and protocol with the agreed policy; a similar name
+   does not prove equivalence and a different string may need explicit review.
+7. Verify the time basis. Unknown calendar blocks the calculation per main.
+8. Apply quality exclusions only when documented conditions and reasons exist.
+9. Calculate paired difference or summary of the eligible segment, preserving its IDs.
+10. Apply a performance criterion only if it is configured, applicable and
+    preserves author, source, version and review status.
 
-`main:app/core/index.js:areComparable` ya aporta comprobaciones de sujeto, variable,
-unidad, método y reloj. Su comentario aclara que comparabilidad no prueba que haya
-un valor disponible. No sustituye los pasos de disponibilidad, selección de pico ni
-la identidad contextual del adaptador. No comprueba de forma independiente todos
-los campos de origen/estudio/protocolo que proponemos para la proyección.
+`main:app/core/index.js:areComparable` already provides checks for subject, variable,
+unit, method and clock. Its comment clarifies that comparability does not prove that a
+value is available. It does not replace the availability steps, peak selection or
+the adapter's contextual identity. It does not independently check all
+the origin/study/protocol fields we propose for the projection.
 
-El «mínimo de tres» del frontend es una regla exploratoria de su demo, no una
-justificación estadística. Con dos evaluaciones elegibles puede haber diferencia
-pareada; con una no hay evolución. No calcular intervalos de confianza ficticios,
-pronósticos o significación a partir de ese mínimo.
+The frontend's «minimum of three» is an exploratory rule of its demo, not a
+statistical justification. With two eligible assessments there can be a paired
+difference; with one there is no evolution. Do not calculate fictitious confidence intervals,
+forecasts or significance from that minimum.
 
-## 10. Mejoras de representación
+## 10. Representation improvements
 
-### A. Seguimiento personal
+### A. Personal follow-up
 
-Mantener la pantalla sobria actual y añadir contexto operativo:
-
-```text
-Seguimiento aeróbico              [Datos sintéticos / origen real identificado]
-Persona / misión                 Fecha y base temporal disponibles
-
-Cantidad: VO₂pico relativo       Protocolo / grupo comparable
-Referencia elegida              Período efectivo
-
-Último resultado | Cambio elegible | Evaluaciones válidas / disponibles
-
-[Gráfico de evaluaciones]        [Detalle y procedencia de la prueba]
-[Marcadores de fases conocidas]  [Condiciones y límites]
-
-Resumen descriptivo y motivo de no evaluación, cuando corresponda
-Tabla / registros excluidos / referencia / exportación con fuentes
-```
-
-Añadir selector de grupo comparable cuando el período incluya varios protocolos.
-Conservar los resultados excluidos en tabla y explicar por qué no entraron, en lugar
-de eliminarlos de la experiencia. No unir métodos ni convertir automáticamente
-cinta y cicloergómetro en una única curva.
-
-Cuando se confirme la masa asociada, ofrecer VO₂ absoluto y relativo en paneles
-separados o mediante selector. Evitar dos ejes que sugieran relaciones por alineación
-visual. Mantener referencia y rango de inspección perceptibles.
-
-### B. Casos de investigación
-
-Un espacio diferenciado del seguimiento del astronauta ficticio:
+Keep the current sober screen and add operational context:
 
 ```text
-Caso de investigación · análogo terrestre
-Dataset / release / participante contextual / fase de bed rest
-Fecha reportada: precisión día · calendario y zona sin confirmar
+Aerobic follow-up                [Synthetic data / identified real origin]
+Person / mission                 Date and time basis available
 
-Pruebas disponibles: 1           Tendencia longitudinal: no evaluable
+Quantity: relative peak VO₂      Protocol / comparable group
+Chosen reference                 Effective period
 
-Resultado pico reportado         [Ficha de fuente y límites]
-Tabla de etapas: 50 W | 75 W | 100 W | Peak AVG
-Variables por etapa, cada una con su unidad
+Latest result | Eligible change | Valid / available assessments
+
+[Assessment chart]               [Test detail and provenance]
+[Known phase markers]            [Conditions and limits]
+
+Descriptive summary and reason for non-assessment, when applicable
+Table / excluded records / reference / export with sources
 ```
 
-Para MR080G actual, empezar por la tabla de etapas y el pico reportado. Si se añade
-un gráfico de etapas, usar puntos y eje categórico explícito; `Peak AVG` no recibe
-una potencia o tiempo inventados. Este perfil descriptivo dentro de una prueba no
-habilita las diferencias longitudinales que bloquea M01.
+Add a comparable-group selector when the period includes several protocols.
+Keep excluded results in the table and explain why they were not included, instead
+of removing them from the experience. Do not join methods nor automatically convert
+treadmill and cycle ergometer into a single curve.
 
-Cuatro etapas no son cuatro meses ni cuatro réplicas independientes. La UI debe
-mostrar «1 prueba, 4 etapas, 32 registros fuente» cuando ese agrupamiento se haya
-verificado, sin presentar n=32 como respaldo de una tendencia.
+When the associated mass is confirmed, offer absolute and relative VO₂ in separate
+panels or through a selector. Avoid two axes that suggest relationships through visual
+alignment. Keep reference and inspection range perceptible.
 
-### C. Detalle y exportación
+### B. Research cases
 
-En el inspector: cantidad, valor/unidad, papel del resultado, protocolo, etapa,
-base temporal, origen y acceso a la ficha de procedencia. Cita y límites no deben
-quedar solo en «Acerca de».
+A space differentiated from the fictional astronaut's follow-up:
 
-En exportaciones: datos numéricos sin el redondeo de presentación, ausencia/estado,
-calendario/precisión, fuente, unidad, método, IDs y versión de derivación. Diferenciar
-la fecha de preparación del informe de la fecha de medida. Conservar las citas y
-notices aplicables. Los comentarios clínicos excluidos por M21 siguen excluidos.
+```text
+Research case · ground analog
+Dataset / release / contextual participant / bed rest phase
+Reported date: day precision · calendar and zone unconfirmed
 
-La precisión visual no es incertidumbre del instrumento. Una tarjeta puede redondear
-si se declara y el detalle permite recuperar el valor original; no atribuir precisión
-clínica al número de decimales mostrado.
+Tests available: 1               Longitudinal trend: not assessable
 
-## 11. Profesionalismo y referencia espacial
+Reported peak result             [Source card and limits]
+Stage table: 50 W | 75 W | 100 W | Peak AVG
+Variables per stage, each with its unit
+```
 
-La principal mejora de seriedad será que el software explique exactamente qué sabe,
-qué puede comparar y qué conserva. Mantener tipografía legible, cifras alineadas,
-nombres estables, estados visibles, tabla accesible, temas consistentes y navegación
-sin perder contexto. El color distingue selección, origen o estado del dato con
-texto/símbolo redundante; no convierte una pendiente en un semáforo clínico.
+For the current MR080G, start with the stage table and the reported peak. If a
+stage chart is added, use points and an explicit categorical axis; `Peak AVG` does not receive
+an invented power or time. This descriptive profile within a test does not
+enable the longitudinal differences that M01 blocks.
 
-NASA-STD-3001 Vol. 2, revisión F, §§10.4.2.1–10.4.2.4, trata presentación simultánea de
-información crítica, redundancia del color, unidades y legibilidad. Es una referencia
-de diseño; no certifica la aplicación. La criticidad, dispositivo, distancia de
-lectura e iluminación deben evaluarse para un uso real.
+Four stages are not four months nor four independent replicates. The UI must
+show «1 test, 4 stages, 32 source records» when that grouping has been
+verified, without presenting n=32 as support for a trend.
 
-Fuentes: [ficha oficial de la norma](https://standards.nasa.gov/node/237),
-[revisión F](https://standards.nasa.gov/system/files/tmp/NASA-STD-3001%20Vol%202%20Rev%20F.pdf).
+### C. Detail and export
 
-Conservar la simulación como tal también es rigor profesional. No declarar sensores
-en vivo, sincronización, persistencia segura o aptitud médica que no existen.
-El borrador local actual no equivale a un expediente clínico auditado.
+In the inspector: quantity, value/unit, role of the result, protocol, stage,
+time basis, origin and access to the provenance card. Citation and limits must not
+remain only in «About».
 
-## 12. Preparación de los escenarios sintéticos
+In exports: numeric data without presentation rounding, absence/state,
+calendar/precision, source, unit, method, IDs and derivation version. Differentiate
+the report preparation date from the measurement date. Keep applicable citations and
+notices. Clinical comments excluded by M21 remain excluded.
 
-Reutilizar los seis perfiles actuales, proyectados al mismo modelo de vista que los
-casos reales. Añadir casos de contrato antes de ampliar las curvas:
+Visual precision is not instrument uncertainty. A card may round
+if declared and the detail allows recovering the original value; do not attribute clinical
+precision to the number of decimals shown.
 
-- Una prueba única con cuatro etapas y un pico identificable.
-- Calendario desconocido; fecha de día sin zona; unidad desconocida.
-- Dos protocolos que generan segmentos distintos.
-- Última visita sin resultado y último valor válido antiguo.
-- Dos sujetos con el mismo código original en estudios distintos.
-- Mismo número con distinta cantidad o unidad.
-- Cambio de masa con VO₂ absoluto sin aumento, en datos íntegramente ficticios.
-- Ningún criterio de desempeño configurado y criterio marcado solo como demo.
+## 11. Professionalism and spatial reference
 
-Cada escenario conserva identidad sintética, valores reproducibles y su propósito.
-No trasladar las fechas reales a 2026 ni asignar datos reales a una persona ficticia.
-No usar efectos medios de estudios como tasas esperadas de recuperación individual.
-Si se simulan varias magnitudes relacionadas, documentar sus relaciones para que
-las tarjetas no se contradigan; eso no demuestra realismo fisiológico.
+The main improvement in seriousness will be for the software to explain exactly what it knows,
+what it can compare and what it preserves. Keep legible typography, aligned figures,
+stable names, visible states, accessible table, consistent themes and navigation
+without losing context. Color distinguishes selection, origin or data state with
+redundant text/symbol; it does not turn a slope into a clinical traffic light.
 
-## 13. Orden de implementación y reparto
+NASA-STD-3001 Vol. 2, revision F, §§10.4.2.1–10.4.2.4, addresses simultaneous presentation of
+critical information, color redundancy, units and legibility. It is a design
+reference; it does not certify the application. Criticality, device, reading
+distance and lighting must be evaluated for real use.
 
-| Paso | Entrega concreta | Responsable principal | Resultado de aceptación |
+Sources: [official record of the standard](https://standards.nasa.gov/node/237),
+[revision F](https://standards.nasa.gov/system/files/tmp/NASA-STD-3001%20Vol%202%20Rev%20F.pdf).
+
+Keeping the simulation as such is also professional rigor. Do not declare live
+sensors, synchronization, secure persistence or medical suitability that do not exist.
+The current local draft is not equivalent to an audited clinical record.
+
+## 12. Preparing the synthetic scenarios
+
+Reuse the six current profiles, projected to the same view model as the
+real cases. Add contract cases before extending the curves:
+
+- A single test with four stages and an identifiable peak.
+- Unknown calendar; day-level date without zone; unknown unit.
+- Two protocols that generate distinct segments.
+- Last visit without a result and an old last valid value.
+- Two subjects with the same original code in different studies.
+- Same number with a different quantity or unit.
+- Mass change with absolute VO₂ not increasing, in entirely fictional data.
+- No performance criterion configured and a criterion marked only as demo.
+
+Each scenario keeps synthetic identity, reproducible values and its purpose.
+Do not move real dates to 2026 nor assign real data to a fictional person.
+Do not use mean effects of studies as expected individual recovery rates.
+If several related magnitudes are simulated, document their relationships so that
+the cards do not contradict each other; that does not demonstrate physiological realism.
+
+## 13. Implementation order and distribution
+
+| Step | Concrete delivery | Main owner | Acceptance result |
 | --- | --- | --- | --- |
-| 1 | Diccionario de cantidad/pico/etapa y selección MR080G | Datos/backend, con revisión de dominio | Los 32 registros producen una prueba; no hay tendencia ficticia |
-| 2 | Propuesta versionada de respuesta aeróbica y fixtures | Acuerdo frontend/backend | Origen, tiempo y fuente sobreviven parser y exportación |
-| 3 | Proyector de mocks al nuevo modelo de vista | Frontend | Los seis escenarios continúan funcionando sin depender de main en el navegador |
-| 4 | Lectura reproducible de la muestra real | Backend | Fuente restaurada y hash verificado; ninguna lectura de IndexedDB supuesta |
-| 5 | Consultas/agrupación y proyección de dominio | Backend/M06 según arquitectura acordada | Misma respuesta para gráfico, tabla y resumen; exclusiones explicadas |
-| 6 | Vista de investigación y capacidades condicionadas | Frontend | MR080G se inspecciona con sus límites; fechas y cálculos no se inventan |
-| 7 | Nuevas pruebas reales longitudinales | Datos/backend | Identidad, protocolo y calendario permiten comparación antes de habilitarla |
+| 1 | Dictionary of quantity/peak/stage and MR080G selection | Data/backend, with domain review | The 32 records produce one test; there is no fictitious trend |
+| 2 | Versioned aerobic response proposal and fixtures | Frontend/backend agreement | Origin, time and source survive parser and export |
+| 3 | Projector from mocks to the new view model | Frontend | The six scenarios keep working without depending on main in the browser |
+| 4 | Reproducible reading of the real sample | Backend | Source restored and hash verified; no IndexedDB reading assumed |
+| 5 | Queries/grouping and domain projection | Backend/M06 according to agreed architecture | Same response for chart, table and summary; exclusions explained |
+| 6 | Research view and conditioned capabilities | Frontend | MR080G is inspected with its limits; dates and calculations are not invented |
+| 7 | New real longitudinal tests | Data/backend | Identity, protocol and calendar allow comparison before enabling it |
 
-No modificar `contracts/` unilateralmente. Coordinar modelos, Zod, OpenAPI, ejemplos
-y tests de compatibilidad en una entrega revisable. Backend implementa importación,
-repositorio y endpoints; frontend consume `data/service.ts`, normaliza presentación
-y mantiene sus componentes sin acceso a rutas de originales.
+Do not modify `contracts/` unilaterally. Coordinate models, Zod, OpenAPI, examples
+and compatibility tests in a reviewable delivery. Backend implements import,
+repository and endpoints; frontend consumes `data/service.ts`, normalizes presentation
+and keeps its components without access to original paths.
 
-Antes de integrar ramas, resolver decisiones de arquitectura y lenguaje: main tiene
-una aplicación modular sin transpilación, políticas de dependencias y una norma de
-repositorio en inglés; frontend usa Next.js/TypeScript y textos en español bajo su
-propia configuración. La propuesta aquí preserva el frontend autorizado y añade una
-frontera de lectura; no implica que un merge directo resuelva esas diferencias ni
-que las instrucciones contradictorias puedan ignorarse.
+Before integrating branches, resolve architecture and language decisions: main has
+a modular application without transpilation, dependency policies and a repository
+rule of English; frontend uses Next.js/TypeScript and Spanish texts under its
+own configuration. The proposal here preserves the authorized frontend and adds a
+read boundary; it does not imply that a direct merge resolves those differences nor
+that the contradictory instructions can be ignored.
 
-La serialización de dominio de main no debe reducirse a v1 perdiendo evidencia, ni
-el frontend debe importar el store de navegador como si fuera un backend HTTP.
-No hace falta cambiar de framework para demostrar un recorrido correcto.
+The domain serialization of main must not be reduced to v1 losing evidence, nor
+should the frontend import the browser store as if it were an HTTP backend.
+There is no need to change framework to demonstrate a correct journey.
 
-## 14. Pruebas que deberían preceder a la integración real
+## 14. Tests that should precede real integration
 
-| Caso | Resultado esperado |
+| Case | Expected result |
 | --- | --- |
-| Muestra MR080G seleccionada | Una evaluación, etapas conservadas, un pico reportado; n de pruebas=1 |
-| Registros de la misma fecha con variables diferentes | No aparecen como visitas independientes de VO₂pico |
-| Pico frente a etapa de 75 W | Diferencia longitudinal bloqueada |
-| Misma persona/código en estudios diferentes | No se agrupa como un único astronauta |
-| Calendario `unknown` | Fecha fuente visible; sin edad UTC ni tendencia temporal |
-| Dos unidades desconocidas | No se consideran comparables por coincidir en desconocimiento |
-| Cambio de método o normalización | Segmentos y motivo; sin salto interpretado como avance |
-| `not_recorded` o `confirmed_none` en cantidad numérica | No entra como cero ni como valor válido |
-| Dato real en un endpoint de simulación | Error de contexto; no se reasigna al sujeto sintético |
-| Origen o IDs fuente adicionales en transporte | Se conservan según contrato o se rechaza versión; no se pierden silenciosamente |
-| Exportación de una prueba real | Sin etiqueta sintética fija; cita y estado temporal preservados |
-| Fuente modificada o importación repetida | Custodia/deduplicación comprobadas; no duplica una evaluación |
-| Revisión preparada tras cambiar regla o fuente | La copia conserva el contexto anterior y puede identificarse la diferencia |
-| Dataset ausente en otra máquina | Estado explícito y pasos de restauración; sin reemplazo por mocks |
+| Selected MR080G sample | One assessment, stages preserved, one reported peak; number of tests=1 |
+| Records of the same date with different variables | They do not appear as independent peak VO₂ visits |
+| Peak versus 75 W stage | Longitudinal difference blocked |
+| Same person/code in different studies | Not grouped as a single astronaut |
+| `unknown` calendar | Source date visible; no UTC age or time trend |
+| Two unknown units | Not considered comparable for coinciding in being unknown |
+| Method or normalization change | Segments and reason; no jump interpreted as progress |
+| `not_recorded` or `confirmed_none` in a numeric quantity | Does not enter as zero nor as a valid value |
+| Real data in a simulation endpoint | Context error; not reassigned to the synthetic subject |
+| Additional origin or source IDs in transport | Preserved per contract or version rejected; not silently lost |
+| Export of a real test | No fixed synthetic label; citation and time state preserved |
+| Modified source or repeated import | Custody/deduplication verified; does not duplicate an assessment |
+| Review prepared after changing rule or source | The copy keeps the previous context and the difference can be identified |
+| Dataset absent on another machine | Explicit state and restoration steps; no replacement by mocks |
 
-Las pruebas visuales deben comprobar teclado, color redundante, texto ampliado y
-la posibilidad de comprobar cada resumen con sus registros. No basta un screenshot.
+Visual tests must check keyboard, redundant color, enlarged text and
+the ability to verify each summary against its records. A screenshot is not enough.
 
-## 15. Decisiones pendientes de dominio
+## 15. Pending domain decisions
 
-Para la médica y el responsable de datos: qué cantidad seguir, cómo se identifica
-un pico aceptado, qué condiciones hacen comparables las pruebas, qué referencia
-usar, qué variación impide concluir estabilidad y qué criterio de desempeño puede
-mostrarse. La calidad o esfuerzo insuficiente debe proceder de una regla revisada o
-del registro de la prueba, no de un juicio inventado por el dashboard.
+For the physician and the data owner: which quantity to follow, how an accepted
+peak is identified, what conditions make tests comparable, which reference to
+use, what variation prevents concluding stability and what performance criterion can be
+shown. Insufficient quality or effort must come from a reviewed rule or from
+the test record, not from a judgment invented by the dashboard.
 
-Mientras se acuerdan esos puntos se puede implementar toda la preservación de
-procedencia, el detalle real de una prueba y los bloqueos de cálculo. Esa es la
-siguiente entrega más útil para frontend y backend.
+While those points are agreed, all the provenance preservation,
+the real detail of a test and the calculation blocks can be implemented. That is the
+most useful next delivery for frontend and backend.
 
-## Evidencia local consultada
+## Local evidence consulted
 
-En main, mediante `git show e5270c8:<ruta>`:
+In main, through `git show e5270c8:<path>`:
 
 - `docs/CURRENT_STATUS.md`, `docs/modules.csv`, `docs/CONTRACTS.md`.
 - `app/core/index.js:89`, `app/importers/index.js:18–86`, `app/readings/index.js`.
@@ -503,13 +502,13 @@ En main, mediante `git show e5270c8:<ruta>`:
 - `docs/DATA_TECHNICAL_RESOLUTION.md`, `docs/SOURCE_PAPER_UNITS.md`.
 - `docs/data/unit-dictionary-followup-2026-11-15.json`.
 - `docs/data/real-import-validation-2026-11-15.json`, `docs/experiments/REAL_IMPORT.md`.
-- `docs/DATA_IMPORT_PREPARATION.md`, órdenes M06 y M09, instrucciones de colaboración.
+- `docs/DATA_IMPORT_PREPARATION.md`, M06 and M09 work orders, collaboration instructions.
 
-En frontend: contratos y esquemas, servicio/API, helpers de comparación, filtros y
-escala, mocks, revisión, gráfico, inspector y configuración del dashboard.
+In frontend: contracts and schemas, service/API, comparison helpers, filters and
+scale, mocks, review, chart, inspector and dashboard configuration.
 
-Se aplicaron criterios de documentación, UI/UX y selección de gráficos. La consulta
-inicial de la base de charts devolvió opciones ajenas al caso; se refinó a series
-temporales. No se adoptaron sus sugerencias de pronóstico, smoothing o umbrales de
-anomalía. Modern Web Guidance se consultó para la tabla accesible; no se implementaron
-cambios en componentes durante esta investigación.
+Documentation, UI/UX and chart selection criteria were applied. The initial
+query of the charts database returned options unrelated to the case; it was refined to time
+series. Its suggestions of forecasting, smoothing or anomaly
+thresholds were not adopted. Modern Web Guidance was consulted for the accessible table; no
+changes to components were implemented during this research.

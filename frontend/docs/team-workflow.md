@@ -1,29 +1,29 @@
-# Frontend y backend sin pisarse
+# Frontend and backend without stepping on each other
 
-## Distribución de archivos
+## File distribution
 
-| Área              | Responsable         | Archivos habituales                                                                                                                                  |
+| Area              | Owner               | Usual files                                                                                                                                          |
 | ----------------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Frontend          | Persona de frontend | `src/`, `public/`, `tests/`, package.json/lockfile raíz, `tsconfig.json`, configuración Next/ESLint, `.env.example` raíz, `.github/workflows/ci.yml` |
-| Backend           | Persona de backend  | `backend/**`, incluido su package.json/lockfile, `.env.example`, tests y README; `.github/workflows/backend.yml`                                     |
-| Contrato          | Ambos, coordinado   | `contracts/**`, `docs/api.md`, `.github/workflows/contracts.yml`                                                                                     |
-| Acuerdos del repo | Coordinar cambios   | README raíz, AGENTS raíz, `.gitignore`, esta guía                                                                                                    |
+| Frontend          | Frontend person     | `src/`, `public/`, `tests/`, root package.json/lockfile, `tsconfig.json`, Next/ESLint configuration, root `.env.example`, `.github/workflows/ci.yml` |
+| Backend           | Backend person      | `backend/**`, including its package.json/lockfile, `.env.example`, tests and README; `.github/workflows/backend.yml`                                 |
+| Contract          | Both, coordinated   | `contracts/**`, `docs/api.md`, `../.github/workflows/frontend-contracts.yml` (repository root)                                                                                     |
+| Repo agreements   | Coordinate changes  | Root README, root AGENTS, `.gitignore`, this guide                                                                                                   |
 
-El backend no importa componentes ni mocks del frontend. El frontend no importa
-la implementación ni los seeds del backend. En modo integración se comunican
-por HTTP y el contrato compartido comprueba la compatibilidad.
+The backend does not import frontend components or mocks. The frontend does not import
+the backend implementation or seeds. In integration mode they communicate
+over HTTP and the shared contract checks compatibility.
 
-La separación reduce las zonas habituales de conflicto. Git no impide editar una
-carpeta ajena ni garantiza un merge sin conflictos: respetar la distribución y
-acordar los cambios compartidos sigue siendo parte del trabajo del equipo.
+The separation reduces the usual conflict zones. Git does not prevent editing
+someone else's folder nor guarantee a conflict-free merge: respecting the distribution and
+agreeing on shared changes remains part of the team's work.
 
-## Publicar primero esta base
+## Publish this base first
 
-El compañero solo recibe commits publicados. Los archivos locales sin commit o
-sin push no aparecerán al clonar ni al crear su rama desde origin/frontend.
+Your teammate only receives published commits. Local files without a commit or
+without a push will not appear when cloning or when creating their branch from origin/frontend.
 
-Desde `frontend`, revisar el contenido y seleccionar los archivos de esta base
-para el commit; luego publicar esa rama:
+From `frontend`, review the content and select the files of this base
+for the commit; then publish that branch:
 
 ```bash
 git status
@@ -32,10 +32,10 @@ git commit -m "chore: separar frontend backend y contrato de API"
 git push -u origin frontend
 ```
 
-No ejecutar el commit si la selección no incluye la base necesaria. Los `.env`
-locales y `node_modules` están ignorados; los `.env.example` sí se versionan.
+Do not run the commit if the selection does not include the necessary base. Local
+`.env` files and `node_modules` are ignored; `.env.example` files are versioned.
 
-## Tu compañero: clonar y crear la rama backend
+## Your teammate: clone and create the backend branch
 
 ```bash
 git clone git@github.com:0xnotwired/202611-nasahackathon.git
@@ -46,8 +46,8 @@ npm --prefix backend ci
 npm --prefix backend run dev
 ```
 
-`--no-track` evita que su nueva rama quede siguiendo por accidente a
-`origin/frontend`. Cuando quiera publicar su trabajo:
+`--no-track` prevents their new branch from accidentally tracking
+`origin/frontend`. When they want to publish their work:
 
 ```bash
 git add backend/
@@ -55,10 +55,10 @@ git commit -m "feat(backend): describir el cambio"
 git push -u origin backend/api
 ```
 
-Abrir un PR **backend/api → frontend** para integrar con tu trabajo actual.
-Si acuerdan otra rama de integración, cambiar la base del PR de forma explícita.
+Open a **backend/api → frontend** PR to integrate with your current work.
+If you agree on another integration branch, change the PR base explicitly.
 
-Para traer avances de frontend a su rama backend sin reescribir commits publicados:
+To bring frontend progress into their backend branch without rewriting published commits:
 
 ```bash
 git fetch origin
@@ -66,63 +66,63 @@ git switch backend/api
 git merge origin/frontend
 ```
 
-Hacerlo con sus cambios guardados en commits. Resolver los conflictos revisando
-el contenido; no usar estrategias que descarten automáticamente un lado entero.
+Do this with their changes saved in commits. Resolve conflicts by reviewing
+the content; do not use strategies that automatically discard an entire side.
 
-## Tu trabajo de frontend
+## Your frontend work
 
-Podés seguir en `frontend`, como hasta ahora. Para una tarea aislada también podés
-crear una rama `frontend/<tarea>` desde la base actual y abrir un PR a `frontend`.
-Tu entorno continúa siendo:
+You can stay on `frontend`, as before. For an isolated task you can also
+create a `frontend/<task>` branch from the current base and open a PR to `frontend`.
+Your environment remains:
 
 ```bash
 npm ci
 npm run dev
 ```
 
-Funciona con mocks sin levantar el backend. No cambiar el lockfile del backend
-para instalar una dependencia visual.
+It works with mocks without starting the backend. Do not change the backend lockfile
+to install a visual dependency.
 
-## Integrar ambos procesos localmente
+## Integrate both processes locally
 
-- Backend en una terminal: `npm --prefix backend run dev` → puerto 4000.
-- Frontend en otra: `npm run dev` → puerto 3000.
-- Para consumir la API, poner en `.env.local` raíz:
+- Backend in one terminal: `npm --prefix backend run dev` → port 4000.
+- Frontend in another: `npm run dev` → port 3000.
+- To consume the API, set in the root `.env.local`:
 
 ```dotenv
 HEALTH_DATA_SOURCE=mock
 HEALTH_API_BASE_URL=http://127.0.0.1:4000/api/v1
 ```
 
-Reiniciar Next.js al cambiar esta configuración. El botón superior alterna entre
-simulación local y backend. También se puede abrir `/?source=mock` o `/?source=api`;
-el parámetro se conserva al navegar y prevalece sobre el valor inicial de entorno.
-La API 0.1 sigue siendo sintética: el botón muestra «Datos sintéticos · Fuente: Backend».
-Si falta configuración, falla la conexión o la respuesta es incompatible, se muestra
-un estado recuperable con regreso explícito a simulación, sin fallback automático.
+Restart Next.js when you change this configuration. The top button toggles between
+local simulation and backend. You can also open `/?source=mock` or `/?source=api`;
+the parameter is kept while navigating and takes precedence over the initial environment value.
+API 0.1 is still synthetic: the button shows «Synthetic data · Source: Backend».
+If configuration is missing, the connection fails or the response is incompatible, a
+recoverable state is shown with an explicit return to simulation, with no automatic fallback.
 
- En modo API también se leen las
-evaluaciones aeróbicas y sesiones del backend; no se mezclan con fixtures locales
-para ocultar errores. Los borradores de actividad y revisión del usuario siguen
-siendo locales al navegador, aislados por fuente y persona, hasta acordar un contrato
-de escritura. Los estados de las sesiones recibidos por API son de solo lectura.
-Las claves mock anteriores se conservan; no se copian notas entre fuentes.
+ In API mode the aerobic
+assessments and sessions are also read from the backend; they are not mixed with local fixtures
+to hide errors. The user's activity and review drafts remain
+local to the browser, isolated by source and person, until a write contract
+is agreed. Session states received through the API are read-only.
+The previous mock keys are kept; notes are not copied between sources.
 
-Para volver al desarrollo independiente: abrir `/?source=mock`; no requiere reiniciar.
+To return to independent development: open `/?source=mock`; no restart is required.
 
-## Comprobaciones antes de integrar
+## Checks before integrating
 
-| Cambio                       | Comando                                                         |
+| Change                       | Command                                                         |
 | ---------------------------- | --------------------------------------------------------------- |
-| Frontend                     | `npm run check` y `npm run build`, en raíz                      |
+| Frontend                     | `npm run check` and `npm run build`, at the root                |
 | Backend                      | `npm --prefix backend run check`                                |
-| Contrato o respuestas de API | `npm run test:contracts`, en raíz                               |
-| Cambios del contrato         | Además, `npm run contracts:export` y versionar el JSON generado |
+| Contract or API responses    | `npm run test:contracts`, at the root                           |
+| Contract changes             | Also `npm run contracts:export` and version the generated JSON  |
 
-El CI separa frontend, backend y compatibilidad. Los cambios solo en backend no
-ejecutan el build del frontend, pero sí la comprobación de compatibilidad. El CI
-del backend instala únicamente sus propias dependencias.
+CI separates frontend, backend and compatibility. Backend-only changes do not
+run the frontend build, but they do run the compatibility check. The backend
+CI installs only its own dependencies.
 
-Los archivos AGENTS por área documentan los límites para asistentes. No se activa
-CODEOWNERS con usuarios inventados: para asignar revisores automáticamente hace
-falta acordar los handles reales de GitHub y las reglas del repositorio.
+The per-area AGENTS files document the limits for assistants. CODEOWNERS is not
+enabled with invented users: to assign reviewers automatically you need
+to agree on the real GitHub handles and the repository rules.

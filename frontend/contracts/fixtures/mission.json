@@ -1,54 +1,93 @@
 {
   "data": {
-    "evaluations": [
+    "records": [
       {
         "id": "eval-01",
-        "recordedAt": "2026-05-15T08:00:00Z",
+        "schema_version": 2,
+        "origin": "synthetic",
+        "source": "simulator",
+        "mission_phase": "mission",
+        "type": "exam",
+        "state": "recorded",
         "value": 38.4,
+        "variable": "aerobic_capacity",
         "unit": "mL/kg/min",
-        "method": "Cicloergómetro · protocolo demo A"
+        "method": "Cycle ergometer · demo protocol A",
+        "time": "2026-05-15T08:00:00Z",
+        "subject": "astro-01"
       },
       {
         "id": "eval-02",
-        "recordedAt": "2026-08-15T08:00:00Z",
+        "schema_version": 2,
+        "origin": "synthetic",
+        "source": "simulator",
+        "mission_phase": "mission",
+        "type": "exam",
+        "state": "recorded",
         "value": 36.8,
+        "variable": "aerobic_capacity",
         "unit": "mL/kg/min",
-        "method": "Cicloergómetro · protocolo demo A"
+        "method": "Cycle ergometer · demo protocol A",
+        "time": "2026-08-15T08:00:00Z",
+        "subject": "astro-01"
       },
       {
         "id": "eval-03",
-        "recordedAt": "2026-11-15T08:00:00Z",
+        "schema_version": 2,
+        "origin": "synthetic",
+        "source": "simulator",
+        "mission_phase": "mission",
+        "type": "exam",
+        "state": "recorded",
         "value": 37.2,
+        "variable": "aerobic_capacity",
         "unit": "mL/kg/min",
-        "method": "Cinta · protocolo demo B"
+        "method": "Treadmill · demo protocol B",
+        "time": "2026-11-15T08:00:00Z",
+        "subject": "astro-01"
       }
     ],
-    "sessions": [
+    "tasks": [
       {
         "id": "session-01",
-        "label": "Sesión aeróbica",
-        "scheduledAt": "2026-11-13T09:00:00Z",
-        "durationMinutes": 30,
-        "completed": true
+        "schema_version": 2,
+        "subject": "astro-01",
+        "day": "2026-11-13",
+        "description": "Aerobic session",
+        "assigned_by": "team_defined",
+        "completion": "done",
+        "result_ids": [],
+        "scheduled_at": "2026-11-13T09:00:00Z",
+        "planned_minutes": 30
       },
       {
         "id": "session-02",
-        "label": "Sesión de fuerza",
-        "scheduledAt": "2026-11-14T09:00:00Z",
-        "durationMinutes": 25,
-        "completed": true
+        "schema_version": 2,
+        "subject": "astro-01",
+        "day": "2026-11-14",
+        "description": "Strength session",
+        "assigned_by": "team_defined",
+        "completion": "done",
+        "result_ids": [],
+        "scheduled_at": "2026-11-14T09:00:00Z",
+        "planned_minutes": 25
       },
       {
         "id": "session-03",
-        "label": "Sesión aeróbica",
-        "scheduledAt": "2026-11-15T09:00:00Z",
-        "durationMinutes": 30,
-        "completed": false
+        "schema_version": 2,
+        "subject": "astro-01",
+        "day": "2026-11-15",
+        "description": "Aerobic session",
+        "assigned_by": "team_defined",
+        "completion": "pending",
+        "result_ids": [],
+        "scheduled_at": "2026-11-15T09:00:00Z",
+        "planned_minutes": 30
       }
     ]
   },
   "meta": {
-    "contractVersion": "0.1",
+    "contractVersion": "0.2",
     "dataKind": "synthetic",
     "clinicalValidation": "pending"
   }

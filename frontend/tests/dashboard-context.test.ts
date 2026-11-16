@@ -7,12 +7,12 @@ import {
   resolveHistoryContext,
   scaleDomain,
 } from "../src/features/health-monitoring/dashboard-state.ts";
-import { getMockMission } from "../src/features/health-monitoring/data/mission-mock.ts";
+import { mission as projectedMission } from "./helpers.ts";
 import { periodEvaluations } from "../src/features/health-monitoring/aerobic.ts";
 import { buildReview } from "../src/features/health-monitoring/review.ts";
 import type { DemoJournal } from "../src/features/health-monitoring/components/use-demo-journal.ts";
 
-const mission = getMockMission("astro-01", "recovery");
+const mission = projectedMission("astro-01", "recovery");
 const evaluations = mission.evaluations;
 const journal: DemoJournal = {
   completed: {},
@@ -23,7 +23,7 @@ const journal: DemoJournal = {
 };
 const astronaut = { id: "astro-01", callsign: "Vega", mission: "Órbita Demo" };
 
-test("el contexto conserva una referencia fuera del período y sobrevive al viaje por URL", () => {
+test("the context keeps a reference outside the period and survives the round trip through the URL", () => {
   const context = resolveHistoryContext(
     {
       period: "3",
@@ -44,7 +44,7 @@ test("el contexto conserva una referencia fuera del período y sobrevive al viaj
   );
 });
 
-test("parámetros inválidos y visitas fuera de ventana se resuelven sin perder la referencia válida", () => {
+test("invalid parameters and visits outside the window resolve without losing the valid reference", () => {
   const context = resolveHistoryContext(
     {
       period: "3",
@@ -71,7 +71,7 @@ test("parámetros inválidos y visitas fuera de ventana se resuelven sin perder 
   });
 });
 
-test("el dominio del historial permanece fijo entre ventanas; la autoescala es explícita", () => {
+test("the history domain stays fixed between windows; auto-scale is explicit", () => {
   const short = periodEvaluations(evaluations, 3);
   const stable = scaleDomain(evaluations, "mL/kg/min")!;
   assert.deepEqual(stable, scaleDomain(evaluations, "mL/kg/min"));
@@ -83,7 +83,7 @@ test("el dominio del historial permanece fijo entre ventanas; la autoescala es e
   );
 });
 
-test("una visita reciente sin resultado no borra el último valor válido ni se vuelve cero", () => {
+test("a recent visit without a result does not erase the last valid value or become zero", () => {
   const modified = evaluations.map((item, index) =>
     index === evaluations.length - 1 ? { ...item, value: null } : item,
   );
@@ -91,21 +91,21 @@ test("una visita reciente sin resultado no borra el último valor válido ni se 
   assert.equal(latestValid([]), undefined);
   assert.equal(
     ageLabel("2026-11-01T08:00:00Z", "2026-11-15T08:00:00Z"),
-    "Hace 14 días",
+    "14 days ago",
   );
   assert.equal(
     ageLabel("2026-11-16T08:00:00Z", "2026-11-15T08:00:00Z"),
-    "Fecha posterior a esta consulta",
+    "Date after this query",
   );
 });
 
-test("la revisión usa período y referencia activos, y detecta que una copia quedó con contexto anterior", () => {
+test("the review uses the active period and reference, and detects that a copy has an earlier context", () => {
   const context = resolveHistoryContext(
     { period: "3", reference: evaluations[0].id },
     evaluations,
   );
   const prepared = buildReview(astronaut, mission, context, journal);
-  assert.match(prepared.text, /4 visitas/);
+  assert.match(prepared.text, /4 visits/);
   assert.match(prepared.text, /recovery-12/);
   assert.doesNotMatch(prepared.text, /recovery-00 · 2025/);
   const copy = {
@@ -135,7 +135,7 @@ test("la revisión usa período y referencia activos, y detecta que una copia qu
   assert.notEqual(
     buildReview(astronaut, mission, context, {
       ...stored,
-      question: "Revisar el método",
+      question: "Review the method",
     }).text,
     copy.text,
   );

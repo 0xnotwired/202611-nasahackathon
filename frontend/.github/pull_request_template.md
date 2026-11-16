@@ -1,12 +1,12 @@
-## Cambio
+## Change
 
-Descripción del comportamiento que cambia y motivo.
+Description of the behavior that changes and the reason.
 
-## Área
+## Area
 
-Frontend / Backend / Contrato compartido
+Frontend / Backend / Shared contract
 
-## Comprobación
+## Verification
 
-Comandos ejecutados y resultados. Si cambia el contrato: indicar los campos o
-rutas modificados y cómo se comprobó la compatibilidad de ambos lados.
+Commands run and results. If the contract changes: state the fields or
+routes modified and how compatibility on both sides was verified.

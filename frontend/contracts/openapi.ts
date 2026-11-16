@@ -12,13 +12,13 @@ export function buildOpenApi() {
     MissionResponse: missionResponseSchema,
   };
   const response = (name: string) => ({
-    description: "Datos sintéticos; validación médica pendiente.",
+    description: "Synthetic data; medical validation pending.",
     content: {
       "application/json": { schema: { $ref: `#/components/schemas/${name}` } },
     },
   });
   const missing = {
-    description: "Astronauta inexistente",
+    description: "Unknown astronaut",
     content: {
       "application/json": { schema: { $ref: "#/components/schemas/Error" } },
     },
@@ -33,9 +33,9 @@ export function buildOpenApi() {
     openapi: "3.1.0",
     info: {
       title: "Órbita API",
-      version: "0.1",
+      version: "0.2",
       description:
-        "Contrato compartido frontend/backend. Solo simulación y lectura; los borradores del usuario siguen en el navegador.",
+        "Shared frontend/backend contract. Simulation and read-only; the user's drafts stay in the browser. Records follow the main app's schema 2.",
     },
     servers: [{ url: "http://127.0.0.1:4000/api/v1" }],
     paths: {
@@ -44,7 +44,7 @@ export function buildOpenApi() {
           operationId: "health",
           responses: {
             "200": {
-              description: "Estado técnico del proceso",
+              description: "Technical state of the process",
               content: {
                 "application/json": {
                   schema: {
@@ -53,7 +53,7 @@ export function buildOpenApi() {
                     properties: {
                       status: { const: "ok" },
                       service: { type: "string" },
-                      contractVersion: { const: "0.1" },
+                      contractVersion: { const: "0.2" },
                     },
                   },
                 },

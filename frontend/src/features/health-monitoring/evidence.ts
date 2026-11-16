@@ -1,5 +1,5 @@
 // Presentation evidence, separate from the unchanged HTTP 0.1 contract.
-export const projectionVersion = "aerobic-presentation/1";
+export const projectionVersion = "aerobic-presentation/2";
 export type Evidence = {
   subject: string;
   assessmentId: string;
@@ -20,27 +20,27 @@ export type Evidence = {
 };
 
 export const originLabels: Record<Evidence["origin"], string> = {
-  synthetic: "Datos sintéticos",
-  ground_analog: "Análogo terrestre",
-  terrestrial: "Estudio terrestre",
-  flight: "Datos de vuelo",
+  synthetic: "Synthetic data",
+  ground_analog: "Ground analog",
+  terrestrial: "Terrestrial study",
+  flight: "Flight data",
 };
 
 export function evidenceReason(a?: Evidence, b?: Evidence): string | null {
   if (!a && !b) return null; // Legacy demo helpers; service always projects evidence.
-  if (!a || !b) return "Falta el contexto de procedencia de una prueba.";
+  if (!a || !b) return "The provenance context of a test is missing.";
   if (a.verification === "unverified" || b.verification === "unverified")
-    return "La respuesta 0.1 no permite verificar la identidad y la cantidad por prueba.";
+    return "The response does not allow the identity and the quantity of each test to be verified.";
   if (
     a.subject !== b.subject ||
     a.dataset !== b.dataset ||
     a.origin !== b.origin
   )
-    return "Las pruebas pertenecen a personas, estudios u orígenes distintos.";
+    return "The tests belong to different people, studies or origins.";
   if (a.metric !== b.metric || a.role !== b.role)
-    return "Las cantidades o papeles del resultado son diferentes; pico y etapa no se comparan.";
+    return "The quantities or roles of the result are different; a peak and a stage are not compared.";
   if (a.unitStatus !== "known" || b.unitStatus !== "known")
-    return "La unidad no está confirmada.";
+    return "The unit is not confirmed.";
   if (
     a.clock !== "utc" ||
     b.clock !== "utc" ||
@@ -48,8 +48,8 @@ export function evidenceReason(a?: Evidence, b?: Evidence): string | null {
     b.calendar !== "original" ||
     a.timeScope !== b.timeScope
   )
-    return "La base temporal no permite una comparación longitudinal: calendario, zona o ámbito sin confirmar.";
+    return "The time basis does not allow a longitudinal comparison: calendar, zone or scope is not confirmed.";
   if (a.protocol !== b.protocol)
-    return "Las pruebas utilizan protocolos diferentes.";
+    return "The tests use different protocols.";
   return null;
 }

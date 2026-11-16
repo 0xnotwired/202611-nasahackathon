@@ -5,12 +5,13 @@ import {
   periodEvaluations,
   historyCsv,
 } from "../src/features/health-monitoring/aerobic.ts";
-import { getMockMission } from "../src/features/health-monitoring/data/mission-mock.ts";
+import type { getMockMission } from "../src/features/health-monitoring/data/mission-mock.ts";
+import { mission } from "./helpers.ts";
 
 const history = (scenario: Parameters<typeof getMockMission>[1]) =>
-  getMockMission("astro-01", scenario).evaluations;
+  mission("astro-01", scenario).evaluations;
 
-test("las ventanas usan fechas y el descenso con recuperación cambia de dirección", () => {
+test("windows use dates and a decline with recovery changes direction", () => {
   const evaluations = history("recovery");
   const short = periodEvaluations(evaluations, 3);
   assert.equal(short.length, 4);
@@ -19,7 +20,7 @@ test("las ventanas usan fechas y el descenso con recuperación cambia de direcci
   assert.ok(describePeriod(short).slope! > 0);
 });
 
-test("los faltantes conservan las visitas y no entran como cero en la tendencia", () => {
+test("missing values keep their visits and do not enter the trend as zero", () => {
   const evaluations = history("missing_visits");
   assert.equal(evaluations.length, 13);
   assert.equal(evaluations.filter((item) => item.value === null).length, 3);
@@ -28,7 +29,7 @@ test("los faltantes conservan las visitas y no entran como cero en la tendencia"
   assert.equal(describePeriod(evaluations.slice(0, 3)).slope, null);
 });
 
-test("un cambio de método bloquea la lectura conjunta, un segmento compatible sí se describe", () => {
+test("a change of method blocks the joint reading; a compatible segment is still described", () => {
   const evaluations = history("method_change");
   assert.equal(describePeriod(evaluations).label, "No comparable");
   assert.equal(describePeriod(evaluations).slope, null);
@@ -43,7 +44,7 @@ test("un cambio de método bloquea la lectura conjunta, un segmento compatible s
   );
 });
 
-test("el export conserva ausencia, protocolo y origen sin incluir filas fuera de la ventana", () => {
+test("the export keeps absence, protocol and origin without including rows outside the window", () => {
   const evaluations = periodEvaluations(history("missing_visits"), 6);
   const csv = historyCsv(evaluations);
   assert.equal(csv.split("\r\n").length, evaluations.length + 1);
@@ -52,8 +53,8 @@ test("el export conserva ausencia, protocolo y origen sin incluir filas fuera de
   assert.doesNotMatch(csv, /2025-11-15/);
 });
 
-test("la ausencia de datos y las fechas repetidas no inventan tendencias", () => {
-  assert.equal(describePeriod([]).label, "Datos insuficientes");
+test("no data and repeated dates do not invent trends", () => {
+  assert.equal(describePeriod([]).label, "Insufficient data");
   const first = history("ascending")[0];
   assert.equal(describePeriod([first, first, first]).slope, null);
   assert.equal(periodEvaluations([], 3).length, 0);

@@ -21,7 +21,7 @@ export function SourceNavigation({ children }: { children: ReactNode }) {
   const previous = useRef(false);
   useEffect(() => {
     if (previous.current && !pending)
-      document.getElementById("contenido")?.focus();
+      document.getElementById("content")?.focus();
     previous.current = pending;
   }, [pending]);
   return (
@@ -33,7 +33,7 @@ export function SourceNavigation({ children }: { children: ReactNode }) {
       }}
     >
       <span className="sr-only" role="status">
-        {pending ? "Cambiando fuente de datos…" : "Vista de datos lista."}
+        {pending ? "Changing data source…" : "Data view ready."}
       </span>
       {children}
     </Context>
@@ -43,7 +43,7 @@ export function SourceNavigation({ children }: { children: ReactNode }) {
 export function useSourceNavigation() {
   const value = useContext(Context);
   if (!value)
-    throw new Error("La navegación de fuentes requiere su proveedor.");
+    throw new Error("Source navigation requires its provider.");
   return value;
 }
 

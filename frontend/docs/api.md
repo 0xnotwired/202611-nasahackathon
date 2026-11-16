@@ -1,101 +1,101 @@
-# API de simulación · contrato 0.1
+# Simulation API · contract 0.2
 
-Backend independiente en `backend/`. Base local:
-`http://127.0.0.1:4000/api/v1`. Solo lectura, datos sintéticos y sin base de datos.
+Independent backend in `backend/`. Local base:
+`http://127.0.0.1:4000/api/v1`. Read-only, synthetic data and no database.
 
-El contrato compartido está en [contracts/](../contracts/README.md): modelos de
-transporte, validadores, ejemplos y [OpenAPI](../contracts/openapi.json).
-Los cambios de contrato se coordinan entre frontend y backend.
+The shared contract is in [contracts/](../contracts/README.md): transport
+models, validators, examples and [OpenAPI](../contracts/openapi.json).
+Contract changes are coordinated between frontend and backend.
 
-| Método | Ruta relativa a `/api/v1`       | Respuesta                                                                    |
+| Method | Route relative to `/api/v1`     | Response                                                                     |
 | ------ | ------------------------------- | ---------------------------------------------------------------------------- |
-| GET    | `/health`                       | Estado técnico, servicio y versión; no evaluación médica                     |
+| GET    | `/health`                       | Technical status, service and version; not a medical assessment              |
 | GET    | `/astronauts`                   | `{ data: Astronaut[], meta }`                                                |
-| GET    | `/astronauts/{id}/measurements` | `{ data: Measurement[], metrics: Metric[], meta }`                           |
-| GET    | `/astronauts/{id}/mission`      | `{ data: { evaluations: Evaluation[], sessions: ExerciseSession[] }, meta }` |
-| GET    | `/openapi.json`                 | Especificación OpenAPI versionada                                            |
+| GET    | `/astronauts/{id}/measurements` | `{ data: OrbitaRecord[], metrics: Metric[], meta }`                        |
+| GET    | `/astronauts/{id}/mission`      | `{ data: { records: OrbitaRecord[], tasks: PlanTask[] }, meta }` |
+| GET    | `/openapi.json`                 | Versioned OpenAPI specification                                              |
 
-Las respuestas de datos incluyen:
+Data responses include:
 
 ```json
 {
-  "contractVersion": "0.1",
+  "contractVersion": "0.2",
   "dataKind": "synthetic",
   "clinicalValidation": "pending"
 }
 ```
 
-Este objeto se llama `meta`. Los ejemplos completos están en
-`contracts/fixtures/astronauts.json`, `measurements.json` y `mission.json`.
+This object is called `meta`. The complete examples are in
+`contracts/fixtures/astronauts.json`, `measurements.json` and `mission.json`.
 
-## Semántica
+## Semantics
 
-- `value` es un número finito o `null`. No sustituir valores faltantes por cero.
-- Fechas de mediciones y evaluaciones en ISO 8601 UTC, con sufijo `Z`.
-- Todas las mediciones pertenecen al astronauta solicitado; su `metricCode`
-  debe existir en el catálogo `metrics`. Se ordenan por fecha descendente.
-- Evaluaciones de misión en orden cronológico ascendente. Método y unidad no
-  confirman por sí solos validez clínica; son campos del escenario de demostración.
-- IDs únicos dentro de cada colección. No mezclar personas o unidades.
-- Astronauta existente sin registros: 200 con listas vacías; para mediciones
-  se conserva el catálogo disponible.
-- Astronauta inexistente: 404 y
+- Each record is one value of the main app's schema 2 (`schema_version: 2`), with its own `state` (`recorded`, `confirmed_none` or `not_recorded`), `variable`, `unit`, `unit_status`, `method`, `time`, `origin`, `source`, `mission_phase` and `subject`. `value` is present only when the state is `recorded`; do not replace missing values with zero.
+- `time` is ISO 8601 UTC with the `Z` suffix, or `null` when the source time is unknown (see `source_time`).
+- All records belong to the requested astronaut (`subject`); the `variable` of each measurement record
+  must exist in the `metrics` catalog. They are sorted by date, descending.
+- Mission records and tasks (`tasks`, with `scheduled_at` and `planned_minutes`) in ascending chronological order. Method and unit do not
+  by themselves confirm clinical validity; they are fields of the demonstration scenario.
+- IDs unique within each collection. Do not mix people or units.
+- Existing astronaut with no records: 200 with empty lists; for measurements
+  the available catalog is kept.
+- Nonexistent astronaut: 404 and
   `{ "error": { "code": "ASTRONAUT_NOT_FOUND", "message": "Astronauta no encontrado." } }`.
-- Métodos de escritura: 405 y cabecera `Allow: GET, HEAD`. No hay persistencia.
-- Las respuestas de datos no se cachean. Los errores no se sustituyen por mocks.
+- Write methods: 405 and `Allow: GET, HEAD` header. There is no persistence.
+- Data responses are not cached. Errors are not replaced by mocks.
 
-## Desarrollo e integración
+## Development and integration
 
-Terminal backend, desde la raíz:
+Backend terminal, from the root:
 
 ```bash
 npm --prefix backend ci
 npm --prefix backend run dev
 ```
 
-El frontend funciona con mocks por defecto. Para integrarlo, poner en `.env.local`
-raíz y reiniciar Next.js:
+The frontend works with mocks by default. To integrate it, set in the root
+`.env.local` and restart Next.js:
 
 ```dotenv
 HEALTH_DATA_SOURCE=mock
 HEALTH_API_BASE_URL=http://127.0.0.1:4000/api/v1
 ```
 
-El botón superior selecciona la fuente por petición mediante `source=mock|api`.
-`HEALTH_DATA_SOURCE` solo define el modo inicial. Elegir API no modifica variables
-de entorno ni conecta a una URL suministrada por el navegador. Sin una URL válida,
-la interfaz presenta «Backend no configurado» y permite volver a mocks.
+The top button selects the source per request through `source=mock|api`.
+`HEALTH_DATA_SOURCE` only defines the initial mode. Choosing API does not modify environment
+variables or connect to a URL supplied by the browser. Without a valid URL,
+the interface shows «Backend not configured» and allows going back to mocks.
 
-Next.js consulta la API desde el servidor. No se requiere CORS del navegador.
-El cliente tiene un timeout de 8 segundos y valida las respuestas con los esquemas
-compartidos. Si falla la integración, muestra el estado de error con reintento y regreso explícito
-a simulación. El catálogo vacío y la persona no encontrada tienen estados propios.
-La API 0.1 declara datos sintéticos; no existe todavía una respuesta de datos reales
-ni un endpoint de investigación. Sus comparaciones permanecen bloqueadas por falta
-de evidencia por prueba, como explica la documentación de integración aeróbica.
+Next.js queries the API from the server. Browser CORS is not required.
+The client has an 8-second timeout and validates the responses with the shared
+schemas. If the integration fails, it shows the error state with retry and an explicit return
+to simulation. The empty catalog and the person not found have their own states.
+API 0.2 declares synthetic data; there is not yet a real-data response
+or a research endpoint. Its comparisons remain blocked for lack
+of per-test evidence, as the aerobic integration documentation explains.
 
-En modo API, las cuatro vistas reciben mediciones, evaluaciones y sesiones del
-backend. Las sesiones del backend son de solo lectura. Las observaciones y los resúmenes del
-usuario son borradores locales del navegador, separados del contexto mock. No hay envío a profesionales ni endpoints de
-escritura: se acordarán como una ampliación separada cuando hagan falta.
+In API mode, the four views receive records and tasks from the
+backend. Backend tasks are read-only. The user's observations and summaries are
+local browser drafts, separated from the mock context. There is no sending to professionals nor write
+endpoints: they will be agreed as a separate extension when they are needed.
 
-## Verificar el contrato
+## Verify the contract
 
 ```bash
 npm run test:contracts
 ```
 
-Después de acordar una modificación del contrato:
+After agreeing on a contract modification:
 
 ```bash
 npm run contracts:export
 npm run test:contracts
 ```
 
-El CI valida ejemplos, vigencia del JSON OpenAPI y respuestas reales del router
-del backend frente a lo que acepta el frontend.
+CI validates examples, the currency of the OpenAPI JSON and the backend router's
+real responses against what the frontend accepts.
 
-## Comprobación HTTP manual
+## Manual HTTP check
 
 ```bash
 curl http://127.0.0.1:4000/api/v1/health
@@ -105,4 +105,4 @@ curl http://127.0.0.1:4000/api/v1/astronauts/astro-03/measurements
 curl -i http://127.0.0.1:4000/api/v1/astronauts/inexistente/mission
 ```
 
-Preparación del compañero y flujo de ramas: [trabajo en equipo](team-workflow.md).
+Teammate setup and branch workflow: [teamwork](team-workflow.md).

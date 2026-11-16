@@ -3,10 +3,11 @@ import { ApiError } from "../../../lib/api/errors.ts";
 import {
   astronautsResponseSchema,
   measurementsResponseSchema,
+  missionResponseSchema,
 } from "../schemas.ts";
 import { getMockMeasurements, listMockAstronauts } from "./mock.ts";
 import { getMockMission } from "./mission-mock.ts";
-import { legacyMissionSchema, projectMission } from "./mission-projection.ts";
+import { projectMeasurements, projectMission } from "./mission-projection.ts";
 import type { Scenario } from "../aerobic.ts";
 import type { SourceContext, SourceFailure } from "./source-context.ts";
 
@@ -17,7 +18,7 @@ export function createReader(context: SourceContext, readJson: JsonReader) {
   const mode = context.mode;
   const read = async <T>(path: string, schema: z.ZodType<T>) => {
     if (context.mode !== "api")
-      throw new Error("Una lectura HTTP requiere fuente api.");
+      throw new Error("An HTTP read requires the api source.");
     return readJson(`${context.apiBaseUrl}${path}`, schema);
   };
   return {
@@ -30,13 +31,13 @@ export function createReader(context: SourceContext, readJson: JsonReader) {
     async getMission(id: string, scenario?: Scenario) {
       if (mode === "mock")
         return projectMission(getMockMission(id, scenario), id, mode, {
-          contractVersion: "0.1",
+          contractVersion: "0.2",
           dataKind: "synthetic",
           clinicalValidation: "pending",
         });
       const response = await read(
         `/astronauts/${encodeURIComponent(id)}/mission`,
-        legacyMissionSchema,
+        missionResponseSchema,
       );
       return projectMission(response.data, id, mode, response.meta);
     },
@@ -49,15 +50,15 @@ export function createReader(context: SourceContext, readJson: JsonReader) {
               measurementsResponseSchema,
             );
       if (!response) throw new ApiError(404);
-      if (response.data.some((item) => item.astronautId !== id))
+      if (response.data.some((item) => item.subject !== id))
         throw new z.ZodError([
           {
             code: "custom",
             path: ["data"],
-            message: "La respuesta contiene otra persona.",
+            message: "The response contains another person.",
           },
         ]);
-      return response;
+      return projectMeasurements(response);
     },
   };
 }

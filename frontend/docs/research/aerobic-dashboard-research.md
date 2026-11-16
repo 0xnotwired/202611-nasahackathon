@@ -1,374 +1,374 @@
-# Inspiración para un panel personal de seguimiento aeróbico
+# Inspiration for a personal aerobic follow-up panel
 
-Fecha de consulta: 15 de noviembre de 2026.
+Consultation date: November 15, 2026.
 
-## Recomendación principal
+## Main recommendation
 
-Diseñar un panel longitudinal personal: **qué se midió, cómo cambió, con qué
-referencia, cuántas observaciones lo sostienen y qué no sabemos todavía**.
-Combinar la síntesis de Apple Health, la organización de pruebas de Polar Flow,
-la revisión temporal de Intervals.icu y la trazabilidad de los visores de datasets.
+Design a personal longitudinal panel: **what was measured, how it changed, against what
+reference, how many observations support it and what we do not know yet**.
+Combine Apple Health's synthesis, Polar Flow's organization of tests,
+Intervals.icu's time review and the traceability of dataset viewers.
 
-«Seguimiento continuo» describe la continuidad del panel y del historial. No
-significa que VO₂pico se mida continuamente. Las pruebas periódicas, las señales
-de una sesión y el registro diario de actividad tienen resoluciones diferentes.
-La interfaz debe conservar esa diferencia.
+«Continuous follow-up» describes the continuity of the panel and the history. It does not
+mean that peak VO₂ is measured continuously. Periodic tests, the signals
+of a session and the daily activity log have different resolutions.
+The interface must preserve that difference.
 
-Esta entrega es investigación y material de diseño: no cambia la aplicación,
-el backend, los mocks activos ni el contrato compartido.
+This delivery is research and design material: it does not change the application,
+the backend, the active mocks or the shared contract.
 
-## 1. Alcance y método de revisión
+## 1. Scope and review method
 
-Se revisaron siete referencias externas de interfaz, documentación oficial,
-capturas publicadas y materiales del repositorio local Research. Se distinguen
-tres grupos: aplicaciones personales de entrenamiento, plataformas de investigación
-con wearables y visores de datasets fisiológicos. No todos son portales de datos
-abiertos ni tienen acceso público a sus paneles autenticados.
+Seven external interface references, official documentation,
+published screenshots and materials from the local Research repository were reviewed. Three
+groups are distinguished: personal training applications, research platforms
+with wearables and viewers of physiological datasets. Not all are open data
+portals nor do they have public access to their authenticated panels.
 
-La revisión permite evaluar patrones documentados, no demostrar usabilidad,
-exactitud de algoritmos comerciales o idoneidad para astronautas. No se crearon
-cuentas, conectaron dispositivos ni ejecutaron pruebas médicas. Las capturas de
-referencia se consultaron para inspiración; no se incorporan sus assets o código.
+The review allows evaluating documented patterns, not demonstrating usability,
+accuracy of commercial algorithms or suitability for astronauts. No
+accounts were created, devices connected or medical tests run. The reference
+screenshots were consulted for inspiration; their assets or code are not incorporated.
 
-## 2. Referencias de frontend
+## 2. Frontend references
 
 ### Apple Health · Cardio Fitness
 
-**Verificado:** su documentación muestra un gráfico personal y filtros de día,
-semana, mes, seis meses y año. La medida que presenta es una estimación de VO₂máx.
-La estimación documentada usa determinadas actividades exteriores; no es un método
-que se pueda trasladar automáticamente al interior de una nave.
+**Verified:** its documentation shows a personal chart and filters for day,
+week, month, six months and year. The measure it presents is a VO₂max estimate.
+The documented estimate uses certain outdoor activities; it is not a method
+that can be automatically transferred to the inside of a spacecraft.
 
-**Tomar para Órbita:** una medida principal, selector de período y acceso al
-historial completo. Colocar el origen medido/estimado junto al valor.
+**Take for Órbita:** one main measure, a period selector and access to the
+full history. Place the measured/estimated origin next to the value.
 
-**Adaptar:** la comparación personal es más apropiada para nuestro primer panel
-que copiar categorías poblacionales por edad/sexo o sus avisos de nivel bajo.
+**Adapt:** personal comparison is more appropriate for our first panel
+than copying population categories by age/sex or its low-level notices.
 
-Fuente y captura oficial: [Apple Support](https://support.apple.com/en-us/108790).
+Official source and screenshot: [Apple Support](https://support.apple.com/en-us/108790).
 
 ### Polar Flow · Tests
 
-**Verificado:** el manual reúne pruebas en una sección de seguimiento y permite
-comparar resultados a largo plazo. Distingue tipos de pruebas y advierte que
-cambios de peso/configuración afectan la comparabilidad de resultados.
+**Verified:** the manual groups tests in a follow-up section and allows
+comparing results over the long term. It distinguishes types of tests and warns that
+changes in weight/configuration affect the comparability of results.
 
-**Tomar:** una visita es un objeto explorable: fecha, resultado, modalidad y
-condiciones. El historial de pruebas debe ser independiente del calendario de
-entrenamientos.
+**Take:** a visit is an explorable object: date, result, modality and
+conditions. The test history must be independent of the training
+calendar.
 
-**Adaptar:** no convertir sus recomendaciones de entrenamiento, zonas o protocolos
-para corredores en instrucciones del astronauta. El contexto de medida debe estar
-confirmado para cada comparación.
+**Adapt:** do not turn its training recommendations, zones or protocols
+for runners into instructions for the astronaut. The measurement context must be
+confirmed for each comparison.
 
-Fuente y captura: [Polar, Running Performance Test](https://support.polar.com/e_manuals/vantage-v2/polar-vantage-v2-user-manual-english/running-performance-test.htm).
+Source and screenshot: [Polar, Running Performance Test](https://support.polar.com/e_manuals/vantage-v2/polar-vantage-v2-user-manual-english/running-performance-test.htm).
 
-En la captura oficial revisada, el resultado reciente y el inicial están encima
-del gráfico; debajo, una tabla permite inspeccionar las visitas. Para Órbita
-mantendría esa jerarquía, pero mostraría una medida principal por vez para evitar
-la densidad de varias escalas superpuestas.
+In the official screenshot reviewed, the recent and the initial result are above
+the chart; below, a table allows inspecting the visits. For Órbita I
+would keep that hierarchy, but would show one main measure at a time to avoid
+the density of several overlapping scales.
 
 ### Garmin Connect · Training Status
 
-**Verificado en documentación indexada de soporte:** relaciona tendencias de
-estimación de capacidad, carga y otros datos para mostrar estados de entrenamiento.
-La extracción directa de sus páginas devolvió contenido dependiente de JavaScript;
-no se verificó un panel autenticado ni una captura actual de su interfaz.
+**Verified in indexed support documentation:** it relates trends in
+capacity estimates, load and other data to show training states.
+Direct extraction of its pages returned JavaScript-dependent content;
+an authenticated panel or a current screenshot of its interface was not verified.
 
-**Tomar:** presentar un estado sintético acompañado de los datos que lo explican.
+**Take:** present a synthetic state accompanied by the data that explain it.
 
-**Adaptar:** no copiar etiquetas como «productivo», «desentrenamiento» o sus
-umbrales/algoritmos. En Órbita, el estado inicial debe describir la tendencia del
-indicador y la suficiencia de datos, sin calificar globalmente la salud.
+**Adapt:** do not copy labels such as «productive», «detraining» or its
+thresholds/algorithms. In Órbita, the initial state must describe the trend of the
+indicator and the sufficiency of data, without rating health globally.
 
-Fuente: [Garmin Support, Training Status](https://support.garmin.com/en-GB/?faq=VxKazDQ2mkAmDoQbJriEBA).
+Source: [Garmin Support, Training Status](https://support.garmin.com/en-GB/?faq=VxKazDQ2mkAmDoQbJriEBA).
 
 ### TrainingPeaks · Athlete Home / Performance Insights
 
-**Verificado:** la documentación presenta un resumen diario y gráficos consultables
-en ventanas de 7, 30, 90 y 180 días; se puede seleccionar un día para revisar su valor.
+**Verified:** the documentation presents a daily summary and charts that can be queried
+in 7, 30, 90 and 180-day windows; a day can be selected to review its value.
 
-**Tomar:** combinar una lectura de hoy con una ventana temporal explícita y acceso
-al detalle. Separar actividad realizada y resultados de evaluación en paneles
-relacionados.
+**Take:** combine a reading of today with an explicit time window and access
+to the detail. Separate completed activity and assessment results in related
+panels.
 
-**Adaptar:** sus métricas CTL/ATL/TSB y categorías son modelos de entrenamiento;
-no son intercambiables con una medición de capacidad aeróbica. No adoptarlas como
-índice de salud del astronauta.
+**Adapt:** its CTL/ATL/TSB metrics and categories are training models;
+they are not interchangeable with a measurement of aerobic capacity. Do not adopt them as
+the astronaut's health index.
 
-Fuentes: [Performance Insights](https://help.trainingpeaks.com/hc/en-us/articles/41077784209165-Athlete-Home-Performance-Insights),
+Sources: [Performance Insights](https://help.trainingpeaks.com/hc/en-us/articles/41077784209165-Athlete-Home-Performance-Insights),
 [Performance Management Chart](https://help.trainingpeaks.com/hc/en-us/articles/204071874-Performance-Management-Chart-PMC).
 
-### Intervals.icu · Fitness / tablas de totales
+### Intervals.icu · Fitness / totals tables
 
-**Verificado:** una publicación del desarrollador muestra tablas configurables,
-columnas de métricas representables en gráficos, agrupación, formatos y selección
-de temporadas. La documentación incluye capturas, pero su descarga devolvió 403;
-la descripción se basa en el texto del desarrollador, no en una cuenta propia.
+**Verified:** a developer post shows configurable tables,
+metric columns that can be plotted in charts, grouping, formats and selection
+of seasons. The documentation includes screenshots, but downloading it returned 403;
+the description is based on the developer's text, not on an account of our own.
 
-**Tomar:** gráfico y tabla como dos vistas de la misma selección; período de misión
-además de calendario convencional.
+**Take:** chart and table as two views of the same selection; mission period
+in addition to the conventional calendar.
 
-**Adaptar:** el panel del astronauta debería empezar con pocas medidas elegidas.
-La configuración libre de muchas curvas y fórmulas añade carga innecesaria al
-primer recorrido.
+**Adapt:** the astronaut's panel should start with a few chosen measures.
+Free configuration of many curves and formulas adds unnecessary load to the
+first journey.
 
-Fuente: [Intervals.icu, Configurable totals tables](https://forum.intervals.icu/t/configurable-totals-tables-for-fitness-data/123932).
+Source: [Intervals.icu, Configurable totals tables](https://forum.intervals.icu/t/configurable-totals-tables-for-fitness-data/123932).
 
-### Fitabase · datos de wearables para investigación
+### Fitabase · wearable data for research
 
-**Verificado:** su documentación separa resoluciones de segundos, minutos, horas
-y días. Publica una vista de zonas de frecuencia cardíaca y documenta datos con
-timestamps, actividad y eventos de sincronización. La captura de zonas publicada
-es de 2020: se usa como patrón, no como garantía del diseño actual.
+**Verified:** its documentation separates resolutions of seconds, minutes, hours
+and days. It publishes a heart rate zones view and documents data with
+timestamps, activity and sync events. The published zones screenshot
+is from 2020: it is used as a pattern, not as a guarantee of the current design.
 
-**Tomar:** indicar resolución, fecha de adquisición, cobertura y procedencia de
-cada serie; distinguir fecha de medición de fecha de sincronización.
+**Take:** indicate resolution, acquisition date, coverage and provenance of
+each series; distinguish measurement date from sync date.
 
-**Adaptar:** no mezclar una curva de FC de segundos con una evaluación mensual
-como si fueran el mismo tipo de observación, ni copiar zonas por edad.
+**Adapt:** do not mix a seconds-level HR curve with a monthly assessment
+as if they were the same type of observation, nor copy zones by age.
 
-Fuentes: [Data Resolutions](https://www.fitabase.com/resources/knowledge-base/learn-about-fitbit-data/data-resolutions/),
-[vista publicada de zonas](https://www.fitabase.com/blog/post/hr-zones/).
+Sources: [Data Resolutions](https://www.fitabase.com/resources/knowledge-base/learn-about-fitbit-data/data-resolutions/),
+[published zones view](https://www.fitabase.com/blog/post/hr-zones/).
 
 ### PhysioNet · LightWAVE
 
-**Verificado:** visor web de registros fisiológicos y anotaciones, con selección
-de dataset/registro, navegación temporal, cambio de escala y tablas de detalle.
+**Verified:** web viewer of physiological records and annotations, with selection
+of dataset/record, time navigation, scale change and detail tables.
 
-**Tomar:** seleccionar una observación y poder inspeccionar su fuente y los eventos
-que la acompañan. Es una referencia especialmente útil para la vista de detalle
-de una sesión o para explorar un dataset.
+**Take:** select an observation and be able to inspect its source and the events
+that accompany it. It is an especially useful reference for the detail view
+of a session or for exploring a dataset.
 
-**Adaptar:** su densidad técnica y las escalas cortas de señales no son la estructura
-principal para un historial mensual personal. No presentar ECG o formas de onda
-solo como decoración del panel aeróbico.
+**Adapt:** its technical density and the short scales of signals are not the main
+structure for a personal monthly history. Do not present ECG or waveforms
+merely as decoration of the aerobic panel.
 
-Fuente: [documentación de LightWAVE](https://physionet.org/static/lightwave/doc/about.html).
+Source: [LightWAVE documentation](https://physionet.org/static/lightwave/doc/about.html).
 
-### Research/dashboard · referencia propia del equipo
+### Research/dashboard · the team's own reference
 
-El dashboard local aporta identidad visual, filtros compartidos entre gráficos y
-tablas, procedencia y explicaciones de comparabilidad. Su audiencia es el equipo
-investigador. Para el astronauta conviene sustituir cohortes, histogramas y matrices
-de evidencia por una historia personal, eventos y resúmenes breves.
+The local dashboard contributes visual identity, filters shared between charts and
+tables, provenance and explanations of comparability. Its audience is the research
+team. For the astronaut it is advisable to replace cohorts, histograms and evidence
+matrices with a personal story, events and brief summaries.
 
-Referencias locales: `Research/dashboard/client/src/pages/Explore.tsx`,
-`components/research.tsx` y `lib/analysis.ts`. Su fuente declara «escala fuente /
-unidad no confirmada» donde corresponde: esa cautela debe conservarse al reutilizar
-los análisis.
+Local references: `Research/dashboard/client/src/pages/Explore.tsx`,
+`components/research.tsx` and `lib/analysis.ts`. Its source declares «source scale /
+unit not confirmed» where applicable: that caution must be kept when reusing
+the analyses.
 
-## 3. Qué aporta Research a un historial simulado
+## 3. What Research contributes to a simulated history
 
-Se revisaron el informe para la médica, la auditoría MR080G, los diagnósticos de
-metadatos G1/G2, el protocolo longitudinal condicionado y la resolución de
-comparabilidad física. No se copiaron datos individuales ni comentarios clínicos.
+The report for the physician, the MR080G audit, the G1/G2 metadata diagnostics,
+the conditioned longitudinal protocol and the physical comparability resolution
+were reviewed. No individual data or clinical comments were copied.
 
-### Hallazgos relevantes
+### Relevant findings
 
-- MR080G es la fuente aeróbica principal entre los materiales locales. Su conjunto
-  CFT70 tiene **38 PRE, 37 POST1, 36 POST2 y 34 screening**: 111 pruebas programadas
-  y 34 de selección. Son registros repetidos de un análogo terrestre.
-- Los **58 códigos distintos** no equivalen a 58 personas con seguimiento completo:
-  20 aparecen solo en screening; 36 tienen PRE y ambos POST. Los 73 pares técnicos
-  comparten referencias y no son 73 personas independientes.
-- El rango global 2011–2014 reúne distintas personas. No es un seguimiento continuo
-  de años de un astronauta ni justifica rellenar meses entre visitas.
-- Además de VO2PK hay campos de FC, carga, duración, intercambio gaseoso, esfuerzo
-  percibido y contexto. El informe médico indica que sus unidades y definiciones
-  deben revisarse por columna y sesión antes de utilizarlas.
-- En las tablas centrales siguen abiertas unidades exactas, protocolos por sesión
-  y relación entre valor absoluto, peso y resultado relativo. Una etiqueta de
-  protocolo parecida no prueba equivalencia.
-- El protocolo condicionado de G2 permite diferencias PRE–POST en escala fuente
-  bajo supuestos declarados. **No autoriza porcentajes, imputación, pooling entre
-  estudios ni interpretación clínica**.
+- MR080G is the main aerobic source among the local materials. Its CFT70 set
+  has **38 PRE, 37 POST1, 36 POST2 and 34 screening**: 111 scheduled tests
+  and 34 selection tests. They are repeated records of a ground analog.
+- The **58 distinct codes** are not equivalent to 58 people with complete follow-up:
+  20 appear only in screening; 36 have PRE and both POST. The 73 technical pairs
+  share references and are not 73 independent people.
+- The global 2011–2014 range brings together different people. It is not a continuous
+  multi-year follow-up of one astronaut nor does it justify filling in months between visits.
+- In addition to VO2PK there are fields for HR, load, duration, gas exchange, perceived
+  exertion and context. The medical report indicates that their units and definitions
+  must be reviewed by column and session before using them.
+- In the central tables, exact units, protocols per session
+  and the relationship between absolute value, weight and relative result remain open. A similar
+  protocol label does not prove equivalence.
+- The conditioned G2 protocol allows PRE–POST differences on the source scale
+  under declared assumptions. **It does not authorize percentages, imputation, pooling between
+  studies or clinical interpretation**.
 
-**Qué reutilizar:** estructura de visita, separaciones de método/rol, faltantes,
-historial de evaluaciones y relación con actividad como contexto.
+**What to reuse:** visit structure, method/role separations, missing values,
+assessment history and relationship with activity as context.
 
-**Qué no hacer:** convertir VO2PK en mL/kg/min por intuición, unir personas de
-distintas fuentes, transformar PRE/POST en meses nominales o usar porcentajes
-históricos como tasas esperadas de recuperación.
+**What not to do:** convert VO2PK to mL/kg/min by intuition, join people from
+different sources, turn PRE/POST into nominal months or use historical percentages
+as expected recovery rates.
 
-### Apoyo externo específico de vuelo espacial
+### Specific external support for spaceflight
 
-Un resumen de investigación de NASA describe pruebas pico en cicloergómetro antes,
-durante y después de misiones ISS, con evaluaciones aproximadamente mensuales
-durante el vuelo. Distingue VO₂pico y respuestas submáximas, y sus resultados están
-modelados a nivel de grupo. Esto respalda la pertinencia de **mostrar visitas
-periódicas y fases de misión**, no un protocolo para nuestro usuario ni una curva
-individual que podamos copiar.
+A NASA research summary describes peak tests on a cycle ergometer before,
+during and after ISS missions, with approximately monthly assessments
+during flight. It distinguishes peak VO₂ and submaximal responses, and its results are
+modeled at group level. This supports the relevance of **showing periodic
+visits and mission phases**, not a protocol for our user nor an individual curve
+that we can copy.
 
-Fuente: [NASA NTRS, Peak Oxygen Uptake during and after Long-duration Space Flight](https://ntrs.nasa.gov/citations/20140003748).
+Source: [NASA NTRS, Peak Oxygen Uptake during and after Long-duration Space Flight](https://ntrs.nasa.gov/citations/20140003748).
 
-Como referencia complementaria para estudiar la **estructura de una sesión**,
-el registro de PhysioNet en AWS describe 992 pruebas máximas de cinta con señales
-respiración a respiración. Es una población terrestre de deportistas y no un
-historial mensual de astronautas. El registro declara una licencia específica de
-datos de salud; no se descargaron ni redistribuyeron sus registros.
+As a complementary reference to study the **structure of a session**,
+the PhysioNet entry on AWS describes 992 maximal treadmill tests with breath-by-breath
+signals. It is a ground population of athletes and not a monthly
+history of astronauts. The entry declares a specific health-data
+license; its records were not downloaded or redistributed.
 
-Fuente: [registro de datos de pruebas de Málaga](https://registry.opendata.aws/treadmill-exercise-cardioresp/).
+Source: [Málaga test data registry](https://registry.opendata.aws/treadmill-exercise-cardioresp/).
 
-## 4. Inferencia de resultados sin diagnóstico
+## 4. Inferring results without diagnosis
 
-La primera versión debería producir **resúmenes descriptivos explicables**, no
-predicciones de enfermedad, aptitud operacional o respuestas automáticas al ejercicio.
+The first version should produce **explainable descriptive summaries**, not
+predictions of disease, operational fitness or automatic responses to exercise.
 
-| Salida | Qué describe | Qué no permite afirmar |
+| Output | What it describes | What it does not allow claiming |
 | --- | --- | --- |
-| Último resultado y antigüedad | Una evaluación concreta, con su método y fecha | Estado fisiológico en este momento |
-| Diferencia absoluta | Cambio entre evaluaciones comparables | Importancia clínica de ese cambio |
-| Diferencia porcentual | Cambio relativo con unidad/escala de razón confirmadas y referencia positiva | Resolver una unidad o normalización desconocida |
-| Tendencia del período | Dirección de resultados comparables a lo largo del tiempo | Causa del cambio, pronóstico o diagnóstico |
-| Variación observada | Dispersión de las visitas que realmente existen | Error instrumental o intervalo normal de la persona |
-| Actividad completada | Registro de las sesiones | Que esas sesiones causaron una mejora |
+| Latest result and age | A specific assessment, with its method and date | Physiological state at this moment |
+| Absolute difference | Change between comparable assessments | Clinical importance of that change |
+| Percentage difference | Relative change with confirmed unit/ratio scale and positive reference | Resolving an unknown unit or normalization |
+| Period trend | Direction of comparable results over time | Cause of the change, prognosis or diagnosis |
+| Observed variation | Dispersion of the visits that actually exist | Instrument error or the person's normal interval |
+| Completed activity | Record of the sessions | That those sessions caused an improvement |
 
-### Regla de comparabilidad propuesta
+### Proposed comparability rule
 
-Antes de calcular: misma persona, indicador, unidad confirmada, método/protocolo,
-tipo de resultado medido/estimado y condiciones relevantes revisadas. Separar
-resultados absolutos y relativos al peso. Un cambio de dispositivo, algoritmo o
-normalización requiere una decisión explícita, no solo igualdad del texto «VO₂».
+Before calculating: same person, indicator, confirmed unit, method/protocol,
+type of result measured/estimated and relevant conditions reviewed. Separate
+absolute and weight-relative results. A change of device, algorithm or
+normalization requires an explicit decision, not just equality of the text «VO₂».
 
-Si falla la comprobación, devolver un estado y su motivo: **no comparable**, **dato
-faltante** o **contexto insuficiente**. No devolver cero como diferencia bloqueada.
+If the check fails, return a state and its reason: **not comparable**, **missing
+data** or **insufficient context**. Do not return zero as a blocked difference.
 
-### Tendencia propuesta para la demostración
+### Proposed trend for the demonstration
 
-1. Seleccionar período y segmento compatible; ordenar por fecha real.
-2. Con una observación, mostrar solo el resultado. Con dos, permitir diferencia
-   pareada si son comparables; no presentarla como tendencia consolidada.
-3. Con al menos tres, puede explorarse una pendiente descriptiva respecto a días
-   reales. **Tres es una regla técnica propuesta para el demo, no suficiencia clínica
-   ni garantía estadística**. Mostrar cantidad, fechas y dispersión.
-4. Para estabilidad o estancamiento falta acordar variabilidad esperable y tolerancia.
-   Una pendiente cercana a cero no demuestra ausencia de cambio relevante. Sin ese
-   acuerdo, usar «variación pequeña en este período; relevancia no evaluada».
-5. Si se muestran intervalos estadísticos, explicar exactamente qué estiman. No
-   presentar un intervalo de regresión como incertidumbre del instrumento ni dar
-   confianza alta solo por disponer de tres puntos.
+1. Select a period and compatible segment; sort by real date.
+2. With one observation, show only the result. With two, allow a paired
+   difference if they are comparable; do not present it as a consolidated trend.
+3. With at least three, a descriptive slope with respect to real days can be explored.
+   **Three is a technical rule proposed for the demo, not clinical sufficiency
+   nor a statistical guarantee**. Show quantity, dates and dispersion.
+4. For stability or stagnation, the expected variability and tolerance remain to be agreed.
+   A slope close to zero does not demonstrate absence of relevant change. Without that
+   agreement, use «small variation in this period; relevance not assessed».
+5. If statistical intervals are shown, explain exactly what they estimate. Do not
+   present a regression interval as instrument uncertainty nor give high
+   confidence just for having three points.
 
-Estados de interfaz iniciales: **ascendente**, **variación pequeña**, **descendente**
-y **datos insuficientes/no comparables**. Las palabras «mejora», «estancamiento»
-y «empeoramiento» necesitan una definición acordada para el indicador y el uso.
-Evitar un indicador global que afirme «tu salud está mejor/peor».
+Initial interface states: **rising**, **small variation**, **falling**
+and **insufficient data/not comparable**. The words «improvement», «stagnation»
+and «worsening» need an agreed definition for the indicator and the use.
+Avoid a global indicator that claims «your health is better/worse».
 
-Ejemplo de texto: «El resultado es mayor que en la referencia seleccionada.
-Comparación basada en 4 evaluaciones del mismo protocolo. La importancia del cambio
-no está evaluada». La cifra, el período y n deben proceder de los datos activos.
+Example text: «The result is higher than at the selected reference.
+Comparison based on 4 assessments of the same protocol. The importance of the change
+is not assessed». The figure, the period and n must come from the active data.
 
-## 5. Composición propuesta del dashboard
+## 5. Proposed dashboard composition
 
 ```text
-Astronauta / misión             Última evaluación: fecha / método
-Período: 3 meses | 6 meses | 12 meses | Todo   Referencia: visita elegida
+Astronaut / mission                Latest assessment: date / method
+Period: 3 months | 6 months | 12 months | All   Reference: chosen visit
 
-Último resultado  Cambio vs referencia  Tendencia y n  Cobertura / antigüedad
+Latest result  Change vs reference  Trend and n  Coverage / age
 
-EVOLUCIÓN AERÓBICA · gráfico principal por fecha
-Puntos reales · segmentos compatibles · huecos · eventos anotados
-Seleccionar un punto → ficha de la evaluación y sus condiciones
+AEROBIC EVOLUTION · main chart by date
+Real points · compatible segments · gaps · annotated events
+Select a point → assessment card and its conditions
 
-Actividad registrada            Historial de evaluaciones
-Sesiones, duración, dificultades Fecha, resultado, unidad, método, calidad
+Logged activity                 Assessment history
+Sessions, duration, difficulties Date, result, unit, method, quality
 
-QUÉ MUESTRAN ESTOS DATOS
-Resumen descriptivo + por qué se calculó / por qué se bloqueó
-Registrar observación | Preparar revisión | Descargar historial
+WHAT THESE DATA SHOW
+Descriptive summary + why it was calculated / why it was blocked
+Record observation | Prepare review | Download history
 ```
 
-- Dar prioridad al gráfico longitudinal y al contexto personal. Reservar el detalle
-  técnico para una ficha, sin ocultar método, fecha y carácter simulado.
-- Mantener la misma ventana y selección en gráficos, KPI, tabla y resumen.
-- Usar días reales en el eje X. Mostrar visitas planificadas y realizadas como
-  conceptos distintos; un mes sin visita no contiene una medición implícita.
-- Los puntos son observaciones. Una línea, si se usa, es una ayuda visual entre
-  visitas compatibles; no representa una medición continua. No unir a través de
-  faltantes o cambios de método, ni suavizar hasta esconderlos.
-- Mostrar el número de visitas junto a cualquier promedio. No cambiar de media a
-  último valor silenciosamente al modificar la escala temporal.
-- Mostrar actividad en otro panel temporal alineado, sin segunda escala engañosa
-  ni afirmaciones causales. No generar adherencia si no existe un plan asignado.
-- Usar texto, forma y leyenda, además de color. Evitar verde/rojo como juicio clínico.
-- En móvil: último dato y su fecha, gráfico, explicación y próxima tarea; filtros
-  secundarios y tablas bajo acceso explícito. No reducir las etiquetas a texto ilegible.
+- Give priority to the longitudinal chart and the personal context. Reserve technical
+  detail for a card, without hiding method, date and simulated nature.
+- Keep the same window and selection in charts, KPIs, table and summary.
+- Use real days on the X axis. Show planned and completed visits as distinct
+  concepts; a month without a visit does not contain an implicit measurement.
+- The points are observations. A line, if used, is a visual aid between
+  compatible visits; it does not represent a continuous measurement. Do not join across
+  missing values or method changes, nor smooth until hiding them.
+- Show the number of visits next to any average. Do not switch silently from mean to
+  last value when changing the time scale.
+- Show activity in another aligned time panel, without a misleading second scale
+  or causal claims. Do not generate adherence if there is no assigned plan.
+- Use text, shape and legend, in addition to color. Avoid green/red as clinical judgment.
+- On mobile: latest data and its date, chart, explanation and next task; secondary
+  filters and tables under explicit access. Do not reduce labels to illegible text.
 
-## 6. Historial sintético de doce meses
+## 6. Twelve-month synthetic history
 
-Se entrega `aerobic-history-scenarios.csv`: **78 filas, seis escenarios y 13 visitas
-nominales por escenario**, del 15/11/2025 al 15/11/2026. La periodicidad mensual
-es una decisión de diseño para probar la navegación, no una prescripción.
+`aerobic-history-scenarios.csv` is delivered: **78 rows, six scenarios and 13 nominal
+visits per scenario**, from 11/15/2025 to 11/15/2026. The monthly periodicity
+is a design decision to test navigation, not a prescription.
 
-Los valores fueron elegidos manualmente. No son pacientes, participantes de NASA,
-remuestreo de originales ni estimaciones de respuesta al vuelo. Se usa la unidad
-mL/kg/min únicamente como **unidad declarada del ejemplo ficticio**, no como unidad
-resuelta del campo VO2PK de MR080G. Los métodos DEMO-A/DEMO-B son ficticios.
+The values were chosen manually. They are not patients, NASA participants,
+resampling of originals or estimates of response to flight. The unit
+mL/kg/min is used only as the **declared unit of the fictional example**, not as the resolved
+unit of the VO2PK field of MR080G. The DEMO-A/DEMO-B methods are fictional.
 
-| Escenario | Propósito de interfaz |
+| Scenario | Interface purpose |
 | --- | --- |
-| Ascenso con oscilaciones | Mostrar aumento sin inventar una mejora perfectamente lineal |
-| Variación alrededor de una referencia | Evitar declarar estancamiento por dos visitas parecidas |
-| Descenso con oscilaciones | Explicar una bajada del resultado sin diagnosticar ni atribuir causa |
-| Descenso y recuperación | Mostrar cómo cambia el resumen al seleccionar distintas ventanas |
-| Visitas sin resultado | Mostrar ausencia, cobertura y discontinuidad gráfica |
-| Cambio de método | Evitar presentar un salto de protocolo como avance personal |
+| Rise with oscillations | Show an increase without inventing a perfectly linear improvement |
+| Variation around a reference | Avoid declaring stagnation from two similar visits |
+| Fall with oscillations | Explain a drop in the result without diagnosing or attributing a cause |
+| Fall and recovery | Show how the summary changes when selecting different windows |
+| Visits without result | Show absence, coverage and graphic discontinuity |
+| Method change | Avoid presenting a protocol jump as personal progress |
 
-La figura `aerobic-history-scenarios.png` permite comparar esos casos con la misma
-escala. No calcula diagnósticos ni asigna importancia clínica a las variaciones.
-`generate_history_examples.py` reproduce el CSV y la figura sin leer datos privados
-de Research. Requiere matplotlib; no se añade esa dependencia a la aplicación.
+The figure `aerobic-history-scenarios.png` allows comparing those cases on the same
+scale. It does not calculate diagnoses or assign clinical importance to the variations.
+`generate_history_examples.py` reproduces the CSV and the figure without reading private data
+from Research. It requires matplotlib; that dependency is not added to the application.
 
-## 7. Datos mínimos para acordar con backend y la médica
+## 7. Minimum data to agree on with backend and the physician
 
-No se modifica todavía `contracts/`. Como propuesta de ampliación, cada evaluación
-debería poder expresar: persona; instante/fase; indicador; valor/unidad;
-medido/estimado; protocolo y versión; modalidad; dispositivo; contexto de
-normalización por masa cuando corresponda; estado de disponibilidad/calidad;
-procedencia; y motivo de no comparabilidad.
+`contracts/` is not modified yet. As an extension proposal, each assessment
+should be able to express: person; instant/phase; indicator; value/unit;
+measured/estimated; protocol and version; modality; device; mass
+normalization context when applicable; availability/quality state;
+provenance; and reason for non-comparability.
 
-Los resultados derivados deberían conservar período, referencia, IDs incluidos y
-excluidos, n, método de cálculo, política de comparabilidad y motivo del estado.
-Así el frontend explica el resultado y el backend puede reproducirlo.
+Derived results should preserve period, reference, included and
+excluded IDs, n, calculation method, comparability policy and reason for the state.
+That way the frontend explains the result and the backend can reproduce it.
 
-Preguntas concretas para la médica:
+Specific questions for the physician:
 
-1. ¿Qué resultado aeróbico se seguirá y qué significa una dirección favorable?
-2. ¿Qué condiciones hacen comparables dos pruebas y qué cambios obligan a separarlas?
-3. ¿Qué referencia usar y qué variación impide concluir estabilidad o cambio?
-4. ¿Qué texto de seguimiento puede leer el astronauta sin inducir decisiones clínicas?
-5. ¿Qué acciones debe ofrecer el panel cuando faltan datos o hay una tendencia a revisar?
+1. Which aerobic result will be followed and what does a favorable direction mean?
+2. What conditions make two tests comparable and what changes force them apart?
+3. Which reference to use and what variation prevents concluding stability or change?
+4. What follow-up text can the astronaut read without inducing clinical decisions?
+5. What actions should the panel offer when data are missing or there is a trend to review?
 
-## 8. Criterios para evaluar el próximo diseño
+## 8. Criteria for evaluating the next design
 
-- El usuario encuentra el resultado reciente, su fecha y el método sin abrir ayuda.
-- Puede localizar una visita de hace meses y comprobar el resumen con la tabla.
-- Distingue «descendió esta medida» de «estoy clínicamente peor».
-- Entiende por qué un cambio de método bloquea la comparación.
-- No interpreta un hueco como cero o como una medición normal.
-- Cambiar de 3 a 12 meses recalcula resultados y explica el período efectivo.
-- Una corrección o una nueva visita no cambia silenciosamente la referencia elegida.
-- La observación del usuario y el resumen se conservan sin afirmar que se enviaron.
+- The user finds the recent result, its date and the method without opening help.
+- They can locate a visit from months ago and check the summary against the table.
+- They distinguish «this measure fell» from «I am clinically worse».
+- They understand why a method change blocks the comparison.
+- They do not interpret a gap as zero or as a normal measurement.
+- Switching from 3 to 12 months recalculates results and explains the effective period.
+- A correction or a new visit does not silently change the chosen reference.
+- The user's observation and the summary are kept without claiming they were sent.
 
-## 9. Evidencia y límites de esta investigación
+## 9. Evidence and limits of this research
 
-Las referencias de productos se basan en sus documentos/capturas públicas, no en
-una auditoría clínica, prueba comparativa con usuarios o ingeniería inversa de sus
-modelos. Garmin tiene verificación limitada al contenido indexado de soporte.
-Algunas imágenes y la página directa del dataset de Málaga no fueron recuperables
-por el lector web; se usa el registro del propio recurso en AWS para describirlo.
+The product references are based on their public documents/screenshots, not on
+a clinical audit, comparative test with users or reverse engineering of their
+models. Garmin has verification limited to the indexed support content.
+Some images and the direct page of the Málaga dataset could not be retrieved
+by the web reader; the resource's own entry on AWS is used to describe it.
 
-Se consultaron en Research:
+The following were consulted in Research:
 
-- `reports/aerobic-health-medical-team-brief.md`, especialmente §§3, 5, 6 y 11.
+- `reports/aerobic-health-medical-team-brief.md`, especially §§3, 5, 6 and 11.
 - `research/datasets/audits/mr080g-data-audit.md`.
 - `reports/descriptive/metadata-diagnostics.json`.
 - `research/evidence/physical-comparison-resolution.md`.
 - `analysis/config/conditional_longitudinal_protocol.json`.
 - `reports/selection/selected-demo-context.json`.
-- Los componentes de exploración del dashboard.
+- The dashboard's exploration components.
 
-Los recuentos locales se contrastaron entre los informes y los diagnósticos
-versionados; no se repitió la auditoría de archivos originales ni el pipeline
-completo. No se copiaron datos personales. Los ejemplos adjuntos están separados
-de los mocks activos y no prueban realismo fisiológico ni eficacia del producto.
+The local counts were checked between the reports and the versioned
+diagnostics; the audit of original files and the complete pipeline were not repeated. No
+personal data were copied. The attached examples are separate from the
+active mocks and do not prove physiological realism or the product's effectiveness.

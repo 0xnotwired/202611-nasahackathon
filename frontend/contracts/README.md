@@ -1,22 +1,22 @@
-# Contrato compartido de Órbita
+# Órbita shared contract
 
-Esta carpeta pertenece a ambos responsables. Es el único acuerdo de estructuras
-entre frontend y backend; no contiene componentes, simulación o persistencia.
+This folder belongs to both owners. It is the only agreement on structures
+between frontend and backend; it contains no components, simulation or persistence.
 
-- `models.ts`: tipos de transporte sin dependencia de framework. El backend
-  puede comprobar tipos sin instalar las dependencias del frontend.
-- `schemas.ts`: validadores Zod, compatibles con esos tipos, usados por el cliente
-  del frontend y las pruebas de integración.
-- `openapi.ts`: descripción de rutas y exportación de los esquemas.
-- `openapi.json`: especificación OpenAPI 3.1 versionada, servida por el backend.
-- `fixtures/`: ejemplos de respuestas válidas; no son el almacenamiento de la API.
-- `tests/`: compatibilidad de respuestas, ejemplos y especificación.
+- `models.ts`: transport types without framework dependencies. The backend
+  can check types without installing the frontend dependencies.
+- `schemas.ts`: Zod validators, compatible with those types, used by the frontend
+  client and the integration tests.
+- `openapi.ts`: route description and schema export.
+- `openapi.json`: versioned OpenAPI 3.1 specification, served by the backend.
+- `fixtures/`: examples of valid responses; they are not the API's storage.
+- `tests/`: compatibility of responses, examples and specification.
 
-## Cambiar el contrato
+## Change the contract
 
-1. Acordar con la otra persona los campos o rutas que van a cambiar.
-2. Actualizar tipos, validadores, descripción de rutas y ejemplos pertinentes.
-3. Desde la raíz ejecutar:
+1. Agree with the other person on the fields or routes that will change.
+2. Update the relevant types, validators, route description and examples.
+3. From the root run:
 
 ```bash
 npm ci
@@ -24,12 +24,12 @@ npm run contracts:export
 npm run test:contracts
 ```
 
-4. Incluir el código que produce y consume el cambio en una integración coordinada.
+4. Include the code that produces and consumes the change in a coordinated integration.
 
-No hace falta tocar estos archivos para modificar colores, pantallas, algoritmos
-de simulación o implementaciones internas. Evitar cambios incompatibles en la
-versión 0.1; si son necesarios, acordar su versionado y migración.
+You do not need to touch these files to change colors, screens, simulation
+algorithms or internal implementations. Avoid incompatible changes in
+version 0.2; if they are necessary, agree on their versioning and migration.
 
-Las relaciones entre campos —por ejemplo, que cada medición pertenezca al
-astronauta solicitado— también se comprueban en integración. OpenAPI describe
-estructura y rutas, no certifica validez clínica o comparabilidad de resultados.
+Relationships between fields (for example, that each record belongs to the
+requested astronaut) are also checked in integration. OpenAPI describes
+structure and routes; it does not certify clinical validity or comparability of results.

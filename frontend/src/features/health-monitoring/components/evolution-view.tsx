@@ -1,7 +1,8 @@
 import { Info } from "lucide-react";
 import type { DemoMission } from "../mission";
 import { compareEvaluations, formatDate, numberFormat } from "../mission";
-import type { Astronaut, MeasurementsResponse } from "../schemas";
+import type { Astronaut } from "../schemas";
+import type { MeasurementsView } from "../mission";
 import { EvaluationChart } from "./evaluation-chart";
 import { MeasurementsPanel } from "./measurements-panel";
 
@@ -14,7 +15,7 @@ export function EvolutionView({
 }: {
   mission: DemoMission;
   astronaut: Astronaut;
-  measurements: MeasurementsResponse;
+  measurements: MeasurementsView;
   reference: string;
   onReference: (id: string) => void;
 }) {
@@ -27,28 +28,28 @@ export function EvolutionView({
     <>
       <div className="page-heading">
         <div>
-          <h1 id="contenido" tabIndex={-1}>
-            Evolución física
+          <h1 id="content" tabIndex={-1}>
+            Physical evolution
           </h1>
-          <p>Revisá tus evaluaciones con su fecha, método y unidad.</p>
+          <p>Review your assessments with their date, method and unit.</p>
         </div>
-        <span className="badge">Capacidad aeróbica</span>
+        <span className="badge">Aerobic capacity</span>
       </div>
       <div className="content-grid">
         <section className="panel">
           <div className="panel-heading">
             <div>
-              <h2>Evaluaciones a lo largo del tiempo</h2>
-              <p>Escenario individual de demostración</p>
+              <h2>Assessments over time</h2>
+              <p>Individual demonstration scenario</p>
             </div>
           </div>
           <EvaluationChart evaluations={mission.evaluations} />
         </section>
         <section className="panel comparison-panel">
-          <h2>Antes de comparar</h2>
-          <p>Última evaluación frente a un registro anterior.</p>
+          <h2>Before comparing</h2>
+          <p>Latest assessment against an earlier record.</p>
           <label htmlFor="reference-evaluation">
-            Evaluación de referencia
+            Reference assessment
             <select
               id="reference-evaluation"
               value={reference}
@@ -56,7 +57,7 @@ export function EvolutionView({
               onChange={(event) => onReference(event.target.value)}
             >
               {mission.evaluations.length < 2 ? (
-                <option value="">Sin referencia</option>
+                <option value="">No reference</option>
               ) : (
                 mission.evaluations.slice(0, -1).map((evaluation) => (
                   <option value={evaluation.id} key={evaluation.id}>
@@ -70,23 +71,23 @@ export function EvolutionView({
             <Info size={22} aria-hidden="true" />
             <strong>
               {comparison.difference === null
-                ? "Comparación no disponible"
+                ? "Comparison not available"
                 : `${numberFormat.format(comparison.difference)} ${latest?.unit}`}
             </strong>
             <p>{comparison.reason}</p>
           </div>
           <small>
-            La comparación técnica no equivale a una evaluación clínica.
+            A technical comparison is not a clinical assessment.
           </small>
         </section>
       </div>
       <section className="panel">
         <div className="panel-heading">
           <div>
-            <h2>Historial de evaluaciones</h2>
+            <h2>Assessment history</h2>
             <p>
-              Datos ficticios. Las unidades y los métodos del producto final se
-              acordarán con la médica.
+              Fictional data. The units and methods of the final product will be
+              agreed with the physician.
             </p>
           </div>
         </div>
@@ -99,14 +100,14 @@ export function EvolutionView({
           >
             <table>
               <caption id="aerobic-caption">
-                Evaluaciones aeróbicas de {astronaut.callsign}
+                Aerobic assessments of {astronaut.callsign}
               </caption>
               <thead>
                 <tr>
-                  <th scope="col">Fecha</th>
-                  <th scope="col">Resultado</th>
-                  <th scope="col">Método</th>
-                  <th scope="col">Respecto a la anterior</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Result</th>
+                  <th scope="col">Method</th>
+                  <th scope="col">Compared with the previous</th>
                 </tr>
               </thead>
               <tbody>
@@ -120,16 +121,16 @@ export function EvolutionView({
                       <th scope="row">{formatDate(evaluation.recordedAt)}</th>
                       <td>
                         {evaluation.value === null
-                          ? "Sin dato"
+                          ? "Not recorded"
                           : `${numberFormat.format(evaluation.value)} ${evaluation.unit}`}
                       </td>
                       <td>{evaluation.method}</td>
                       <td>
                         {index === 0
-                          ? "Primera evaluación"
+                          ? "First assessment"
                           : result.difference === null
                             ? result.reason
-                            : `${numberFormat.format(result.difference)} ${evaluation.unit} · cambio descriptivo`}
+                            : `${numberFormat.format(result.difference)} ${evaluation.unit} · descriptive change`}
                       </td>
                     </tr>
                   );
@@ -139,7 +140,7 @@ export function EvolutionView({
           </div>
         ) : (
           <p className="empty-state">
-            Todavía no hay evaluaciones para este astronauta.
+            There are no assessments for this astronaut yet.
           </p>
         )}
       </section>

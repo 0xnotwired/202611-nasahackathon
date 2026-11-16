@@ -4,15 +4,15 @@ import "../features/health-monitoring/components/aerobic.css";
 import { SourceNavigation } from "../features/health-monitoring/components/source-navigation";
 
 export const metadata: Metadata = {
-  title: "Monitoreo de salud | Órbita",
+  title: "Health monitoring | Órbita",
   description:
-    "Prototipo de monitoreo de salud de astronautas con datos simulados.",
+    "Prototype for monitoring astronaut health with simulated data.",
   icons: { icon: "/orbita.svg" },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="es" className="h-full antialiased">
+    <html lang="en" className="h-full antialiased">
       <head>
         <meta name="text-scale" content="scale" />
         <meta
@@ -28,8 +28,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
       </head>
       <body className="min-h-full flex flex-col">
-        <a href="#contenido" className="skip-link">
-          Saltar al contenido
+        <a href="#content" className="skip-link">
+          Skip to content
         </a>
         <SourceNavigation>{children}</SourceNavigation>
       </body>

@@ -1,101 +1,101 @@
 # Órbita · Backend
 
-API independiente en **Node.js 22.18+ y TypeScript**. Puerto predeterminado: 4000.
-No necesita Next.js, React, base de datos, Docker ni dependencias de producción.
-TypeScript se ejecuta con el soporte nativo de Node; `tsc` comprueba tipos.
+Independent API in **Node.js 22.18+ and TypeScript**. Default port: 4000.
+It does not need Next.js, React, a database, Docker or production dependencies.
+TypeScript runs with Node's native support; `tsc` checks types.
 
-## Arrancar solo el backend
+## Start only the backend
 
-Desde la raíz del repo:
+From the repo root:
 
 ```bash
 npm --prefix backend ci
 npm --prefix backend run dev
 ```
 
-O desde esta carpeta:
+Or from this folder:
 
 ```bash
 nvm use
 npm ci
-cp .env.example .env  # opcional: el código ya usa estos valores por defecto
+cp .env.example .env  # optional: the code already uses these defaults
 npm run dev
 ```
 
-Comprobar: http://127.0.0.1:4000/api/v1/health.
-Contrato servido: http://127.0.0.1:4000/api/v1/openapi.json.
+Check: http://127.0.0.1:4000/api/v1/health.
+Served contract: http://127.0.0.1:4000/api/v1/openapi.json.
 
-`npm run dev` reinicia el proceso al cambiar código. `npm start` lo ejecuta sin
-watch. No hay paso de compilación obligatorio para este entorno de desarrollo.
-Se usa sintaxis TypeScript que Node puede eliminar: evitar enums, parameter
-properties u otras características que necesiten transformación.
+`npm run dev` restarts the process when code changes. `npm start` runs it without
+watch. There is no mandatory build step for this development environment.
+It uses TypeScript syntax that Node can strip: avoid enums, parameter
+properties or other features that need transformation.
 
-## Dónde trabajar
+## Where to work
 
 ```text
 backend/
-  src/index.ts          Arranque, puerto y cierre del proceso
-  src/server.ts         Adaptador HTTP de Node
-  src/app.ts            Rutas y respuestas
-  src/data/provider.ts  Fuente de datos; empezar la simulación aquí
-  src/data/seed.json    Escenario ficticio inicial propio del backend
-  tests/                Pruebas del backend
-  package*.json         Dependencias y lockfile propios
+  src/index.ts          Startup, port and process shutdown
+  src/server.ts         Node HTTP adapter
+  src/app.ts            Routes and responses
+  src/data/provider.ts  Data source; start the simulation here
+  src/data/seed.json    Initial fictional scenario owned by the backend
+  tests/                Backend tests
+  package*.json         Own dependencies and lockfile
 ```
 
-Los seeds son independientes de los mocks del frontend. Podés cambiar cómo se
-generan o procesan los datos aquí sin editar `../src/`. La forma de las respuestas
-está acordada en `../contracts/`; no cambiarla unilateralmente.
+The seeds are independent of the frontend mocks. You can change how the data is
+generated or processed here without editing `../src/`. The shape of the responses
+is agreed in `../contracts/`; do not change it unilaterally.
 
-Rutas de solo lectura:
+Read-only routes:
 
 - `GET /api/v1/health`
 - `GET /api/v1/astronauts`
 - `GET /api/v1/astronauts/:astronautId/measurements`
 - `GET /api/v1/astronauts/:astronautId/mission`
 
-Se distinguen un astronauta inexistente (404) y uno sin registros (200 con listas
-vacías). Las respuestas declaran datos sintéticos y validación clínica pendiente.
-Los errores usan `{ error: { code, message } }`.
+A nonexistent astronaut (404) and one with no records (200 with empty lists)
+are distinguished. Responses declare synthetic data and pending clinical validation.
+Errors use `{ error: { code, message } }`.
 
-La base no acepta escrituras ni persiste actividad del usuario. Los borradores de
-sesiones y revisión siguen en el navegador del frontend. Agregar escritura o
-persistencia requiere acordar antes las rutas y los estados con frontend.
+The database accepts no writes and does not persist user activity. The session
+and review drafts stay in the frontend's browser. Adding writes or
+persistence requires agreeing on the routes and states with the frontend first.
 
-## Dependencias y controles
+## Dependencies and checks
 
-Instalar siempre desde esta carpeta: `npm install <paquete>` o, desde la raíz,
-`npm --prefix backend install <paquete>`. No editar el package.json raíz para el
-backend. No hacen falta npm workspaces para desarrollar estas dos aplicaciones.
+Always install from this folder: `npm install <package>` or, from the root,
+`npm --prefix backend install <package>`. Do not edit the root package.json for the
+backend. npm workspaces are not needed to develop these two applications.
 
 ```bash
-npm run check        # Tipos + tests del backend
+npm run check        # Types + backend tests
 ```
 
-Después de un cambio que pueda afectar las respuestas, desde la raíz:
+After a change that may affect the responses, from the root:
 
 ```bash
-npm ci               # instala las herramientas de contrato/frontend
+npm ci               # installs the contract/frontend tools
 npm run test:contracts
 ```
 
-Este último control valida las respuestas reales del router con los esquemas que
-consume el frontend y comprueba el OpenAPI versionado.
+This last check validates the router's real responses against the schemas that
+the frontend consumes and checks the versioned OpenAPI.
 
-## Probar junto al frontend
+## Test alongside the frontend
 
-El frontend usa mocks por defecto. En la raíz, configurar `.env.local`:
+The frontend uses mocks by default. In the root, configure `.env.local`:
 
 ```dotenv
 HEALTH_DATA_SOURCE=api
 HEALTH_API_BASE_URL=http://127.0.0.1:4000/api/v1
 ```
 
-En otra terminal ejecutar `npm run dev` desde la raíz y abrir localhost:3000.
-Las consultas se hacen desde Next.js en el servidor; no hace falta añadir CORS
-del navegador para este flujo.
+In another terminal run `npm run dev` from the root and open localhost:3000.
+Queries are made from Next.js on the server; there is no need to add browser
+CORS for this flow.
 
-La configuración predeterminada escucha en localhost. No se prepara en este
-cambio un despliegue de producción, autenticación o almacenamiento real.
+The default configuration listens on localhost. This change does not prepare a
+production deployment, authentication or real storage.
 
-Para ramas y límites de archivos, ver [trabajo en equipo](../docs/team-workflow.md).
+For branches and file boundaries, see [teamwork](../docs/team-workflow.md).
