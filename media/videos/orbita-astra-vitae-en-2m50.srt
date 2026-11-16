@@ -1,0 +1,163 @@
+1
+00:00:00,000 --> 00:00:03,118
+You are on a space mission, feeling more tired than
+
+2
+00:00:03,118 --> 00:00:03,485
+usual.
+
+3
+00:00:03,485 --> 00:00:08,177
+You have some measurements, limited equipment, and communication with Earth
+
+4
+00:00:08,177 --> 00:00:09,428
+that may be delayed.
+
+5
+00:00:09,428 --> 00:00:11,491
+What information should you review?
+
+6
+00:00:11,491 --> 00:00:12,906
+What can you do now?
+
+7
+00:00:12,906 --> 00:00:16,760
+We are Astra Vitae, from Argentina, and we developed Orbita
+
+8
+00:00:16,760 --> 00:00:18,328
+to support that journey.
+
+9
+00:00:27,000 --> 00:00:32,890
+Orbita connects health indicators, physical assessments, and habitat conditions.
+
+10
+00:00:32,890 --> 00:00:36,794
+Each measurement retains its origin, method, and date.
+
+11
+00:00:36,794 --> 00:00:40,936
+This helps distinguish an earlier assessment from a recent measurement.
+
+12
+00:00:40,936 --> 00:00:44,859
+When information is missing, the gap remains visible: a day
+
+13
+00:00:44,859 --> 00:00:47,518
+without measurements never becomes zero.
+
+14
+00:00:52,000 --> 00:00:55,059
+Let's follow an example using fictional data.
+
+15
+00:00:55,059 --> 00:00:57,777
+We report fatigue and open an episode.
+
+16
+00:00:57,777 --> 00:01:01,055
+The application brings together what we know and what is
+
+17
+00:01:01,055 --> 00:01:03,338
+missing before presenting a suggestion.
+
+18
+00:01:09,000 --> 00:01:13,531
+Procedures check preparation and the equipment available for the mission.
+
+19
+00:01:13,531 --> 00:01:16,032
+The rule in this demonstration is fictional.
+
+20
+00:01:16,032 --> 00:01:20,279
+Real clinical guidance requires reviewed content with a source and
+
+21
+00:01:20,279 --> 00:01:20,793
+version.
+
+22
+00:01:20,793 --> 00:01:24,924
+Orbita does not diagnose conditions or prescribe treatments.
+
+23
+00:01:29,000 --> 00:01:32,063
+After an action, we need to know what happened.
+
+24
+00:01:32,063 --> 00:01:35,562
+That is why completing a task and recording its result
+
+25
+00:01:35,562 --> 00:01:36,793
+are separate steps.
+
+26
+00:01:45,000 --> 00:01:48,403
+The episode can produce a summary of what was observed,
+
+27
+00:01:48,403 --> 00:01:51,187
+what was measured, and what is still missing.
+
+28
+00:01:51,187 --> 00:01:53,802
+Sharing requires an explicit decision.
+
+29
+00:01:53,802 --> 00:01:57,983
+The ground panel demonstrates that exchange through a clearly labeled
+
+30
+00:01:57,983 --> 00:01:59,013
+local simulation.
+
+31
+00:02:04,000 --> 00:02:09,107
+We built eleven connected views using JavaScript, SVG charts, and
+
+32
+00:02:09,107 --> 00:02:10,365
+browser storage.
+
+33
+00:02:10,365 --> 00:02:14,377
+The main application runs locally and can be delivered as
+
+34
+00:02:14,377 --> 00:02:15,715
+a single HTML file.
+
+35
+00:02:18,000 --> 00:02:20,356
+NASA research informed the design.
+
+36
+00:02:20,356 --> 00:02:24,559
+Research cases are kept separate from personal records and retain
+
+37
+00:02:24,559 --> 00:02:25,658
+their provenance.
+
+38
+00:02:30,000 --> 00:02:35,379
+Our contribution connects information, available resources, and follow-up.
+
+39
+00:02:35,379 --> 00:02:39,038
+User studies and clinical validation remain pending.
+
+40
+00:02:39,038 --> 00:02:39,713
+Orbita.
+
+41
+00:02:39,713 --> 00:02:41,438
+Your health, on board.

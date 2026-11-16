@@ -35,6 +35,16 @@ None (decision D2). The product is the team's own code, licensed under Apache-2.
 
 ## 3. Data
 
+### Presentation-video tooling update
+
+The English videos in [media/videos](../media/videos/README.md) use the following additional or updated external production tools. No tool binary or library is included in the app or the media directory.
+
+| Tool | Use | License evidence | Distribution |
+|---|---|---|---|
+| eSpeak NG, via espeakng-loader 0.2.4 | Synthetic English narration | Upstream [COPYING](https://github.com/espeak-ng/espeak-ng/blob/master/COPYING) was retrieved and read: GNU GPL version 3. The library is external production tooling. | Generated narration only; no engine or voice-data binary shipped. |
+| FFmpeg 7.1.5, Debian build | Video editing, burned-in subtitles and H.264/AAC encoding | Installed `ffmpeg -version` identifies 7.1.5 and `--enable-gpl`; the existing FFmpeg legal reference above applies. | MP4 output only; no executable shipped or linked. |
+
+
 | Source | Origin | Terms found | Citation status |
 |---|---|---|---|
 | Eight NLSP studies including96-E044 public sample | NASA | CC0-1.0 read in individual DataCite rightsList, original responses retained | Full registered citations in DATASET_CITATIONS.md; source reuse verified, protected records excluded |

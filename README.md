@@ -8,6 +8,13 @@ NASA Space Apps Challenge 2026 · [Create Health Monitoring Software for Astrona
 
 **Live demo: [Open Órbita on Vercel](https://hackathon-nasa-orbita.vercel.app/#/adaptation)** — try the application in your browser without installing anything. Start with **Synthetic demo (fictional)** to explore the project without entering personal data.
 
+## Project videos — English
+
+1. **[Full presentation — 2 minutes 50 seconds](media/videos/orbita-astra-vitae-en-2m50.mp4)**: the application walkthrough, project pitch and Astra Vitae credits. [Download MP4](https://github.com/0xnotwired/202611-nasahackathon/raw/refs/heads/main/media/videos/orbita-astra-vitae-en-2m50.mp4).
+2. **[Short presentation — 30 seconds](media/videos/orbita-astra-vitae-global-en-30s.mp4)**: a concise overview using the extended fictional case. [Download MP4](https://github.com/0xnotwired/202611-nasahackathon/raw/refs/heads/main/media/videos/orbita-astra-vitae-global-en-30s.mp4).
+
+Both videos have synthetic English narration and English subtitles. All displayed health records are fictional; ground communication is simulated. [Video notes, subtitle files and tool acknowledgments](media/videos/README.md).
+
 ## Summary
 
 Órbita is a browser-based visual health tool developed for astronauts to connect what they feel, what has been measured and what they can do with the equipment available on their mission. It brings together health indicators, physical assessments, environmental readings, guided procedures and personal follow-up. A crew member can report a symptom, review available information and gaps, record an action and its result, and prepare a structured summary for support.
