@@ -6,6 +6,8 @@ Developed by **Team Astra Vitae · Argentina**.
 
 NASA Space Apps Challenge 2026 · [Create Health Monitoring Software for Astronauts on Space Missions](https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/) · [Technical README](docs/TECHNICAL_README.md) · [Sources and licenses](docs/RESOURCES_USED.md)
 
+**Live demo: [Open Órbita on Vercel](https://hackathon-nasa-orbita.vercel.app/#/adaptation)** — try the application in your browser without installing anything. Start with **Synthetic demo (fictional)** to explore the project without entering personal data.
+
 ## Summary
 
 Órbita is a browser-based visual health tool developed for astronauts to connect what they feel, what has been measured and what they can do with the equipment available on their mission. It brings together health indicators, physical assessments, environmental readings, guided procedures and personal follow-up. A crew member can report a symptom, review available information and gaps, record an action and its result, and prepare a structured summary for support.
@@ -22,7 +24,7 @@ Health and adaptation views bring observations and assessments together; habitat
 
 ### See the journey
 
-Start the application using the instructions below and keep **Synthetic demo (fictional)** selected. No NASA download, account, API key or personal health information is needed.
+Open the [live application](https://hackathon-nasa-orbita.vercel.app/#/adaptation), or run it locally using the instructions below, and keep **Synthetic demo (fictional)** selected. No NASA download, account, API key or personal health information is needed.
 
 1. Open **My health** to see measurements with their dates, methods and origins. A missing measurement stays missing.
 2. In **I feel different**, select **Fatigue** and open an episode. Review the available data and gaps before the suggestion. The demo rule is explicitly fictional.
@@ -78,6 +80,8 @@ The separate teammate edition uses **Next.js, React, TypeScript and a Node backe
 Presentation scripts: [English pitch](docs/PITCH.md) · [Guion en español](docs/PITCH_ES.md).
 
 ## Install and run
+
+**No installation:** use the [hosted demo on Vercel](https://hackathon-nasa-orbita.vercel.app/#/adaptation). Personal records, if you choose to create them, stay in that browser's local storage; the hosted page does not provide a shared crew database or real communication with Earth. Local and offline options follow.
 
 ### Main application — recommended
 
