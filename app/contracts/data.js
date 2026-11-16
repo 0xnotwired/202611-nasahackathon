@@ -1,5 +1,5 @@
 /**
- * Contract version 0.16. Authority: docs/CONTRACTS.md.
+ * Contract version 0.17. Authority: docs/CONTRACTS.md.
  * Documentation only: no runtime validation or module logic lives here.
  * Every persisted object additionally carries schema_version (section 3),
  * represented by Persisted<T>; nested criteria are not separately persisted.
@@ -90,6 +90,10 @@
  * @property {string[]} records
  * @property {{reason:string,step:number,at:string|null}[]} interruptions
  * @property {string[]} [missing]
+ * @property {number} [rev]
+ * @property {(string|null)[]} [step_records]
+ * @property {number[]} [unrecorded_steps]
+ * @property {boolean} [preparation_confirmed]
  */
 
 /**
@@ -106,6 +110,9 @@
  * @property {{reason:string}} [not_done_note]
  * @property {string} [scheduled_at]
  * @property {number} [planned_minutes]
+ * @property {{completion:string,at:string,reason?:string}[]} [history]
+ * @property {string} [series_id]
+ * @property {number} [rev]
  */
 
 /**
@@ -143,4 +150,4 @@
  * @property {'queued'|'in_transit'|'received'} state
  */
 
-export const CONTRACT_VERSION = "0.16";
+export const CONTRACT_VERSION = "0.17";

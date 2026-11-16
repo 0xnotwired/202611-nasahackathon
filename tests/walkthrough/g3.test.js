@@ -18,7 +18,7 @@ const entry = (vm, sectionId, id) => vm.sections.find(s => s.id === sectionId).e
 test('G3-W1: without the equipment the execution is blocked, the task stays pending and no result exists', async () => {
   const services = await makeServices({config: spacecraft, objects: {tasks: [task]}}); const before = await countRecords(services.store);
   const vm = await board(services, {}); const p = entry(vm, 'procedures', proc.id);
-  assert.equal(p.availability.available, false); assert.equal(p.actions.length, 0);
+  assert.equal(p.availability.available, false); assert.equal(p.actions.some(a => a.id === 'start'), false);
   const out = await services.procedures.start(services.store, proc, services.config, {subject: SUBJECT, clock: services.clock, newId: services.newId});
   assert.equal(out.value.state, 'blocked'); assert.deepEqual(out.value.missing, ['demo-device']);
   const saved = (await services.store.get('tasks', 'g3-task')).value; assert.equal(saved.completion, 'pending'); assert.deepEqual(saved.result_ids, []);
@@ -28,9 +28,9 @@ test('G3-W1: without the equipment the execution is blocked, the task stays pend
 
 async function fullJourney() {
   const services = await makeServices({objects: {tasks: [task]}}); const before = await countRecords(services.store);
-  let vm = await (await board(services, {})).interactions.start(proc.id); const id = vm.sections.find(s => s.id === 'executions').entries[0].id;
-  vm = await vm.interactions.advance(id); vm = await vm.interactions.interrupt(id, 'call from ground'); vm = await vm.interactions.resume(id);
-  vm = await vm.interactions.advance(id); vm = await vm.interactions.advance(id); vm = await vm.interactions.finish(id, 'completed');
+  let vm = await (await board(services, {})).interactions.start(proc.id, {confirmed: true}); const id = vm.sections.find(s => s.id === 'executions').entries[0].id;
+  vm = await vm.interactions.advance(id, {no_record: true}); vm = await vm.interactions.interrupt(id, 'call from ground'); vm = await vm.interactions.resume(id);
+  vm = await vm.interactions.advance(id, {no_record: true}); vm = await vm.interactions.advance(id, {no_record: true}); vm = await vm.interactions.finish(id, 'completed');
   const plan = await myPlan(services, {}); const marked = await plan.interactions.markDone('g3-task');
   return {services, id, before, vm, marked};
 }
@@ -51,7 +51,7 @@ test('G3-W3: publishing version 2 afterwards leaves the execution on version 1',
   assert.equal((await services.procedures.publishProcedure(services.store, v2, {clock: () => '2026-11-15T19:00:00.000Z'})).ok, true);
   const later = await board(services, {}); const ex = entry(later, 'executions', id);
   assert.equal(ex.procedure_version, '1'); assert.equal((await services.store.get('executions', id)).value.procedure_version, '1'); assert.doesNotMatch(ex.step_text ?? '', /A different first step/);
-  const started = await later.interactions.start(proc.id); assert.equal(started.sections.find(s => s.id === 'executions').entries.length, 2);
+  const started = await later.interactions.start(proc.id, {confirmed: true}); assert.equal(started.sections.find(s => s.id === 'executions').entries.length, 2);
   assert.equal((await services.store.get('executions', id)).value.procedure_version, '1');
   assert.equal((await services.store.list('executions', {})).value.filter(e => e.procedure_version === '2').length, 1);
 });

@@ -46,6 +46,18 @@ export async function checkStoreBehavior(module, assert, {kind='memory',name='m0
     assert.equal(good(await store.list('records',{subject:'origin-race'})).length,1);
     const race=await Promise.all([store.save('records',{...record,id:'race'}),store.save('records',{...record,id:'race'})]);
     assert.equal(race.filter(x=>x.ok).length,1);
+    // Conditional update: the write happens only if the stored fields still equal what the caller read (compare-and-set inside the same transaction).
+    good(await store.save('executions',{id:'cas',subject:'A',state:'pending',current_step:0}));
+    const stale=await store.updateState('executions','cas',{current_step:1},{expect:{state:'pending',current_step:0}}); good(stale);
+    const lost=await store.updateState('executions','cas',{current_step:5},{expect:{state:'pending',current_step:0}});
+    assert.equal(lost.ok,false); assert.equal(lost.error.code,'conflict'); assert.equal(good(await store.get('executions','cas')).current_step,1,'a refused conditional update changes nothing');
+    const both=await Promise.all([1,2].map(n=>store.updateState('executions','cas',{current_step:10+n},{expect:{current_step:1}})));
+    assert.equal(both.filter(x=>x.ok).length,1,'of two writers that read the same state, exactly one wins');
+    for(const badExpect of [null,[],'x',{current_step:{a:1}},{id:undefined}]) assert.equal((await store.updateState('executions','cas',{current_step:99},{expect:badExpect})).ok,false);
+    assert.equal(good(await store.updateState('executions','cas',{current_step:20},{})).current_step,20,'no expectation keeps the old behaviour');
+    good(await store.save('executions',{id:'cas-absent',subject:'A',state:'pending'}));
+    assert.equal((await store.updateState('executions','cas-absent',{rev:1},{expect:{rev:null}})).ok,true,'null expects an absent field');
+    assert.equal((await store.updateState('executions','cas-absent',{rev:2},{expect:{rev:null}})).error.code,'conflict');
     for(const collection of ['executions','tasks','episodes','deliveries']) {
       good(await store.save(collection,{id:'mutable',subject:'A',state:'pending'}));
       assert.equal(good(await store.updateState(collection,'mutable',{state:'done'})).state,'done');

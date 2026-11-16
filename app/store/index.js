@@ -196,16 +196,27 @@ function makeStore(kind,backend) {
       for(const object of copied.value){const checked=normalize(collection,object);if(!checked.ok)return checked;objects.push(checked.value);}
       return insert(collection,objects);
     },
-    async updateState(collection,id,input) {
+    async updateState(collection,id,input,options) {
       if(closed)return fail('closed','store','Store is closed');
       if(!MUTABLE.has(collection))return fail('immutable','collection','Only executions, tasks, episodes and deliveries allow updateState');
       if(!text(id))return invalid('id');
       const copied=snapshot(input);if(!copied.ok)return copied;
       const changes=copied.value;
       if(!changes||typeof changes!=='object'||Array.isArray(changes))return invalid('changes');
+      // `expect` is { field: scalar }: the update applies only if the stored object still has those values (null means absent), checked in the same transaction as the write.
+      let expect=null;
+      if(options!==undefined){
+        const given=snapshot(options);if(!given.ok||!given.value||typeof given.value!=='object'||Array.isArray(given.value))return invalid('options');
+        if(own(given.value,'expect')){
+          const e=given.value.expect;
+          if(!e||typeof e!=='object'||Array.isArray(e)||Object.values(e).some(v=>v!==null&&!['string','number','boolean'].includes(typeof v)))return invalid('expect');
+          expect=e;
+        }
+      }
       return access(collection,true,map=>{
         if(!map.has(id))return fail('not_found','id','No object with this id exists');
         const previous=map.get(id);
+        if(expect)for(const [field,value] of Object.entries(expect))if((previous[field]===undefined?null:previous[field])!==value)return fail('conflict',field,'The object changed since it was read; read it again and retry');
         for(const field of ['id','subject','schema_version'])if(own(changes,field)&&changes[field]!==previous[field])return invalid(field);
         const checked=normalize(collection,{...previous,...changes},true);if(!checked.ok)return checked;
         map.set(id,checked.value);return ok(structuredClone(checked.value));

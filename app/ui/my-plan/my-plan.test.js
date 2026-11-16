@@ -63,3 +63,34 @@ test('M15-X4: hostile services give an error view model', async () => {
   for (const broken of [{store: undefined}, {readings: {}}, {subject: ''}, {clock: 'x'}]) assert.equal((await model({...base, ...broken}, {})).state, 'error');
   for (const input of [undefined, null, 'x', 7]) assert.equal((await model(input, {})).state, 'error');
 });
+
+// ---- Made real: create, repeat, reopen, link, choose the execution ----
+test('M15-R6: a task can be added, validated, and repeated only on the days the person chose', async () => {
+  const services = await makeServices(); const vm = await model(services, {});
+  assert.equal(section(vm, 'create').actions.create.enabled, true);
+  for (const bad of [{}, {description: 'x'}, {description: 'x', scheduled_at: 'soon'}, {description: 'x', scheduled_at: '2026-11-15T10:00:00Z'}, {description: 'x', scheduled_at: '2026-11-15T10:00:00Z', planned_minutes: '1.5'}, {description: 'x', scheduled_at: '2026-11-15T10:00:00Z', planned_minutes: '10', every_days: '0', count: '3'}])
+    assert.equal((await vm.interactions.createTask(bad)).message.kind, 'error', JSON.stringify(bad));
+  const one = await vm.interactions.createTask({description: 'Weigh myself', scheduled_at: '2026-11-15T10:00:00Z', planned_minutes: '5'});
+  assert.equal(one.message.kind, 'info'); const made = tasksOf(one).find(t => t.description === 'Weigh myself'); assert.match(made.assigned_text, /self/); assert.match(made.scheduled_text, /5 min/);
+  const series = await vm.interactions.createTask({description: 'Blood draw', scheduled_at: '2026-11-15T10:00:00Z', planned_minutes: '10', every_days: '3', count: '3'});
+  assert.equal(series.message.kind, 'info'); const all = (await services.store.list('tasks', {})).value.filter(t => t.description === 'Blood draw');
+  assert.deepEqual(all.map(t => t.scheduled_at.slice(0, 10)).sort(), ['2026-11-15', '2026-11-18', '2026-11-21']); assert.equal(new Set(all.map(t => t.series_id)).size, 1);
+  const ro = await model(await makeServices({writable: false}), {}); assert.equal(section(ro, 'create').actions.create.enabled, false); assert.equal((await ro.interactions.createTask({description: 'x', scheduled_at: '2026-11-15T10:00:00Z'})).message.kind, 'error');
+});
+
+test('M15-R7: undo needs a reason, keeps the history and the linked results; a result links without changing the mark', async () => {
+  const services = await makeServices({objects: {tasks: [task('a')]}, records: [makeRecord({id: 'p1'}), makeRecord({id: 'p2', state: 'not_recorded'})]}); let vm = await model(services, {});
+  assert.deepEqual(tasksOf(vm)[0].link_choices.map(c => c.id).includes('p2'), false, 'a not-recorded entry is never offered as a result');
+  vm = await vm.interactions.linkResult('a', 'p1'); assert.equal(vm.message.kind, 'info'); assert.equal(tasksOf(vm)[0].completion, 'pending'); assert.equal(tasksOf(vm)[0].link_choices.some(c => c.id === 'p1'), false);
+  assert.equal((await vm.interactions.linkResult('a', 'p2')).message.kind, 'error'); assert.equal((await vm.interactions.reopen('a', 'why')).message.kind, 'error', 'a pending task has nothing to undo');
+  vm = await vm.interactions.markDone('a'); assert.equal(tasksOf(vm)[0].actions.reopen.enabled, true);
+  assert.equal((await vm.interactions.reopen('a', ' ')).message.kind, 'error');
+  vm = await vm.interactions.reopen('a', 'marked by mistake'); const t = tasksOf(vm)[0]; assert.equal(t.completion, 'pending'); assert.deepEqual(t.result_ids, ['p1']); assert.ok(t.history.some(h => /marked by mistake/.test(h)));
+});
+
+test('M15-R8: with several completed executions the person chooses which one the task counts', async () => {
+  const services = await makeServices({objects: {tasks: [task('a', {procedure_id: scenario.procedures[0].id})], executions: [execution(), execution({id: 'ex-2', updated: `${DAY}T12:00:00.000Z`})]}}); const vm = await model(services, {});
+  assert.equal(tasksOf(vm)[0].execution_choices.length, 2);
+  assert.equal((await vm.interactions.markDone('a', 'nope')).message.kind, 'error'); assert.equal((await services.store.get('tasks', 'a')).value.completion, 'pending');
+  await vm.interactions.markDone('a', 'ex-1'); assert.equal((await services.store.get('tasks', 'a')).value.execution_id, 'ex-1');
+});

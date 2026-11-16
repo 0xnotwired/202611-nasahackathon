@@ -62,15 +62,7 @@ function stamp(options) {
   return isInstant(now) ? ok({updated: now}) : fail('invalid_clock', 'clock', 'The clock did not return an ISO8601 UTC instant');
 }
 
-// One execution is changed by one caller at a time: read, check and write happen inside the same turn of its chain.
-const chains = new Map();
-function serial(key, work) {
-  const run = (chains.get(key) ?? Promise.resolve()).then(work, work);
-  const tail = run.catch(() => {});
-  chains.set(key, tail); tail.then(() => { if (chains.get(key) === tail) chains.delete(key); });
-  return run;
-}
-
+const RETRIES = 5;
 async function load(store, id) {
   if (!storeOk(store, ['get', 'updateState'])) return fail('invalid_store', 'store', 'A store with get() and updateState() is required');
   if (!isText(id)) return fail('invalid_id', 'executionId', 'An execution id is required');
@@ -82,9 +74,21 @@ async function load(store, id) {
 }
 const refuse = (execution, action) => fail('transition_not_allowed', 'state', `A ${execution.state} execution cannot ${action}`);
 const options = input => (input === undefined ? ok({}) : isPlain(input) ? ok(input) : fail('invalid_options', 'options', 'Options must be an object'));
-const write = (store, id, changes) => store.updateState('executions', id, changes);
 
-/** start(store, procedure, config, { subject, clock, newId }) → Result<Execution>. Missing equipment gives a stored `blocked` execution. */
+// Read, decide, then write conditionally on the revision that was read. If another writer (another call, or another browser tab) changed the
+// execution in between, the write is refused by the store and the decision is made again on the new state. Nothing is lost and nothing is applied twice.
+async function change(store, executionId, decide) {
+  for (let attempt = 0; attempt < RETRIES; attempt += 1) {
+    const loaded = await load(store, executionId); if (!loaded.ok) return loaded;
+    const e = loaded.value;
+    const decided = await decide(e); if (!decided.ok) return decided;
+    const written = await store.updateState('executions', executionId, {...decided.value, rev: (Number.isInteger(e.rev) ? e.rev : 0) + 1}, {expect: {rev: Number.isInteger(e.rev) ? e.rev : null}});
+    if (written.ok || !written.error || written.error.code !== 'conflict') return written;
+  }
+  return fail('conflict', 'executionId', 'The execution kept changing under another writer; try again');
+}
+
+/** start(store, procedure, config, { subject, clock, newId, preparation_confirmed? }) → Result<Execution>. Missing equipment gives a stored `blocked` execution; a procedure with preparation checks starts only once they are confirmed. */
 export async function start(store, procedure, config, context) {
   if (!storeOk(store, ['save'])) return fail('invalid_store', 'store', 'A store with save() is required');
   const checked = validateProcedure(procedure); if (!checked.ok) return checked;
@@ -96,72 +100,72 @@ export async function start(store, procedure, config, context) {
   if (!isInstant(now)) return fail('invalid_clock', 'clock', 'The clock did not return an ISO8601 UTC instant');
   if (!isText(id)) return fail('invalid_id', 'newId', 'The id generator did not return text');
   const found = availability(checked.value, config);
+  if (found.available && checked.value.preparation.length && context.preparation_confirmed !== true) return fail('preparation_not_confirmed', 'preparation_confirmed', 'Confirm the preparation checks before starting');
   const execution = {id, schema_version: 2, procedure_id: checked.value.id, procedure_version: checked.value.version, subject: context.subject, state: found.available ? 'in_progress' : 'blocked',
-    current_step: 0, step_count: checked.value.steps.length, started: now, updated: now, difficulties: [], records: [], interruptions: []};
+    current_step: 0, step_count: checked.value.steps.length, step_records: checked.value.steps.map(step => step.records ?? null), unrecorded_steps: [], preparation_confirmed: found.available && checked.value.preparation.length > 0,
+    started: now, updated: now, difficulties: [], records: [], interruptions: [], rev: 0};
   if (!found.available) execution.missing = found.missing;
   return store.save('executions', execution);
 }
 
-/** advance(store, id, { record?, clock? }): one step forward; a produced record id is linked only if it exists and belongs to the subject. */
-export function advance(store, executionId, input) {
-  return serial(`executions/${executionId}`, async () => {
-    const opts = options(input); if (!opts.ok) return opts;
-    const time = stamp(opts.value); if (!time.ok) return time;
-    const loaded = await load(store, executionId); if (!loaded.ok) return loaded;
-    const e = loaded.value;
+/**
+ * advance(store, id, { record?, no_record?, clock? }): one step forward. A step that declares a variable to record needs a record of that variable
+ * (it must exist and belong to the subject) or an explicit `no_record: true`, which is kept in `unrecorded_steps`: a step done without its value is never counted as recorded.
+ */
+export async function advance(store, executionId, input) {
+  const opts = options(input); if (!opts.ok) return opts;
+  const time = stamp(opts.value); if (!time.ok) return time;
+  if (opts.value.record !== undefined && !isText(opts.value.record)) return fail('invalid_record', 'record', 'record must be a record id');
+  return change(store, executionId, async e => {
     if (!TRANSITIONS.advance.from.includes(e.state)) return refuse(e, 'advance');
     if (e.current_step >= e.step_count) return fail('no_more_steps', 'current_step', 'Every step has been done; finish the execution');
-    let records = e.records;
+    const declared = Array.isArray(e.step_records) ? e.step_records[e.current_step] ?? null : null;
+    let records = e.records; let unrecorded = Array.isArray(e.unrecorded_steps) ? e.unrecorded_steps : [];
     if (opts.value.record !== undefined) {
-      if (!isText(opts.value.record)) return fail('invalid_record', 'record', 'record must be a record id');
       if (!storeOk(store, ['get'])) return fail('invalid_store', 'store', 'A store with get() is required');
       const found = await store.get('records', opts.value.record);
       if (!found.ok) return fail('unknown_record', 'record', 'No record has this id');
       if (found.value.subject !== e.subject) return fail('other_subject', 'record', 'The record belongs to another subject');
+      if (declared !== null && found.value.variable !== declared) return fail('wrong_variable', 'record', `This step records ${declared}, not ${String(found.value.variable).slice(0, 40)}`);
       records = e.records.includes(opts.value.record) ? e.records : [...e.records, opts.value.record];
+    } else if (declared !== null) {
+      if (opts.value.no_record !== true) return fail('record_required', 'record', `This step records ${declared}: link the record, or say explicitly that nothing was recorded`);
+      unrecorded = [...unrecorded, e.current_step];
     }
-    return write(store, executionId, {current_step: e.current_step + 1, records, ...time.value});
+    return ok({current_step: e.current_step + 1, records, unrecorded_steps: unrecorded, ...time.value});
   });
 }
 
 /** interrupt(store, id, { reason, clock? }): keeps the step; an interrupted execution is not completed. */
-export function interrupt(store, executionId, input) {
-  return serial(`executions/${executionId}`, async () => {
-    const opts = options(input); if (!opts.ok) return opts;
-    if (!isText(opts.value.reason)) return fail('invalid_reason', 'reason', 'A reason is required');
-    const time = stamp(opts.value); if (!time.ok) return time;
-    const loaded = await load(store, executionId); if (!loaded.ok) return loaded;
-    const e = loaded.value;
+export async function interrupt(store, executionId, input) {
+  const opts = options(input); if (!opts.ok) return opts;
+  if (!isText(opts.value.reason)) return fail('invalid_reason', 'reason', 'A reason is required');
+  const time = stamp(opts.value); if (!time.ok) return time;
+  return change(store, executionId, async e => {
     if (!TRANSITIONS.interrupt.from.includes(e.state)) return refuse(e, 'interrupt');
-    return write(store, executionId, {state: TRANSITIONS.interrupt.to, interruptions: [...e.interruptions, {reason: opts.value.reason, step: e.current_step, at: time.value.updated ?? null}], ...time.value});
+    return ok({state: TRANSITIONS.interrupt.to, interruptions: [...e.interruptions, {reason: opts.value.reason, step: e.current_step, at: time.value.updated ?? null}], ...time.value});
   });
 }
 
 /** resume(store, id, { clock? }): continues at the same step. */
-export function resume(store, executionId, input) {
-  return serial(`executions/${executionId}`, async () => {
-    const opts = options(input); if (!opts.ok) return opts;
-    const time = stamp(opts.value); if (!time.ok) return time;
-    const loaded = await load(store, executionId); if (!loaded.ok) return loaded;
-    if (!TRANSITIONS.resume.from.includes(loaded.value.state)) return refuse(loaded.value, 'resume');
-    return write(store, executionId, {state: TRANSITIONS.resume.to, ...time.value});
-  });
+export async function resume(store, executionId, input) {
+  const opts = options(input); if (!opts.ok) return opts;
+  const time = stamp(opts.value); if (!time.ok) return time;
+  return change(store, executionId, async e => (TRANSITIONS.resume.from.includes(e.state) ? ok({state: TRANSITIONS.resume.to, ...time.value}) : refuse(e, 'resume')));
 }
 
 /** finish(store, id, { state: "completed" | "could_not", difficulties?, clock? }). `completed` needs every step done. */
-export function finish(store, executionId, input) {
-  return serial(`executions/${executionId}`, async () => {
-    const opts = options(input); if (!opts.ok) return opts;
-    const target = opts.value.state;
-    if (target !== 'completed' && target !== 'could_not') return fail('invalid_state', 'state', 'state must be completed or could_not');
-    const difficulties = opts.value.difficulties === undefined ? [] : opts.value.difficulties;
-    if (!textList(difficulties)) return fail('invalid_difficulties', 'difficulties', 'difficulties must be a list of non-empty texts');
-    const time = stamp(opts.value); if (!time.ok) return time;
-    const loaded = await load(store, executionId); if (!loaded.ok) return loaded;
-    const e = loaded.value;
+export async function finish(store, executionId, input) {
+  const opts = options(input); if (!opts.ok) return opts;
+  const target = opts.value.state;
+  if (target !== 'completed' && target !== 'could_not') return fail('invalid_state', 'state', 'state must be completed or could_not');
+  const difficulties = opts.value.difficulties === undefined ? [] : opts.value.difficulties;
+  if (!textList(difficulties)) return fail('invalid_difficulties', 'difficulties', 'difficulties must be a list of non-empty texts');
+  const time = stamp(opts.value); if (!time.ok) return time;
+  return change(store, executionId, async e => {
     if (!TRANSITIONS.finish[target].includes(e.state)) return refuse(e, `finish as ${target}`);
     if (target === 'completed' && e.current_step < e.step_count) return fail('steps_remaining', 'current_step', `${e.step_count - e.current_step} step(s) are not done; it cannot be completed`);
-    return write(store, executionId, {state: target, difficulties: [...difficulties], ...time.value});
+    return ok({state: target, difficulties: [...difficulties], ...time.value});
   });
 }
 
@@ -182,15 +186,35 @@ export async function publishProcedure(store, procedure, options) {
   return ok(checked.value);
 }
 
-/** listProcedures(store, { all? }) → Result<Procedure[]>: the latest version of each procedure, or every version with `all`. */
+/** listProcedures(store, { all? }) → Result<Procedure[]>: the latest published version of each procedure that is not retired, or every version, retired ones included, with `all`. */
 export async function listProcedures(store, options) {
   if (!storeOk(store, ['list'])) return fail('invalid_store', 'store', 'A store with list() is required');
   const listed = await store.list('procedures', {}); if (!listed.ok) return listed;
-  for (const w of listed.value) if (!wrapperOk(w)) return fail('corrupt_procedure', 'procedures', `Stored procedure ${isPlain(w) && typeof w.id === 'string' ? w.id.slice(0, 60) : '(no id)'} is not readable`);
-  const ordered = [...listed.value].sort((a, b) => (a.published < b.published ? -1 : a.published > b.published ? 1 : a.version.localeCompare(b.version, 'en', {numeric: true})));
+  const retirements = listed.value.filter(w => isPlain(w) && w.kind === 'retirement');
+  for (const r of retirements) if (!(isText(r.procedure_id) && isText(r.version) && isText(r.retired) && isText(r.reason) && r.id === `retired:${keyOf(r.procedure_id, r.version)}`)) return fail('corrupt_procedure', 'procedures', `Stored retirement ${typeof r.id === 'string' ? r.id.slice(0, 60) : '(no id)'} is not readable`);
+  const versions = listed.value.filter(w => !(isPlain(w) && w.kind === 'retirement'));
+  for (const w of versions) if (!wrapperOk(w)) return fail('corrupt_procedure', 'procedures', `Stored procedure ${isPlain(w) && typeof w.id === 'string' ? w.id.slice(0, 60) : '(no id)'} is not readable`);
+  const ordered = [...versions].sort((a, b) => (a.published < b.published ? -1 : a.published > b.published ? 1 : a.version.localeCompare(b.version, 'en', {numeric: true})));
   if (isPlain(options) && options.all === true) return ok(ordered.map(w => w.procedure));
-  const latest = new Map(); for (const w of ordered) latest.set(w.procedure_id, w.procedure);
+  const retired = new Set(retirements.map(r => keyOf(r.procedure_id, r.version)));
+  const latest = new Map(); for (const w of ordered) if (!retired.has(w.id)) latest.set(w.procedure_id, w.procedure);
   return ok([...latest.values()].sort((a, b) => (a.id < b.id ? -1 : 1)));
+}
+
+/**
+ * retireProcedure(store, id, version, { clock, reason }) → Result<{ id, version, retired }>. A retired version is no longer offered to start or to change, but it stays
+ * readable (getProcedure, listProcedures with `all`) so every execution that used it can still be read against it. It is a new immutable entry; nothing is deleted.
+ */
+export async function retireProcedure(store, id, version, options) {
+  if (!storeOk(store, ['get', 'save'])) return fail('invalid_store', 'store', 'A store with get() and save() is required');
+  if (!isPlain(options) || !isText(options.reason)) return fail('invalid_reason', 'reason', 'Say why this version is retired');
+  if (typeof options.clock !== 'function') return fail('invalid_clock', 'clock', 'A clock is required to date a retirement');
+  let now; try { now = options.clock(); } catch { now = undefined; }
+  if (!isInstant(now)) return fail('invalid_clock', 'clock', 'The clock did not return an ISO8601 UTC instant');
+  const existing = await getProcedure(store, id, version); if (!existing.ok) return existing;
+  const saved = await store.save('procedures', {id: `retired:${keyOf(id, version)}`, schema_version: 2, kind: 'retirement', procedure_id: id, version, retired: now, reason: options.reason});
+  if (!saved.ok) return saved.error && saved.error.code === 'duplicate' ? fail('already_retired', 'version', `Version ${version} of ${id.slice(0, 60)} is already retired`) : saved;
+  return ok({id, version, retired: now});
 }
 
 /** getProcedure(store, id, version) → Result<Procedure>: that exact published version. */

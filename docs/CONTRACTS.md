@@ -1,6 +1,6 @@
 # Órbita: contracts between modules
 
-Version 0.16 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
+Version 0.17 · November 15, 2026 · G0 and G1 accepted; F1 closed by the user on November15, 2026. Only the orchestrator edits this file. M00 turns it into `app/contracts/` (JSDoc definitions) and into contract tests in `tests/contract/`. If this document and those files disagree, this document wins and the code is fixed.
 
 Plan and modules: [ORCHESTRATION_PLAN.md](ORCHESTRATION_PLAN.md). Rationale for the rules: [PROPOSAL_IMPROVEMENTS.md](PROPOSAL_IMPROVEMENTS.md) and [AGENTS.md](../AGENTS.md).
 
@@ -90,6 +90,10 @@ Execution
   step_count      number of steps of the version it started with (added 0.13)
   interruptions   list of { reason, step, at|null } (added 0.13)
   missing?        equipment ids, only on a blocked execution (added 0.13)
+  rev?            whole number, +1 on each change; the guard of concurrent writers (added 0.17)
+  step_records?   per step, the variable it must record or null (copied from the version at start; added 0.17)
+  unrecorded_steps? indexes of steps finished with an explicit "nothing recorded" (added 0.17)
+  preparation_confirmed? true when the person confirmed every preparation check before starting (added 0.17)
 
 Task
   id, subject, day, procedure_id?, description
@@ -100,6 +104,9 @@ Task
   not_done_note?  { reason } only on a not_done task (added 0.13)
   scheduled_at?   ISO8601 UTC instant the task is planned for (added 0.16; `day` stays the date key)
   planned_minutes? positive number of minutes planned (added 0.16)
+  history?        list of { completion, at, reason? }: every undo of a mark, in order (added 0.17)
+  series_id?      shared by the tasks of one periodic series (added 0.17)
+  rev?            whole number, +1 on each change; the guard of concurrent writers (added 0.17)
 
 Episode
   id, subject, opened, closed?
@@ -205,7 +212,8 @@ Store
   get(collection, id)               → Promise<Result<object>>
   list(collection, filter)          → Promise<Result<object[]>>   filter by equality and time range
   saveBatch(collection, objects)    → Promise<Result<n>>          all or nothing
-  updateState(collection, id, changes) → only for Execution, Task, Episode and Delivery
+  updateState(collection, id, changes, { expect? }) → only for Execution, Task, Episode and Delivery.
+      `expect` is { field: string|number|boolean|null }: the change applies only if the stored object still has those values (null = absent), checked in the same transaction as the write; otherwise `conflict` (added 0.17)
   close()                           → Promise<void>
 ```
 
@@ -272,6 +280,8 @@ With missing equipment, `start` returns a `blocked` execution with its `missing`
 
 Since 0.13: `advance`, `interrupt`, `resume` and `finish` accept an optional `clock` in their options; `updated` changes only when one is given, so no time is invented. `advance` stops at the last step (`no_more_steps`); `finish` as `completed` needs every step done (`steps_remaining`) and is allowed only from `in_progress`; `could_not` from `in_progress` or `interrupted`. A `blocked` execution is stored and allows no transition. `advance({ record })` links a record id only if it exists and belongs to the execution's subject. Each execution is changed by one caller at a time.
 
+Since 0.17: `start(..., { preparation_confirmed })` refuses (`preparation_not_confirmed`) a procedure with preparation checks unless the caller says the person confirmed them; `advance` on a step that declares `records` needs `{ record }` of that variable (`wrong_variable` otherwise) or an explicit `{ no_record: true }` (kept in `unrecorded_steps`), else `record_required`; `retireProcedure(store, id, version, { clock, reason }) → Result` stores an immutable retirement entry: `listProcedures` no longer offers that version, `{ all: true }` still returns it, executions keep reading it. Executions are changed with the same `rev` guard as tasks.
+
 Registry (added 0.14): `publishProcedure(store, procedure, { clock }) → Result<Procedure>` stores one immutable entry per `id@version` (neither may contain `@`) and refuses a second publication of the same version (`version_exists`); `listProcedures(store, { all? }) → Result<Procedure[]>` gives the latest published version of each procedure, or every version with `all`; `getProcedure(store, id, version) → Result<Procedure>` gives that exact version. A stored entry that cannot be read is an error (`corrupt_procedure`), never skipped. Executions are read against `getProcedure(store, procedure_id, procedure_version)`.
 
 ### plan (M14)
@@ -283,7 +293,9 @@ mark(store, taskId, { completion, execution_id?, note? })      → Result<Task>
 linkResult(store, taskId, recordId)                            → Result<Task>
 ```
 
-Since 0.13: `mark` accepts `done` or `not_done` only and only on a `pending` task (`already_marked` otherwise); `note` is `{ reason }` and belongs to `not_done`; `execution_id` must exist, belong to the task's subject and procedure, and for `done` be `completed`. `linkResult` accepts only a `recorded` Record of the same subject, never changes `completion`, and ignores a repeated link. `tasksFor` returns stored tasks of that day only and reports a corrupt task instead of dropping it. Each task is changed by one caller at a time.
+Since 0.17: `createTask(store, { subject, description, scheduled_at, planned_minutes, procedure_id?, assigned_by? }, { newId })` (`assigned_by` defaults to `self`; minutes are required, never assumed); `scheduleSeries(store, { ...task, first_scheduled_at, every_days, count }, { newId })` creates `count` tasks (2–52) exactly `every_days` (1–365) apart with one `series_id`, all or none; `reopenTask(store, taskId, { reason, clock? })` returns a marked task to `pending`, clears `execution_id` and `not_done_note`, keeps `result_ids` and appends the undo with its reason to `history`; `mark` also appends to `history`. Writers no longer queue in one process: each change reads the task, decides, writes with `expect: { rev }` and reads again on `conflict` (up to 5 tries), so it holds across tabs.
+
+Since 0.13: `mark` accepts `done` or `not_done` only and only on a `pending` task (`already_marked` otherwise); `note` is `{ reason }` and belongs to `not_done`; `execution_id` must exist, belong to the task's subject and procedure, and for `done` be `completed`. `linkResult` accepts only a `recorded` Record of the same subject, never changes `completion`, and ignores a repeated link. `tasksFor` returns stored tasks of that day only and reports a corrupt task instead of dropping it. Concurrent changes: see 0.17 above.
 
 ### privacy (M19)
 
@@ -528,4 +540,5 @@ Everything works with the keyboard. No state is conveyed by color alone. Views r
 | 0.13 | 2026-11-15 | User-authorized with the start of F3 (M13–M15): optional `clock` in the procedure transitions; Execution gains `step_count`, `interruptions` and `missing`; Task gains `not_done_note`; the rules of `mark`, `linkResult` and `finish` above; services may carry `procedures` and `procedure_list`; `ui/my-plan` and `ui/on-board` are implemented. Consistency review only, no approval. |
 | 0.14 | 2026-11-15 | User-authorized ("agrega versiones mínimas"): `procedures` collection and IndexedDB schema v2 with an upgrade; the procedure registry (`publishProcedure`, `listProcedures`, `getProcedure`); `privacy` (`createSession`, `logShared`, `sharedLog`) and `sync` (`createLink`, `enqueue`, `advance`, `received`, `deliveries`) implemented as above; `Delivery.sent` optional; `ui/ground` implemented; the On board editor. Consistency review only, no approval. |
 | 0.15 | 2026-11-15 | User-authorized ("versiones mínimas de F4"): `episode`, `copilot` and `summary` implemented as above (`issueAlert` and `validateRules` added); services may carry `episode`, `copilot`, `summary` and `rules`; `ui/i-feel-different` implemented. Consistency review only, no approval. |
+| 0.17 | 2026-11-16 | User-authorized ("lo recortado modificarlo para que sea de verdad, después F3 que funcione"): store `updateState` accepts `expect` (compare-and-set); Task gains `history`, `series_id`, `rev`; Execution gains `rev`, `step_records`, `unrecorded_steps`, `preparation_confirmed`; plan gains `createTask`, `scheduleSeries`, `reopenTask`; procedures gain `retireProcedure` and the preparation/recording rules above. All optional or additive. Consistency review only, no approval. |
 | 0.16 | 2026-11-15 | User-authorized with the incorporation of the teammate's frontend ("usar nuestro modelo de datos, incorporando lo que él usa"): `Task` gains optional `scheduled_at` and `planned_minutes`, which its exercise plan needs. Optional, so earlier tasks stay valid. Consistency review only, no approval. |

@@ -92,3 +92,58 @@ test('M14-X4: hostile inputs give an error; a corrupt stored task is reported, n
   const broken = await setup({tasks: [task('t1'), task('t2', {completion: 'weird'})]}); const out = await plan.tasksFor(broken, q);
   assert.equal(out.ok, false); assert.equal(out.error.code, 'corrupt_task'); assert.match(out.error.message, /t2/);
 });
+
+// ---- F3 made real: creation, undo with history, series, and safety between writers ----
+const NOW = '2026-11-15T18:00:00.000Z';
+let ids = 0;
+const ctx = (extra = {}) => ({clock: () => NOW, newId: () => `new-${++ids}`, ...extra});
+const input = (extra = {}) => ({subject: SUBJECT, description: 'Check the cuff', scheduled_at: '2026-11-16T09:00:00.000Z', planned_minutes: 20, ...extra});
+
+test('M14-C1: a person can create a task; it says who assigned it and carries when and how long', async () => {
+  const store = await setup(); const out = await plan.createTask(store, input({procedure_id: 'p1'}), ctx());
+  assert.equal(out.ok, true); const t = out.value;
+  assert.deepEqual({day: t.day, assigned_by: t.assigned_by, completion: t.completion, result_ids: t.result_ids, scheduled_at: t.scheduled_at, planned_minutes: t.planned_minutes, procedure_id: t.procedure_id, rev: t.rev},
+    {day: '2026-11-16', assigned_by: 'self', completion: 'pending', result_ids: [], scheduled_at: '2026-11-16T09:00:00.000Z', planned_minutes: 20, procedure_id: 'p1', rev: 0});
+  assert.deepEqual((await plan.tasksFor(store, {subject: SUBJECT, day: '2026-11-16'})).value.map(x => x.id), [t.id]);
+  for (const bad of [{subject: ''}, {description: ''}, {scheduled_at: 'tomorrow'}, {planned_minutes: 0}, {planned_minutes: 2000}, {planned_minutes: 'x'}, {procedure_id: ''}, {assigned_by: ''}]) assert.equal((await plan.createTask(store, input(bad), ctx())).ok, false, JSON.stringify(bad));
+  assert.equal((await plan.createTask(store, null, ctx())).ok, false); assert.equal((await plan.createTask(store, input(), {})).ok, false); assert.equal((await plan.createTask(undefined, input(), ctx())).ok, false);
+});
+
+test('M14-C2: a periodic exam is scheduled only on the days the person chose, all or nothing', async () => {
+  const store = await setup(); const out = await plan.scheduleSeries(store, input({first_scheduled_at: '2026-11-16T09:00:00.000Z', every_days: 7, count: 3, scheduled_at: undefined}), ctx());
+  assert.equal(out.ok, true); assert.deepEqual(out.value.map(t => t.day), ['2026-11-16', '2026-11-23', '2026-11-30']); assert.equal(new Set(out.value.map(t => t.series_id)).size, 1);
+  assert.deepEqual((await plan.tasksFor(store, {subject: SUBJECT, day: '2026-11-17'})).value, [], 'nothing on the days in between');
+  for (const bad of [{every_days: 0}, {every_days: 1.5}, {every_days: 400}, {count: 1}, {count: 100}, {first_scheduled_at: 'x'}, {every_days: undefined}]) {
+    const before = (await store.list('tasks', {})).value.length; assert.equal((await plan.scheduleSeries(store, input({first_scheduled_at: '2026-12-01T09:00:00.000Z', every_days: 7, count: 3, ...bad}), ctx())).ok, false, JSON.stringify(bad)); assert.equal((await store.list('tasks', {})).value.length, before);
+  }
+});
+
+test('M14-C3: a mark can be undone, the history keeps every step, and the result links stay', async () => {
+  const store = await setup({tasks: [task('t1')], records: [makeRecord({id: 'r1'})]});
+  await plan.linkResult(store, 't1', 'r1'); await plan.mark(store, 't1', {completion: 'done', clock: () => NOW});
+  assert.equal((await plan.reopenTask(store, 't1', {reason: 'tapped by mistake', clock: () => NOW})).ok, true);
+  const t = await one(store, 't1'); assert.equal(t.completion, 'pending'); assert.deepEqual(t.result_ids, ['r1'], 'what was observed is not erased');
+  assert.deepEqual(t.history.map(h => h.completion), ['done', 'pending']); assert.equal(t.history[1].reason, 'tapped by mistake'); assert.equal(t.history[0].at, NOW);
+  assert.equal(Object.hasOwn(t, 'execution_id') ? t.execution_id : null, null);
+  assert.equal((await plan.mark(store, 't1', {completion: 'not_done', note: {reason: 'no time'}})).ok, true, 'it can be marked again after the undo');
+  assert.deepEqual((await one(store, 't1')).history.map(h => h.completion), ['done', 'pending', 'not_done']);
+  const pending = await setup({tasks: [task('p')]});
+  for (const [id, who, why] of [['p', pending, 'x'], ['t1', store, ''], ['t1', store, undefined], ['nope', store, 'x']]) assert.equal((await plan.reopenTask(who, id, {reason: why})).ok, false);
+});
+
+test('M14-C4: two writers that read the same task cannot lose each other\'s change', async () => {
+  const store = await setup({tasks: [task('t1')], records: [makeRecord({id: 'r1'}), makeRecord({id: 'r2'}), makeRecord({id: 'r3'})]});
+  await Promise.all(['r1', 'r2', 'r3'].map(r => plan.linkResult(store, 't1', r))); assert.deepEqual((await one(store, 't1')).result_ids.sort(), ['r1', 'r2', 'r3']);
+  // A second tab: it changes the task between this module's read and its write. The module detects it and retries on the new state.
+  let sneaked = false;
+  const racing = {...store, updateState: async (...args) => {
+    if (!sneaked) { sneaked = true; const now = (await store.get('tasks', 't1')).value; await store.updateState('tasks', 't1', {result_ids: [...now.result_ids, 'sneak'], rev: (now.rev ?? 0) + 1}); }
+    return store.updateState(...args);
+  }};
+  const out = await plan.mark(racing, 't1', {completion: 'done'}); assert.equal(out.ok, true); const t = await one(store, 't1'); assert.equal(t.completion, 'done'); assert.ok(t.result_ids.includes('sneak'), 'the other writer\'s change survived');
+});
+
+test('M14-C5: marking done can name which completed execution it refers to', async () => {
+  const store = await setup({tasks: [task('a', {procedure_id: 'p1'})], executions: [execution('old', {updated: `${DAY}T08:00:00.000Z`}), execution('new', {updated: `${DAY}T09:00:00.000Z`})]});
+  assert.equal((await plan.mark(store, 'a', {completion: 'done', execution_id: 'old'})).ok, true); assert.equal((await one(store, 'a')).execution_id, 'old');
+});

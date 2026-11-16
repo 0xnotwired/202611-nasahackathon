@@ -13,12 +13,20 @@ function planProblem(result) {
   return code === 'not_implemented' ? {state: 'not_available', text: 'The plan is not available yet.'} : {state: 'error', text: `The plan could not be read: ${result && result.error ? result.error.message : 'unknown problem'}`};
 }
 
-async function completedExecutions(ctx) {
+async function completedList(ctx) {
   const listed = await ctx.store.list('executions', {subject: ctx.subject});
+  return listed.ok ? listed.value.filter(item => item.state === 'completed').sort((a, b) => (a.updated < b.updated ? -1 : 1)) : [];
+}
+async function completedExecutions(ctx) {
   const byProcedure = new Map();
-  if (!listed.ok) return byProcedure;
-  for (const e of listed.value.filter(item => item.state === 'completed').sort((a, b) => (a.updated < b.updated ? -1 : 1))) byProcedure.set(e.procedure_id, e);
+  for (const e of await completedList(ctx)) byProcedure.set(e.procedure_id, e); // the latest completed one is the default
   return byProcedure;
+}
+/** Recorded values of the subject that no task of the subject already links: the only candidates for a result. */
+async function linkable(ctx, task) {
+  const listed = await ctx.store.list('records', {subject: ctx.subject});
+  if (!listed.ok) return [];
+  return listed.value.filter(r => r.state === 'recorded' && !task.result_ids.includes(r.id)).map(r => ({id: r.id, text: `${r.variable ?? r.type}: ${r.value ?? ''}${r.unit ? ` ${r.unit}` : ''} · ${r.time ?? 'time not established'} · ${r.origin}`}));
 }
 
 function procedureOf(ctx, task, latest) {
@@ -30,7 +38,7 @@ function procedureOf(ctx, task, latest) {
   return {id: found.id, title: found.title, can_start: a.available === true, availability_text: text};
 }
 
-function taskEntry(ctx, task, executions, planOk, latest) {
+function taskEntry(ctx, task, executions, planOk, latest, extra) {
   const blocked = !ctx.writable ? NOT_WRITABLE : !planOk ? 'The plan is not available yet.' : null;
   const pending = task.completion === 'pending';
   const results = task.result_ids.length;
@@ -38,7 +46,11 @@ function taskEntry(ctx, task, executions, planOk, latest) {
     result_text: results ? `${results} ${results === 1 ? 'result' : 'results'} linked` : 'not recorded', result_ids: [...task.result_ids],
     note_text: task.not_done_note && task.not_done_note.reason ? `Reason: ${task.not_done_note.reason}` : null, procedure: procedureOf(ctx, task, latest),
     execution: isText(task.procedure_id) && executions.has(task.procedure_id) ? {id: executions.get(task.procedure_id).id} : null,
-    actions: {done: {enabled: pending && blocked === null, reason: pending ? blocked : 'Already marked'}, not_done: {enabled: pending && blocked === null, reason: pending ? blocked : 'Already marked'}}};
+    execution_choices: extra.done_for.filter(e => e.procedure_id === task.procedure_id).map(e => ({id: e.id, text: `${e.id} · finished ${e.updated ?? 'time not stated'}`})),
+    history: (Array.isArray(task.history) ? task.history : []).map(h => `${h.completion} · ${h.at}${h.reason ? ` · ${h.reason}` : ''}`), series_id: task.series_id ?? null,
+    link_choices: extra.links, scheduled_text: task.scheduled_at ? `Scheduled ${task.scheduled_at}${task.planned_minutes ? ` · ${task.planned_minutes} min planned` : ''}` : null,
+    actions: {reopen: {enabled: !pending && blocked === null, reason: pending ? 'Not marked, nothing to undo' : blocked}, link: {enabled: blocked === null && extra.links.length > 0, reason: blocked ?? (extra.links.length ? null : 'No recorded value is available to link')},
+      done: {enabled: pending && blocked === null, reason: pending ? blocked : 'Already marked'}, not_done: {enabled: pending && blocked === null, reason: pending ? blocked : 'Already marked'}}};
 }
 
 async function build(services, message) {
@@ -57,7 +69,9 @@ async function build(services, message) {
   } else {
     const executions = await completedExecutions(ctx);
     const {latest} = await loadProcedures(ctx);
-    list.entries = tasks.value.map(task => taskEntry(ctx, task, executions, true, latest));
+    const done_for = await completedList(ctx);
+    list.entries = [];
+    for (const task of tasks.value) list.entries.push(taskEntry(ctx, task, executions, true, latest, {done_for, links: await linkable(ctx, task)}));
     const count = status => tasks.value.filter(task => task.completion === status);
     progress.text = `${count('done').length} of ${tasks.value.length} done · ${count('not_done').length} not done · ${count('pending').length} pending`;
     progress.not_done = count('not_done').map(({id, description}) => ({id, description}));
@@ -65,6 +79,7 @@ async function build(services, message) {
     if (!tasks.value.length) { list.state = 'empty'; list.text = 'No task is listed for today.'; progress.state = 'empty'; progress.text = 'No task is listed for today.'; }
     sections.push(progress, list);
   }
+  sections.push({id: 'create', title: 'Add a task', state: 'ready', note: 'Tasks you add are assigned by you. A repeat falls only on the days you choose; nothing is scheduled by default.', procedures: (await loadProcedures(ctx)).latest.map(p => ({id: p.id, title: p.title})), actions: {create: {enabled: ctx.writable && ctx.plan !== null, reason: ctx.writable ? null : NOT_WRITABLE}}});
   return {state: 'ready', title: 'My plan', sections, message: message ?? null, interactions: interactions(services)};
 }
 
@@ -80,11 +95,32 @@ function interactions(services) {
   };
   const saved = (out, text) => (out.ok ? msg('info', text) : msg('error', `Not saved: ${out.error.message}`));
   return {
-    markDone: taskId => run(async ctx => {
+    markDone: (taskId, executionId) => run(async ctx => {
       const task = await ctx.store.get('tasks', taskId);
-      const executions = await completedExecutions(ctx);
-      const known = task.ok && isText(task.value.procedure_id) ? executions.get(task.value.procedure_id) : undefined;
+      let known;
+      if (isText(executionId)) { known = (await completedList(ctx)).find(e => e.id === executionId && task.ok && e.procedure_id === task.value.procedure_id); if (!known) return msg('error', 'Not saved: that execution is not a completed one of this procedure.'); }
+      else known = task.ok && isText(task.value.procedure_id) ? (await completedExecutions(ctx)).get(task.value.procedure_id) : undefined;
       return saved(await ctx.plan.mark(ctx.store, taskId, known ? {completion: 'done', execution_id: known.id} : {completion: 'done'}), 'Saved: marked done. No result is implied.');
+    }),
+    reopen: (taskId, reason) => run(async ctx => {
+      if (typeof ctx.plan.reopenTask !== 'function') return msg('error', 'Undo is not available yet.');
+      if (!isText(typeof reason === 'string' ? reason.trim() : '')) return msg('error', 'Not saved: say why the mark is being undone.');
+      return saved(await ctx.plan.reopenTask(ctx.store, taskId, {reason: reason.trim(), clock: ctx.clock}), 'Saved: the task is pending again. The earlier mark stays in its history; linked results stay.');
+    }),
+    linkResult: (taskId, recordId) => run(async ctx => saved(await ctx.plan.linkResult(ctx.store, taskId, recordId), 'Saved: result linked. The task\'s mark did not change.')),
+    createTask: input => run(async ctx => {
+      if (typeof ctx.plan.createTask !== 'function' || !ctx.newId) return msg('error', 'Adding tasks is not available yet.');
+      const f = input && typeof input === 'object' ? input : {};
+      if (!isText(typeof f.description === 'string' ? f.description.trim() : '')) return msg('error', 'Not saved: describe the task.');
+      if (!isText(f.scheduled_at) || Number.isNaN(Date.parse(f.scheduled_at))) return msg('error', 'Not saved: give the date and time of the task.');
+      const minutes = Number(f.planned_minutes);
+      if (f.planned_minutes === undefined || f.planned_minutes === '' || !Number.isInteger(minutes) || minutes < 1 || minutes > 1440) return msg('error', 'Not saved: say how many minutes it takes, a whole number from 1 to 1440; none is assumed.');
+      const base = {subject: ctx.subject, description: f.description.trim(), scheduled_at: new Date(f.scheduled_at).toISOString(), planned_minutes: minutes, ...(isText(f.procedure_id) ? {procedure_id: f.procedure_id} : {})};
+      if (f.every_days !== undefined && f.every_days !== '') {
+        if (typeof ctx.plan.scheduleSeries !== 'function') return msg('error', 'Repeating tasks are not available yet.');
+        return saved(await ctx.plan.scheduleSeries(ctx.store, {...base, first_scheduled_at: base.scheduled_at, every_days: Number(f.every_days), count: Number(f.count)}, {newId: ctx.newId}), `Saved: ${f.count} tasks, one every ${f.every_days} days.`);
+      }
+      return saved(await ctx.plan.createTask(ctx.store, base, {newId: ctx.newId}), 'Saved: task added.');
     }),
     markNotDone: (taskId, reason) => run(async ctx => {
       if (!isText(typeof reason === 'string' ? reason.trim() : '')) return msg('error', 'Not saved: say why it was not done.');
